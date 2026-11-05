@@ -1,0 +1,283 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1560 1780" width="1560" height="1780" style="background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;">
+  <defs>
+    <!-- Background Grid -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0, 0, 0, 0.035)" stroke-width="1" />
+    </pattern>
+
+    <!-- Arrow Markers -->
+    <marker id="arrow" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 2 L 8 5 L 1 8 z" fill="#1e293b" />
+    </marker>
+    <marker id="arrow-primary" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 2 L 8 5 L 1 8 z" fill="#1e293b" />
+    </marker>
+    <marker id="arrow-fail" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 2 L 8 5 L 1 8 z" fill="#dc2626" />
+    </marker>
+    <marker id="arrow-success" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 2 L 8 5 L 1 8 z" fill="#16a34a" />
+    </marker>
+    <marker id="arrow-ugc" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 1 2 L 8 5 L 1 8 z" fill="#0284c7" />
+    </marker>
+
+    <!-- Card Shadow -->
+    <filter id="card-shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="5" flood-color="#000000" flood-opacity="0.06"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1560" height="1780" fill="#ffffff" />
+  <rect width="1560" height="1780" fill="url(#grid)" />
+
+  <!-- ==================== HEADER BANNER ==================== -->
+  <g transform="translate(410, 35)" filter="url(#card-shadow)">
+    <rect width="740" height="44" rx="22" fill="#f8fafc" stroke="#0f172a" stroke-width="1.6" />
+    <text x="370" y="27" text-anchor="middle" font-size="14" font-weight="800" fill="#000000" letter-spacing="0.5">
+      HỆ THỐNG QUY TRÌNH HỌC TẬP KHÉP KÍN: CUNG ĐIỆN KÝ ỨC 3D VÀ THUẬT TOÁN SM-2
+    </text>
+  </g>
+
+  <!-- ==================== CONNECTOR LINES & ARROWS ==================== -->
+  <g fill="none" stroke-linejoin="round" stroke-linecap="round">
+    <!-- Top Sequence: Box 1 -> Box 2 -->
+    <path d="M 780 160 L 780 196" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+
+    <!-- Box 2 -> Box 3 -->
+    <path d="M 780 270 L 780 306" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+
+    <!-- Box 3 -> 3 Branches Bus Bar -->
+    <path d="M 780 390 L 780 430" stroke="#1e293b" stroke-width="2.2" />
+    <path d="M 310 430 L 1250 430" stroke="#1e293b" stroke-width="2.2" />
+    
+    <!-- Drops into 3 branches -->
+    <path d="M 310 430 L 310 466" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+    <path d="M 780 430 L 780 466" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+    <path d="M 1250 430 L 1250 466" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+
+    <!-- BRANCH 1 (LEFT) -->
+    <!-- Box 4 -> Split to 4A & 4B -->
+    <path d="M 310 545 L 310 575" stroke="#1e293b" stroke-width="2" />
+    <path d="M 215 575 L 405 575" stroke="#1e293b" stroke-width="2" />
+    <path d="M 215 575 L 215 601" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+    <path d="M 405 575 L 405 601" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- 4A & 4B -> Merge to Box 5 -->
+    <path d="M 215 660 L 215 685" stroke="#1e293b" stroke-width="2" />
+    <path d="M 405 660 L 405 685" stroke="#1e293b" stroke-width="2" />
+    <path d="M 215 685 L 405 685" stroke="#1e293b" stroke-width="2" />
+    <path d="M 310 685 L 310 711" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- Box 5 -> Box 6 -->
+    <path d="M 310 795 L 310 826" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+
+    <!-- Box 6 -> Box 7 -->
+    <path d="M 310 905 L 310 936" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+
+    <!-- BRANCH 2 (MIDDLE) -->
+    <!-- Box 8 -> Box 9 -->
+    <path d="M 780 545 L 780 581" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+    <!-- Box 9 -> Box 9B -->
+    <path d="M 780 660 L 780 696" stroke="#1e293b" stroke-width="2.2" marker-end="url(#arrow)" />
+
+    <!-- BRANCH 3 (RIGHT) -->
+    <!-- Box 10 -> Split to 10A & 10B -->
+    <path d="M 1250 545 L 1250 575" stroke="#1e293b" stroke-width="2" />
+    <path d="M 1155 575 L 1345 575" stroke="#1e293b" stroke-width="2" />
+    <path d="M 1155 575 L 1155 601" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+    <path d="M 1345 575 L 1345 601" stroke="#1e293b" stroke-width="2" marker-end="url(#arrow)" />
+
+    <!-- UGC Shared 10A -> Link back to 4B (Dotted Line) -->
+    <path d="M 1155 660 L 1155 685 L 530 685 L 530 635 L 476 635" stroke="#0284c7" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#arrow-ugc)" />
+
+    <!-- ==================== CONVERGENCE TO REVIEW (BOX 11) ==================== -->
+    <!-- From Left Box 7 to Box 11 -->
+    <path d="M 310 1020 L 310 1060 L 620 1060" stroke="#1e293b" stroke-width="2.4" marker-end="url(#arrow-primary)" />
+    <!-- From Middle Box 9B to Box 11 -->
+    <path d="M 780 775 L 780 1056" stroke="#1e293b" stroke-width="2.4" marker-end="url(#arrow-primary)" />
+
+    <!-- Box 11 -> Box 12 (SM-2 Engine) -->
+    <path d="M 780 1140 L 780 1176" stroke="#1e293b" stroke-width="2.5" marker-end="url(#arrow-primary)" />
+
+    <!-- Box 12 -> Box 13 (Gamification & Mastery) -->
+    <path d="M 780 1265 L 780 1306" stroke="#1e293b" stroke-width="2.5" marker-end="url(#arrow-primary)" />
+
+    <!-- ==================== FEEDBACK LOOPS (VÒNG LẶP HỒI QUY CHỐNG QUÊN) ==================== -->
+    <!-- LOOP 1: q = 1 (Chưa nhớ) -> Quay lại Khảo bài Box 7 vào ngày mai -->
+    <path d="M 500 1220 L 90 1220 L 90 980 L 146 980" stroke="#dc2626" stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#arrow-fail)" />
+
+    <!-- LOOP 2: q = 5 (Nhớ sâu) -> Lên lịch giãn cách 1, 6, 14 ngày -> Quay về Portal Box 3 -->
+    <path d="M 1060 1355 L 1480 1355 L 1480 345 L 986 345" stroke="#16a34a" stroke-width="2.4" stroke-dasharray="6 4" marker-end="url(#arrow-success)" />
+  </g>
+
+  <!-- ==================== LOOP LABELS (BADGES) - 100% BLACK TEXT ==================== -->
+  <!-- Loop 1 Tag: q = 1 -->
+  <g transform="translate(95, 1185)" filter="url(#card-shadow)">
+    <rect width="250" height="32" rx="8" fill="#fef2f2" stroke="#dc2626" stroke-width="1.4"/>
+    <text x="125" y="21" text-anchor="middle" font-size="12" font-weight="700" fill="#000000">
+      q = 1 (Chưa nhớ): Lặp lại vào ngày hôm sau
+    </text>
+  </g>
+
+  <!-- Loop 2 Tag: q = 5 -->
+  <g transform="translate(1100, 1320)" filter="url(#card-shadow)">
+    <rect width="340" height="32" rx="8" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.4"/>
+    <text x="170" y="21" text-anchor="middle" font-size="12" font-weight="700" fill="#000000">
+      q = 5 (Nhớ sâu): Tự động giãn cách 1, 6, 14 ngày
+    </text>
+  </g>
+
+  <!-- UGC Loop Tag -->
+  <g transform="translate(560, 665)" filter="url(#card-shadow)">
+    <rect width="230" height="26" rx="6" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.2"/>
+    <text x="115" y="18" text-anchor="middle" font-size="11" font-weight="700" fill="#000000">
+      Tải không gian chia sẻ về học tập
+    </text>
+  </g>
+
+  <!-- ==================== FLOWCHART NODES / CARDS - 100% BLACK TEXT ==================== -->
+  <g text-anchor="middle">
+
+    <!-- BOX 1: Khởi tạo phiên học tập -->
+    <g transform="translate(620, 95)" filter="url(#card-shadow)">
+      <rect width="320" height="65" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="160" y="28" font-size="15" font-weight="800" fill="#000000">KHỞI TẠO PHIÊN HỌC TẬP</text>
+      <text x="160" y="48" font-size="12" font-weight="500" fill="#000000">Truy cập nền tảng Loci EDU (Web đa thiết bị)</text>
+    </g>
+
+    <!-- BOX 2: Đăng nhập & Nạp Hồ sơ -->
+    <g transform="translate(605, 195)" filter="url(#card-shadow)">
+      <rect width="350" height="75" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="175" y="32" font-size="15" font-weight="800" fill="#000000">ĐĂNG NHẬP VÀ NẠP HỒ SƠ CÁ NHÂN</text>
+      <text x="175" y="54" font-size="12" font-weight="500" fill="#000000">Đồng bộ điểm XP, Cấp bậc tiến trình và Lịch ôn SM-2</text>
+    </g>
+
+    <!-- BOX 3: CỔNG ĐIỀU PHỐI TRUNG TÂM (PORTAL HUB) -->
+    <g transform="translate(575, 305)" filter="url(#card-shadow)">
+      <rect width="410" height="85" rx="16" fill="#f8fafc" stroke="#0f172a" stroke-width="2.2" />
+      <text x="205" y="33" font-size="15.5" font-weight="800" fill="#000000">CỔNG ĐIỀU PHỐI TRUNG TÂM (PORTAL HUB)</text>
+      <text x="205" y="55" font-size="12" font-weight="600" fill="#000000">Theo dõi tiến độ, Hướng dẫn phương pháp Loci</text>
+      <text x="205" y="73" font-size="11.5" font-weight="500" fill="#000000">Điều phối phiên học tập sang 3 phân hệ chuyên biệt</text>
+    </g>
+
+    <!-- ==================== NHÁNH 1 (TRÁI): KHÔNG GIAN LOCI ==================== -->
+    <!-- BOX 4: Lựa chọn Không gian Loci -->
+    <g transform="translate(150, 465)" filter="url(#card-shadow)">
+      <rect width="320" height="80" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="160" y="33" font-size="15" font-weight="800" fill="#000000">PHÂN HỆ CUNG ĐIỆN KÝ ỨC</text>
+      <text x="160" y="55" font-size="12" font-weight="500" fill="#000000">Chọn không gian kiến trúc trực quan 3D hoặc 360 độ</text>
+    </g>
+
+    <!-- Sub 4A: Thư viện 3D mẫu -->
+    <g transform="translate(140, 600)" filter="url(#card-shadow)">
+      <rect width="150" height="60" rx="12" fill="#ffffff" stroke="#334155" stroke-width="1.6" />
+      <text x="75" y="27" font-size="13" font-weight="700" fill="#000000">Phòng 3D Mẫu</text>
+      <text x="75" y="46" font-size="11" font-weight="500" fill="#000000">Mô hình Three.js nhẹ</text>
+    </g>
+
+    <!-- Sub 4B: Ảnh 360° UGC -->
+    <g transform="translate(330, 600)" filter="url(#card-shadow)">
+      <rect width="150" height="60" rx="12" fill="#ffffff" stroke="#334155" stroke-width="1.6" />
+      <text x="75" y="27" font-size="13" font-weight="700" fill="#000000">Ảnh 360° Tự tạo</text>
+      <text x="75" y="46" font-size="11" font-weight="600" fill="#000000">Cá nhân hóa (UGC)</text>
+    </g>
+
+    <!-- BOX 5: Mã hóa Trạm Ký ức -->
+    <g transform="translate(140, 710)" filter="url(#card-shadow)">
+      <rect width="340" height="85" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="170" y="31" font-size="14.5" font-weight="800" fill="#000000">MÃ HÓA CÁC TRẠM KÝ ỨC (LOCI)</text>
+      <text x="170" y="52" font-size="12" font-weight="600" fill="#000000">Chuẩn hóa SGK Chủ đề 3 (Bài 6, 7, 8, 9)</text>
+      <text x="170" y="70" font-size="11" font-weight="500" fill="#000000">Gắn vào vật thể: Cửa, Bàn trà, Kệ sách, Tivi...</text>
+    </g>
+
+    <!-- BOX 6: Du ngoạn & Neo giữ -->
+    <g transform="translate(140, 825)" filter="url(#card-shadow)">
+      <rect width="340" height="80" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="170" y="32" font-size="14.5" font-weight="800" fill="#000000">HÀNH TRÌNH DU NGOẠN KHÔNG GIAN</text>
+      <text x="170" y="53" font-size="12" font-weight="500" fill="#000000">Điều hướng góc nhìn, ghim mốc tri thức (Raycasting)</text>
+      <text x="170" y="70" font-size="11" font-weight="600" fill="#000000">Khắc sâu liên tưởng hình ảnh trực quan</text>
+    </g>
+
+    <!-- BOX 7: Khảo bài Trí nhớ Không gian -->
+    <g transform="translate(140, 935)" filter="url(#card-shadow)">
+      <rect width="340" height="85" rx="14" fill="#ffffff" stroke="#0f172a" stroke-width="2" />
+      <text x="170" y="32" font-size="14.5" font-weight="800" fill="#000000">KHẢO BÀI TRÍ NHỚ KHÔNG GIAN</text>
+      <text x="170" y="53" font-size="12" font-weight="600" fill="#000000">Chế độ ẩn thông tin tại các trạm ký ức</text>
+      <text x="170" y="71" font-size="11" font-weight="500" fill="#000000">Người học chủ động truy hồi sự kiện từ vị trí đồ vật</text>
+    </g>
+
+    <!-- ==================== NHÁNH 2 (GIỮA): GIA SƯ AI ==================== -->
+    <!-- BOX 8: Gia sư AI Loci -->
+    <g transform="translate(630, 465)" filter="url(#card-shadow)">
+      <rect width="300" height="80" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="150" y="33" font-size="15" font-weight="800" fill="#000000">GIA SƯ SƯ PHẠM AI LOCI</text>
+      <text x="150" y="55" font-size="12" font-weight="500" fill="#000000">Google Gemini API và Web Speech API</text>
+    </g>
+
+    <!-- BOX 9: Tương tác giọng nói & Tâm lý -->
+    <g transform="translate(620, 580)" filter="url(#card-shadow)">
+      <rect width="320" height="80" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="160" y="31" font-size="14" font-weight="800" fill="#000000">HỎI - ĐÁP GIỌNG NÓI VÀ TÂM LÝ</text>
+      <text x="160" y="52" font-size="12" font-weight="500" fill="#000000">Giao tiếp tiếng Việt hai chiều tự nhiên</text>
+      <text x="160" y="70" font-size="11" font-weight="600" fill="#000000">Xoa dịu áp lực, củng cố tự tin thi cử</text>
+    </g>
+
+    <!-- BOX 9B: RAG & Sinh thẻ chuẩn xác -->
+    <g transform="translate(620, 695)" filter="url(#card-shadow)">
+      <rect width="320" height="80" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="160" y="31" font-size="14" font-weight="800" fill="#000000">TRI THỨC SGK CHỐNG ẢO GIÁC</text>
+      <text x="160" y="52" font-size="12" font-weight="500" fill="#000000">Hàng rào ngữ cảnh bám sát Chủ đề 3 SGK</text>
+      <text x="160" y="70" font-size="11" font-weight="600" fill="#000000">Tự động nạp thẻ luyện tập vào kho ôn</text>
+    </g>
+
+    <!-- ==================== NHÁNH 3 (PHẢI): CỘNG ĐỒNG KẾT NỐI ==================== -->
+    <!-- BOX 10: Mạng lưới Kết nối -->
+    <g transform="translate(1090, 465)" filter="url(#card-shadow)">
+      <rect width="320" height="80" rx="14" fill="#ffffff" stroke="#334155" stroke-width="1.8" />
+      <text x="160" y="33" font-size="15" font-weight="800" fill="#000000">MẠNG LƯỚI KẾT NỐI HỌC TẬP</text>
+      <text x="160" y="55" font-size="12" font-weight="500" fill="#000000">Giao lưu, chia sẻ học liệu và Cung điện 360</text>
+    </g>
+
+    <!-- Sub 10A: Chia sẻ UGC Lào Cai -->
+    <g transform="translate(1080, 600)" filter="url(#card-shadow)">
+      <rect width="150" height="60" rx="12" fill="#ffffff" stroke="#334155" stroke-width="1.6" />
+      <text x="75" y="27" font-size="13" font-weight="700" fill="#000000">Chia sẻ Không gian</text>
+      <text x="75" y="46" font-size="11" font-weight="600" fill="#000000">Tư liệu địa phương (UGC)</text>
+    </g>
+
+    <!-- Sub 10B: Thảo luận nhóm -->
+    <g transform="translate(1270, 600)" filter="url(#card-shadow)">
+      <rect width="150" height="60" rx="12" fill="#ffffff" stroke="#334155" stroke-width="1.6" />
+      <text x="75" y="27" font-size="13" font-weight="700" fill="#000000">Thảo luận và Hỏi đáp</text>
+      <text x="75" y="46" font-size="11" font-weight="500" fill="#000000">Giao lưu học tập nhóm</text>
+    </g>
+
+    <!-- ==================== TRUNG TÂM ÔN TẬP 5 DẠNG THẺ (BOX 11) ==================== -->
+    <g transform="translate(400, 1060)" filter="url(#card-shadow)">
+      <rect width="760" height="80" rx="16" fill="#f8fafc" stroke="#0f172a" stroke-width="2.2" />
+      <text x="380" y="31" font-size="15.5" font-weight="800" fill="#000000">TRUNG TÂM ÔN TẬP ĐA TẦNG NHẬN THỨC</text>
+      <text x="380" y="54" font-size="13" font-weight="700" fill="#000000">5 Dạng Thẻ: Gõ đáp án • Điền khuyết • Đảo chiều • Flashcard • Trắc nghiệm</text>
+      <text x="380" y="71" font-size="11.5" font-weight="500" fill="#000000">Giải quyết triệt để 86% sai sót mốc ngày tháng và sự kiện của học sinh khảo sát</text>
+    </g>
+
+    <!-- ==================== ĐỘNG CƠ THUẬT TOÁN SM-2 (BOX 12) ==================== -->
+    <g transform="translate(470, 1175)" filter="url(#card-shadow)">
+      <rect width="620" height="90" rx="16" fill="#ffffff" stroke="#0f172a" stroke-width="2.2" />
+      <text x="310" y="32" font-size="15.5" font-weight="800" fill="#000000">ĐỘNG CƠ THUẬT TOÁN SUPERMEMO-2 (SM-2)</text>
+      <text x="310" y="55" font-size="12.5" font-weight="700" fill="#000000">Lượng hóa chất lượng hồi tưởng q ∈ {1, 3, 5} (Chưa nhớ - Nhớ mang máng - Nhớ rõ)</text>
+      <text x="310" y="74" font-size="12" font-weight="500" fill="#000000">Tự động cập nhật Hệ số Dễ EF và Tính khoảng cách giãn cách I(n) = I(n-1) × EF</text>
+    </g>
+
+    <!-- ==================== GAMIFICATION & MASTERY (BOX 13) ==================== -->
+    <g transform="translate(450, 1305)" filter="url(#card-shadow)">
+      <rect width="660" height="95" rx="16" fill="#ffffff" stroke="#0f172a" stroke-width="2.2" />
+      <text x="330" y="32" font-size="15.5" font-weight="800" fill="#000000">ĐỘNG LỰC HÓA SƯ PHẠM (GAMIFICATION) VÀ TIẾN TRÌNH</text>
+      <text x="330" y="55" font-size="12.5" font-weight="700" fill="#000000">Tích lũy Điểm XP • Thăng cấp 7 Viền Avatar Tiến trình (Cấp 1 - 7)</text>
+      <text x="330" y="73" font-size="12" font-weight="600" fill="#000000">Mở khóa 6 Huy hiệu Thành tích • Ghi chú Sổ tay Siêu nhận thức</text>
+      <text x="330" y="89" font-size="11" font-weight="500" fill="#000000">Lưu trữ bền vững tại LocalStorage và Đồng bộ Firebase Cloud</text>
+    </g>
+
+  </g>
+</svg>

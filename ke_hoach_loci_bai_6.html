@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kế hoạch Phân chia Mốc Loci — Bài 6: Cách Mạng Tháng Tám 1945</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: rgba(20, 27, 45, 0.85);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-grad: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      --red: #ef4444;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --purple: #8b5cf6;
+      --gold: #fbbf24;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 30px 20px 80px;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(239, 68, 68, 0.08) 0%, transparent 40%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    /* HEADER */
+    .header {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 36px 40px;
+      margin-bottom: 32px;
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
+      backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 4px;
+      background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #38bdf8, #8b5cf6);
+    }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 99px;
+      background: rgba(56, 189, 248, 0.12);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #38bdf8;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 14px;
+    }
+    .header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      background: linear-gradient(to right, #ffffff, #cbd5e1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .header p {
+      color: var(--text-muted);
+      font-size: 16px;
+      max-width: 850px;
+    }
+    .meta-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: #cbd5e1;
+    }
+    .meta-item strong {
+      color: #fff;
+    }
+
+    /* ACTION BAR */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    .nav-tabs {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .nav-btn {
+      padding: 8px 16px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      color: #38bdf8;
+      border-color: rgba(56, 189, 248, 0.4);
+    }
+    .print-btn {
+      padding: 8px 18px;
+      background: var(--accent-grad);
+      color: #041226;
+      border: none;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* OVERVIEW JOURNEY MAP */
+    .journey-map {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 24px 28px;
+      margin-bottom: 36px;
+    }
+    .journey-title {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #38bdf8;
+    }
+    .timeline-steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
+      gap: 10px;
+    }
+    .t-step {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: center;
+      transition: all 0.2s;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+    .t-step:hover {
+      transform: translateY(-3px);
+      border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+    }
+    .t-num {
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 4px;
+    }
+    .t-icon {
+      font-size: 24px;
+      margin: 4px 0;
+    }
+    .t-name {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      line-height: 1.3;
+    }
+    .t-date {
+      font-size: 11px;
+      color: var(--amber);
+      margin-top: 4px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* STATIONS GRID */
+    .station-list {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .station-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      transition: border-color 0.2s;
+    }
+    .station-card:hover {
+      border-color: rgba(255,255,255,0.18);
+    }
+
+    .station-top {
+      padding: 24px 30px;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .station-title-box {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .station-icon {
+      width: 54px;
+      height: 54px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
+      flex-shrink: 0;
+    }
+    .station-name {
+      font-size: 21px;
+      font-weight: 800;
+      color: #fff;
+    }
+    .station-loc {
+      font-size: 13.5px;
+      color: #94a3b8;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+    .station-badge-date {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13.5px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 8px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px solid rgba(245, 158, 11, 0.3);
+      color: #fbbf24;
+    }
+
+    .station-body {
+      padding: 28px 30px;
+      display: grid;
+      grid-template-columns: 1.35fr 1fr;
+      gap: 28px;
+    }
+    @media (max-width: 950px) {
+      .station-body {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* LEFT: KNOWLEDGE */
+    .sec-block-title {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #e2e8f0;
+    }
+    .summary-text {
+      font-size: 15px;
+      color: #cbd5e1;
+      background: rgba(255,255,255,0.02);
+      padding: 12px 16px;
+      border-radius: 10px;
+      border-left: 3px solid var(--accent);
+      margin-bottom: 18px;
+    }
+    .kp-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .kp-list li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 14.5px;
+      color: #e2e8f0;
+    }
+    .kp-list li::before {
+      content: '▸';
+      position: absolute;
+      left: 0;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    /* RIGHT: LOCI MNEMONICS & PHOTOS */
+    .loci-box {
+      background: linear-gradient(135deg, rgba(30, 41, 59, 0.8), rgba(15, 23, 42, 0.9));
+      border: 1px solid rgba(56, 189, 248, 0.25);
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .loci-box-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+    .loci-desc {
+      font-size: 14px;
+      color: #f1f5f9;
+      line-height: 1.55;
+    }
+    .mantra-tag {
+      margin-top: 14px;
+      padding: 10px 14px;
+      background: rgba(245, 158, 11, 0.12);
+      border: 1px dashed rgba(245, 158, 11, 0.4);
+      border-radius: 8px;
+      font-size: 13.5px;
+      color: #fef08a;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* HISTORICAL PHOTOS GALLERY */
+    .photo-box {
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .photo-title {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: #38bdf8;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .photo-gallery {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .photo-card {
+      background: rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+    .photo-card:hover {
+      border-color: var(--accent);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(56, 189, 248, 0.15);
+    }
+    .photo-img-wrap {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+      background: #050811;
+      position: relative;
+    }
+    .photo-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 25%;
+      transition: transform 0.35s ease;
+    }
+    .photo-card:hover .photo-img-wrap img {
+      transform: scale(1.05);
+    }
+    .photo-info {
+      padding: 10px 14px;
+    }
+    .photo-caption {
+      font-size: 13px;
+      font-weight: 700;
+      color: #f1f5f9;
+      line-height: 1.35;
+      margin-bottom: 4px;
+    }
+    .photo-meta {
+      font-size: 11.5px;
+      color: #94a3b8;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .photo-meta a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .photo-meta a:hover {
+      text-decoration: underline;
+    }
+
+    /* QUIZ SECTION */
+    .quiz-section {
+      grid-column: 1 / -1;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 20px;
+      margin-top: 4px;
+    }
+    .quiz-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 14px;
+    }
+    .quiz-item {
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+    .quiz-q {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #e2e8f0;
+      margin-bottom: 8px;
+    }
+    .quiz-a {
+      font-size: 13px;
+      color: #38bdf8;
+      background: rgba(56, 189, 248, 0.08);
+      padding: 6px 10px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 4px;
+    }
+    .quiz-exp {
+      font-size: 12px;
+      color: #94a3b8;
+    }
+
+    /* FOOTER */
+    .footer {
+      text-align: center;
+      margin-top: 60px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    @media print {
+      body { background: #fff; color: #000; padding: 0; }
+      .header, .station-card, .journey-map { background: #fff !important; color: #000 !important; border: 1px solid #ccc !important; box-shadow: none !important; }
+      .action-bar, .print-btn { display: none !important; }
+      .station-name, .header h1 { color: #000 !important; -webkit-text-fill-color: initial !important; }
+      .station-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header class="header">
+      <div class="badge">🧠 Cung điện Ký ức Loci — Lịch sử 12 (GDPT 2018)</div>
+      <h1>Kế Hoạch Phân Chia Kiến Thức Bài 6: Cách Mạng Tháng Tám 1945</h1>
+      <p>Hệ thống hóa toàn bộ kiến thức theo phương pháp Loci VR — Chia nhỏ thành 9 trạm ký ức tuyến tính với đầy đủ mẹo hình dung không gian, câu thần chú nhịp điệu, <strong>16 tư liệu ảnh lịch sử lưu trữ offline</strong> và bộ câu hỏi củng cố chủ động.</p>
+      
+      <div class="meta-bar">
+        <div class="meta-item"><span>📚</span> <strong>Chủ đề:</strong> Chủ đề 3 Lịch sử 12</div>
+        <div class="meta-item"><span>🏛️</span> <strong>Tổng số trạm Loci:</strong> 9 Trạm ký ức</div>
+        <div class="meta-item"><span>⚡</span> <strong>Mốc thời gian:</strong> 13 mốc then chốt</div>
+        <div class="meta-item"><span>📸</span> <strong>Tư liệu ảnh thật:</strong> 16 ảnh chất lượng cao (Offline)</div>
+        <div class="meta-item"><span>🎯</span> <strong>Chuẩn định dạng:</strong> Flashcard + Quiz + Cloze + Typein</div>
+      </div>
+    </header>
+
+    <div class="action-bar">
+      <div class="nav-tabs">
+        <button class="nav-btn active" onclick="filterStations('all', this)">Tất cả 9 trạm</button>
+        <button class="nav-btn" onclick="filterStations('boicanh', this)">Giai đoạn 1: Bối cảnh (1-3)</button>
+        <button class="nav-btn" onclick="filterStations('dienbien', this)">Giai đoạn 2: Diễn biến (4-8)</button>
+        <button class="nav-btn" onclick="filterStations('tongket', this)">Giai đoạn 3: Tổng kết (9)</button>
+      </div>
+      <button class="print-btn" onclick="window.print()">
+        <span>🖨️</span> In / Lưu PDF Kế hoạch
+      </button>
+    </div>
+
+    <!-- JOURNEY MAP -->
+    <section class="journey-map">
+      <div class="journey-title">
+        <span>🗺️</span> Hành trình Tuyến tính 9 Trạm Ký ức Loci
+      </div>
+      <div class="timeline-steps">
+        <a href="#tram-1" class="t-step"><div class="t-num">TRẠM 1</div><div class="t-icon">💣</div><div class="t-name">Bão lửa Thế giới</div><div class="t-date">6, 9 & 15/8</div></a>
+        <a href="#tram-2" class="t-step"><div class="t-num">TRẠM 2</div><div class="t-icon">🌿</div><div class="t-name">Lán Nà Nưa</div><div class="t-date">13/8 (QL1)</div></a>
+        <a href="#tram-3" class="t-step"><div class="t-num">TRẠM 3</div><div class="t-icon">🏛️</div><div class="t-name">Đình Tân Trào</div><div class="t-date">14-17/8</div></a>
+        <a href="#tram-4" class="t-step"><div class="t-num">TRẠM 4</div><div class="t-icon">⚔️</div><div class="t-name">Đường Thái Nguyên</div><div class="t-date">16 & 18/8</div></a>
+        <a href="#tram-5" class="t-step"><div class="t-num">TRẠM 5</div><div class="t-icon">🎭</div><div class="t-name">Nhà hát Lớn HN</div><div class="t-date">19/8 (Hà Nội)</div></a>
+        <a href="#tram-6" class="t-step"><div class="t-num">TRẠM 6</div><div class="t-icon">🏯</div><div class="t-name">Ngọ Môn & Sài Gòn</div><div class="t-date">23, 25, 28/8</div></a>
+        <a href="#tram-7" class="t-step"><div class="t-num">TRẠM 7</div><div class="t-icon">👑</div><div class="t-name">Thoái vị Ngọ Môn</div><div class="t-date">Chiều 30/8</div></a>
+        <a href="#tram-8" class="t-step"><div class="t-num">TRẠM 8</div><div class="t-icon">🇻🇳</div><div class="t-name">Quảng trường Ba Đình</div><div class="t-date">2/9/1945</div></a>
+        <a href="#tram-9" class="t-step"><div class="t-num">TRẠM 9</div><div class="t-icon">🏆</div><div class="t-name">Phòng Vàng Son</div><div class="t-date">Tổng kết</div></a>
+      </div>
+    </section>
+
+    <div class="station-list">
+
+      <!-- TRẠM 1 -->
+      <article class="station-card" id="tram-1" data-cat="boicanh">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #ef4444; border-color: #ef444444; background: #ef444418;">💣</div>
+            <div>
+              <div class="station-name">Trạm 1: Bão lửa Thế giới — Thời cơ ngàn năm có một</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Tưởng tượng ngay Cổng Cung điện có 2 quả cầu lửa bom nguyên tử phát sáng đỏ rực trên 2 trụ cổng (6/8 & 9/8)</div>
+            </div>
+          </div>
+          <div class="station-badge-date">6/8 — 9/8 — 15/8/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Tháng 8/1945, phát xít Nhật đầu hàng Đồng minh không điều kiện sau 2 quả bom nguyên tử và đòn tấn công của Liên Xô. Thời cơ khách quan 'ngàn năm có một' xuất hiện.</div>
+            <ul class="kp-list">
+              <li>Thế giới tháng 8/1945: Chiến tranh thế giới thứ hai bước vào giai đoạn kết thúc thắng lợi thuộc về phe Đồng minh</li>
+              <li>6/8 & 9/8/1945: Mỹ ném 2 quả bom nguyên tử xuống Hi-rô-si-ma và Na-ga-xa-ki (Nhật Bản)</li>
+              <li>9/8/1945: Hồng quân Liên Xô mở cuộc tiến công đè bẹp đạo quân Quan Đông của Nhật ở Đông Bắc Trung Quốc</li>
+              <li>15/8/1945: Nhật Hoàng tuyên bố đầu hàng Đồng minh KHÔNG ĐIỀU KIỆN</li>
+              <li>Quân Nhật ở Đông Dương tê liệt hoang mang; chính phủ tay sai Trần Trọng Kim rệu rã bỏ chạy</li>
+              <li>Thời cơ khách quan thuận lợi 'ngàn năm có một' để nhân dân ta Tổng khởi nghĩa giành chính quyền đã chín muồi</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng ngay Cổng Cung điện có 2 quả cầu lửa bom nguyên tử phát sáng đỏ rực trên 2 trụ cổng (6/8 & 9/8). Cánh cổng dán tờ 'TUYÊN BỐ ĐẦU HÀNG 15/8' to như tấm phản, phía dưới là lính Nhật buông súng quỳ gối!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (3 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t1_bom_nguyen_tu.png" alt="Cột khói bom nguyên tử Hi-rô-si-ma (6/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Cột khói bom nguyên tử Hi-rô-si-ma (6/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Thư viện Quốc hội Mỹ</span>
+                      <a href="https://www.loc.gov/pictures/resource/ds.10871/" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t1_lien_xo_quan_dong.png" alt="Hồng quân Liên Xô tấn công quân Quan Đông (9/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Hồng quân Liên Xô tấn công quân Quan Đông (9/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Tư liệu Lịch sử Thế chiến II</span>
+                      <a href="https://upload.wikimedia.org/wikipedia/commons/e/e3/Soviet_infantry_crosses_the_border_of_Manchuria._August_9%2C_1945.jpg" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t1_nhat_dau_hang.png" alt="Lễ ký văn kiện Nhật Bản đầu hàng Đồng minh (1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Lễ ký văn kiện Nhật Bản đầu hàng Đồng minh (1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Cục Lưu trữ Hải quân Hoa Kỳ</span>
+                      <a href="https://www.history.navy.mil/our-collections/photography/numerical-list-of-images/nara-series/80-g/80-G-490000/80-G-490320.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Vào ngày tháng năm nào Nhật Hoàng chính thức phát thanh tuyên bố đầu hàng Đồng minh không điều kiện?</div>
+                <div class="quiz-a">Đ/A: 15/8/1945</div>
+                <div class="quiz-exp">Ngày 15/8/1945, Nhật Hoàng tuyên bố đầu hàng Đồng minh không điều kiện, tạo ra thời cơ khách quan thuận lợi nhất cho Tổng khởi nghĩa.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Hai thành phố nào của Nhật Bản đã hứng chịu bom nguyên tử của Mỹ vào ngày 6/8 và 9/8/1945?</div>
+                <div class="quiz-a">Đ/A: Hi-rô-si-ma và Na-ga-xa-ki</div>
+                <div class="quiz-exp">Mỹ ném bom nguyên tử xuống Hi-rô-si-ma ngày 6/8 và Na-ga-xa-ki ngày 9/8/1945.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Sự kiện nào diễn ra ngày 15/8/1945 trực tiếp tạo điều kiện khách quan thuận lợi cho Tổng khởi nghĩa ở Việt Nam?</div>
+                <div class="quiz-a">Đ/A: B. Nhật Hoàng tuyên bố đầu hàng Đồng minh không điều kiện</div>
+                <div class="quiz-exp">Ngày 15/8/1945, Nhật Hoàng tuyên bố đầu hàng Đồng minh không điều kiện. Kẻ thù chính gục ngã, chính quyền bù nhìn tay sai Trần Trọng Kim tê liệt, tạo điều kiện khách quan ngàn năm có một cho Tổng khởi nghĩa.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Sau khi Nhật tuyên bố đầu hàng Đồng minh (15/8/1945), thái độ của quân Nhật ở Đông Dương và chính phủ Trần Trọng Kim như thế nào?</div>
+                <div class="quiz-a">Đ/A: C. Hoang mang, rệu rã, mất hết tinh thần chiến đấu</div>
+                <div class="quiz-exp">Quân đội Nhật ở Đông Dương rơi vào tình trạng rắn mất đầu, hoang mang tê liệt, còn chính phủ thân Nhật Trần Trọng Kim thì rệu rã, mất phương hướng.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 2 -->
+      <article class="station-card" id="tram-2" data-cat="boicanh">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #16a34a; border-color: #16a34a44; background: #16a34a18;">🌿</div>
+            <div>
+              <div class="station-name">Trạm 2: Lán Nà Nưa — Cao trào Kháng Nhật & Quân lệnh số 1</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Bước vào Lán Nà Nưa đơn sơ giữa đại ngàn Tân Trào</div>
+            </div>
+          </div>
+          <div class="station-badge-date">Tháng 3-8/1945 & Đêm 13/8/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Cao trào kháng Nhật (3-8/1945) chuẩn bị toàn diện lực lượng. Đêm 13/8/1945, Ủy ban Khởi nghĩa toàn quốc ban bố Quân lệnh số 1 phát động Tổng khởi nghĩa.</div>
+            <ul class="kp-list">
+              <li>Từ 3/1945 đến 8/1945: Cao trào kháng Nhật cứu nước bùng nổ khắp cả nước</li>
+              <li>Ý nghĩa cao trào: Chuẩn bị lực lượng chính trị và vũ trang, tập dượt cho quần chúng nhân dân đấu tranh, sẵn sàng khởi nghĩa khi thời cơ đến</li>
+              <li>13/8/1945: Trung ương Đảng và Tổng bộ Việt Minh thành lập 'Ủy ban Khởi nghĩa Toàn quốc'</li>
+              <li>Đêm 13/8/1945: Ban bố 'Quân lệnh số 1' chính thức phát lệnh Tổng khởi nghĩa giành chính quyền trên toàn quốc</li>
+              <li>Chuẩn bị sẵn sàng lực lượng cách mạng, tập dượt cho quần chúng nhân dân sẵn sàng tổng khởi nghĩa khi thời cơ đến.</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Bước vào Lán Nà Nưa đơn sơ giữa đại ngàn Tân Trào. Trên chiếc bàn nứa của Bác Hồ đặt tờ 'QUÂN LỆNH SỐ 1' đỏ chói ngày 13/8. Ngoài lán, đoàn dân quân giơ 5 ngón tay luyện tập (tượng trưng 5 tháng Cao trào kháng Nhật 3-8/1945)!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (2 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t2_hoi_nghi_tan_trao.png" alt="Lán Nà Nưa — Nơi Bác Hồ phát lệnh Tổng khởi nghĩa" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Lán Nà Nưa — Nơi Bác Hồ phát lệnh Tổng khởi nghĩa</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Bảo tàng Lịch sử Quốc gia</span>
+                      <a href="https://baotanglichsu.vn/vi/Articles/2002/68047/ky-niem-68-nam-cach-mang-thang-tam-8-1945-8-2013-p2.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t2_quan_lenh_so_1.png" alt="Bản gốc Quân lệnh số 1 phát động Tổng khởi nghĩa (13/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Bản gốc Quân lệnh số 1 phát động Tổng khởi nghĩa (13/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Bảo tàng Lịch sử Quốc gia</span>
+                      <a href="https://baotanglichsu.vn/vi/Articles/2002/68047/ky-niem-68-nam-cach-mang-thang-tam-8-1945-8-2013-p2.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Văn kiện lịch sử nào được ban bố vào đêm 13/8/1945 chính thức phát lệnh Tổng khởi nghĩa trong cả nước?</div>
+                <div class="quiz-a">Đ/A: Quân lệnh số 1</div>
+                <div class="quiz-exp">Đêm 13/8/1945, Ủy ban Khởi nghĩa toàn quốc ban bố Quân lệnh số 1 chính thức phát động Tổng khởi nghĩa.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Cơ quan chỉ huy khởi nghĩa tối cao được Trung ương Đảng và Tổng bộ Việt Minh thành lập vào ngày 13/8/1945 có tên là gì?</div>
+                <div class="quiz-a">Đ/A: Ủy ban khởi nghĩa Toàn quốc</div>
+                <div class="quiz-exp">Ủy ban Khởi nghĩa Toàn quốc thành lập ngày 13/8/1945 để trực tiếp chỉ huy toàn dân nổi dậy.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Ủy ban Khởi nghĩa Toàn quốc ban bố 'Quân lệnh số 1' vào thời điểm nào?</div>
+                <div class="quiz-a">Đ/A: A. Đêm ngày 13/8/1945</div>
+                <div class="quiz-exp">Ngay đêm 13/8/1945, khi nhận tin quân Nhật sắp đầu hàng, Ủy ban Khởi nghĩa toàn quốc đã ban bố Quân lệnh số 1 phát động Tổng khởi nghĩa trên toàn quốc.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Cao trào kháng Nhật cứu nước diễn ra trong khoảng thời gian nào trước thềm Tổng khởi nghĩa?</div>
+                <div class="quiz-a">Đ/A: B. Từ tháng 3/1945 đến tháng 8/1945</div>
+                <div class="quiz-exp">Cao trào kháng Nhật cứu nước diễn ra từ tháng 3/1945 (sau ngày Nhật đảo chính Pháp 9/3) đến giữa tháng 8/1945.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 3 -->
+      <article class="station-card" id="tram-3" data-cat="boicanh">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #d97706; border-color: #d9770644; background: #d9770618;">🏛️</div>
+            <div>
+              <div class="station-name">Trạm 3: Đình Tân Trào — Quyết định lịch sử & Đại hội Quốc dân</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Đứng trong Đình Tân Trào linh thiêng, trước bàn hội nghị trải dài tờ '10 CHÍNH SÁCH VIỆT MINH'</div>
+            </div>
+          </div>
+          <div class="station-badge-date">14-15/8 & 16-17/8/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Hội nghị toàn quốc của Đảng (14-15/8) và Đại hội Quốc dân (16-17/8/1945) tại Đình Tân Trào quyết định Tổng khởi nghĩa, thông qua 10 chính sách Việt Minh, cử Bác Hồ làm Chủ tịch.</div>
+            <ul class="kp-list">
+              <li>14 - 15/8/1945: Hội nghị toàn quốc của Đảng họp tại Tân Trào (Tuyên Quang)</li>
+              <li>Nội dung Hội nghị toàn quốc: Thông qua kế hoạch lãnh đạo toàn dân Tổng khởi nghĩa; quyết định những vấn đề đối nội, đối ngoại sau khi giành chính quyền</li>
+              <li>16 - 17/8/1945: Đại hội Quốc dân họp tại Đình Tân Trào (được ví như Quốc hội đầu tiên)</li>
+              <li>Nội dung Đại hội Quốc dân: Tán thành triệt để chủ trương Tổng khởi nghĩa của Đảng; thông qua 10 chính sách lớn của Việt Minh</li>
+              <li>Cử ra Ủy ban Dân tộc giải phóng Việt Nam do đồng chí HỒ CHÍ MINH làm Chủ tịch (tiền thân của Chính phủ lâm thời)</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Đứng trong Đình Tân Trào linh thiêng, trước bàn hội nghị trải dài tờ '10 CHÍNH SÁCH VIỆT MINH'. Nhớ chuỗi ngày liên tiếp: 13/8 (Quân lệnh 1) -> 14-15/8 (Hội nghị toàn quốc Đảng) -> 16-17/8 (Đại hội Quốc dân bầu Bác Hồ Chủ tịch)!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (2 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t3_dinh_tan_trao.png" alt="Mái đình Tân Trào lịch sử tại Tuyên Quang" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Mái đình Tân Trào lịch sử tại Tuyên Quang</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Bảo tàng Lịch sử Quốc gia</span>
+                      <a href="https://baotanglichsu.vn/vi/Articles/3097/12340/bao-ve-va-tiep-noi-su-nghiep-cach-mang-thang-tam.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t3_quoc_dan_dai_hoi.png" alt="Áp phích tuyên truyền Mặt trận Việt Minh 1945" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Áp phích tuyên truyền Mặt trận Việt Minh 1945</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Tư liệu Đại hội Quốc dân</span>
+                      <a href="https://quochoi.vn/vanphongquochoi/cocautochuc/Pages/trang-chu.aspx?ItemID=51096" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Hội nghị toàn quốc của Đảng họp tại Tân Trào (Tuyên Quang) diễn ra trong khoảng thời gian nào?</div>
+                <div class="quiz-a">Đ/A: 14-15/8/1945</div>
+                <div class="quiz-exp">Từ ngày 14 đến 15/8/1945, Hội nghị toàn quốc của Đảng họp tại Tân Trào để thông qua kế hoạch Tổng khởi nghĩa.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Đại hội Quốc dân Tân Trào (16-17/8/1945) đã thông qua bao nhiêu chính sách lớn của Việt Minh?</div>
+                <div class="quiz-a">Đ/A: 10 chính sách</div>
+                <div class="quiz-exp">Đại hội Quốc dân Tân Trào thông qua 10 chính sách của Mặt trận Việt Minh.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Đại hội Quốc dân Tân Trào (16-17/8/1945) đã thông qua văn kiện trọng yếu nào sau đây?</div>
+                <div class="quiz-a">Đ/A: B. Mười chính sách của Mặt trận Việt Minh</div>
+                <div class="quiz-exp">Đại hội Quốc dân Tân Trào thông qua 10 chính sách lớn của Việt Minh, vạch rõ mục tiêu độc lập dân tộc và dân sinh dân chủ.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Hội nghị toàn quốc của Đảng họp tại Tân Trào từ ngày 14 đến 15/8/1945 có nhiệm vụ trọng tâm là gì?</div>
+                <div class="quiz-a">Đ/A: C. Thông qua kế hoạch lãnh đạo toàn dân Tổng khởi nghĩa</div>
+                <div class="quiz-exp">Hội nghị toàn quốc của Đảng quyết định phát động Tổng khởi nghĩa giành chính quyền trong cả nước trước khi quân Đồng minh vào.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 4 -->
+      <article class="station-card" id="tram-4" data-cat="dienbien">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #b45309; border-color: #b4530944; background: #b4530918;">⚔️</div>
+            <div>
+              <div class="station-name">Trạm 4: Đường Thái Nguyên — Giải phóng quân tiến quân & 4 tỉnh tiên phong</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Tưởng tượng con đường hành quân từ Tân Trào xuống Thái Nguyên</div>
+            </div>
+          </div>
+          <div class="station-badge-date">14/8, Chiều 16/8 & 18/8/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Chiều 16/8, Võ Nguyên Giáp chỉ huy Giải phóng quân tiến về giải phóng thị xã Thái Nguyên. Ngày 18/8, 4 tỉnh đầu tiên giành chính quyền: Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam.</div>
+            <ul class="kp-list">
+              <li>Từ 14/8/1945: Một số cấp bộ Đảng và Việt Minh căn cứ vào tình hình địa phương đã chủ động phát động nhân dân đứng lên khởi nghĩa</li>
+              <li>Chiều 16/8/1945: Dưới bóng cây đa Tân Trào, đồng chí Võ Nguyên Giáp chỉ huy một đơn vị Giải phóng quân tiến về giải phóng thị xã Thái Nguyên, mở đường tiến về Hà Nội</li>
+              <li>18/8/1945: 4 tỉnh giành chính quyền ở tỉnh lị SỚM NHẤT trong cả nước: BẮC GIANG, HẢI DƯƠNG, HÀ TĨNH, QUẢNG NAM</li>
+              <li>Ý nghĩa 4 tỉnh tiên phong: Thể hiện tính chủ động sáng tạo tuyệt vời của các cấp bộ Đảng cơ sở, chớp đúng thời cơ khi quân địch hoang mang</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng con đường hành quân từ Tân Trào xuống Thái Nguyên. Đại tướng Võ Nguyên Giáp đi đầu phất cao cờ đỏ sao vàng. Ven đường dựng 4 cột mốc đỏ rực ghi câu thần chú nhịp 2+2: 'BẮC - HẢI - HÀ - QUẢNG' (Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam)!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (2 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t4_giai_phong_thai_nguyen.png" alt="Cây đa Tân Trào — Lễ xuất quân Giải phóng quân (16/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Cây đa Tân Trào — Lễ xuất quân Giải phóng quân (16/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Bảo tàng Lịch sử Quốc gia</span>
+                      <a href="https://baotanglichsu.vn/vi/Articles/3096/69455/khong-khi-suc-soi-nhung-ngay-cach-mang-thang-tam-nam-1945-o-cac-tinh-viet-bac-cu.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t4_bon_tinh_som_nhat.png" alt="Bốn tỉnh đầu tiên giành chính quyền ở tỉnh lị (18/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Bốn tỉnh đầu tiên giành chính quyền ở tỉnh lị (18/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Báo Lao Động & Tư liệu Lịch sử</span>
+                      <a href="https://laodongdoanthe.vn/bon-tinh-dau-tien-gianh-chinh-quyen-112797.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Hãy kể tên 4 tỉnh giành được chính quyền ở tỉnh lị sớm nhất trong cả nước vào ngày 18/8/1945?</div>
+                <div class="quiz-a">Đ/A: Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam</div>
+                <div class="quiz-exp">Ngày 18/8/1945, 4 tỉnh giành chính quyền tỉnh lị sớm nhất là Bắc Giang, Hải Dương, Hà Tĩnh và Quảng Nam.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Chiều ngày 16/8/1945, ai là người trực tiếp chỉ huy đơn vị Giải phóng quân từ Tân Trào tiến về giải phóng thị xã Thái Nguyên?</div>
+                <div class="quiz-a">Đ/A: Võ Nguyên Giáp</div>
+                <div class="quiz-exp">Đồng chí Võ Nguyên Giáp chỉ huy đơn vị Giải phóng quân tiến về giải phóng Thái Nguyên.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Những địa phương nào giành chính quyền ở tỉnh lị sớm nhất trong cả nước vào ngày 18/8/1945?</div>
+                <div class="quiz-a">Đ/A: C. Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam</div>
+                <div class="quiz-exp">Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam là 4 tỉnh đầu tiên trong cả nước giành được chính quyền vào ngày 18/8/1945.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Mục đích trực tiếp của việc Giải phóng quân tiến đánh thị xã Thái Nguyên chiều 16/8/1945 là gì?</div>
+                <div class="quiz-a">Đ/A: B. Mở toang con đường tiến về giải phóng Thủ đô Hà Nội</div>
+                <div class="quiz-exp">Thái Nguyên là vị trí then chốt, giải phóng Thái Nguyên mở đường chiến lược cho lực lượng cách mạng tiến nhanh về Hà Nội.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 5 -->
+      <article class="station-card" id="tram-5" data-cat="dienbien">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #dc2626; border-color: #dc262644; background: #dc262618;">🎭</div>
+            <div>
+              <div class="station-name">Trạm 5: Nhà hát Lớn Hà Nội — Thủ đô bùng cháy khởi nghĩa</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Đứng trước mặt tiền Nhà hát Lớn Hà Nội rực đỏ cờ sao</div>
+            </div>
+          </div>
+          <div class="station-badge-date">Ngày 19/8/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">19/8/1945, hàng vạn người mít tinh tại Nhà hát Lớn chuyển thành khởi nghĩa vũ trang, chiếm Bắc Bộ Phủ, Sở Mật thám, giành thắng lợi quyết định tại Hà Nội.</div>
+            <ul class="kp-list">
+              <li>Sáng 19/8/1945: Hàng vạn quần chúng nhân dân rầm rộ mít tinh tại Quảng trường Nhà hát Lớn Hà Nội</li>
+              <li>Cuộc mít tinh nhanh chóng chuyển hóa thành cuộc KHỞI NGHĨA VŨ TRANG giành chính quyền</li>
+              <li>Quần chúng biểu tình chia thành các cánh quân đánh chiếm các cơ quan đầu não: Bắc Bộ Phủ (Phủ Khâm sai), Sở Mật thám, Trại lính bảo an, Kho bạc, Nhà bưu điện...</li>
+              <li>Đến tối 19/8/1945: Khởi nghĩa hoàn toàn thắng lợi rực rỡ tại Hà Nội</li>
+              <li>Ý nghĩa then chốt: Thắng lợi ở Hà Nội tạo tiếng vang chấn động, giáng đòn quyết định làm tê liệt toàn bộ hệ thống tay sai địch, cổ vũ mạnh mẽ các địa phương trên cả nước nổi dậy</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Đứng trước mặt tiền Nhà hát Lớn Hà Nội rực đỏ cờ sao. Hàng vạn người ào ạt xông vào đánh chiếm cặp cơ quan đầu não then chốt: 'BẮC - MẬT' (Bắc Bộ Phủ + Sở Mật thám) vào ngày lịch sử 19/8!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (2 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t5_mit_tinh_nha_hat_lon.png" alt="Hàng vạn người mít tinh tại Nhà hát Lớn Hà Nội (19/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Hàng vạn người mít tinh tại Nhà hát Lớn Hà Nội (19/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Báo Chính Phủ</span>
+                      <a href="https://baochinhphu.vn/khoi-nghia-gianh-chinh-quyen-o-ha-noi-su-kien-dac-biet-trong-cach-mang-thang-tam-1945-102277816.htm" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t5_chiem_bac_bo_phu.png" alt="Quần chúng cách mạng đánh chiếm Bắc Bộ Phủ (19/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Quần chúng cách mạng đánh chiếm Bắc Bộ Phủ (19/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Báo Chính Phủ</span>
+                      <a href="https://baochinhphu.vn/khoi-nghia-gianh-chinh-quyen-o-ha-noi-su-kien-dac-biet-trong-cach-mang-thang-tam-1945-102277816.htm" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Khởi nghĩa giành chính quyền thắng lợi ở Thủ đô Hà Nội vào ngày tháng năm nào?</div>
+                <div class="quiz-a">Đ/A: 19/8/1945</div>
+                <div class="quiz-exp">Ngày 19/8/1945 ghi dấu thắng lợi lịch sử của cuộc khởi nghĩa vũ trang tại Hà Nội.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Cuộc mít tinh lịch sử sáng ngày 19/8/1945 tại Hà Nội được tổ chức tại địa điểm nổi tiếng nào?</div>
+                <div class="quiz-a">Đ/A: Nhà hát Lớn</div>
+                <div class="quiz-exp">Cuộc mít tinh diễn ra tại Quảng trường Nhà hát Lớn Hà Nội rồi chuyển thành khởi nghĩa vũ trang.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Sự kiện lịch sử nổi bật nào diễn ra tại Hà Nội vào ngày 19/8/1945?</div>
+                <div class="quiz-a">Đ/A: B. Khởi nghĩa vũ trang giành chính quyền thắng lợi trọn vẹn</div>
+                <div class="quiz-exp">Ngày 19/8/1945, nhân dân Hà Nội đã vùng lên khởi nghĩa giành chính quyền thắng lợi rực rỡ.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Cơ quan đầu não nào của chính quyền thân Nhật bị nhân dân Hà Nội đánh chiếm ngày 19/8/1945?</div>
+                <div class="quiz-a">Đ/A: C. Bắc Bộ Phủ và Sở Mật thám</div>
+                <div class="quiz-exp">Quần chúng cách mạng đã đánh chiếm Bắc Bộ Phủ (trụ sở Khâm sai đại thần) và Sở Mật thám của địch.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 6 -->
+      <article class="station-card" id="tram-6" data-cat="dienbien">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #7c3aed; border-color: #7c3aed44; background: #7c3aed18;">🏯</div>
+            <div>
+              <div class="station-name">Trạm 6: Ngọ Môn Huế & Sài Gòn — Thắng lợi lan tỏa về Nam</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Tưởng tượng Cổng Ngọ Môn Huế mở toang (23/8) nối thẳng con đường xuyên Việt vào bến Bạch Đằng Sài Gòn rực lửa (25/8)</div>
+            </div>
+          </div>
+          <div class="station-badge-date">23/8 — 25/8 — 28/8/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Khởi nghĩa thắng lợi ở Huế (23/8) và Sài Gòn (25/8). Ngày 28/8/1945, Đồng Nai Thượng và Hà Tiên là 2 tỉnh cuối cùng giành chính quyền, hoàn thành thắng lợi toàn quốc.</div>
+            <ul class="kp-list">
+              <li>23/8/1945: Quần chúng nhân dân chiếm các công sở, khởi nghĩa thắng lợi ở HUẾ (kinh đô phong kiến triều Nguyễn)</li>
+              <li>25/8/1945: Khởi nghĩa thắng lợi vẻ vang ở SÀI GÒN — trung tâm kinh tế, chính trị Nam Bộ</li>
+              <li>28/8/1945: ĐỒNG NAI THƯỢNG và HÀ TIÊN là 2 tỉnh giành chính quyền MUỘN NHẤT trong cả nước</li>
+              <li>Toàn bộ cuộc Tổng khởi nghĩa tháng Tám đã thắng lợi rực rỡ trên phạm vi toàn quốc chỉ trong vòng 15 ngày (từ 14/8 đến 28/8/1945)</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng Cổng Ngọ Môn Huế mở toang (23/8) nối thẳng con đường xuyên Việt vào bến Bạch Đằng Sài Gòn rực lửa (25/8). Bước nhảy thời gian then chốt: 18 (4 tỉnh) -> 19 (Hà Nội: +1) -> 23 (Huế: +4) -> 25 (Sài Gòn: +2) -> 28 (Đồng Nai Thượng & Hà Tiên: +3)!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (2 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t6_khoi_nghia_hue.png" alt="Nhân dân Thừa Thiên Huế giành chính quyền (23/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Nhân dân Thừa Thiên Huế giành chính quyền (23/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Báo Nhân Dân</span>
+                      <a href="https://quockhanh.nhandan.vn/ngay-23-8-1945-co-do-hue-gianh-chinh-quyen-ve-tay-nhan-dan-1586.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t6_khoi_nghia_saigon.png" alt="Hàng triệu đồng bào Sài Gòn giành chính quyền (25/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Hàng triệu đồng bào Sài Gòn giành chính quyền (25/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Báo Nhân Dân & Lịch sử Đảng</span>
+                      <a href="https://nhandan.vn/ngay-2881945-tong-khoi-nghia-thanh-cong-tren-ca-nuoc-post902183.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Khởi nghĩa giành chính quyền thắng lợi ở Huế và Sài Gòn lần lượt vào các ngày nào trong tháng 8/1945?</div>
+                <div class="quiz-a">Đ/A: 23/8 và 25/8</div>
+                <div class="quiz-exp">Nhân dân giành chính quyền ở Huế ngày 23/8 và ở Sài Gòn ngày 25/8/1945.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Hai tỉnh giành chính quyền muộn nhất trong cả nước vào ngày 28/8/1945 là gì?</div>
+                <div class="quiz-a">Đ/A: Đồng Nai Thượng và Hà Tiên</div>
+                <div class="quiz-exp">Đồng Nai Thượng và Hà Tiên là 2 tỉnh cuối cùng giành chính quyền ngày 28/8/1945.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Sự kiện lịch sử nào diễn ra vào ngày 25/8/1945 trong tiến trình Cách mạng tháng Tám?</div>
+                <div class="quiz-a">Đ/A: B. Khởi nghĩa giành chính quyền thắng lợi ở Sài Gòn</div>
+                <div class="quiz-exp">Ngày 25/8/1945, hàng triệu đồng bào Sài Gòn - Chợ Lớn nổi dậy giành chính quyền thắng lợi.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Hai tỉnh giành được chính quyền muộn nhất trong Cách mạng tháng Tám (28/8/1945) là:</div>
+                <div class="quiz-a">Đ/A: C. Đồng Nai Thượng và Hà Tiên</div>
+                <div class="quiz-exp">Đồng Nai Thượng và Hà Tiên là 2 tỉnh cuối cùng giành được chính quyền ngày 28/8/1945.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 7 -->
+      <article class="station-card" id="tram-7" data-cat="dienbien">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #92400e; border-color: #92400e44; background: #92400e18;">👑</div>
+            <div>
+              <div class="station-name">Trạm 7: Chiều 30/8 tại Huế — Hoàng triều cáo chung</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Hình dung lễ đài trước Ngọ Môn Huế chiều 30/8</div>
+            </div>
+          </div>
+          <div class="station-badge-date">Chiều 30/8/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Chiều 30/8/1945, vua Bảo Đại tuyên bố thoái vị trước Ngọ Môn Huế, trao Quốc ấn và Bảo kiếm cho phái đoàn Chính phủ lâm thời. Chế độ phong kiến nghìn năm sụp đổ.</div>
+            <ul class="kp-list">
+              <li>Chiều 30/8/1945: Hàng vạn quần chúng nhân dân dự lễ thoái vị của vua Bảo Đại trước Cửa Ngọ Môn (Huế)</li>
+              <li>Vua Bảo Đại đọc Chiếu thoái vị, chính thức trao Quốc ấn bằng vàng và Bảo kiếm ngọc cho đại diện Chính phủ lâm thời: TRẦN HUY LIỆU và CÙ HUY CẬN</li>
+              <li>Tuyên ngôn lịch sử chấn động của Bảo Đại: 'Thà làm DÂN một nước độc lập hơn làm VUA một nước nô lệ!'</li>
+              <li>Ý nghĩa vĩ đại: Chế độ quân chủ phong kiến tồn tại hơn 1.000 năm trong lịch sử dân tộc Việt Nam sụp đổ hoàn toàn</li>
+              <li>Chính quyền phong kiến triều Nguyễn - triều đại phong kiến cuối cùng - chính thức kết thúc sứ mệnh lịch sử</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Hình dung lễ đài trước Ngọ Môn Huế chiều 30/8. Vua Bảo Đại hoàng bào vàng cúi đầu trao ẤN VÀNG và KIẾM BÁU cho 2 đại diện chính phủ: LIỆU - CẬN (Trần Huy Liệu & Cù Huy Cận). Cùng lúc đó, bức tường thành phong kiến 1.000 NĂM sụp đổ đánh ẦMMM!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (1 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t7_bao_dai_thoai_vi.png" alt="Vua Bảo Đại đọc Chiếu thoái vị trước Ngọ Môn (30/8/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Vua Bảo Đại đọc Chiếu thoái vị trước Ngọ Môn (30/8/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Tư liệu Lịch sử Bảo tàng Huế</span>
+                      <a href="https://thuonghieucongluan.com.vn/ngay-30-8-1945-vua-bao-dai-thoai-vi-a277801.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Vua Bảo Đại tuyên bố thoái vị, trao ấn kiếm chấm dứt chế độ phong kiến vào buổi chiều ngày tháng năm nào?</div>
+                <div class="quiz-a">Đ/A: 30/8/1945</div>
+                <div class="quiz-exp">Chiều 30/8/1945, vua Bảo Đại tuyên bố thoái vị tại Huế.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Hai đại diện của Chính phủ lâm thời nước Việt Nam Dân chủ Cộng hòa vào Huế tiếp nhận ấn kiếm thoái vị của vua Bảo Đại là ai?</div>
+                <div class="quiz-a">Đ/A: Trần Huy Liệu và Cù Huy Cận</div>
+                <div class="quiz-exp">Đồng chí Trần Huy Liệu (trưởng đoàn) và Cù Huy Cận đại diện Chính phủ lâm thời tiếp nhận ấn kiếm.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Sự kiện nào đánh dấu chế độ quân chủ phong kiến Việt Nam hoàn toàn sụp đổ?</div>
+                <div class="quiz-a">Đ/A: C. Vua Bảo Đại tuyên bố thoái vị tại Huế (chiều 30/8/1945)</div>
+                <div class="quiz-exp">Chiều 30/8/1945, vua Bảo Đại tuyên bố thoái vị và trao ấn kiếm cho chính quyền cách mạng, đánh dấu chế độ phong kiến hơn 1000 năm sụp đổ.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Ai là người đại diện Chính phủ lâm thời tiếp nhận Quốc ấn và Bảo kiếm từ vua Bảo Đại chiều 30/8/1945?</div>
+                <div class="quiz-a">Đ/A: C. Trần Huy Liệu và Cù Huy Cận</div>
+                <div class="quiz-exp">Phái đoàn Chính phủ lâm thời gồm đồng chí Trần Huy Liệu, Cù Huy Cận và Nguyễn Lương Bằng đã vào Huế tiếp nhận ấn kiếm.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 8 -->
+      <article class="station-card" id="tram-8" data-cat="dienbien">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #be123c; border-color: #be123c44; background: #be123c18;">🇻🇳</div>
+            <div>
+              <div class="station-name">Trạm 8: Quảng trường Ba Đình — Khai sinh nước Việt Nam</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Đứng giữa Quảng trường Ba Đình lịch sử ngập tràn nắng thu</div>
+            </div>
+          </div>
+          <div class="station-badge-date">Ngày 2/9/1945</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Ngày 2/9/1945, tại Quảng trường Ba Đình, Chủ tịch Hồ Chí Minh đọc bản Tuyên ngôn Độc lập, khai sinh nước Việt Nam Dân chủ Cộng hòa.</div>
+            <ul class="kp-list">
+              <li>Ngày 2/9/1945: Hàng chục vạn đồng bào tập hợp tại Quảng trường Ba Đình (Hà Nội) mít tinh chào mừng ngày Độc lập</li>
+              <li>Thay mặt Chính phủ lâm thời, Chủ tịch Hồ Chí Minh long trọng đọc bản 'TUYÊN NGÔN ĐỘC LẬP'</li>
+              <li>KHAI SINH nước VIỆT NAM DÂN CHỦ CỘNG HÒA — Nhà nước dân chủ nhân dân đầu tiên ở Đông Nam Á</li>
+              <li>Nội dung Tuyên ngôn: Khẳng định trước toàn thể đồng bào và nhân dân thế giới quyền độc lập, tự do thiêng liêng bất khả xâm phạm của dân tộc Việt Nam</li>
+              <li>Kế thừa tinh hoa nhân loại: Trích dẫn Tuyên ngôn Độc lập Mỹ (1776) và Tuyên ngôn Nhân quyền & Dân quyền của Pháp (1789), phát triển quyền con người thành quyền tự quyết thiêng liêng của mọi dân tộc</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Đứng giữa Quảng trường Ba Đình lịch sử ngập tràn nắng thu. Nhìn lên lễ đài thấy Bác Hồ đọc Tuyên ngôn Độc lập (2/9/1945). Khắc ghi mô hình 'TAM GIÁC TUYÊN NGÔN': MỸ 1776 + PHÁP 1789 hội tụ và nâng tầm thành TUYÊN NGÔN ĐỘC LẬP VIỆT NAM 2/9/1945!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (1 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t8_tuyen_ngon_doc_lap.png" alt="Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập (2/9/1945)" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập (2/9/1945)</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Bảo tàng Lịch sử Quốc gia</span>
+                      <a href="https://baotanglichsu.vn/vi/Articles/3097/76681/tuyen-ngon-djoc-lap-ngon-djuoc-soi-djuong-cho-dan-toc-viet-nam.html" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Bản Tuyên ngôn Độc lập khai sinh nước Việt Nam Dân chủ Cộng hòa được Chủ tịch Hồ Chí Minh đọc vào ngày tháng năm nào?</div>
+                <div class="quiz-a">Đ/A: 2/9/1945</div>
+                <div class="quiz-exp">Ngày 2/9/1945, Bác Hồ đọc Tuyên ngôn Độc lập tại Quảng trường Ba Đình.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Trong bản Tuyên ngôn Độc lập, Chủ tịch Hồ Chí Minh đã trích dẫn hai bản tuyên ngôn nổi tiếng của những quốc gia nào?</div>
+                <div class="quiz-a">Đ/A: Mỹ và Pháp</div>
+                <div class="quiz-exp">Bác trích dẫn Tuyên ngôn Độc lập của Mỹ (1776) và Tuyên ngôn Nhân quyền & Dân quyền của Pháp (1789).</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Chủ tịch Hồ Chí Minh đọc bản Tuyên ngôn Độc lập khai sinh nước Việt Nam Dân chủ Cộng hòa tại địa điểm nào?</div>
+                <div class="quiz-a">Đ/A: B. Quảng trường Ba Đình (Hà Nội)</div>
+                <div class="quiz-exp">Lễ Tuyên ngôn Độc lập ngày 2/9/1945 diễn ra tại Quảng trường Ba Đình, Hà Nội.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Khi khẳng định quyền độc lập dân tộc, Chủ tịch Hồ Chí Minh đã trích dẫn bản Tuyên ngôn nào của nước Mỹ?</div>
+                <div class="quiz-a">Đ/A: C. Tuyên ngôn Độc lập (1776)</div>
+                <div class="quiz-exp">Chủ tịch Hồ Chí Minh đã trích dẫn Tuyên ngôn Độc lập năm 1776 của Hợp chúng quốc Hoa Kỳ.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- TRẠM 9 -->
+      <article class="station-card" id="tram-9" data-cat="tongket">
+        <div class="station-top">
+          <div class="station-title-box">
+            <div class="station-icon" style="color: #6d28d9; border-color: #6d28d944; background: #6d28d918;">🏆</div>
+            <div>
+              <div class="station-name">Trạm 9: Phòng Vàng Son — Nguyên nhân, Tầm vóc lịch sử & 3 Bài học</div>
+              <div class="station-loc"><span>📍 Không gian Loci:</span>  Bước vào Phòng Trưng Bày Vàng Son lộng lẫy cuối hành trình Cung điện</div>
+            </div>
+          </div>
+          <div class="station-badge-date">Tổng kết Bài 6</div>
+        </div>
+        <div class="station-body">
+          <div class="st-left">
+            <div class="sec-block-title"><span>📖</span> Kiến thức cốt lõi chuẩn SGK</div>
+            <div class="summary-text">Tổng kết Bài 6: Phân tích 3 nguyên nhân chủ quan & 1 khách quan; Ý nghĩa xóa bỏ 80 năm ách Pháp, 5 năm Nhật, 1000 năm phong kiến; Đúc kết 3 bài học kinh nghiệm.</div>
+            <ul class="kp-list">
+              <li>Nguyên nhân khách quan: Thắng lợi của lực lượng Đồng minh tiêu diệt phát xít Nhật tạo thời cơ khách quan thuận lợi</li>
+              <li>3 Nguyên nhân chủ quan: (1) Đường lối lãnh đạo đúng đắn, sáng tạo của Đảng; (2) Truyền thống yêu nước và đại đoàn kết của toàn thể nhân dân; (3) Quá trình chuẩn bị lâu dài, chu đáo suốt 15 năm (1930 - 1945) qua 3 cao trào cách mạng</li>
+              <li>Ý nghĩa dân tộc: Lật đổ ách cai trị của thực dân Pháp hơn 80 năm (1858-1945), quân phiệt Nhật gần 5 năm (1940-1945); chấm dứt chế độ quân chủ hơn 1.000 năm; Đảng trở thành Đảng cầm quyền; Nhân dân từ thân phận nô lệ trở thành người làm chủ đất nước</li>
+              <li>Ý nghĩa quốc tế: Góp phần tiêu diệt chủ nghĩa phát xít, làm lung lay tan rã hệ thống thuộc địa của chủ nghĩa thực dân, cổ vũ mạnh mẽ phong trào giải phóng dân tộc trên thế giới</li>
+              <li>3 Bài học kinh nghiệm quý báu: (1) Sự lãnh đạo của Đảng là nhân tố quyết định nhất; (2) Xây dựng và phát huy khối đại đoàn kết toàn dân tộc (Mặt trận Việt Minh); (3) Nghệ thuật nhận định đúng và chớp thời cơ mau lẹ</li>
+            </ul>
+          </div>
+          <div class="st-right">
+            <div class="loci-box">
+              <div class="loci-box-title"><span>🧠</span> Mẹo Loci Ghi nhớ Không gian</div>
+              <div class="loci-desc">💡 Mẹo nhớ Loci: Bước vào Phòng Trưng Bày Vàng Son lộng lẫy cuối hành trình Cung điện. Nhìn lên 3 bức tường mạ vàng: Tường 1 (ĐẢNG CẦM ĐUỐC) - Tường 2 (TAY NẮM CHẶT ĐOÀN KẾT) - Tường 3 (ĐỒNG HỒ THỜI CƠ BẤM GIÂY). Dưới sàn khắc bộ 3 con số vàng: '80 NĂM PHÁP - 5 NĂM NHẬT - 1.000 NĂM PHONG KIẾN'!</div>
+            </div>
+
+            <div class="photo-box">
+              <div class="photo-title"><span>📸</span> Tư liệu Ảnh Lịch sử Thực tế (1 ảnh)</div>
+              <div class="photo-gallery">
+                <div class="photo-card">
+                  <div class="photo-img-wrap">
+                    <img src="assets/images/bai6_chuan/b6_t9_nguyen_nhan_thang_loi.png" alt="Ý chí Độc lập hay là Chết — Cách mạng tháng Tám toàn thắng" loading="lazy" />
+                  </div>
+                  <div class="photo-info">
+                    <div class="photo-caption">Ý chí Độc lập hay là Chết — Cách mạng tháng Tám toàn thắng</div>
+                    <div class="photo-meta">
+                      <span>🏛️ Thông tấn xã Việt Nam (VietnamPlus)</span>
+                      <a href="https://www.vietnamplus.vn/photo-cach-mang-thang-tam-buoc-ngoat-vi-dai-cua-dan-toc-viet-nam-post657888.vnp" target="_blank">Nguồn gốc ↗</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="quiz-section">
+            <div class="sec-block-title"><span>🎯</span> Thử thách Ôn tập & Củng cố (Active Recall)</div>
+            <div class="quiz-grid">
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Cách mạng tháng Tám năm 1945 đã lật đổ ách thống trị của thực dân Pháp trong hơn bao nhiêu năm?</div>
+                <div class="quiz-a">Đ/A: hơn 80 năm</div>
+                <div class="quiz-exp">Thực dân Pháp bắt đầu nổ súng xâm lược năm 1858 và bị lật đổ năm 1945 (hơn 80 năm).</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Điền từ]: Cách mạng tháng Tám năm 1945 đã chấm dứt chế độ quân chủ phong kiến tồn tại hơn bao nhiêu năm trong lịch sử dân tộc?</div>
+                <div class="quiz-a">Đ/A: hơn 1000 năm</div>
+                <div class="quiz-exp">Chế độ quân chủ phong kiến Việt Nam tồn tại từ thế kỷ X đến năm 1945 (hơn 1.000 năm).</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Nguyên nhân mang tính chất quyết định hàng đầu dẫn đến thắng lợi của Cách mạng tháng Tám năm 1945 là gì?</div>
+                <div class="quiz-a">Đ/A: B. Sự lãnh đạo đúng đắn, sáng tạo của Đảng Cộng sản Đông Dương</div>
+                <div class="quiz-exp">Đường lối lãnh đạo đúng đắn, sáng tạo của Đảng đứng đầu là Chủ tịch Hồ Chí Minh là nhân tố chủ quan quyết định hàng đầu.</div>
+              </div>
+              <div class="quiz-item">
+                <div class="quiz-q">[Trắc nghiệm]: Cách mạng tháng Tám năm 1945 thắng lợi đã đồng thời xóa bỏ những ách thống trị nào?</div>
+                <div class="quiz-a">Đ/A: C. Cả thực dân Pháp (hơn 80 năm), quân phiệt Nhật (gần 5 năm) và chế độ phong kiến (hơn 1000 năm)</div>
+                <div class="quiz-exp">Cách mạng tháng Tám đồng thời đập tan ách thực dân Pháp hơn 80 năm, phát xít Nhật gần 5 năm và chấm dứt chế độ phong kiến hơn 1000 năm.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <footer class="footer">
+      <p>Dự án Nghiên cứu Khoa học: Cung điện Ký ức Loci VR — Chuyên đề Lịch sử 12 (GDPT 2018)</p>
+      <p style="margin-top: 6px; font-size: 12.5px; color: #64748b;">Hệ thống 9 trạm ký ức chuẩn hóa hoàn chỉnh theo tài liệu CHỦ ĐỀ 3.docx | Tích hợp 16 tư liệu ảnh lịch sử offline</p>
+    </footer>
+  </div>
+
+  <script>
+    function filterStations(cat, btn) {
+      document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const cards = document.querySelectorAll('.station-card');
+      cards.forEach(c => {
+        if (cat === 'all') {
+          c.style.display = 'block';
+        } else {
+          c.style.display = (c.getAttribute('data-cat') === cat) ? 'block' : 'none';
+        }
+      });
+    }
+  </script>
+</body>
+</html>

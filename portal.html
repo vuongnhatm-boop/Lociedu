@@ -1,0 +1,3053 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cung Điện Kí Ức — Mê Cung Tri Thức 3D</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+
+  <!-- Thư viện Three.js WebGL Engine -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.9/dat.gui.min.js"></script>
+  <!-- Dữ liệu chuẩn hóa 19 mốc Loci Chủ đề 3 (Bài 6, 7, 8, 9) và Bài 1 từ SGK chuẩn -->
+  <script src="loci_anchors_data.js"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body,
+    html {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background-color: #060408;
+      color: #fff;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Khung Viewport chính */
+    .viewport {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Canvas 3D chứa Cung điện Mê cung thời gian thực */
+    #palaceCanvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+      display: block;
+    }
+
+    /* Cổng vòm thư viện tiền cảnh với cửa sổ trong suốt nhìn xuyên vào 3D */
+    .foreground-portal {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      background-image: url('portal_arch.png');
+      background-size: cover;
+      background-position: center;
+      z-index: 10;
+      will-change: transform, opacity;
+      transform-origin: center center;
+      cursor: pointer;
+    }
+
+    /* Thanh Navigation tối giản trên cùng */
+    .nav-bar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      padding: 22px 32px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      pointer-events: auto;
+    }
+
+    .nav-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: linear-gradient(180deg, #2c1a12 0%, #190e09 100%);
+      border: 1px solid #7a4f29;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+      color: #ebdcc2;
+    }
+
+    .nav-btn:hover {
+      background: linear-gradient(180deg, #3d2419 0%, #24140d 100%);
+      border-color: #d4a753;
+      transform: scale(1.06);
+      color: #fff;
+    }
+
+    .nav-center-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .cam-mode-indicator {
+      font-size: 0.72rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #ebdcc2;
+      background: linear-gradient(180deg, rgba(42, 26, 18, 0.88) 0%, rgba(22, 13, 9, 0.92) 100%);
+      padding: 6px 18px;
+      border-radius: 20px;
+      border: 1px solid #845a33;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(12px);
+      transition: all 0.3s ease;
+    }
+
+    .cam-mode-indicator.pulse {
+      border-color: #e5b958;
+      box-shadow: 0 0 20px rgba(229, 185, 88, 0.45);
+    }
+
+    /* ════════════════════════════════════════════════════
+       GIAO DIỆN LOGO KIM SẮC & 4 THANH TAB CỔ KÍNH
+    ════════════════════════════════════════════════════ */
+    .hub-ui {
+      position: absolute;
+      inset: 0;
+      z-index: 50;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 22px 20px 30px 20px;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Khối Logo Vàng */
+    .gold-logo-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 10px;
+      user-select: none;
+      pointer-events: none;
+    }
+
+    .gold-logo-img {
+      width: min(500px, 82vw);
+      height: auto;
+      filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 45px rgba(245, 215, 140, 0.55));
+      animation: floatLogo 5s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+
+    @keyframes floatLogo {
+      0% {
+        transform: translateY(0px) scale(1);
+      }
+
+      100% {
+        transform: translateY(-8px) scale(1.015);
+      }
+    }
+
+    /* 4 Thanh Tab Cổ Kính Tone Nâu Da Thuộc & Viền Đồng */
+    .tabs-controller {
+      position: absolute;
+      top: 50%;
+      left: 20px;
+      transform: translateY(-50%) translateX(0);
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      pointer-events: auto;
+      z-index: 60;
+      transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+
+    .tabs-controller.collapsed {
+      transform: translateY(-50%) translateX(calc(-100% - 20px));
+    }
+
+    .drawer-toggle-btn {
+      position: absolute;
+      top: 50%;
+      right: -42px;
+      transform: translateY(-50%);
+      width: 42px;
+      height: 80px;
+      background: rgba(18, 11, 8, 0.85);
+      border: 1.5px solid rgba(150, 105, 60, 0.6);
+      border-left: none;
+      border-radius: 0 12px 12px 0;
+      color: #ebdcc2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      backdrop-filter: blur(12px);
+      box-shadow: 8px 0 20px rgba(0,0,0,0.6);
+      font-size: 24px;
+      z-index: 61;
+      transition: background 0.3s ease;
+    }
+    .drawer-toggle-btn:hover {
+      background: rgba(38, 24, 17, 0.95);
+    }
+
+    .tabs-nav {
+      display: inline-flex;
+      flex-direction: column; /* Vertical sidebar */
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(0, 0, 0, 0.08);
+      padding: 16px 12px;
+      border-radius: 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+      gap: 10px;
+      justify-content: flex-start;
+      align-items: center;
+      position: relative;
+      z-index: 70;
+      pointer-events: auto;
+      flex-wrap: wrap;
+    }
+
+    .tab-item {
+      position: relative;
+      z-index: 75;
+      pointer-events: auto;
+      background: transparent;
+      border: 1px solid transparent;
+      padding: 12px 24px;
+      border-radius: 12px;
+      color: #334155;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
+    }
+
+    .tab-item:hover {
+      background: rgba(0, 0, 0, 0.04);
+      color: #0f172a;
+    }
+
+    .tab-item.active {
+      background: #e0f2fe;
+      color: #0284c7;
+      border-color: rgba(2, 132, 199, 0.2);
+      box-shadow: 0 2px 8px rgba(2, 132, 199, 0.15);
+      transform: translateY(-1px);
+    }
+
+    /* Bảng Chi Tiết Khi Đã Zoom Vào Phòng */
+    .room-card-panel {
+      width: min(420px, 85vw); /* Narrower for side panel */
+      background: rgba(255, 255, 255, 0.98);
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 20px;
+      padding: 28px 32px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+      text-align: left; /* Left align for side drawer */
+      display: none;
+      position: relative;
+      z-index: 80;
+      pointer-events: auto;
+      animation: popIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .room-card-panel.active {
+      display: block;
+    }
+
+    @keyframes popIn {
+      0% {
+        opacity: 0;
+        transform: translateY(14px) scale(0.95);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+      }
+    }
+
+    .room-title {
+      font-family: 'Inter', system-ui, sans-serif;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 12px;
+      letter-spacing: -0.5px;
+    }
+
+    .room-desc {
+      font-size: 0.95rem;
+      color: #475569;
+      line-height: 1.6;
+      margin-bottom: 24px;
+    }
+
+    .room-action-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .btn-enter-room {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      background: #3b82f6;
+      border: 1px solid transparent;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-enter-room:hover {
+      transform: translateY(-2px);
+      background: #2563eb;
+      box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+    }
+
+    .btn-view-toggle {
+      padding: 10px 20px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      color: #475569;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-view-toggle:hover {
+      background: #e2e8f0;
+      color: #0f172a;
+    }
+
+    /* Gợi ý nhẹ khi đang ở ngoài cổng vòm */
+    .enter-hint {
+      font-size: 0.74rem;
+      letter-spacing: 2px;
+      color: #ebdcc2;
+      opacity: 0.85;
+      text-transform: uppercase;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95);
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+      animation: pulseHint 2.4s infinite ease-in-out;
+      margin-bottom: -2px;
+    }
+
+    @keyframes pulseHint {
+
+      0%,
+      100% {
+        opacity: 0.45;
+        transform: translateY(0);
+      }
+
+      50% {
+        opacity: 0.95;
+        transform: translateY(-3px);
+      }
+    }
+  
+    /* ════════════════════════════════════════════════════
+       NÚT TRUY XUẤT NHANH KHO TRI THỨC TRÊN THANH ĐIỀU HƯỚNG
+    ════════════════════════════════════════════════════ */
+    .nav-chude3-btn {
+      font-size: 0.76rem;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #ffdda1;
+      background: linear-gradient(180deg, rgba(74, 42, 22, 0.95) 0%, rgba(38, 20, 11, 0.98) 100%);
+      padding: 7px 18px;
+      border-radius: 24px;
+      border: 1.5px solid #d4af37;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 16px rgba(212, 175, 55, 0.35);
+      backdrop-filter: blur(12px);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: auto;
+    }
+    .nav-chude3-btn:hover {
+      background: linear-gradient(180deg, #6c3c1b 0%, #43210d 100%);
+      border-color: #ffd700;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 22px rgba(0, 0, 0, 0.8), 0 0 25px rgba(255, 215, 0, 0.55);
+      color: #ffffff;
+    }
+
+    /* ════════════════════════════════════════════════════
+       MODAL BẢO TÀNG TRI THỨC LOCI SGK CHỦ ĐỀ 3
+    ════════════════════════════════════════════════════ */
+    .chude3-modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 10000;
+      background: rgba(6, 4, 3, 0.86);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+      pointer-events: none;
+    }
+    .chude3-modal-overlay.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .chude3-modal-box {
+      width: min(1200px, 96vw);
+      height: min(880px, 92vh);
+      background: radial-gradient(circle at 50% 0%, rgba(46, 28, 18, 0.98) 0%, rgba(18, 11, 7, 0.99) 100%);
+      border: 1.5px solid #d4af37;
+      border-radius: 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 50px rgba(212, 175, 55, 0.25), inset 0 1px 2px rgba(255, 235, 175, 0.3);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      transform: translateY(20px) scale(0.97);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .chude3-modal-overlay.active .chude3-modal-box {
+      transform: translateY(0) scale(1);
+    }
+
+    /* Header của Modal */
+    .chude3-header {
+      padding: 18px 26px 14px 26px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(212, 175, 55, 0.3);
+      background: rgba(22, 13, 8, 0.6);
+      gap: 16px;
+    }
+    .chude3-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .chude3-badge {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #ffd700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chude3-main-title {
+      font-family: 'Cinzel', serif;
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: #fff6e0;
+      letter-spacing: 1px;
+      text-shadow: 0 0 15px rgba(245, 215, 140, 0.5);
+    }
+    .chude3-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-shrink: 0;
+    }
+    .chude3-stats-pill {
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #ecd7ba;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 6px 14px;
+      border-radius: 20px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .chude3-close-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #f1e3ce;
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .chude3-close-btn:hover {
+      background: rgba(239, 68, 68, 0.25);
+      border-color: #ef4444;
+      color: #fff;
+    }
+
+    /* Thanh chọn Bài học (Tabs) */
+    .chude3-lesson-nav {
+      display: flex;
+      gap: 8px;
+      padding: 12px 24px;
+      background: rgba(14, 8, 5, 0.75);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #8c5e2d transparent;
+    }
+    .chude3-lesson-tab {
+      background: rgba(36, 22, 14, 0.7);
+      border: 1px solid rgba(140, 94, 45, 0.6);
+      color: #d1bda2;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+      transition: all 0.25s ease;
+    }
+    .chude3-lesson-tab:hover {
+      background: rgba(60, 36, 22, 0.9);
+      color: #fff;
+      border-color: #d4af37;
+    }
+    .chude3-lesson-tab.active {
+      background: linear-gradient(180deg, #6c3c1b 0%, #43210d 100%);
+      border-color: #ffd700;
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 14px rgba(212, 175, 55, 0.4);
+    }
+    .chude3-lesson-tab .badge-count {
+      font-size: 0.68rem;
+      padding: 2px 7px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.4);
+      color: #ffd700;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+
+    /* Thanh Sub-toolbar chế độ xem */
+    .chude3-sub-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 24px;
+      background: rgba(22, 14, 9, 0.5);
+      border-bottom: 1px solid rgba(212, 175, 55, 0.15);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .chude3-cur-lesson-title {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #ffefa8;
+    }
+    .chude3-cur-lesson-sub {
+      font-size: 0.74rem;
+      color: #c4b097;
+    }
+    .chude3-view-modes {
+      display: inline-flex;
+      background: rgba(14, 8, 5, 0.8);
+      border: 1px solid rgba(140, 94, 45, 0.5);
+      padding: 4px;
+      border-radius: 20px;
+      gap: 4px;
+    }
+    .chude3-mode-btn {
+      background: transparent;
+      border: none;
+      color: #bfa78f;
+      padding: 6px 14px;
+      border-radius: 16px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .chude3-mode-btn:hover {
+      color: #fff;
+    }
+    .chude3-mode-btn.active {
+      background: #855325;
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Thân Modal (Cuộn nội dung) */
+    .chude3-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px 26px;
+      scrollbar-width: thin;
+      scrollbar-color: #8c5e2d rgba(18, 11, 7, 0.4);
+    }
+    .chude3-body::-webkit-scrollbar {
+      width: 7px;
+    }
+    .chude3-body::-webkit-scrollbar-thumb {
+      background: #8c5e2d;
+      border-radius: 4px;
+    }
+
+    /* ── CHẾ ĐỘ 1: TRỤC MỐC NEO LOCI ── */
+    .loci-stepper {
+      display: flex;
+      gap: 10px;
+      padding: 8px 4px 16px 4px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #8c5e2d transparent;
+      margin-bottom: 20px;
+      border-bottom: 1px dashed rgba(212, 175, 55, 0.25);
+    }
+    .loci-step-pill {
+      flex-shrink: 0;
+      background: rgba(32, 19, 12, 0.85);
+      border: 1px solid rgba(140, 94, 45, 0.6);
+      border-radius: 14px;
+      padding: 8px 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.25s ease;
+      max-width: 240px;
+    }
+    .loci-step-pill:hover {
+      background: rgba(56, 34, 21, 0.95);
+      border-color: #d4af37;
+      transform: translateY(-2px);
+    }
+    .loci-step-pill.active {
+      background: linear-gradient(135deg, #5c3317 0%, #361b0a 100%);
+      border-color: #ffd700;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.6), 0 0 15px rgba(212, 175, 55, 0.4);
+    }
+    .loci-step-num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.5);
+      border: 1px solid #d4af37;
+      color: #ffd700;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .loci-step-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: #f1e4d3;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Chi tiết mốc neo đang xem */
+    .loci-anchor-card {
+      background: rgba(28, 17, 11, 0.75);
+      border: 1px solid rgba(212, 175, 55, 0.45);
+      border-radius: 20px;
+      padding: 22px 24px;
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.65);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .loci-anchor-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .loci-anchor-title-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .loci-anchor-ord-badge {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #ffd700;
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      padding: 3px 10px;
+      border-radius: 12px;
+      display: inline-block;
+      width: fit-content;
+    }
+    .loci-anchor-heading {
+      font-family: 'Cinzel', serif;
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #fff6df;
+      line-height: 1.35;
+    }
+    .loci-summary-quote {
+      background: rgba(0, 0, 0, 0.35);
+      border-left: 3px solid #d4af37;
+      padding: 10px 16px;
+      border-radius: 0 12px 12px 0;
+      font-size: 0.86rem;
+      color: #f7eedb;
+      line-height: 1.5;
+    }
+
+    .loci-2col-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+    @media (max-width: 860px) {
+      .loci-2col-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Hộp Luận điểm cốt lõi */
+    .loci-box {
+      background: rgba(18, 11, 7, 0.6);
+      border: 1px solid rgba(140, 94, 45, 0.4);
+      border-radius: 16px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .loci-box-title {
+      font-size: 0.8rem;
+      font-weight: 800;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: #ffdba3;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .loci-keypoints-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+    }
+    .loci-keypoints-list li {
+      position: relative;
+      padding-left: 20px;
+      font-size: 0.84rem;
+      color: #eeddc7;
+      line-height: 1.5;
+    }
+    .loci-keypoints-list li::before {
+      content: "✦";
+      position: absolute;
+      left: 0;
+      top: 0;
+      color: #d4af37;
+      font-size: 0.75rem;
+    }
+
+    /* Hộp Gợi nhớ Loci độc quyền */
+    .loci-mnemonic-box {
+      background: linear-gradient(135deg, rgba(64, 38, 20, 0.85) 0%, rgba(32, 18, 10, 0.95) 100%);
+      border: 1.5px solid #d4af37;
+      border-radius: 16px;
+      padding: 16px;
+      box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6), inset 0 0 15px rgba(212, 175, 55, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .loci-mnemonic-title {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #ffd700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      letter-spacing: 0.5px;
+    }
+    .loci-mnemonic-text {
+      font-size: 0.86rem;
+      font-style: italic;
+      color: #fff4d8;
+      line-height: 1.55;
+    }
+
+    /* Flip card nhanh trong mốc */
+    .loci-quick-flashcard-wrap {
+      perspective: 1000px;
+      height: 170px;
+      cursor: pointer;
+    }
+    .loci-quick-flashcard-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.5);
+    }
+    .loci-quick-flashcard-wrap.flipped .loci-quick-flashcard-inner {
+      transform: rotateY(180deg);
+    }
+    .loci-quick-flashcard-front,
+    .loci-quick-flashcard-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid rgba(212, 175, 55, 0.5);
+    }
+    .loci-quick-flashcard-front {
+      background: linear-gradient(135deg, #2b180d 0%, #170d07 100%);
+      color: #fff0d4;
+    }
+    .loci-quick-flashcard-back {
+      background: linear-gradient(135deg, #422513 0%, #201108 100%);
+      color: #d1fae5;
+      transform: rotateY(180deg);
+      border-color: #34d399;
+    }
+
+    /* Thanh điều hướng Trước/Sau mốc */
+    .loci-anchor-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(212, 175, 55, 0.2);
+    }
+    .loci-nav-btn {
+      background: rgba(36, 22, 14, 0.8);
+      border: 1px solid #a87e45;
+      color: #ffeed3;
+      padding: 8px 18px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .loci-nav-btn:hover:not(:disabled) {
+      background: #7a4f29;
+      border-color: #ffd700;
+      color: #fff;
+    }
+    .loci-nav-btn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+    .loci-counter-text {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #ffd700;
+    }
+
+    /* ── CHẾ ĐỘ 2: FLASHCARDS TOÀN DIỆN ── */
+    .flashcards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 18px;
+    }
+    .fc-card {
+      perspective: 1000px;
+      height: 220px;
+      cursor: pointer;
+    }
+    .fc-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      transform-style: preserve-3d;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6);
+    }
+    .fc-card.flipped .fc-inner {
+      transform: rotateY(180deg);
+    }
+    .fc-front, .fc-back {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      border-radius: 16px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+    }
+    .fc-front {
+      background: linear-gradient(145deg, #2c1a11 0%, #150c07 100%);
+      color: #f7eedc;
+    }
+    .fc-back {
+      background: linear-gradient(145deg, #1b2f23 0%, #0d1a13 100%);
+      border-color: #22c55e;
+      color: #ecfdf5;
+      transform: rotateY(180deg);
+    }
+    .fc-badge {
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #ffd700;
+    }
+    .fc-back .fc-badge {
+      color: #4ade80;
+    }
+    .fc-q-text {
+      font-size: 0.94rem;
+      font-weight: 700;
+      line-height: 1.45;
+      text-align: center;
+      margin: auto 0;
+    }
+    .fc-hint-flip {
+      font-size: 0.68rem;
+      color: rgba(255, 255, 255, 0.5);
+      text-align: center;
+    }
+
+    /* ── CHẾ ĐỘ 3: TRẮC NGHIỆM THPT ── */
+    .quiz-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .quiz-stats-card {
+      background: rgba(28, 17, 11, 0.9);
+      border: 1px solid #d4af37;
+      border-radius: 16px;
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .quiz-stat-item {
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #ffe6b0;
+    }
+    .quiz-item-box {
+      background: rgba(26, 16, 10, 0.8);
+      border: 1px solid rgba(140, 94, 45, 0.5);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .quiz-question-title {
+      font-size: 0.96rem;
+      font-weight: 700;
+      color: #fff5e0;
+      line-height: 1.45;
+    }
+    .quiz-options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .quiz-opt-btn {
+      background: rgba(38, 23, 15, 0.7);
+      border: 1px solid rgba(140, 94, 45, 0.5);
+      border-radius: 12px;
+      padding: 10px 16px;
+      color: #eddac3;
+      font-size: 0.85rem;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .quiz-opt-btn:hover:not(:disabled) {
+      background: rgba(68, 41, 26, 0.9);
+      border-color: #d4af37;
+      color: #fff;
+    }
+    .quiz-opt-btn.correct {
+      background: rgba(34, 197, 94, 0.22) !important;
+      border-color: #22c55e !important;
+      color: #86efac !important;
+      font-weight: 700;
+    }
+    .quiz-opt-btn.wrong {
+      background: rgba(239, 68, 68, 0.22) !important;
+      border-color: #ef4444 !important;
+      color: #fca5a5 !important;
+    }
+    .quiz-explanation-box {
+      background: rgba(0, 0, 0, 0.45);
+      border-left: 3px solid #22c55e;
+      padding: 12px 16px;
+      border-radius: 0 10px 10px 0;
+      font-size: 0.82rem;
+      color: #d1fae5;
+      line-height: 1.5;
+    }
+
+    /* ── CHẾ ĐỘ 4: TOÀN VĂN SGK CHUẨN ── */
+    .textbook-doc {
+      background: rgba(26, 16, 10, 0.75);
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      border-radius: 20px;
+      padding: 28px 34px;
+      max-width: 960px;
+      margin: 0 auto;
+      line-height: 1.7;
+      color: #f4ecdf;
+    }
+    .textbook-doc h2 {
+      font-family: 'Cinzel', serif;
+      font-size: 1.4rem;
+      color: #ffd700;
+      margin-bottom: 14px;
+      border-bottom: 1.5px solid rgba(212, 175, 55, 0.4);
+      padding-bottom: 8px;
+    }
+    .textbook-doc h3 {
+      font-size: 1.1rem;
+      color: #ffe6b0;
+      margin-top: 24px;
+      margin-bottom: 8px;
+    }
+    .textbook-doc p {
+      font-size: 0.9rem;
+      margin-bottom: 12px;
+      color: #eddcca;
+    }
+    .textbook-doc ul {
+      margin-left: 20px;
+      margin-bottom: 14px;
+    }
+    .textbook-doc li {
+      font-size: 0.88rem;
+      margin-bottom: 6px;
+      color: #eedcc6;
+    }
+
+  </style>
+  <script src="app/loci_anchors_data.js"></script>
+  <script src="app/review_engine.js"></script>
+  <style>
+    #lesson-picker { position: fixed; inset: 0; z-index: 100000; display: flex; align-items: center; justify-content: center;
+      background: rgba(3, 6, 18, 0.72); backdrop-filter: blur(14px); opacity: 0; transition: opacity .3s ease; font-family: 'Plus Jakarta Sans', 'Inter', sans-serif; }
+    #lesson-picker.show { opacity: 1; }
+    .lp-box { width: min(760px, 92vw); max-height: 88vh; overflow-y: auto; padding: 30px 32px; border-radius: 26px;
+      background: linear-gradient(160deg, rgba(20, 28, 52, .95), rgba(10, 14, 30, .95)); border: 1px solid rgba(0, 242, 254, .25);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, .6), 0 0 40px rgba(0, 242, 254, .12); transform: translateY(16px) scale(.98); transition: transform .35s cubic-bezier(.16, 1, .3, 1); }
+    #lesson-picker.show .lp-box { transform: none; }
+    .lp-box h2 { margin: 0 0 6px; color: #fff; font-size: 22px; letter-spacing: .5px; }
+    .lp-box .lp-sub { color: #94a3b8; font-size: 13.5px; margin-bottom: 20px; }
+    .lp-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; }
+    .lp-card { display: flex; gap: 14px; align-items: center; padding: 16px; border-radius: 18px; cursor: pointer; text-align: left;
+      background: rgba(255, 255, 255, .04); border: 1px solid rgba(255, 255, 255, .1); color: #fff; font: inherit; transition: all .22s ease; }
+    .lp-card:hover { transform: translateY(-3px); border-color: var(--c, #00f2fe); background: rgba(255, 255, 255, .08); box-shadow: 0 10px 30px rgba(0, 0, 0, .35), 0 0 18px color-mix(in srgb, var(--c, #00f2fe) 35%, transparent); }
+    .lp-ico { width: 50px; height: 50px; flex-shrink: 0; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 24px;
+      background: color-mix(in srgb, var(--c, #00f2fe) 22%, transparent); border: 1px solid color-mix(in srgb, var(--c, #00f2fe) 55%, transparent); }
+    .lp-title { font-weight: 700; font-size: 14.5px; line-height: 1.35; }
+    .lp-meta { font-size: 12px; color: #7dd3fc; margin-top: 4px; }
+    .lp-free { margin-top: 16px; width: 100%; justify-content: center; background: transparent; border-style: dashed; color: #cbd5e1; }
+    .lp-close { float: right; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .15); color: #fff; width: 36px; height: 36px; border-radius: 50%; cursor: pointer; font-size: 16px; }
+  </style>
+  <script>
+    // Hộp chọn bài học trước khi vào không gian: mỗi bài = 1 bộ mốc cho sẵn (khóa nội dung, kéo thả vị trí)
+    function showLessonPicker(spaceName, baseUrl) {
+      const old = document.getElementById('lesson-picker');
+      if (old) old.remove();
+      const all = window.LOCI_ANCHORS || {};
+      const keys = Object.keys(all).filter(k => all[k] && all[k].anchors && ((all[k].chuDe || '').normalize('NFC').includes('Chủ đề 3'.normalize('NFC')) || /^bai_[6-9]$/.test(k)));
+      const sep = baseUrl.indexOf('?') >= 0 ? '&' : '?';
+
+      const wrap = document.createElement('div');
+      wrap.id = 'lesson-picker';
+      wrap.innerHTML = `
+        <div class="lp-box" role="dialog" aria-label="Chọn bài học">
+          <button class="lp-close" id="lp-close-btn" title="Đóng">✕</button>
+          <h2>📚 Chọn bài học cho không gian</h2>
+          <div class="lp-sub">Không gian: <b style="color:#00f2fe">${spaceName}</b> — Các mốc kiến thức sẽ được rải sẵn trong phòng, bạn chỉ cần kéo thả để đổi vị trí.</div>
+          <div class="lp-grid">
+            ${keys.map(k => {
+              const d = all[k];
+              return `<button class="lp-card" id="lp-${k}" data-key="${k}" style="--c:${d.color || '#00f2fe'}">
+                <div class="lp-ico">${d.icon || '📘'}</div>
+                <div><div class="lp-title">${d.title}</div><div class="lp-meta">📍 ${(d.anchors || []).length} mốc kiến thức cho sẵn</div></div>
+              </button>`;
+            }).join('')}
+          </div>
+          <button class="lp-card lp-free" id="lp-free-btn" data-key="">✨ Vào tự do (không nạp mốc bài học)</button>
+        </div>`;
+      document.body.appendChild(wrap);
+      requestAnimationFrame(() => wrap.classList.add('show'));
+
+      const close = () => { wrap.classList.remove('show'); setTimeout(() => wrap.remove(), 300); };
+      wrap.addEventListener('click', (e) => {
+        if (e.target === wrap || e.target.id === 'lp-close-btn') return close();
+        const card = e.target.closest('.lp-card');
+        if (!card) return;
+        const key = card.dataset.key;
+        window.location.href = key ? (baseUrl + sep + 'lesson=' + encodeURIComponent(key)) : baseUrl;
+      });
+    }
+  </script>
+</head>
+
+<body>
+
+  <div class="viewport" id="viewport">
+    <!-- Canvas Three.js WebGL Mê Cung Thư Viện Tri Thức 3D (luôn chạy và nhìn thấy qua cửa sổ vòm) -->
+    <canvas id="palaceCanvas"></canvas>
+
+    <!-- Cổng Vòm Thư Viện Tiền Cảnh: Trong suốt ở giữa để nhìn xuyên vào 3D -->
+    <div class="foreground-portal" id="fgPortal"></div>
+
+    <!-- Thanh Navigation trên cùng -->
+    <header class="nav-bar">
+      <div class="nav-btn" onclick="resetToOverview()" title="Trở về tiền sảnh">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M19 12H5M12 19l-7-7 7-7" />
+        </svg>
+      </div>
+      <div class="nav-center-badge">
+        <div class="cam-mode-indicator" id="camModeText">🏛️ TIỀN SẢNH CUNG ĐIỆN</div>
+        <button class="nav-chude3-btn" onclick="openChude3KnowledgeModal('bai_6')" title="Mở Kho Tri Thức Chuẩn Chủ Đề 3 (Bài 6, 7, 8, 9)">
+          <span style="font-size:1.05rem;">📜</span>
+          <span>Kho Tri Thức Chủ Đề 3</span>
+        </button>
+      </div>
+      <div class="nav-btn" onclick="toggleTopDownDirect()" title="Chuyển góc chiếu bằng trên cao">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+          <polyline points="2 17 12 22 22 17"></polyline>
+          <polyline points="2 12 12 17 22 12"></polyline>
+        </svg>
+      </div>
+    </header>
+
+    <!-- Giao Diện Logo Kim Sắc & 4 Thanh Tab Cổ Kính Điều Khiển Truy Xuất (Luôn hiển thị từ ngoài vòm đến khi vào) -->
+    <div class="hub-ui" id="hubUi">
+      <!-- Logo Kim Sắc -->
+      <div class="gold-logo-box">
+        <img src="title_gold.png" alt="CUNG ĐIỆN KÍ ỨC" class="gold-logo-img">
+      </div>
+
+      <!-- 4 Thanh Tab Cổ Kính & Khung Chi Tiết (Drawer Bên Trái) -->
+      <div class="tabs-controller" id="tabsController">
+        <!-- Nút Kéo/Thu Gọn -->
+        <div class="drawer-toggle-btn" id="drawerToggleBtn" title="Thu gọn / Mở rộng">
+          &#10094;
+        </div>
+
+        <!-- Dòng gợi ý khi đang ở ngoài cổng vòm -->
+        <div class="enter-hint" id="enterHint" style="display:none;">✦ Chạm cổng hoặc cuộn chuột để bước vào ✦</div>
+
+        <div class="tabs-nav" id="tabsNav">
+          <button class="tab-item" data-room="0">
+            <span>Không gian cho bạn</span>
+          </button>
+          <button class="tab-item" data-room="1">
+            <span>Cung Điện Cá Nhân</span>
+          </button>
+          <button class="tab-item" data-room="3">
+            <span>Bạn Đồng Hành</span>
+          </button>
+          <button class="tab-item" data-room="4" id="ai-global-review-tab" style="color: #60a5fa; border-color: #3b82f6;">
+            <span>✨ AI Ôn Tập</span>
+          </button>
+        </div>
+
+        <!-- Bảng Chi Tiết Điểm Truy Xuất Trong Mê Cung -->
+        <div class="room-card-panel" id="roomCardPanel">
+          <h2 class="room-title" id="roomTitle">Phòng Trưng Bày Lịch Sử</h2>
+          <p class="room-desc" id="roomDesc">Mô tả chi tiết nội dung phòng trong cung điện ký ức.</p>
+          <div class="room-action-wrap">
+            <a href="app/index.html" class="btn-enter-room" id="roomActionBtn">Bước Vào Trải Nghiệm ↗</a>
+            <button class="btn-view-toggle" onclick="diveIntoSelectedRoom()">
+              <span>🔍 Sà Vào Phòng (Cận Cảnh)</span>
+            </button>
+            <button class="btn-view-toggle" onclick="toggleTopDownDirect()">
+              <span>👁️ Xem Mặt Bằng</span>
+            </button>
+            <button class="btn-view-toggle" onclick="resetToOverview()">
+              <span>🏛️ Tiền Sảnh (Nhìn Ngang)</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <!-- MODAL BẢO TÀNG TRI THỨC LOCI SGK CHỦ ĐỀ 3 & TOÀN BỘ 19 MỐC -->
+  <!-- ══════════════════════════════════════════════════════════════ -->
+  <div class="chude3-modal-overlay" id="chude3Modal">
+    <div class="chude3-modal-box">
+      <!-- Header -->
+      <div class="chude3-header">
+        <div class="chude3-title-wrap">
+          <span class="chude3-badge">🏛️ CUNG ĐIỆN KÍ ỨC • SGK LỊCH SỬ 12 CHUẨN HÓA</span>
+          <h2 class="chude3-main-title">CHỦ ĐỀ 3: CÁCH MẠNG GIẢI PHÓNG & BẢO VỆ TỔ QUỐC (1945 - NAY)</h2>
+        </div>
+        <div class="chude3-header-actions">
+          <div class="chude3-stats-pill">
+            <span>✨</span>
+            <span>19 Mốc Loci • 4 Bài Học</span>
+          </div>
+          <button class="chude3-close-btn" onclick="closeChude3KnowledgeModal()" title="Đóng cửa sổ (ESC)">✕ Đóng</button>
+        </div>
+      </div>
+
+      <!-- Lesson Navigation Bar (Tabs) -->
+      <div class="chude3-lesson-nav" id="chude3LessonNav">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Lesson Sub-bar & Mode Switcher -->
+      <div class="chude3-sub-bar">
+        <div class="chude3-lesson-info">
+          <div class="chude3-cur-lesson-title" id="curLessonTitle">Bài 6: Cách mạng tháng Tám năm 1945</div>
+          <div class="chude3-cur-lesson-sub" id="curLessonSub">4 mốc neo kiến thức cốt lõi</div>
+        </div>
+        <div class="chude3-view-modes">
+          <button class="chude3-mode-btn active" data-mode="loci" onclick="setChude3Mode('loci')">
+            <span>🗺️ Mốc Neo Loci</span>
+          </button>
+          <button class="chude3-mode-btn" data-mode="flashcards" onclick="setChude3Mode('flashcards')">
+            <span>🗂️ Flashcards</span>
+          </button>
+          <button class="chude3-mode-btn" data-mode="quiz" onclick="setChude3Mode('quiz')">
+            <span>❓ Trắc Nghiệm THPT</span>
+          </button>
+          <button class="chude3-mode-btn" data-mode="textbook" onclick="setChude3Mode('textbook')">
+            <span>📖 Toàn Văn SGK</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Body Area -->
+      <div class="chude3-body" id="chude3Body">
+        <!-- Content dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ══════════════════════════════════════════════════════════════
+    // 1. DỮ LIỆU 4 ĐIỂM TRUY XUẤT TRONG CUNG ĐIỆN MÊ CUNG TRI THỨC
+    // ══════════════════════════════════════════════════════════════
+    const ROOMS = [
+      {
+        id: 0,
+        name: "Không gian cho bạn",
+        desc: "Không gian thực tế ảo 3D Loci tương tác trực quan, tham quan các hiện vật lịch sử và gắn neo ghi nhớ trong căn phòng 3D trên kính VR Meta Quest hoặc trình duyệt Web.",
+        url: "app/index.html",
+        btnText: "Bước Vào Không Gian VR ↗",
+        pos: { x: 0, y: 3.8, z: -15 },
+        look: { x: 0, y: 2.5, z: -24 },
+        steleText: "KHÔNG GIAN CHO BẠN",
+        subText: "NEO TRÍ NHỚ LOCI METHOD",
+        color: 0xd4af37
+      },
+      {
+        id: 1,
+        name: "Cung Điện Cá Nhân",
+        desc: "Tự do cá nhân hóa lộ trình ghi nhớ Loci: Tự sắp đặt các mốc kiến thức lịch sử chuẩn hóa vào các vị trí trực quan trong không gian theo tư duy liên tưởng riêng của bạn.",
+        url: "#",
+        btnText: "Thiết Kế Cung Điện ↗",
+        pos: { x: -15, y: 3.8, z: 0 },
+        look: { x: -25, y: 2.5, z: 0 },
+        steleText: "CUNG ĐIỆN CÁ NHÂN",
+        subText: "CÁ NHÂN HÓA LỘ TRÌNH GHI NHỚ LOCI",
+        color: 0xc88242
+      },
+      {
+        id: 2,
+        name: "Thế giới mở — Chủ Đề 3",
+        desc: "Chủ đề 3 SGK Lịch Sử 12: Cách mạng tháng Tám 1945, Kháng chiến chống Pháp (1945 - 1954), Kháng chiến chống Mỹ (1954 - 1975), Đấu tranh bảo vệ Tổ quốc từ sau 1975 đến nay. Khám phá 19 mốc neo Loci chuẩn hóa.",
+        url: "#",
+        btnText: "Khám Phá Mốc Tri Thức Chủ Đề 3 📜",
+        pos: { x: 15, y: 3.8, z: 0 },
+        look: { x: 25, y: 2.5, z: 0 },
+        steleText: "THẾ GIỚI MỞ",
+        subText: "CHỦ ĐỀ 3: GIẢI PHÓNG & BẢO VỆ TỔ QUỐC",
+        color: 0xdda15e
+      },
+      {
+        id: 3,
+        name: "Bạn Đồng Hành",
+        desc: "Người bạn học thông minh luôn bên cạnh lắng nghe, giải đáp mọi khúc mắc lịch sử, chia sẻ mẹo ghi nhớ Loci và đồng hành cùng bạn vượt qua kỳ thi THPT một cách nhẹ nhàng nhất.",
+        url: "test_ai.html",
+        btnText: "Trò Chuyện Cùng Bạn Đồng Hành ↗",
+        pos: { x: 0, y: 3.8, z: 15 },
+        look: { x: 0, y: 2.5, z: 24 },
+        steleText: "BẠN ĐỒNG HÀNH",
+        subText: "LẮNG NGHE & CÙNG BẠN VƯỢT VŨ MÔN",
+        color: 0x4ade80
+      }
+    ];
+
+    // Vị trí camera tiền sảnh ngang tầm mắt (Khung cảnh chuẩn Ảnh 2 - nhìn ngang ban đầu)
+    const CAM_OVERVIEW = {
+      pos: { x: 0, y: 3.5, z: 24 },
+      look: { x: 0, y: 2.8, z: 0 }
+    };
+
+    // Vị trí camera chiếu bằng từ trên cao (Mặt bằng toàn cảnh mê cung - Ảnh 1)
+    const CAM_TOPDOWN = {
+      pos: { x: 0, y: 52, z: 0.1 },
+      look: { x: 0, y: 0, z: 0 }
+    };
+
+    // ══════════════════════════════════════════════════════════════
+    // 2. KHỞI TẠO THREE.JS WEBGL RENDERER & SCENE (TỐI ƯU SIÊU MƯỢT 60FPS)
+    // ══════════════════════════════════════════════════════════════
+    const canvas = document.getElementById('palaceCanvas');
+    const renderer = new THREE.WebGLRenderer({
+      canvas,
+      antialias: true,
+      alpha: false,
+      powerPreference: "high-performance"
+    });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.25));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x76b6f7);
+    scene.fog = new THREE.FogExp2(0xcbe3f7, 0.0035);
+
+    const camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 350);
+    // Luôn bắt đầu từ góc nhìn ngang tiền sảnh như Ảnh 2
+    camera.position.set(CAM_OVERVIEW.pos.x, CAM_OVERVIEW.pos.y, CAM_OVERVIEW.pos.z);
+    let cameraTarget = new THREE.Vector3(CAM_OVERVIEW.look.x, CAM_OVERVIEW.look.y, CAM_OVERVIEW.look.z);
+    camera.lookAt(cameraTarget);
+
+    // ── BẦU TRỜI XANH MÂY TRẮNG (Sky Dome With Fluffy Clouds) ──
+    function createSkyWithCloudsTexture() {
+      const c = document.createElement('canvas');
+      c.width = 2048;
+      c.height = 1024;
+      const ctx = c.getContext('2d');
+
+      // 1. Dải màu gradient bầu trời xanh thiên thanh trong vắt
+      const skyGrad = ctx.createLinearGradient(0, 0, 0, 1024);
+      skyGrad.addColorStop(0.0, '#1261be'); // Xanh thiên đỉnh thăm thẳm
+      skyGrad.addColorStop(0.25, '#298cef'); // Xanh ngọc hoàng gia
+      skyGrad.addColorStop(0.55, '#68b5f6'); // Xanh da trời êm đềm
+      skyGrad.addColorStop(0.82, '#bce0fd'); // Chân trời quang đãng
+      skyGrad.addColorStop(1.0, '#e8f4fd');  // Sương sớm sát đất
+      ctx.fillStyle = skyGrad;
+      ctx.fillRect(0, 0, 2048, 1024);
+
+      // 2. Hàm vẽ từng cụm mây trắng bồng bềnh xếp tầng tự nhiên
+      function drawCloudCluster(cx, cy, scale) {
+        const puffCount = 20 + Math.floor(Math.random() * 12);
+        for (let i = 0; i < puffCount; i++) {
+          const ox = (Math.random() - 0.5) * 180 * scale;
+          const oy = (Math.random() - 0.5) * 65 * scale - Math.random() * 22 * scale;
+          const rad = (38 + Math.random() * 60) * scale;
+
+          // Lớp bóng mây mờ mềm phía chân mây
+          const shadowGrad = ctx.createRadialGradient(
+            cx + ox, cy + oy + rad * 0.25, rad * 0.2,
+            cx + ox, cy + oy, rad
+          );
+          shadowGrad.addColorStop(0, 'rgba(235, 244, 255, 0.85)');
+          shadowGrad.addColorStop(0.65, 'rgba(210, 228, 245, 0.7)');
+          shadowGrad.addColorStop(1, 'rgba(210, 228, 245, 0)');
+          ctx.fillStyle = shadowGrad;
+          ctx.beginPath();
+          ctx.arc(cx + ox, cy + oy, rad, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Lớp mây trắng muốt xốp đón ánh sáng
+          const puffGrad = ctx.createRadialGradient(
+            cx + ox - rad * 0.15, cy + oy - rad * 0.15, rad * 0.1,
+            cx + ox, cy + oy, rad
+          );
+          puffGrad.addColorStop(0, 'rgba(255, 255, 255, 0.98)');
+          puffGrad.addColorStop(0.7, 'rgba(255, 255, 255, 0.85)');
+          puffGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+          ctx.fillStyle = puffGrad;
+          ctx.beginPath();
+          ctx.arc(cx + ox, cy + oy, rad, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // Rải các cụm mây trắng bồng bềnh khắp vòm trời 360 độ
+      const cloudPositions = [
+        { x: 260, y: 380, s: 1.4 },
+        { x: 680, y: 460, s: 1.15 },
+        { x: 1060, y: 350, s: 1.6 },
+        { x: 1460, y: 440, s: 1.25 },
+        { x: 1860, y: 390, s: 1.45 },
+        { x: 420, y: 250, s: 0.95 },
+        { x: 880, y: 230, s: 1.05 },
+        { x: 1300, y: 270, s: 0.9 },
+        { x: 1720, y: 240, s: 1.1 }
+      ];
+
+      cloudPositions.forEach(cPos => {
+        drawCloudCluster(cPos.x, cPos.y, cPos.s);
+      });
+
+      // Mây ti mỏng (Wispy Cirrus) tầng cao vắt ngang trời
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+      ctx.lineWidth = 14;
+      for (let w = 0; w < 10; w++) {
+        const wx = Math.random() * 2048;
+        const wy = 110 + Math.random() * 180;
+        ctx.beginPath();
+        ctx.moveTo(wx, wy);
+        ctx.bezierCurveTo(wx + 160, wy - 25, wx + 320, wy + 35, wx + 480, wy - 10);
+        ctx.stroke();
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.ClampToEdgeWrapping;
+      return tex;
+    }
+
+    const skyGeo = new THREE.SphereGeometry(220, 32, 24);
+    const skyMat = new THREE.MeshBasicMaterial({
+      map: createSkyWithCloudsTexture(),
+      side: THREE.BackSide,
+      fog: false
+    });
+    const skyDome = new THREE.Mesh(skyGeo, skyMat);
+    scene.add(skyDome);
+
+    // ── HỆ THỐNG ÁNH SÁNG TỰ NHIÊN DỊU MẮT, KHÔNG BỊ CHÓI ──
+    // Ánh sáng phản xạ vòm trời và đất tự nhiên
+    const hemiLight = new THREE.HemisphereLight(0x82c2ff, 0x4a3628, 0.85);
+    scene.add(hemiLight);
+
+    // Ánh nắng mặt trời dịu nhẹ chiếu xiên, có đổ bóng thật
+    const sunLight = new THREE.DirectionalLight(0xffeedd, 1.3);
+    sunLight.position.set(40, 60, 30);
+    sunLight.castShadow = true;
+    sunLight.shadow.mapSize.width = 2048;
+    sunLight.shadow.mapSize.height = 2048;
+    sunLight.shadow.camera.near = 0.5;
+    sunLight.shadow.camera.far = 150;
+    sunLight.shadow.camera.left = -60;
+    sunLight.shadow.camera.right = 60;
+    sunLight.shadow.camera.top = 60;
+    sunLight.shadow.camera.bottom = -60;
+    sunLight.shadow.bias = -0.0005;
+    scene.add(sunLight);
+
+    // Đèn ấm trung tâm tiền sảnh dịu nhẹ (giảm độ chói mắt)
+    const centralLight = new THREE.PointLight(0xffbe6b, 1.2, 75, 1.2);
+    centralLight.position.set(0, 14, 0);
+    scene.add(centralLight);
+
+    // Đèn bổ trợ ấm áp nhẹ
+    const fillLightB = new THREE.PointLight(0xffc27d, 0.7, 45);
+    fillLightB.position.set(0, 9, -22);
+    scene.add(fillLightB);
+
+    const fillLightS = new THREE.PointLight(0xffc27d, 0.7, 45);
+    fillLightS.position.set(0, 9, 16);
+    scene.add(fillLightS);
+
+    // ══════════════════════════════════════════════════════════════
+    // 3. TẢI MÔ HÌNH THƯ VIỆN (LIBRARY.GLB) ĐỂ TỐI ƯU HIỆU NĂNG
+    // ══════════════════════════════════════════════════════════════
+    const loader = new THREE.GLTFLoader();
+    loader.load('./textures/library.glb', function (gltf) {
+      const library = gltf.scene;
+
+      // Phóng to mô hình để bao trùm toàn bộ không gian di chuyển (Scale up)
+      library.scale.set(25, 25, 25);
+
+      // Tối ưu hóa bóng và render
+      library.traverse((child) => {
+        if (child.isMesh) {
+          child.castShadow = true;
+          child.receiveShadow = true;
+        }
+      });
+
+      scene.add(library);
+
+      // TỰ ĐỘNG CĂN CHỈNH SÀN NHÀ (Y = 0) VÀ TÂM MÔ HÌNH DỰA THEO KÍCH THƯỚC THỰC
+      library.updateMatrixWorld(true);
+      const box = new THREE.Box3().setFromObject(library);
+      const center = box.getCenter(new THREE.Vector3());
+
+      // Kéo mô hình vào giữa (trục X và Z)
+      library.position.x -= center.x;
+      library.position.z -= center.z;
+
+      // Tính toán hạ đáy của mô hình xuống ngang bằng mặt đất cũ (y = 0)
+      library.position.y -= (box.min.y + 0.05);
+
+    }, undefined, function (error) {
+      console.error('Lỗi tải library.glb:', error);
+    });
+
+    const gothicGoldMat = new THREE.MeshStandardMaterial({
+      color: 0xc89e4c,
+      roughness: 0.3,
+      metalness: 0.85
+    });
+    const antiqueGoldMat = gothicGoldMat;
+
+    // Group ảo để giữ code tương thích với phần Bia đá bên dưới
+    const palaceGroup = new THREE.Group();
+    scene.add(palaceGroup);
+
+
+    // ══════════════════════════════════════════════════════════════
+    // 5. BIA ĐÁ KHẮC SỰ KIỆN LỊCH SỬ & ĐÀI KỲ QUAN PHÁT SÁNG TẠI 4 PHÒNG
+    // ══════════════════════════════════════════════════════════════
+    function createSteleTexture(mainTitle, subTitle, accentColorHex) {
+      const c = document.createElement('canvas');
+      c.width = 1024;
+      c.height = 768;
+      const ctx = c.getContext('2d');
+
+      // Nền bia đá cổ cẩm thạch đen huyền
+      ctx.fillStyle = '#0f0c13';
+      ctx.fillRect(0, 0, 1024, 768);
+
+      // Khung viền hoa văn vàng kim
+      ctx.strokeStyle = '#cda250';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(30, 30, 964, 708);
+      ctx.strokeStyle = accentColorHex;
+      ctx.lineWidth = 4;
+      ctx.strokeRect(46, 46, 932, 676);
+
+      // Ngôi sao vàng & hoa sen biểu trưng
+      ctx.fillStyle = '#ebdcc2';
+      ctx.font = 'bold 36px "Cinzel", serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('★  ★  ★', 512, 140);
+
+      // Dòng tiêu đề chính khắc vàng
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 42px "Plus Jakarta Sans", sans-serif';
+      ctx.shadowColor = accentColorHex;
+      ctx.shadowBlur = 18;
+      ctx.fillText(mainTitle, 512, 320);
+
+      // Dòng phụ đề
+      ctx.shadowBlur = 8;
+      ctx.fillStyle = '#ebdcc2';
+      ctx.font = '600 28px "Cinzel", serif';
+      ctx.fillText(subTitle, 512, 410);
+
+      // Hoa văn chân bia
+      ctx.shadowBlur = 0;
+      ctx.strokeStyle = 'rgba(205, 162, 80, 0.45)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(250, 470);
+      ctx.lineTo(774, 470);
+      ctx.stroke();
+
+      ctx.fillStyle = 'rgba(235, 220, 194, 0.7)';
+      ctx.font = '22px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('CUNG ĐIỆN KÍ ỨC LOCI VR — LỊCH SỬ VIỆT NAM', 512, 530);
+
+      const tex = new THREE.CanvasTexture(c);
+      return tex;
+    }
+
+    // ── VẬT LIỆU ĐIÊU KHẮC NGHỆ THUẬT BẢO TÀNG & CỔ VẬT HOÀNG GIA ──
+    const antiqueBronzeMat = new THREE.MeshStandardMaterial({
+      color: 0x8a5a36,
+      roughness: 0.32,
+      metalness: 0.82
+    });
+
+    const royalGoldMat = new THREE.MeshStandardMaterial({
+      color: 0xd4af37,
+      roughness: 0.25,
+      metalness: 0.92
+    });
+
+    const warmAmberCrystalMat = new THREE.MeshStandardMaterial({
+      color: 0xffb74d,
+      emissive: 0x995500,
+      emissiveIntensity: 0.55,
+      roughness: 0.15,
+      metalness: 0.3
+    });
+
+    const antiqueDarkGraniteMat = new THREE.MeshStandardMaterial({
+      color: 0x241812,
+      roughness: 0.45,
+      metalness: 0.2
+    });
+
+    // Hàm tạo 4 Tác Phẩm Điêu Khắc Nghệ Thuật Lịch Sử riêng biệt cho từng phòng
+    function createArtisticMonument(room) {
+      const group = new THREE.Group();
+      group.position.set(0, 0.45, 0.65); // Đặt trang trọng trên bệ, phía trước bia đá
+
+      let animatedParts = {};
+
+      if (room.id === 0) {
+        // 🏛️ PHÒNG 0: KHUNG CẦU THIÊN THỂ HOÀNG GIA & LĂNG KÍNH THẠCH ANH (ARMILLARY ASTROLABE)
+        const standGeo = new THREE.CylinderGeometry(0.5, 0.75, 0.8, 12);
+        const stand = new THREE.Mesh(standGeo, antiqueBronzeMat);
+        stand.position.y = 0.4;
+        group.add(stand);
+
+        const subRingGeo = new THREE.TorusGeometry(0.85, 0.05, 12, 32);
+        const subRing = new THREE.Mesh(subRingGeo, royalGoldMat);
+        subRing.rotation.x = Math.PI / 2;
+        subRing.position.y = 0.82;
+        group.add(subRing);
+
+        const sphereGroup = new THREE.Group();
+        sphereGroup.position.y = 1.7;
+
+        const ring1Geo = new THREE.TorusGeometry(1.05, 0.045, 12, 48);
+        const ring1 = new THREE.Mesh(ring1Geo, royalGoldMat);
+        sphereGroup.add(ring1);
+
+        const ring2Geo = new THREE.TorusGeometry(0.95, 0.045, 12, 48);
+        const ring2 = new THREE.Mesh(ring2Geo, antiqueBronzeMat);
+        ring2.rotation.x = Math.PI / 3;
+        sphereGroup.add(ring2);
+
+        const ring3Geo = new THREE.TorusGeometry(0.85, 0.04, 12, 48);
+        const ring3 = new THREE.Mesh(ring3Geo, royalGoldMat);
+        ring3.rotation.y = Math.PI / 4;
+        sphereGroup.add(ring3);
+
+        const prismGeo = new THREE.OctahedronGeometry(0.52);
+        const prism = new THREE.Mesh(prismGeo, warmAmberCrystalMat);
+        sphereGroup.add(prism);
+
+        group.add(sphereGroup);
+        animatedParts = { type: 'astrolabe', sphereGroup, ring1, ring2, ring3, prism };
+
+      } else if (room.id === 1) {
+        // ⚔️ PHÒNG 1: ĐÀI KỶ NIỆM CHIẾN THẮNG ĐIỆN BIÊN PHỦ (VICTORY OBELISK & STEEL FEATHER RELIEF)
+        const lotusBaseGeo = new THREE.CylinderGeometry(0.9, 1.2, 0.35, 16);
+        const lotusBase = new THREE.Mesh(lotusBaseGeo, antiqueBronzeMat);
+        lotusBase.position.y = 0.18;
+        group.add(lotusBase);
+
+        const obeliskGeo = new THREE.CylinderGeometry(0.3, 0.65, 2.3, 4);
+        const obelisk = new THREE.Mesh(obeliskGeo, antiqueDarkGraniteMat);
+        obelisk.rotation.y = Math.PI / 4;
+        obelisk.position.y = 1.45;
+        group.add(obelisk);
+
+        const bandGeo = new THREE.BoxGeometry(0.72, 0.12, 0.72);
+        const band = new THREE.Mesh(bandGeo, royalGoldMat);
+        band.position.y = 1.6;
+        group.add(band);
+
+        const starGroup = new THREE.Group();
+        starGroup.position.y = 2.85;
+
+        for (let s = 0; s < 5; s++) {
+          const ptGeo = new THREE.ConeGeometry(0.18, 0.45, 4);
+          const ptMesh = new THREE.Mesh(ptGeo, royalGoldMat);
+          ptMesh.rotation.z = (s * Math.PI * 2) / 5;
+          ptMesh.position.y = Math.cos((s * Math.PI * 2) / 5) * 0.28;
+          ptMesh.position.x = -Math.sin((s * Math.PI * 2) / 5) * 0.28;
+          starGroup.add(ptMesh);
+        }
+        const starCenter = new THREE.Mesh(new THREE.DodecahedronGeometry(0.24), royalGoldMat);
+        starGroup.add(starCenter);
+        group.add(starGroup);
+
+        const wreath1Geo = new THREE.TorusGeometry(0.65, 0.035, 8, 24, Math.PI * 1.1);
+        const wreath1 = new THREE.Mesh(wreath1Geo, royalGoldMat);
+        wreath1.rotation.y = Math.PI / 2;
+        wreath1.rotation.z = -0.4;
+        wreath1.position.set(-0.35, 1.4, 0);
+        group.add(wreath1);
+
+        const wreath2Geo = new THREE.TorusGeometry(0.65, 0.035, 8, 24, Math.PI * 1.1);
+        const wreath2 = new THREE.Mesh(wreath2Geo, royalGoldMat);
+        wreath2.rotation.y = -Math.PI / 2;
+        wreath2.rotation.z = -0.4;
+        wreath2.position.set(0.35, 1.4, 0);
+        group.add(wreath2);
+
+        animatedParts = { type: 'starMonument', starGroup };
+
+      } else if (room.id === 2) {
+        // 🎖️ PHÒNG 2: ĐÀI ĐỘC LẬP KHẢI HOÀN & NGỌN ĐUỐC THỐNG NHẤT 1975 (TRIUMPHAL TORCH & LAUREL)
+        const marbleBaseGeo = new THREE.CylinderGeometry(0.95, 1.25, 0.35, 16);
+        const marbleBase = new THREE.Mesh(marbleBaseGeo, antiqueBronzeMat);
+        marbleBase.position.y = 0.18;
+        group.add(marbleBase);
+
+        const torchGeo = new THREE.CylinderGeometry(0.38, 0.24, 1.8, 12);
+        const torch = new THREE.Mesh(torchGeo, antiqueBronzeMat);
+        torch.position.y = 1.18;
+        group.add(torch);
+
+        const bowlGeo = new THREE.CylinderGeometry(0.62, 0.3, 0.4, 12);
+        const bowl = new THREE.Mesh(bowlGeo, royalGoldMat);
+        bowl.position.y = 2.15;
+        group.add(bowl);
+
+        const laurelGeo = new THREE.TorusGeometry(0.65, 0.06, 12, 32);
+        const laurel = new THREE.Mesh(laurelGeo, royalGoldMat);
+        laurel.rotation.x = Math.PI / 2;
+        laurel.position.y = 1.35;
+        group.add(laurel);
+
+        const flameGroup = new THREE.Group();
+        flameGroup.position.y = 2.5;
+
+        const f1Geo = new THREE.ConeGeometry(0.28, 0.85, 8);
+        const f1 = new THREE.Mesh(f1Geo, warmAmberCrystalMat);
+        f1.position.set(0, 0.35, 0);
+        flameGroup.add(f1);
+
+        const f2Geo = new THREE.ConeGeometry(0.18, 0.6, 6);
+        const f2 = new THREE.Mesh(f2Geo, royalGoldMat);
+        f2.position.set(0.12, 0.25, 0.08);
+        f2.rotation.z = -0.25;
+        flameGroup.add(f2);
+
+        const f3Geo = new THREE.ConeGeometry(0.16, 0.55, 6);
+        const f3 = new THREE.Mesh(f3Geo, royalGoldMat);
+        f3.position.set(-0.1, 0.22, -0.06);
+        f3.rotation.z = 0.22;
+        flameGroup.add(f3);
+
+        group.add(flameGroup);
+        animatedParts = { type: 'flame', flameGroup, laurel };
+
+      } else if (room.id === 3) {
+        // 🤖 PHÒNG 3: ĐIÊU KHẮC NÃO BỘ VÔ CỰC MÖBIUS & TRỤ TRÍ TUỆ AI (INFINITE MIND & NEURAL CORE)
+        const baseGeo = new THREE.CylinderGeometry(0.85, 1.15, 0.4, 8);
+        const base = new THREE.Mesh(baseGeo, antiqueBronzeMat);
+        base.position.y = 0.2;
+        group.add(base);
+
+        const pylonGeo = new THREE.CylinderGeometry(0.42, 0.55, 0.7, 8);
+        const pylon = new THREE.Mesh(pylonGeo, royalGoldMat);
+        pylon.position.y = 0.7;
+        group.add(pylon);
+
+        const mindGroup = new THREE.Group();
+        mindGroup.position.y = 1.85;
+
+        const mobiusGeo = new THREE.TorusKnotGeometry(0.68, 0.075, 48, 8, 2, 3);
+        const mobius = new THREE.Mesh(mobiusGeo, royalGoldMat);
+        mindGroup.add(mobius);
+
+        const coreGeo = new THREE.IcosahedronGeometry(0.38);
+        const core = new THREE.Mesh(coreGeo, warmAmberCrystalMat);
+        mindGroup.add(core);
+
+        group.add(mindGroup);
+        animatedParts = { type: 'mobius', mindGroup, mobius, core };
+      }
+
+      return { group, animatedParts };
+    }
+
+    const pedestals = [];
+    const clickableRooms = [];
+
+    ROOMS.forEach((room) => {
+      const pGroup = new THREE.Group();
+      pGroup.userData = { roomId: room.id };
+
+      // Bệ đá bát giác La Mã chạm đồng cổ
+      const baseGeo = new THREE.CylinderGeometry(2.4, 2.7, 0.9, 8);
+      const baseMesh = new THREE.Mesh(baseGeo, gothicGoldMat);
+      baseMesh.position.y = 0.45;
+      pGroup.add(baseMesh);
+
+      // Bia đá bia ký lịch sử đứng trang trọng
+      const steleGeo = new THREE.BoxGeometry(4.2, 3.2, 0.35);
+      const steleTex = createSteleTexture(room.steleText, room.subText, '#' + room.color.toString(16).padStart(6, '0'));
+      const steleMat = new THREE.MeshStandardMaterial({
+        map: steleTex,
+        roughness: 0.3,
+        metalness: 0.4
+      });
+      const steleMesh = new THREE.Mesh(steleGeo, steleMat);
+      steleMesh.position.set(0, 2.7, -0.6);
+      pGroup.add(steleMesh);
+
+      // Tác phẩm điêu khắc nghệ thuật lịch sử riêng biệt
+      const monument = createArtisticMonument(room);
+      pGroup.add(monument.group);
+
+      // Vòng đai đá cẩm thạch la bàn hoàng gia bao quanh bệ
+      const floorRingGeo = new THREE.RingGeometry(2.4, 2.7, 32);
+      const floorRingMat = new THREE.MeshBasicMaterial({
+        color: 0xc89e4c,
+        side: THREE.DoubleSide,
+        transparent: true,
+        opacity: 0.55
+      });
+      const floorRing = new THREE.Mesh(floorRingGeo, floorRingMat);
+      floorRing.rotation.x = -Math.PI / 2;
+      floorRing.position.y = 0.04;
+      pGroup.add(floorRing);
+
+      // Xoay hướng bia đá đối diện với lối vào của từng phòng
+      if (room.id === 0) pGroup.rotation.y = 0;
+      else if (room.id === 1) pGroup.rotation.y = Math.PI / 2;
+      else if (room.id === 2) pGroup.rotation.y = -Math.PI / 2;
+      else if (room.id === 3) pGroup.rotation.y = Math.PI;
+
+      pGroup.position.set(room.look.x, 0, room.look.z);
+      scene.add(pGroup);
+
+      pedestals.push({ group: pGroup, monument, color: room.color });
+      clickableRooms.push(pGroup);
+    });
+
+    // ── Hạt Bụi Tri Thức Vàng Kim Lơ Lửng Trong Cung Điện (Knowledge Dust Particles) ──
+    const particleCount = 420;
+    const particleGeo = new THREE.BufferGeometry();
+    const particlePositions = new Float32Array(particleCount * 3);
+
+    for (let i = 0; i < particleCount * 3; i += 3) {
+      particlePositions[i] = (Math.random() - 0.5) * 58;
+      particlePositions[i + 1] = 0.5 + Math.random() * 7.5;
+      particlePositions[i + 2] = (Math.random() - 0.5) * 58;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+    const particleMat = new THREE.PointsMaterial({
+      color: 0xf5d78c,
+      size: 0.2,
+      transparent: true,
+      opacity: 0.7,
+      blending: THREE.AdditiveBlending
+    });
+    const particleSystem = new THREE.Points(particleGeo, particleMat);
+    scene.add(particleSystem);
+
+    // ── Đường lộ trình phát sáng (Glowing Laser Route) ──
+    const pathGeo = new THREE.BufferGeometry();
+    const maxPathPoints = 60;
+    const pathPositions = new Float32Array(maxPathPoints * 3);
+    pathGeo.setAttribute('position', new THREE.BufferAttribute(pathPositions, 3));
+
+    const pathMat = new THREE.LineBasicMaterial({
+      color: 0xcda250,
+      linewidth: 5,
+      transparent: true,
+      opacity: 0
+    });
+    const pathLine = new THREE.Line(pathGeo, pathMat);
+    scene.add(pathLine);
+
+    function updateGlowingRoute(targetRoom) {
+      const pts = [];
+      pts.push(new THREE.Vector3(0, 0.15, 0)); // Tâm đại sảnh
+      if (targetRoom.id === 0) {
+        pts.push(new THREE.Vector3(0, 0.15, -10));
+        pts.push(new THREE.Vector3(0, 0.15, targetRoom.look.z + 1.5));
+      } else if (targetRoom.id === 1) {
+        pts.push(new THREE.Vector3(-10, 0.15, 0));
+        pts.push(new THREE.Vector3(targetRoom.look.x + 1.5, 0.15, 0));
+      } else if (targetRoom.id === 2) {
+        pts.push(new THREE.Vector3(10, 0.15, 0));
+        pts.push(new THREE.Vector3(targetRoom.look.x - 1.5, 0.15, 0));
+      } else if (targetRoom.id === 3) {
+        pts.push(new THREE.Vector3(0, 0.15, 10));
+        pts.push(new THREE.Vector3(0, 0.15, targetRoom.look.z - 1.5));
+      }
+
+      const curve = new THREE.CatmullRomCurve3(pts);
+      const sampled = curve.getPoints(maxPathPoints - 1);
+      const posAttr = pathGeo.attributes.position;
+      for (let i = 0; i < maxPathPoints; i++) {
+        posAttr.setXYZ(i, sampled[i].x, sampled[i].y, sampled[i].z);
+      }
+      posAttr.needsUpdate = true;
+      pathMat.color.setHex(targetRoom.color);
+      pathMat.opacity = 0.95;
+    }
+
+    // ══════════════════════════════════════════════════════════════
+    // 6. ĐIỀU KHIỂN CHUYỂN CẢNH CAMERA (Ngang ban đầu -> Mặt Bằng khi ấn Tab)
+    // ══════════════════════════════════════════════════════════════
+    let isTransitioning = false;
+    let transitionStage = 0; // 0: Idle, 1: Go to Top-down, 2: Swoop to Room, 3: Return Overview
+    let stageStartTime = 0;
+    let stageDuration = 1000;
+    let startPos = new THREE.Vector3();
+    let startLook = new THREE.Vector3();
+    let endPos = new THREE.Vector3();
+    let endLook = new THREE.Vector3();
+    let selectedRoom = null;
+
+    const camModeText = document.getElementById('camModeText');
+    const roomCardPanel = document.getElementById('roomCardPanel');
+    const roomTitle = document.getElementById('roomTitle');
+    const roomDesc = document.getElementById('roomDesc');
+    const roomActionBtn = document.getElementById('roomActionBtn');
+    const tabButtons = document.querySelectorAll('.tab-item');
+
+    // --- DRAWER LOGIC ---
+    const tabsController = document.getElementById('tabsController');
+    const drawerToggleBtn = document.getElementById('drawerToggleBtn');
+    let drawerIsCollapsed = false;
+    
+    drawerToggleBtn.addEventListener('click', () => {
+      drawerIsCollapsed = !drawerIsCollapsed;
+      if (drawerIsCollapsed) {
+        tabsController.classList.add('collapsed');
+        drawerToggleBtn.innerHTML = '&#10095;'; // Mũi tên phải
+      } else {
+        tabsController.classList.remove('collapsed');
+        drawerToggleBtn.innerHTML = '&#10094;'; // Mũi tên trái
+      }
+    });
+
+    let drawerStartX = 0;
+    let isDrawerDragging = false;
+    tabsController.addEventListener('pointerdown', (e) => {
+      // Đừng vuốt nếu click trúng các nút bấm
+      if (e.target.tagName === 'BUTTON' || e.target.closest('button') || e.target.id === 'drawerToggleBtn') return; 
+      isDrawerDragging = true;
+      drawerStartX = e.clientX;
+    });
+    window.addEventListener('pointerup', (e) => {
+      if (!isDrawerDragging) return;
+      isDrawerDragging = false;
+      const dx = e.clientX - drawerStartX;
+      if (dx < -40 && !drawerIsCollapsed) {
+        drawerToggleBtn.click(); // Vuốt trái để ẩn
+      } else if (dx > 40 && drawerIsCollapsed) {
+        drawerToggleBtn.click(); // Vuốt phải để mở
+      }
+    });
+    // --------------------
+
+    // Khi ấn 1 trong 4 tab: Sà thẳng vào phòng cận cảnh (không cần qua góc mặt bằng)
+    function navigateToRoom(roomIndex) {
+      selectedRoom = ROOMS[roomIndex];
+
+      // Đổi highlight tab
+      tabButtons.forEach(b => b.classList.remove('active'));
+      const activeBtn = document.querySelector(`.tab-item[data-room="${roomIndex}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      // Vẽ đường phát sáng dẫn vào phòng
+      updateGlowingRoute(selectedRoom);
+
+      // Bay trực tiếp vào vị trí cận cảnh của căn phòng
+      transitionStage = 2;
+      isTransitioning = true;
+      stageStartTime = performance.now();
+      stageDuration = 1100; // Animation mượt 1.1s
+
+      startPos.copy(camera.position);
+      startLook.copy(cameraTarget);
+
+      endPos.set(selectedRoom.pos.x, selectedRoom.pos.y, selectedRoom.pos.z);
+      endLook.set(selectedRoom.look.x, selectedRoom.look.y, selectedRoom.look.z);
+
+      camModeText.textContent = "CẬN CẢNH: " + selectedRoom.name.toUpperCase();
+      camModeText.classList.remove('pulse');
+      roomCardPanel.classList.remove('active');
+    }
+
+    // Sà vào phòng cận cảnh (khi người dùng bấm nút Khám phá phòng)
+    function diveIntoSelectedRoom() {
+      if (!selectedRoom) return;
+      transitionStage = 2;
+      isTransitioning = true;
+      stageStartTime = performance.now();
+      stageDuration = 1100;
+
+      startPos.copy(camera.position);
+      startLook.copy(cameraTarget);
+
+      endPos.set(selectedRoom.pos.x, selectedRoom.pos.y, selectedRoom.pos.z);
+      endLook.set(selectedRoom.look.x, selectedRoom.look.y, selectedRoom.look.z);
+
+      camModeText.textContent = "📍 CẬN CẢNH: " + selectedRoom.name.toUpperCase();
+      camModeText.classList.remove('pulse');
+    }
+
+    // Chuyển thẳng lên góc chiếu bằng tự do (Mặt Bằng)
+    function toggleTopDownDirect() {
+      transitionStage = 1;
+      isTransitioning = true;
+      stageStartTime = performance.now();
+      stageDuration = 950;
+
+      startPos.copy(camera.position);
+      startLook.copy(cameraTarget);
+
+      endPos.set(CAM_TOPDOWN.pos.x, CAM_TOPDOWN.pos.y, CAM_TOPDOWN.pos.z);
+      endLook.set(CAM_TOPDOWN.look.x, CAM_TOPDOWN.look.y, CAM_TOPDOWN.look.z);
+
+      camModeText.textContent = "🛰️ TOÀN CẢNH MẶT BẰNG MÊ CUNG";
+      camModeText.classList.remove('pulse');
+    }
+
+    // Trở về tiền sảnh góc nhìn ngang ban đầu (Ảnh 2 - nhìn ngang)
+    function resetToOverview() {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      roomCardPanel.classList.remove('active');
+      pathMat.opacity = 0;
+      selectedRoom = null;
+
+      transitionStage = 3;
+      isTransitioning = true;
+      stageStartTime = performance.now();
+      stageDuration = 1050;
+
+      startPos.copy(camera.position);
+      startLook.copy(cameraTarget);
+
+      endPos.set(CAM_OVERVIEW.pos.x, CAM_OVERVIEW.pos.y, CAM_OVERVIEW.pos.z);
+      endLook.set(CAM_OVERVIEW.look.x, CAM_OVERVIEW.look.y, CAM_OVERVIEW.look.z);
+
+      camModeText.textContent = "🏛️ TIỀN SẢNH CUNG ĐIỆN";
+      camModeText.classList.remove('pulse');
+    }
+
+    // Bắt sự kiện click vào 4 Tab
+    tabButtons.forEach(btn => {
+      btn.addEventListener('click', async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const rIndex = parseInt(btn.getAttribute('data-room'), 10);
+        
+        // Handle AI Global Review Tab separately
+        if (rIndex === 4) {
+          const originalHTML = btn.innerHTML;
+          btn.innerHTML = '<span>⏳ Đang tạo bài tập...</span>';
+          btn.style.pointerEvents = 'none';
+          try {
+            if (window.reviewEngine && window.LOCI_ANCHORS && window.LOCI_ANCHORS['bai_6']) {
+              // Gather some anchors to generate exercises from. E.g. Bai 6
+              const lesson = window.LOCI_ANCHORS['bai_6'];
+              // We just pick the first anchor for demo, or a composite.
+              const compositeData = {
+                name: "Ôn Tập Tổng Hợp Chủ Đề 3",
+                summary: "Cách mạng tháng Tám năm 1945. " + lesson.anchors.map(a => a.summary).join(" "),
+                detailContent: ""
+              };
+              const exercises = await window.reviewEngine.generateExercises(compositeData);
+              window.reviewEngine.openReviewUI(exercises, "Chủ Đề 3 (Tổng Hợp)");
+            } else {
+              alert("Hệ thống chưa nạp đủ dữ liệu.");
+            }
+          } finally {
+            btn.innerHTML = originalHTML;
+            btn.style.pointerEvents = 'auto';
+          }
+          return;
+        }
+
+        // Nếu người dùng đang ở ngoài cổng, tự động mở cổng bay vào ngay
+        if (portalProgress < 0.95) {
+          triggerEnterPortal();
+        }
+        navigateToRoom(rIndex);
+      });
+    });
+
+    // ══════════════════════════════════════════════════════════════
+    // 7. HIỆU ỨNG PHÓNG QUA CỔNG TIỀN CẢNH (SCROLL & 1-TOUCH)
+    // ══════════════════════════════════════════════════════════════
+    const fgPortal = document.getElementById('fgPortal');
+    const enterHint = document.getElementById('enterHint');
+    const hubUi = document.getElementById('hubUi');
+
+    let portalProgress = 0; // 0.0 (Ngoài cổng) -> 1.0 (Đã vào sảnh)
+    let targetPortalProgress = 0;
+    let isAutoEntering = false;
+    let autoEnterStart = 0;
+
+    // Lăn chuột xuyên qua cổng
+    window.addEventListener('wheel', (e) => {
+      if (portalProgress < 0.99) {
+        targetPortalProgress += e.deltaY * 0.0016;
+        targetPortalProgress = Math.max(0, Math.min(1, targetPortalProgress));
+      }
+    }, { passive: true });
+
+    function triggerEnterPortal() {
+      isAutoEntering = true;
+      autoEnterStart = performance.now();
+      targetPortalProgress = 1.0;
+    }
+
+    // Bấm trực tiếp vào cổng vòm để bước vào
+    fgPortal.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (portalProgress < 0.3) triggerEnterPortal();
+    });
+
+    // Hỗ trợ Raycaster nhấp chuột vào đối tượng 3D trên Canvas
+    const raycaster = new THREE.Raycaster();
+    const mouseVec = new THREE.Vector2();
+
+    canvas.addEventListener('click', (e) => {
+      mouseVec.x = (e.clientX / window.innerWidth) * 2 - 1;
+      mouseVec.y = -(e.clientY / window.innerHeight) * 2 + 1;
+
+      raycaster.setFromCamera(mouseVec, camera);
+      const intersects = raycaster.intersectObjects(clickableRooms, true);
+      if (intersects.length > 0) {
+        let obj = intersects[0].object;
+        while (obj && typeof obj.userData.roomId !== 'number' && obj.parent) {
+          obj = obj.parent;
+        }
+        if (obj && typeof obj.userData.roomId === 'number') {
+          if (portalProgress < 0.95) triggerEnterPortal();
+          navigateToRoom(obj.userData.roomId);
+        }
+      }
+    });
+
+    // ══════════════════════════════════════════════════════════════
+    // 8. VÒNG LẶP RENDER MƯỢT MÀ 60 FPS
+    // ══════════════════════════════════════════════════════════════
+    function animate() {
+      // 1. Quán tính mở cổng tiền cảnh
+      if (isAutoEntering) {
+        const elapsed = performance.now() - autoEnterStart;
+        const t = Math.min(1, elapsed / 1600);
+        const ease = t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        portalProgress = ease;
+        if (t >= 1) isAutoEntering = false;
+      } else {
+        portalProgress += (targetPortalProgress - portalProgress) * 0.08;
+      }
+
+      // Biến đổi phóng to cổng ảnh tiền cảnh xuyên vào mê cung 3D
+      const scale = 1 + portalProgress * 5.4;
+      const opacity = 1 - portalProgress * 1.35;
+      fgPortal.style.transform = `scale(${scale})`;
+      fgPortal.style.opacity = Math.max(0, opacity);
+      // Mở ngay pointer-events: none khi cổng bắt đầu zoom để không chắn tương tác
+      fgPortal.style.pointerEvents = portalProgress > 0.04 ? 'none' : 'auto';
+
+      // Ẩn dòng chữ gợi ý khi đã bước vào
+      if (enterHint) {
+        enterHint.style.opacity = Math.max(0, 1 - portalProgress * 2.8);
+      }
+
+      // 2. Chuyển động máy ảnh Camera mượt mà
+      if (isTransitioning) {
+        const elapsed = performance.now() - stageStartTime;
+        const progress = Math.min(1, elapsed / stageDuration);
+        const ease = progress * progress * (3 - 2 * progress);
+
+        camera.position.lerpVectors(startPos, endPos, ease);
+        cameraTarget.lerpVectors(startLook, endLook, ease);
+        camera.lookAt(cameraTarget);
+
+        if (progress >= 1) {
+          isTransitioning = false;
+          transitionStage = 0;
+          if (selectedRoom) {
+            roomTitle.textContent = selectedRoom.name;
+            roomDesc.textContent = selectedRoom.desc;
+
+            // Xử lý riêng cho tab "Không gian cho bạn" (ID = 0)
+            const actionWrap = document.querySelector('.room-action-wrap');
+            const oldChoices = document.getElementById('roomChoices');
+            if (oldChoices) oldChoices.remove();
+
+            if (selectedRoom.id === 0 || selectedRoom.id === 1) {
+              roomActionBtn.style.display = 'inline-flex'; // Để lỡ ng dùng đóng carousel vẫn có nút để bấm lại
+
+              const choicesDiv = document.createElement('div');
+              choicesDiv.id = 'roomChoices';
+              choicesDiv.style.position = 'fixed';
+              choicesDiv.style.top = '0';
+              choicesDiv.style.left = '0';
+              choicesDiv.style.width = '100vw';
+              choicesDiv.style.height = '100vh';
+              choicesDiv.style.zIndex = '9999';
+              choicesDiv.style.backdropFilter = 'blur(15px)';
+              choicesDiv.style.background = 'rgba(0,0,0,0.7)';
+              choicesDiv.style.display = 'flex';
+              choicesDiv.style.alignItems = 'center';
+              choicesDiv.style.justifyContent = 'center';
+              choicesDiv.style.opacity = '0';
+              choicesDiv.style.transition = 'opacity 0.4s ease';
+
+              // Nút đóng (Close Button)
+              const closeBtn = document.createElement('button');
+              closeBtn.textContent = '✕ Đóng';
+              closeBtn.style.position = 'absolute';
+              closeBtn.style.top = '30px';
+              closeBtn.style.right = '40px';
+              closeBtn.style.background = 'transparent';
+              closeBtn.style.border = '1px solid rgba(255,255,255,0.4)';
+              closeBtn.style.color = '#fff';
+              closeBtn.style.padding = '8px 20px';
+              closeBtn.style.borderRadius = '30px';
+              closeBtn.style.fontSize = '14px';
+              closeBtn.style.cursor = 'pointer';
+              closeBtn.style.zIndex = '10';
+              closeBtn.style.transition = 'background 0.3s';
+              closeBtn.onmouseenter = () => closeBtn.style.background = 'rgba(255,255,255,0.2)';
+              closeBtn.onmouseleave = () => closeBtn.style.background = 'transparent';
+              closeBtn.onclick = () => {
+                choicesDiv.style.opacity = '0';
+                setTimeout(() => choicesDiv.remove(), 400);
+              };
+              choicesDiv.appendChild(closeBtn);
+
+              const titleEl = document.createElement('h1');
+              titleEl.textContent = selectedRoom.id === 0 ? 'CHỌN CUNG ĐIỆN CHO SẴN' : 'CHỌN KHÔNG GIAN THIẾT KẾ CUNG ĐIỆN CÁ NHÂN';
+              titleEl.style.position = 'absolute';
+              titleEl.style.top = '50px';
+              titleEl.style.color = '#fff';
+              titleEl.style.fontWeight = 'bold';
+              titleEl.style.fontSize = '28px';
+              titleEl.style.letterSpacing = '2px';
+              choicesDiv.appendChild(titleEl);
+
+              let models = [];
+              if (selectedRoom.id === 0) {
+                models = [
+                  { name: "Tầng 1 Nhà Shin", file: "Nhà cửa/Không gian tầng 1 nhà shin.glb", src: "assets/images/shin.jpg" },
+                  { name: "Nhà 1 tầng", file: "Nhà cửa/Nhà 1 tầng.glb", src: "assets/images/modern.jpg" },
+                  { name: "Nhà chó nhút nhát", file: "Nhà cửa/nhà chú chó nhút nhát.glb", src: "assets/images/courage.jpg" },
+                  { name: "Nhà Spongebob", file: "Nhà cửa/nhà dưới biển của spongebob.glb", src: "https://images.unsplash.com/photo-1544377193-33dcf4d68fb5?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Phòng khách Family Guy", file: "Nhà cửa/phòng khách family guy.glb", src: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Map Game 5v5", file: "Game/5vs5/5v5_game_map.glb", src: "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Lớp học nắng", file: "Game/lớp học nắng.glb", src: "https://images.unsplash.com/photo-1580582932707-520aed937b7b?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Phòng mổ kinh dị", file: "Game/phòng mổ kinh di.glb", src: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80" }
+                ];
+              } else if (selectedRoom.id === 1) {
+                models = [
+                  { name: "Bãi cỏ xanh", env: "grass", src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Bầu trời sao", env: "space", src: "https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Studio trắng", env: "studio", src: "https://images.unsplash.com/photo-1513694203232-719a280e022f?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Sa mạc vô tận", env: "desert", src: "https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Bờ biển cát trắng", env: "beach", src: "https://images.unsplash.com/photo-1498623116890-37e912163d5d?auto=format&fit=crop&w=800&q=80" },
+                  { name: "Sân gạch ô", env: "grid", src: "https://images.unsplash.com/photo-1522030299830-16b8d3d049fe?auto=format&fit=crop&w=800&q=80" }
+                ];
+              }
+
+              // Carousel Logic
+              const count = models.length;
+              let isRealDrag = false; // Đưa biến này lên để onClick bắt được
+              const imageWidth = 220;
+              const imageHeight = 320;
+              const spacing = 3;
+              const speed = 7;
+              const direction = "right";
+              const tilt = -7;
+              const cornerRadius = 24;
+              const innerDim = 3.5;
+
+              const angle = 360 / count;
+              const factor = 1 + spacing * 0.15;
+              const radius = (imageWidth * factor) / (2 * Math.tan(Math.PI / count));
+              const degPerSec = speed * 6 * (direction === "left" ? -1 : 1);
+
+              const carouselContainer = document.createElement('div');
+              carouselContainer.style.width = '100%';
+              carouselContainer.style.height = '100%';
+              carouselContainer.style.display = 'flex';
+              carouselContainer.style.alignItems = 'center';
+              carouselContainer.style.justifyContent = 'center';
+              carouselContainer.style.perspective = '3000px';
+              carouselContainer.style.cursor = 'grab';
+              carouselContainer.style.touchAction = 'none';
+
+              const tiltDiv = document.createElement('div');
+              tiltDiv.style.transformStyle = 'preserve-3d';
+              tiltDiv.style.transform = `rotateX(${tilt}deg)`;
+
+              const ringDiv = document.createElement('div');
+              ringDiv.style.position = 'relative';
+              ringDiv.style.width = `${imageWidth}px`;
+              ringDiv.style.height = `${imageHeight}px`;
+              ringDiv.style.transformStyle = 'preserve-3d';
+
+              models.forEach((img, i) => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'carousel-item';
+                itemDiv.dataset.url = "app/index.html?model=" + encodeURIComponent("model không gian 3d/" + img.file);
+                itemDiv.style.position = 'absolute';
+                itemDiv.style.inset = '0';
+                itemDiv.style.transform = `rotateY(${i * angle}deg) translateZ(${radius}px)`;
+                itemDiv.style.transformStyle = 'preserve-3d';
+
+                itemDiv.style.cursor = 'pointer';
+                itemDiv.title = img.name;
+
+                itemDiv.onclick = (e) => {
+                  // Chỉ chuyển trang nếu không phải đang vuốt
+                  if (!isRealDrag) {
+                    const baseUrl = selectedRoom.id === 1
+                      ? "builder.html?env=" + img.env
+                      : "app/index.html?model=" + encodeURIComponent("model không gian 3d/" + img.file);
+                    showLessonPicker(img.name, baseUrl);
+                  }
+                };
+
+                // Hover effect scale
+                itemDiv.onmouseenter = () => itemDiv.style.transform = `rotateY(${i * angle}deg) translateZ(${radius}px) scale(1.05)`;
+                itemDiv.onmouseleave = () => itemDiv.style.transform = `rotateY(${i * angle}deg) translateZ(${radius}px) scale(1.0)`;
+                itemDiv.style.transition = 'transform 0.3s ease';
+
+                const frontFace = document.createElement('div');
+                frontFace.style.position = 'absolute';
+                frontFace.style.inset = '0';
+                frontFace.style.borderRadius = `${cornerRadius}px`;
+                frontFace.style.overflow = 'hidden';
+                frontFace.style.backfaceVisibility = 'hidden';
+                frontFace.style.backgroundSize = 'cover';
+                frontFace.style.backgroundPosition = 'center';
+                frontFace.style.backgroundImage = `url(${img.src})`;
+                frontFace.style.boxShadow = "0 15px 35px rgba(0,0,0,0.6)";
+
+                const backFace = document.createElement('div');
+                backFace.style.position = 'absolute';
+                backFace.style.inset = '0';
+                backFace.style.borderRadius = `${cornerRadius}px`;
+                backFace.style.overflow = 'hidden';
+                backFace.style.backfaceVisibility = 'hidden';
+                backFace.style.backgroundSize = 'cover';
+                backFace.style.backgroundPosition = 'center';
+                backFace.style.backgroundImage = `url(${img.src})`;
+                backFace.style.transform = 'rotateY(180deg)';
+                backFace.style.filter = `brightness(${innerDim / 10})`;
+
+                const label = document.createElement('div');
+                label.textContent = img.name;
+                label.style.position = 'absolute';
+                label.style.bottom = '-40px';
+                label.style.width = '100%';
+                label.style.textAlign = 'center';
+                label.style.color = '#fff';
+                label.style.fontSize = '16px';
+                label.style.fontWeight = 'bold';
+                label.style.backfaceVisibility = 'hidden';
+                label.style.textShadow = '0 2px 8px rgba(0,0,0,0.8)';
+
+                itemDiv.appendChild(frontFace);
+                itemDiv.appendChild(backFace);
+                itemDiv.appendChild(label);
+                ringDiv.appendChild(itemDiv);
+              });
+
+              tiltDiv.appendChild(ringDiv);
+              carouselContainer.appendChild(tiltDiv);
+              choicesDiv.appendChild(carouselContainer);
+
+              let rotY = 0;
+              let vel = 0;
+              let lastTime = 0;
+              let isDragging = false;
+              let startX = 0;
+              let rafId = null;
+
+              carouselContainer.onpointerdown = (e) => {
+                isDragging = true;
+                isRealDrag = false;
+                startX = e.clientX;
+                vel = 0;
+                carouselContainer.style.cursor = 'grabbing';
+              };
+
+              carouselContainer.onpointermove = (e) => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                if (Math.abs(dx) > 15) isRealDrag = true;
+                startX = e.clientX;
+                
+                // Tỉ lệ kéo 1-1 mượt mà hơn (kéo bao nhiêu xoay bấy nhiêu)
+                const k = 0.5;
+                rotY += dx * k;
+                
+                // Lưu lại vận tốc quán tính khi buông tay
+                vel = dx * k * 45;
+              };
+
+              carouselContainer.onpointerup = (e) => {
+                isDragging = false;
+                carouselContainer.style.cursor = 'grab';
+              };
+
+              // Lắng nghe chuột rời khỏi cửa sổ để huỷ drag
+              window.addEventListener('pointerup', (e) => {
+                if (isDragging) {
+                  isDragging = false;
+                  carouselContainer.style.cursor = 'grab';
+                }
+              });
+
+              carouselContainer.onpointercancel = carouselContainer.onpointerup;
+
+              const applyTransform = () => {
+                ringDiv.style.transform = `translateZ(${-radius}px) rotateY(${rotY}deg)`;
+              };
+
+              const draw = (now) => {
+                const dt = lastTime ? (now - lastTime) / 1000 : 0;
+                lastTime = now;
+                const f = Math.min(dt, 0.1);
+                if (!isDragging) {
+                  if (Math.abs(vel) > 0.01) {
+                    rotY += vel * f;
+                    vel *= 0.94;
+                  } else {
+                    rotY += degPerSec * f;
+                  }
+                }
+                applyTransform();
+                rafId = requestAnimationFrame(draw);
+              };
+
+              applyTransform();
+              rafId = requestAnimationFrame(draw);
+
+              const observer = new MutationObserver(() => {
+                if (!document.body.contains(choicesDiv)) {
+                  cancelAnimationFrame(rafId);
+                  observer.disconnect();
+                }
+              });
+              observer.observe(document.body, { childList: true, subtree: true });
+
+              document.body.appendChild(choicesDiv);
+              setTimeout(() => {
+                choicesDiv.style.opacity = '1';
+              }, 50);
+
+              // Cập nhật lại nút cơ bản trên panel
+              roomActionBtn.textContent = 'Mở lại vòng xoay chọn không gian ↗';
+              roomActionBtn.onclick = (e) => {
+                e.preventDefault();
+                // Bấm thì nhảy ra lại cái div này (có thể kích hoạt lại navigateToRoom)
+                navigateToRoom(selectedRoom.id);
+              };
+
+            } else if (selectedRoom.id === 2) {
+              // Tự động mở Kho tri thức Chủ Đề 3 chuẩn Loci ngay trong portal!
+              openChude3KnowledgeModal('bai_6');
+              roomActionBtn.style.display = 'inline-flex';
+              roomActionBtn.href = '#';
+              roomActionBtn.textContent = 'Mở Lại Kho Tri Thức Chủ Đề 3 📜';
+              roomActionBtn.onclick = (e) => {
+                e.preventDefault();
+                openChude3KnowledgeModal('bai_6');
+              };
+            } else {
+              roomActionBtn.style.display = 'inline-flex';
+              roomActionBtn.href = selectedRoom.url;
+              roomActionBtn.textContent = selectedRoom.btnText;
+              roomActionBtn.onclick = null;
+            }
+
+            roomCardPanel.classList.add('active');
+          }
+        }
+      }
+
+      // 3. Bầu trời mây trắng trôi chậm rãi kỳ ảo
+      if (skyDome) {
+        skyDome.rotation.y += 0.00012;
+      }
+
+      // 4. Hiệu ứng hạt bụi tri thức trôi lơ lửng (tối ưu xoay toàn khối 0% lag)
+      const timeSec = performance.now() * 0.001;
+      particleSystem.rotation.y = timeSec * 0.03;
+      particleSystem.position.y = Math.sin(timeSec * 0.5) * 0.15;
+
+      // 5. Chuyển động nhẹ nhàng của các tác phẩm điêu khắc nghệ thuật
+      pedestals.forEach((p) => {
+        const anim = p.monument.animatedParts;
+        if (!anim) return;
+        if (anim.type === 'astrolabe') {
+          anim.sphereGroup.rotation.y = timeSec * 0.35;
+          anim.ring1.rotation.x = Math.sin(timeSec * 0.4) * 0.25;
+          anim.ring2.rotation.y = timeSec * 0.5;
+          anim.prism.rotation.y = -timeSec * 0.7;
+          anim.prism.position.y = Math.sin(timeSec * 1.5) * 0.05;
+        } else if (anim.type === 'starMonument') {
+          anim.starGroup.rotation.y = timeSec * 0.25;
+          anim.starGroup.position.y = 2.85 + Math.sin(timeSec * 1.2) * 0.03;
+        } else if (anim.type === 'flame') {
+          anim.flameGroup.rotation.y = timeSec * 0.45;
+          anim.flameGroup.scale.set(
+            1 + Math.sin(timeSec * 3) * 0.025,
+            1 + Math.cos(timeSec * 2.5) * 0.04,
+            1 + Math.sin(timeSec * 3) * 0.025
+          );
+        } else if (anim.type === 'mobius') {
+          anim.mindGroup.rotation.y = timeSec * 0.4;
+          anim.mindGroup.rotation.z = Math.sin(timeSec * 0.5) * 0.18;
+          anim.core.rotation.x = -timeSec * 0.6;
+          anim.core.position.y = Math.sin(timeSec * 1.4) * 0.04;
+        }
+      });
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    // Xử lý thay đổi kích thước màn hình
+    window.addEventListener('resize', () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    
+    // ══════════════════════════════════════════════════════════════
+    // HỆ THỐNG ĐIỀU KHIỂN BẢO TÀNG TRI THỨC LOCI CHỦ ĐỀ 3
+    // ══════════════════════════════════════════════════════════════
+    let currentChude3LessonKey = 'bai_6';
+    let currentChude3AnchorIndex = 0;
+    let currentChude3Mode = 'loci'; // 'loci' | 'flashcards' | 'quiz' | 'textbook'
+    let currentQuizAnswers = {}; // { [questionIdx]: selectedOptIdx }
+
+    const CHUDE3_LESSON_KEYS = ['bai_6', 'bai_7', 'bai_8', 'bai_9'];
+
+    function getLociData() {
+      if (typeof window !== 'undefined' && window.LOCI_ANCHORS) {
+        return window.LOCI_ANCHORS;
+      }
+      return null;
+    }
+
+    function openChude3KnowledgeModal(lessonKey = 'bai_6') {
+      currentChude3LessonKey = lessonKey;
+      currentChude3AnchorIndex = 0;
+      currentQuizAnswers = {};
+      renderChude3LessonTabs();
+      renderChude3CurrentView();
+      const modal = document.getElementById('chude3Modal');
+      if (modal) {
+        modal.classList.add('active');
+      }
+    }
+
+    function closeChude3KnowledgeModal() {
+      const modal = document.getElementById('chude3Modal');
+      if (modal) {
+        modal.classList.remove('active');
+      }
+    }
+
+    function selectChude3Lesson(lessonKey) {
+      currentChude3LessonKey = lessonKey;
+      currentChude3AnchorIndex = 0;
+      currentQuizAnswers = {};
+      renderChude3LessonTabs();
+      renderChude3CurrentView();
+    }
+
+    function setChude3Mode(mode) {
+      currentChude3Mode = mode;
+      document.querySelectorAll('.chude3-mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+      renderChude3CurrentView();
+    }
+
+    function renderChude3LessonTabs() {
+      const nav = document.getElementById('chude3LessonNav');
+      if (!nav) return;
+      const data = getLociData();
+      if (!data) return;
+
+      nav.innerHTML = CHUDE3_LESSON_KEYS.map(key => {
+        const lesson = data[key];
+        if (!lesson) return '';
+        const isActive = key === currentChude3LessonKey;
+        const total = lesson.anchors ? lesson.anchors.length : 0;
+        return `
+          <button class="chude3-lesson-tab ${isActive ? 'active' : ''}" onclick="selectChude3Lesson('${key}')">
+            <span>${lesson.icon || '📌'}</span>
+            <span>${lesson.title.split(':')[0]}: ${lesson.title.split(':')[1] ? lesson.title.split(':')[1].trim() : ''}</span>
+            <span class="badge-count">${total} mốc</span>
+          </button>
+        `;
+      }).join('');
+
+      // Cập nhật title sub-bar
+      const curLesson = data[currentChude3LessonKey];
+      if (curLesson) {
+        const titleEl = document.getElementById('curLessonTitle');
+        const subEl = document.getElementById('curLessonSub');
+        if (titleEl) titleEl.textContent = curLesson.title;
+        if (subEl) subEl.textContent = `${curLesson.chuDe} • ${curLesson.anchors ? curLesson.anchors.length : 0} mốc neo Loci chuẩn hóa`;
+      }
+    }
+
+    function renderChude3CurrentView() {
+      const body = document.getElementById('chude3Body');
+      if (!body) return;
+      const data = getLociData();
+      if (!data || !data[currentChude3LessonKey]) {
+        body.innerHTML = '<div style="text-align:center; padding: 40px; color:#ffb088;">Đang tải dữ liệu tri thức Loci...</div>';
+        return;
+      }
+
+      const lesson = data[currentChude3LessonKey];
+
+      if (currentChude3Mode === 'loci') {
+        renderLociView(body, lesson);
+      } else if (currentChude3Mode === 'flashcards') {
+        renderFlashcardsView(body, lesson);
+      } else if (currentChude3Mode === 'quiz') {
+        renderQuizView(body, lesson);
+      } else if (currentChude3Mode === 'textbook') {
+        renderTextbookView(body, lesson);
+      }
+    }
+
+    // 1. Chế độ Xem Mốc Neo Loci & Hành Trình Cung Điện
+    function renderLociView(container, lesson) {
+      const anchors = lesson.anchors || [];
+      if (anchors.length === 0) {
+        container.innerHTML = '<div>Chưa có mốc nào cho bài học này.</div>';
+        return;
+      }
+
+      if (currentChude3AnchorIndex >= anchors.length) {
+        currentChude3AnchorIndex = 0;
+      }
+      const anchor = anchors[currentChude3AnchorIndex];
+
+      // Stepper Bar
+      const stepperHtml = `
+        <div class="loci-stepper">
+          ${anchors.map((anc, idx) => {
+            const isActive = idx === currentChude3AnchorIndex;
+            return `
+              <div class="loci-step-pill ${isActive ? 'active' : ''}" onclick="selectChude3Anchor(${idx})">
+                <div class="loci-step-num">${idx + 1}</div>
+                <div class="loci-step-label">${anc.icon || '✦'} ${anc.title}</div>
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+
+      // Quick Flashcard (Lấy thẻ đầu tiên của mốc nếu có)
+      let quickFcHtml = '';
+      if (anchor.flashcards && anchor.flashcards.length > 0) {
+        const fc = anchor.flashcards[0];
+        quickFcHtml = `
+          <div class="loci-box">
+            <div class="loci-box-title">🗂️ Thẻ Ghi Nhớ Nhanh (Chạm Để Lật)</div>
+            <div class="loci-quick-flashcard-wrap" onclick="this.classList.toggle('flipped')">
+              <div class="loci-quick-flashcard-inner">
+                <div class="loci-quick-flashcard-front">
+                  <span style="font-size:0.68rem; color:#ffd700; margin-bottom:6px; font-weight:700;">❓ CÂU HỎI THI</span>
+                  <div style="font-size:0.86rem; font-weight:700; line-height:1.45;">${fc.front}</div>
+                  <span style="font-size:0.68rem; color:rgba(255,255,255,0.45); margin-top:8px;">↻ Nhấp để xem đáp án</span>
+                </div>
+                <div class="loci-quick-flashcard-back">
+                  <span style="font-size:0.68rem; color:#4ade80; margin-bottom:6px; font-weight:700;">✓ ĐÁP ÁN CHUẨN</span>
+                  <div style="font-size:0.84rem; line-height:1.45;">${fc.back}</div>
+                  <span style="font-size:0.68rem; color:rgba(255,255,255,0.45); margin-top:8px;">↺ Nhấp để quay lại</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Quick Quiz (Lấy câu hỏi trắc nghiệm đầu tiên của mốc)
+      let quickQuizHtml = '';
+      if (anchor.quiz && anchor.quiz.length > 0) {
+        const q = anchor.quiz[0];
+        const qId = `q_quick_${currentChude3AnchorIndex}`;
+        const answered = currentQuizAnswers[qId];
+        quickQuizHtml = `
+          <div class="loci-box" style="margin-top:12px;">
+            <div class="loci-box-title">❓ Câu Hỏi Trắc Nghiệm Mẫu</div>
+            <div style="font-size:0.86rem; font-weight:700; color:#fff5e0; margin-bottom:8px;">${q.question}</div>
+            <div style="display:flex; flex-direction:column; gap:6px;">
+              ${q.options.map((opt, optIdx) => {
+                let cls = '';
+                if (answered !== undefined) {
+                  if (optIdx === q.correct) cls = 'correct';
+                  else if (answered === optIdx) cls = 'wrong';
+                }
+                return `
+                  <button class="quiz-opt-btn ${cls}" onclick="answerAnchorQuiz('${qId}', ${optIdx}, ${q.correct})">
+                    <span>${opt}</span>
+                    ${cls === 'correct' ? '<span>✓</span>' : (cls === 'wrong' ? '<span>✕</span>' : '')}
+                  </button>
+                `;
+              }).join('')}
+            </div>
+            ${answered !== undefined ? `
+              <div class="quiz-explanation-box" style="margin-top:8px;">
+                <strong>💡 Giải thích:</strong> ${q.explanation}
+              </div>
+            ` : ''}
+          </div>
+        `;
+      }
+
+      // Card Content
+      const cardHtml = `
+        <div class="loci-anchor-card">
+          <div class="loci-anchor-top">
+            <div class="loci-anchor-title-wrap">
+              <span class="loci-anchor-ord-badge">MỐC NEO LOCI #${anchor.order || currentChude3AnchorIndex + 1} / ${anchors.length}</span>
+              <h3 class="loci-anchor-heading">${anchor.icon || '📌'} ${anchor.title}</h3>
+            </div>
+          </div>
+
+          <div class="loci-summary-quote">
+            <strong>Tóm lược cốt lõi:</strong> ${anchor.summary}
+          </div>
+
+          <div class="loci-2col-grid">
+            <!-- Cột trái: Luận điểm + Mẹo ghi nhớ Loci -->
+            <div style="display:flex; flex-direction:column; gap:14px;">
+              <div class="loci-box">
+                <div class="loci-box-title">📌 Luận Điểm Then Chốt Cần Nhớ</div>
+                <ul class="loci-keypoints-list">
+                  ${(anchor.keyPoints || []).map(pt => `<li>${pt}</li>`).join('')}
+                </ul>
+              </div>
+
+              <div class="loci-mnemonic-box">
+                <div class="loci-mnemonic-title">💡 GỢI NHỚ LOCI CUNG ĐIỆN</div>
+                <div class="loci-mnemonic-text">${anchor.mnemonic || 'Hãy gắn vị trí này với hình ảnh trực quan sinh động trong căn phòng của bạn.'}</div>
+              </div>
+            </div>
+
+            <!-- Cột phải: Flashcard & Trắc nghiệm nhanh -->
+            <div>
+              ${quickFcHtml}
+              ${quickQuizHtml}
+            </div>
+          </div>
+
+          <!-- Bottom Nav -->
+          <div class="loci-anchor-nav">
+            <button class="loci-nav-btn" onclick="prevChude3Anchor()" ${currentChude3AnchorIndex === 0 ? 'disabled' : ''}>
+              <span>⬅ Mốc Trước</span>
+            </button>
+            <span class="loci-counter-text">Mốc ${currentChude3AnchorIndex + 1} / ${anchors.length}</span>
+            <button class="loci-nav-btn" onclick="nextChude3Anchor()" ${currentChude3AnchorIndex === anchors.length - 1 ? 'disabled' : ''}>
+              <span>Mốc Tiếp Theo ➡</span>
+            </button>
+          </div>
+        </div>
+      `;
+
+      container.innerHTML = stepperHtml + cardHtml;
+    }
+
+    function selectChude3Anchor(idx) {
+      currentChude3AnchorIndex = idx;
+      renderChude3CurrentView();
+    }
+
+    function nextChude3Anchor() {
+      const data = getLociData();
+      if (!data || !data[currentChude3LessonKey]) return;
+      const anchors = data[currentChude3LessonKey].anchors || [];
+      if (currentChude3AnchorIndex < anchors.length - 1) {
+        currentChude3AnchorIndex++;
+        renderChude3CurrentView();
+      }
+    }
+
+    function prevChude3Anchor() {
+      if (currentChude3AnchorIndex > 0) {
+        currentChude3AnchorIndex--;
+        renderChude3CurrentView();
+      }
+    }
+
+    function answerAnchorQuiz(qId, optIdx, correctIdx) {
+      if (currentQuizAnswers[qId] !== undefined) return;
+      currentQuizAnswers[qId] = optIdx;
+      renderChude3CurrentView();
+    }
+
+    // 2. Chế độ Xem Flashcards Toàn Diện
+    function renderFlashcardsView(container, lesson) {
+      const anchors = lesson.anchors || [];
+      let allFlashcards = [];
+      anchors.forEach((anc, aIdx) => {
+        (anc.flashcards || []).forEach((fc, fcIdx) => {
+          allFlashcards.push({
+            anchorTitle: anc.title,
+            anchorOrder: anc.order || aIdx + 1,
+            front: fc.front,
+            back: fc.back
+          });
+        });
+      });
+
+      if (allFlashcards.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:#c4b097;">Chưa có thẻ flashcard nào cho bài học này.</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div style="margin-bottom:14px; font-size:0.84rem; color:#ffd700; font-weight:700;">
+          Tổng cộng ${allFlashcards.length} thẻ ghi nhớ • Nhấp vào thẻ để lật qua lại giữa câu hỏi và đáp án
+        </div>
+        <div class="flashcards-grid">
+          ${allFlashcards.map(fc => `
+            <div class="fc-card" onclick="this.classList.toggle('flipped')">
+              <div class="fc-inner">
+                <div class="fc-front">
+                  <div class="fc-badge">Mốc ${fc.anchorOrder}: ${fc.anchorTitle}</div>
+                  <div class="fc-q-text">${fc.front}</div>
+                  <div class="fc-hint-flip">↻ Chạm để xem lời giải</div>
+                </div>
+                <div class="fc-back">
+                  <div class="fc-badge">ĐÁP ÁN CHUẨN SGK</div>
+                  <div class="fc-q-text" style="font-size:0.86rem; font-weight:500;">${fc.back}</div>
+                  <div class="fc-hint-flip">↺ Chạm để quay lại</div>
+                </div>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // 3. Chế độ Trắc Nghiệm Ôn Luyện THPT
+    function renderQuizView(container, lesson) {
+      const anchors = lesson.anchors || [];
+      let allQuestions = [];
+      anchors.forEach((anc, aIdx) => {
+        (anc.quiz || []).forEach(q => {
+          allQuestions.push({
+            anchorTitle: anc.title,
+            anchorOrder: anc.order || aIdx + 1,
+            question: q.question,
+            options: q.options,
+            correct: q.correct,
+            explanation: q.explanation
+          });
+        });
+      });
+
+      if (allQuestions.length === 0) {
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:#c4b097;">Chưa có câu hỏi trắc nghiệm nào cho bài học này.</div>';
+        return;
+      }
+
+      let answeredCount = 0;
+      let correctCount = 0;
+      allQuestions.forEach((_, idx) => {
+        const ans = currentQuizAnswers[`full_q_${idx}`];
+        if (ans !== undefined) {
+          answeredCount++;
+          if (ans === allQuestions[idx].correct) correctCount++;
+        }
+      });
+
+      container.innerHTML = `
+        <div class="quiz-container">
+          <div class="quiz-stats-card">
+            <div class="quiz-stat-item">📝 Tổng số câu: ${allQuestions.length}</div>
+            <div class="quiz-stat-item">🎯 Đã làm: ${answeredCount}/${allQuestions.length}</div>
+            <div class="quiz-stat-item" style="color:#4ade80;">✓ Đúng: ${correctCount}</div>
+            <button class="loci-nav-btn" onclick="resetLessonQuiz()" style="padding:6px 14px; font-size:0.75rem;">
+              <span>Làm Lại Toàn Bộ ↺</span>
+            </button>
+          </div>
+
+          ${allQuestions.map((q, qIdx) => {
+            const qKey = `full_q_${qIdx}`;
+            const userChoice = currentQuizAnswers[qKey];
+            return `
+              <div class="quiz-item-box">
+                <div style="font-size:0.72rem; color:#ffd700; font-weight:700;">
+                  CÂU ${qIdx + 1} • MỐC ${q.anchorOrder}: ${q.anchorTitle}
+                </div>
+                <div class="quiz-question-title">${q.question}</div>
+                <div class="quiz-options-list">
+                  ${q.options.map((opt, optIdx) => {
+                    let cls = '';
+                    if (userChoice !== undefined) {
+                      if (optIdx === q.correct) cls = 'correct';
+                      else if (userChoice === optIdx) cls = 'wrong';
+                    }
+                    return `
+                      <button class="quiz-opt-btn ${cls}" onclick="answerFullQuiz('${qKey}', ${optIdx}, ${q.correct})">
+                        <span>${opt}</span>
+                        ${cls === 'correct' ? '<span>✓</span>' : (cls === 'wrong' ? '<span>✕</span>' : '')}
+                      </button>
+                    `;
+                  }).join('')}
+                </div>
+                ${userChoice !== undefined ? `
+                  <div class="quiz-explanation-box">
+                    <strong>💡 Lời giải chi tiết:</strong> ${q.explanation}
+                  </div>
+                ` : ''}
+              </div>
+            `;
+          }).join('')}
+        </div>
+      `;
+    }
+
+    function answerFullQuiz(qKey, optIdx, correctIdx) {
+      if (currentQuizAnswers[qKey] !== undefined) return;
+      currentQuizAnswers[qKey] = optIdx;
+      renderChude3CurrentView();
+    }
+
+    function resetLessonQuiz() {
+      currentQuizAnswers = {};
+      renderChude3CurrentView();
+    }
+
+    // 4. Chế độ Toàn Văn SGK Chuẩn
+    function renderTextbookView(container, lesson) {
+      const anchors = lesson.anchors || [];
+      container.innerHTML = `
+        <div class="textbook-doc">
+          <h2>${lesson.title}</h2>
+          <p style="font-size:0.95rem; font-weight:600; color:#ffd700; margin-bottom:20px;">
+            ${lesson.chuDe}
+          </p>
+
+          ${anchors.map((anc, idx) => `
+            <div style="margin-bottom:30px; padding-bottom:20px; border-bottom:1px solid rgba(212,175,55,0.2);">
+              <h3 style="color:#ffefa8; display:flex; align-items:center; gap:8px;">
+                <span>${anc.icon || '📌'}</span>
+                <span>Mục ${idx + 1}: ${anc.title}</span>
+              </h3>
+              <div style="background:rgba(0,0,0,0.3); padding:10px 16px; border-radius:10px; margin:10px 0; border-left:3px solid #d4af37; font-size:0.86rem; color:#ffeed4;">
+                <strong>Tóm lược mốc neo:</strong> ${anc.summary}
+              </div>
+              <div style="margin-top:14px;">
+                ${anc.detailContent || ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Lắng nghe phím ESC để đóng modal
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeChude3KnowledgeModal();
+      }
+    });
+
+
+    animate();
+  </script>
+</body>
+
+</html>

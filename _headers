@@ -1,0 +1,4 @@
+/*
+  Access-Control-Allow-Origin: *
+  Permissions-Policy: xr-spatial-tracking=*, microphone=*
+  X-Content-Type-Options: nosniff
