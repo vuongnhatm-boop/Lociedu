@@ -13389,6 +13389,8 @@ stationGroup.add(contentGroup);
     let lastCamMouseX = 0;
     let lastCamMouseY = 0;
 
+    window._lastPMCheck = 0;
+    let _lastPMCheck = 0;
     window.addEventListener('pointermove', (e) => {
       // 1. Đang kéo thả mốc ký ức
       if (draggingMarker) {
@@ -13423,8 +13425,8 @@ stationGroup.add(contentGroup);
       // Throttled: Chỉ kiểm tra gợi ý con trỏ mỗi 150ms để không nghẽn CPU
       if (!isPointerLocked && !pendingPlacingAnchor && e.target === renderer.domElement) {
         const _nowPM = performance.now();
-        if (_nowPM - (_lastPMCheck || 0) > 150) {
-          _lastPMCheck = _nowPM;
+        if (_nowPM - (window._lastPMCheck || 0) > 150) {
+          window._lastPMCheck = _nowPM;
           renderer.domElement.style.cursor = pickMarkerAtEvent(e) ? 'grab' : 'default';
         }
       }
@@ -17037,6 +17039,8 @@ stationGroup.add(contentGroup);
       if (placingHudBanner) placingHudBanner.style.display = 'none';
     }
 
+    window._lastPMCheck = 0;
+    let _lastPMCheck = 0;
     window.addEventListener('pointermove', (e) => {
       if (pendingPlacingAnchor && ghostMarker) {
         updateGhostMarkerPosition(e);
@@ -18893,6 +18897,8 @@ stationGroup.add(contentGroup);
       joystickActive = true;
       updateJoystick(e);
     }, { passive: true });
+    window._lastPMCheck = 0;
+    let _lastPMCheck = 0;
     window.addEventListener('pointermove', (e) => {
       if (!joystickActive) return;
       updateJoystick(e);
