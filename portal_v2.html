@@ -35,11 +35,11 @@
                     score: 3850,
                     streak: 21,
                     quiz: 98,
-                    level: 'LV.10 👑 Quán Quân',
+                    level: 'LV.10 Quán Quân',
                     role: 'Quán quân toàn hệ thống',
                     avatar: 'K',
                     bg: 'linear-gradient(135deg, #f59e0b, #d97706)',
-                    badges: ['👑 Quán Quân', '⚡ Bậc Thầy Loci', '🔥 Chuỗi 21 Ngày']
+                    badges: ['Quán Quân', 'Bậc Thầy Loci', 'Chuỗi 21 Ngày']
                 },
                 's2': {
                     uid: 'student_phuonglinh_s2',
@@ -49,11 +49,11 @@
                     score: 3420,
                     streak: 18,
                     quiz: 95,
-                    level: 'LV.8 🥈 Á Quân',
+                    level: 'LV.8 Á Quân',
                     role: 'Á quân toàn hệ thống',
                     avatar: 'L',
                     bg: 'linear-gradient(135deg, #10b981, #059669)',
-                    badges: ['🥈 Á Quân', '🏛️ Kiến Trúc Sư', '🔥 Chuỗi 18 Ngày']
+                    badges: ['Á Quân', 'Kiến Trúc Sư', 'Chuỗi 18 Ngày']
                 },
                 's3': {
                     uid: 'student_hoangnam_s3',
@@ -63,11 +63,11 @@
                     score: 3180,
                     streak: 15,
                     quiz: 94,
-                    level: 'LV.7 🥉 Quý Quân',
+                    level: 'LV.7 Quý Quân',
                     role: 'Quý quân toàn hệ thống',
                     avatar: 'N',
                     bg: 'linear-gradient(135deg, #0284c7, #0369a1)',
-                    badges: ['🥉 Quý Quân', '🧠 Siêu Ký Ức', '🔥 Chuỗi 15 Ngày']
+                    badges: ['Quý Quân', 'Siêu Ký Ức', 'Chuỗi 15 Ngày']
                 },
                 'me': {
                     uid: 'student_nhuanh_me',
@@ -77,11 +77,11 @@
                     score: 1850,
                     streak: 7,
                     quiz: 90,
-                    level: 'LV.4 ✨ Chiến Binh',
+                    level: 'LV.4 Chiến Binh',
                     role: 'Học sinh Lớp 12A3 - Khóa 2009',
                     avatar: 'A',
                     bg: 'linear-gradient(135deg, #0284c7, #38bdf8)',
-                    badges: ['✨ Khóa 2K9', '🎯 Đạt 9+ Sử', '🔥 Chuỗi 7 Ngày']
+                    badges: ['Khóa 2K9', 'Đạt 9+ Sử', 'Chuỗi 7 Ngày']
                 }
             };
 
@@ -114,7 +114,7 @@
             if (window.renderOverviewTop3) window.renderOverviewTop3();
 
             // Thông báo
-            alert('🎉 Đăng nhập thành công với tư cách: ' + s.displayName + ' (' + s.role + ')');
+            alert('Đăng nhập thành công với tư cách: ' + s.displayName + ' (' + s.role + ')');
 
             // Đồng bộ sang appFrame nếu đang mở tab Kết nối
             const appFrame = document.getElementById('app-frame');
@@ -11601,6 +11601,22 @@
             }
         }
     </style>
+<style>
+        /* Chuẩn hóa Avatar tròn, cắt tâm ảnh 100% không méo, không sọc */
+        #user-avatar, #modal-user-avatar, #head-user-avatar, #setting-avatar-preview, .avatar {
+            background-size: cover !important;
+            background-position: center !important;
+            background-repeat: no-repeat !important;
+            border-radius: 50% !important;
+            overflow: hidden !important;
+            display: grid !important;
+            place-items: center !important;
+        }
+        #user-avatar-wrap {
+            overflow: hidden !important;
+            border-radius: 50% !important;
+        }
+    </style>
 </head>
 
 <body>
@@ -11666,13 +11682,13 @@
                     </button>
                     <div class="topbar-dropdown-menu" id="dropdown-menu-community">
                         <button class="topbar-dropdown-item nav-item" data-tab="connect">
-                            <span>🏆 Kết Nối &amp; Vinh Danh</span>
+                            <span>Kết Nối &amp; Vinh Danh</span>
                         </button>
                         <button class="topbar-dropdown-item" onclick="window.openFeedbackModal()">
                             <span>Góp ý &amp; Đánh giá website</span>
                         </button>
                         <button class="topbar-dropdown-item" onclick="window.openCommunityTrendsModal()">
-                            <span>🔥 Xu hướng ôn tập cộng đồng</span>
+                            <span>Xu hướng ôn tập cộng đồng</span>
                         </button>
                         <a class="topbar-dropdown-item admin-only-item" id="sidebar-admin-link" href="quan_tri.html"
                             style="display:none;">
@@ -11746,7 +11762,7 @@
                         </p>
                         <div class="thpt-cd-cta-wrap">
                             <a href="index.html" class="thpt-cd-cta-green" title="Bước vào Cung điện Ký ức 3D ôn ngay">
-                                <span>🚀</span>
+                                
                                 <span>Vào Phòng 3D Ôn Ngay</span>
                             </a>
                         </div>
@@ -11841,13 +11857,13 @@
                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 8px;">
                     <h3
                         style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
-                        <span>🌐</span> Không gian 360° Trực tuyến (Cloud)
+                        Không gian 360° Trực tuyến
                     </h3>
                     <a href="khong_gian_360.html"
                         style="font-size: 13px; font-weight: 700; color: #0284c7; text-decoration: none; display: flex; align-items: center; gap: 4px; background: rgba(2,132,199,0.08); padding: 5px 12px; border-radius: 99px; transition: all 0.2s;"
                         onmouseover="this.style.background='rgba(2,132,199,0.15)'"
                         onmouseout="this.style.background='rgba(2,132,199,0.08)'">
-                        <span>📸</span> Tự chụp / Tải ảnh 360° <span>➔</span>
+                        Tự chụp / Tải ảnh 360° <span>➔</span>
                     </a>
                 </div>
                 <div class="space-grid" id="cloud-spaces-grid" style="margin-bottom: 28px;">
@@ -11863,7 +11879,7 @@
                 <div id="my-spaces-header" style="display: none; margin-bottom: 14px;">
                     <h3
                         style="font-size: 15px; font-weight: 800; color: #0f172a; margin: 0; display: flex; align-items: center; gap: 8px;">
-                        <span>📁</span> Không gian của bạn (Đã lưu trên máy này)
+                        Không gian của bạn (Đã lưu trên máy)
                     </h3>
                 </div>
                 <div class="space-grid" id="my-spaces-grid"></div>
@@ -12071,13 +12087,13 @@
                             </p>
                             <div style="display:flex; gap:10px; flex-wrap:wrap;">
                                 <div style="display:flex; align-items:center; gap:8px; background:#eff8f5; border:1px solid #a7f3d0; border-radius:10px; padding:7px 13px; font-size:13px; font-weight:600; color:#065f46;">
-                                    🗺️ Tạo không gian 3D
+                                    Tạo không gian 3D
                                 </div>
                                 <div style="display:flex; align-items:center; gap:8px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:7px 13px; font-size:13px; font-weight:600; color:#075985;">
-                                    📌 Gắn mốc kiến thức
+                                    Gắn mốc kiến thức
                                 </div>
                                 <div style="display:flex; align-items:center; gap:8px; background:#faf5ff; border:1px solid #d8b4fe; border-radius:10px; padding:7px 13px; font-size:13px; font-weight:600; color:#6b21a8;">
-                                    🔗 Liên kết &amp; Ôn tập SM-2
+                                    Liên kết &amp; Ôn tập SM-2
                                 </div>
                             </div>
                         </div>
@@ -12697,7 +12713,7 @@
                             </div>
                             <div class="diagram-actions">
                                 <a href="trinh_chieu_loci.html" target="_blank" class="btn-diagram-expand">
-                                    🖥️ Xem Trình Chiếu Toàn Màn Hình <span class="loci-btn-arrow">↗</span>
+                                    Xem Trình Chiếu Toàn Màn Hình <span class="loci-btn-arrow">↗</span>
                                 </a>
                             </div>
                         </div>
@@ -13196,7 +13212,7 @@
                     </div>
 
                     <div class="champion-badge-ribbon">
-                        <span id="modal-champion-badge-icon">👑</span>
+                        <span id="modal-champion-badge-icon">★</span>
                         <span id="modal-champion-tier">QUÁN QUÂN BẢNG VÀNG</span>
                     </div>
 
@@ -13226,7 +13242,7 @@
                     <!-- Hành động -->
                     <div class="champion-actions">
                         <button class="btn-cheer" onclick="window.triggerExtraCheer()">
-                            <span>🎉</span> Tung Pháo Hoa
+                            Tung Pháo Hoa
                         </button>
                         <button class="btn-close-modal" onclick="window.closeChampionCelebration()">
                             Xem Toàn Bảng ✕
@@ -13240,7 +13256,7 @@
         <div class="overview-feedback-banner">
             <div class="feedback-banner-inner">
                 <div class="feedback-banner-left">
-                    <div class="feedback-badge-pill">💬 HÒM THƯ ĐÓNG GÓP Ý KIẾN</div>
+                    <div class="feedback-badge-pill">HÒM THƯ ĐÓNG GÓP Ý KIẾN</div>
                     <h3 class="feedback-banner-title">Cùng Xây Dựng &amp; Hoàn Thiện LOCI EDU</h3>
                     <p class="feedback-banner-desc">Bạn muốn bổ sung thêm không gian 3D nào, có ý tưởng mới hay phát
                         hiện lỗi kỹ thuật? Ý kiến của bạn sẽ được gửi thẳng tới ban phát triển!</p>
@@ -13258,6 +13274,44 @@
         <!-- VIEW 4 (Đã tích hợp vào Tổng quan): Stub giữ tương thích -->
         <div id="view-loci" class="portal-view" style="display:none;"></div>
     </main>
+
+    <!-- MODAL ĐỔI & TẢI ẢNH ĐẠI DIỆN HỌC SINH (LOCI AVATAR PICKER) -->
+    <div class="cloud-modal-overlay" id="avatar-picker-modal" style="display:none; z-index:100060 !important;" onclick="if(event.target===this) window.closeAvatarPickerModal()">
+        <div class="cloud-modal-card" style="max-width: 560px; padding: 26px 24px; text-align: left; background: #ffffff !important; border-radius: 24px; box-shadow: 0 20px 60px rgba(0,0,0,0.18);" onclick="event.stopPropagation()">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
+                <div>
+                    <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0;">Chọn Ảnh Đại Diện Học Sinh</h3>
+                    <p style="font-size: 13px; color: #64748b; margin: 4px 0 0;">Tải ảnh chân dung từ thiết bị hoặc chọn nhanh avatar linh vật học tập</p>
+                </div>
+                <button type="button" onclick="window.closeAvatarPickerModal()" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer; color:#64748b; font-size:16px; display:grid; place-items:center;">✕</button>
+            </div>
+
+            <!-- NÚT UPLOAD TẢI ẢNH TỪ MÁY -->
+            <div style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 16px; padding: 18px; text-align: center; margin-bottom: 20px;">
+                <input type="file" id="user-avatar-file-input" accept="image/*" style="display:none;" onchange="window.handleAvatarFileUpload(event)">
+                <button type="button" onclick="document.getElementById('user-avatar-file-input').click()" style="background: #0284c7; color: #ffffff; border: none; padding: 11px 22px; border-radius: 99px; font-weight: 700; font-size: 13.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(2,132,199,0.25);">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    Tải Ảnh Từ Máy Tính / Điện Thoại
+                </button>
+                <div style="font-size: 11.5px; color: #94a3b8; margin-top: 8px;">Tự động cắt vuông tâm ảnh và tối ưu hiển thị sắc nét</div>
+            </div>
+
+            <!-- BỘ SƯU TẬP AVATAR CÓ SẴN (KHÔNG EMOJI) -->
+            <div style="font-size: 13.5px; font-weight: 700; color: #334155; margin-bottom: 12px;">Hoặc chọn nhanh biểu tượng đại diện:</div>
+            <div id="preset-avatars-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 18px;">
+                <!-- Rendered dynamically by renderPresetAvatars() -->
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 10px; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+                <button type="button" onclick="window.removeCustomAvatar()" style="background: none; border: 1px solid #fee2e2; color: #ef4444; padding: 8px 16px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;">
+                    Đặt Lại Mặc Định
+                </button>
+                <button type="button" onclick="window.closeAvatarPickerModal()" style="background: #0f172a; color: #ffffff; border: none; padding: 8px 20px; border-radius: 8px; font-weight: 700; font-size: 13px; cursor: pointer;">
+                    Hoàn Tất
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- MODAL ĐĂNG NHẬP / CĂN CƯỚC HỌC SINH (LOCI STUDENT PASSPORT - CHUẨN ĐỒNG BỘ 3 HÌNH ẢNH) -->
     <div class="cloud-modal-overlay" id="cloud-modal" onclick="if(event.target===this) window.closeCloudAuthModal()">
@@ -13287,9 +13341,17 @@
 
                 <!-- CỘT 1 (TRÁI): THÔNG TIN HỌC SINH & TIẾN TRÌNH CẤP BẬC -->
                 <div class="student-id-card-col" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:22px; display:flex; flex-direction:column;">
-                    <div style="width:84px; height:84px; border-radius:50%; background:#eff6ff; border:2px solid #bfdbfe; color:#0284c7; font-size:34px; font-weight:800; display:grid; place-items:center; margin:0 auto 12px;" id="modal-user-avatar">
-                        U
+                    <div style="position:relative; width:88px; height:88px; margin:0 auto 6px; cursor:pointer;" onclick="window.openAvatarPickerModal()" title="Nhấn để đổi ảnh đại diện">
+                        <div style="width:88px; height:88px; border-radius:50%; background:#eff6ff center/cover no-repeat; border:2.5px solid #bfdbfe; color:#0284c7; font-size:34px; font-weight:800; display:grid; place-items:center; overflow:hidden; box-shadow:0 4px 14px rgba(2,132,199,0.15);" id="modal-user-avatar">
+                            U
+                        </div>
+                        <div style="position:absolute; bottom:0; right:0; width:28px; height:28px; border-radius:50%; background:#0284c7; color:#fff; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        </div>
                     </div>
+                    <button type="button" onclick="window.openAvatarPickerModal()" style="background:none; border:none; color:#0284c7; font-size:12.5px; font-weight:700; cursor:pointer; margin-bottom:12px; text-decoration:underline;">
+                        Đổi ảnh đại diện
+                    </button>
                     
                     <div id="modal-user-name" style="font-size:18px; font-weight:800; color:#0f172a; text-align:center;">Học sinh Lộc</div>
                     <div id="profile-level-badge" style="background:#e0f2fe; color:#0284c7; font-size:12.5px; font-weight:800; padding:4px 14px; border-radius:99px; margin:6px auto 18px; display:table;">LV.2 Học Hỏi</div>
@@ -13594,7 +13656,7 @@
                 <div class="auth-form-group"
                     style="margin-top: 16px; display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.03); padding: 10px; border-radius: 10px; border: 1px solid rgba(15, 23, 42, 0.1);">
                     <div>
-                        <label style="margin: 0;">Chế độ Dark Mode 🌙</label>
+                        <label style="margin: 0;">Chế độ Nền Tối (Dark Mode)</label>
                         <div style="font-size: 11px; color: #64748b;">Đổi giao diện sang nền tối</div>
                     </div>
                     <label class="switch" style="position: relative; display: inline-block; width: 44px; height: 24px;">
@@ -14532,7 +14594,21 @@
         AVATAR_FRAMES.vr = AVATAR_FRAMES.tier7_cosmic;
 
         // --- CẤU HÌNH 7 CẤP BẬC TIẾN TRÌNH HỌC TẬP ---
-                const PROGRESSION_TIERS = [
+                
+        /* ========================================================
+           BỘ SƯU TẬP 7 VIÊN ĐÁ HOÀNG QUANG (100% VECTOR SVG NGHỆ THUẬT)
+           ======================================================== */
+        const TIER_STONE_SVGS = {
+            1: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="19" fill="#fed7aa" stroke="#b45309" stroke-width="1.5"/><polygon points="22,9 31,15 31,27 22,33 13,27 13,15" fill="#f59e0b" stroke="#78350f" stroke-width="0.8"/><circle cx="22" cy="22" r="4" fill="#fef08a"/></svg>`,
+            2: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="19" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><polygon points="22,8 25,16 34,16 27,21 30,30 22,25 14,30 17,21 10,16 19,16" fill="#38bdf8" stroke="#0369a1" stroke-width="0.8"/><circle cx="22" cy="22" r="3.5" fill="#ffffff"/></svg>`,
+            3: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="19" fill="#a7f3d0" stroke="#059669" stroke-width="1.5"/><polygon points="22,8 32,14 32,28 22,34 12,28 12,14" fill="#10b981" stroke="#064e3b" stroke-width="0.8"/><polygon points="22,13 28,17 28,24 22,28 16,24 16,17" fill="#34d399"/><circle cx="22" cy="22" r="3" fill="#ffffff"/></svg>`,
+            4: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="19" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5"/><path d="M22 7 L34 22 L22 37 L10 22 Z" fill="#38bdf8" stroke="#0369a1" stroke-width="1"/><polygon points="22,12 29,22 22,31 15,22" fill="#0284c7" opacity="0.8"/><circle cx="22" cy="22" r="3.5" fill="#ffffff"/></svg>`,
+            5: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="19" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1.5"/><polygon points="22,8 31,13 34,23 28,32 16,32 10,23 13,13" fill="#9333ea" stroke="#4c1d95" stroke-width="0.8"/><circle cx="22" cy="22" r="4.5" fill="#f5d0fe"/><polygon points="22,15 25,20 22,25 19,20" fill="#ffffff"/></svg>`,
+            6: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="19" fill="#fecdd3" stroke="#e11d48" stroke-width="1.5"/><polygon points="22,7 33,15 33,29 22,36 11,29 11,15" fill="#fb7185" stroke="#9f1239" stroke-width="0.8"/><polygon points="22,13 28,18 26,27 18,27 16,18" fill="#e11d48"/><circle cx="22" cy="22" r="4" fill="#ffffff"/></svg>`,
+            7: `<svg width="44" height="44" viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="22" cy="22" r="19" fill="#fef08a" stroke="#d97706" stroke-width="1.5"/><circle cx="22" cy="22" r="12" fill="#f59e0b" stroke="#78350f" stroke-width="0.8"/><path d="M22 4v3 M22 37v3 M4 22h3 M37 22h3 M9 9l2.5 2.5 M32.5 32.5l2.5 2.5 M9 35l2.5-2.5 M32.5 11.5l2.5-2.5" stroke="#ca8a04" stroke-width="1.8" stroke-linecap="round"/><polygon points="22,12 25,18 31,22 25,26 22,32 19,26 13,22 19,18" fill="#ffffff"/></svg>`
+        };
+        
+        const PROGRESSION_TIERS = [
             { level: 1, id: 'tier1', name: 'Tập Sự', subtitle: 'Đồng thạch • 0 XP', minXp: 0, nextXp: 50, color: '#0284c7', desc: 'Bắt đầu làm quen kỹ thuật Cung điện Ký ức Loci' },
             { level: 2, id: 'tier2', name: 'Học Hỏi', subtitle: 'Thép bạc • 50 XP', minXp: 50, nextXp: 120, color: '#0284c7', desc: 'Làm quen các bài ôn tập lặp lại ngắt quãng SM-2' },
             { level: 3, id: 'tier3', name: 'Học Giỏi', subtitle: 'Ngọc bích • 120 XP', minXp: 120, nextXp: 300, color: '#059669', desc: 'Duy trì chuỗi ngày học tập và nhớ nhiều mốc lịch sử' },
@@ -14681,9 +14757,9 @@
 
             const userInitial = ((user?.displayName || user?.email || 'U')[0] || 'U').toUpperCase();
             const headAvatar = document.getElementById('head-user-avatar');
-            if (headAvatar) headAvatar.textContent = userInitial;
+            if (headAvatar) { headAvatar.textContent = userInitial; }
             const modalAvatar = document.getElementById('modal-user-avatar');
-            if (modalAvatar) modalAvatar.textContent = userInitial;
+            window.applyUserAvatar('', userInitial);
 
             // 2. Render lưới 7 thẻ Cấp Bậc Viên Đá Hoàng Quang (Chuẩn Match Image 1)
             const grid = document.getElementById('tier-frames-grid');
@@ -14698,8 +14774,8 @@
                     
                     return `
                         <div class="tier-stone-card" style="background:#ffffff; ${borderStyle} border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center; transition:all 0.2s;">
-                            <div style="width:44px; height:44px; border-radius:50%; background:#eff6ff; color:#0284c7; display:grid; place-items:center; font-weight:800; font-size:16px; margin-bottom:10px; border:1px solid #bfdbfe;">
-                                U
+                            <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                ${TIER_STONE_SVGS[t.level] || `<div style="width:44px; height:44px; border-radius:50%; background:#eff6ff; color:#0284c7; display:grid; place-items:center; font-weight:800;">${t.level}</div>`}
                             </div>
                             <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp ${t.level}: ${t.name}</div>
                             <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">${t.subtitle}</div>
@@ -15169,20 +15245,25 @@
                 userName.textContent = displayName;
                 userRole.innerHTML = '<span class="user-capsule-status-dot"></span> <span>Tiến trình đã lưu</span>';
 
+                const customAvatar = localStorage.getItem('loci_user_custom_avatar');
                 const localAvatar = localStorage.getItem('loci_user_avatar_' + user.uid);
-                const finalPhoto = localAvatar || user.photoURL;
+                const finalPhoto = customAvatar || localAvatar || user.photoURL;
+                const initial = (displayName[0] || 'U').toUpperCase();
 
-                if (finalPhoto) {
-                    userAvatar.style.backgroundImage = `url('${finalPhoto}')`;
-                    userAvatar.textContent = '';
-                    modalUserAvatar.style.backgroundImage = `url('${finalPhoto}')`;
-                    modalUserAvatar.textContent = '';
+                if (typeof window.applyUserAvatar === 'function') {
+                    window.applyUserAvatar(finalPhoto, initial);
                 } else {
-                    const initial = displayName[0].toUpperCase();
-                    userAvatar.style.backgroundImage = '';
-                    userAvatar.textContent = initial;
-                    modalUserAvatar.style.backgroundImage = '';
-                    modalUserAvatar.textContent = initial;
+                    if (finalPhoto) {
+                        userAvatar.style.backgroundImage = `url('${finalPhoto}')`;
+                        userAvatar.textContent = '';
+                        modalUserAvatar.style.backgroundImage = `url('${finalPhoto}')`;
+                        modalUserAvatar.textContent = '';
+                    } else {
+                        userAvatar.style.backgroundImage = '';
+                        userAvatar.textContent = initial;
+                        modalUserAvatar.style.backgroundImage = '';
+                        modalUserAvatar.textContent = initial;
+                    }
                 }
 
                 // Tải khung avatar & sổ tay ghi chú cá nhân đã lưu
@@ -15291,11 +15372,11 @@
                 userRole.innerHTML = '<span class="user-capsule-status-dot" style="background:#94a3b8; box-shadow:none;"></span> <span>Lưu tiến trình học</span>';
                 const headerBadgeEl = document.getElementById('header-user-level-badge');
                 if (headerBadgeEl) {
-                    headerBadgeEl.textContent = 'LV.1 🥉';
+                    headerBadgeEl.textContent = 'LV.1';
                     headerBadgeEl.style.color = '#b45309';
                 }
                 userAvatar.style.backgroundImage = '';
-                userAvatar.textContent = '👤';
+                window.applyUserAvatar('', 'U');
                 updateAllAvatarFrames('gold');
                 renderBadgesGrid(null);
 
