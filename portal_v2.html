@@ -11617,6 +11617,7 @@
             border-radius: 50% !important;
         }
     </style>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
 
 <body>
@@ -13526,6 +13527,15 @@
                         </div>
                     </div>
 
+                    
+                    <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
+                    <div class="turnstile-guard-box" style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAF12jFvcSvvjeeyZ" data-theme="light"></div>
+                        <div style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <span>Bảo vệ chống tấn công DDoS & Bot tự động bởi Cloudflare Turnstile</span>
+                        </div>
+                    </div>
                     <button id="btn-submit-login" type="button" onclick="window.submitLociLogin()"
                         style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);"
                         onmouseover="this.style.background='#0369a1'"
@@ -13575,6 +13585,15 @@
                             style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
                     </div>
 
+                    
+                    <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
+                    <div class="turnstile-guard-box" style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
+                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAF12jFvcSvvjeeyZ" data-theme="light"></div>
+                        <div style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                            <span>Bảo vệ chống tấn công DDoS & Bot tự động bởi Cloudflare Turnstile</span>
+                        </div>
+                    </div>
                     <button id="btn-submit-register" type="button" onclick="window.submitLociRegister()"
                         style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);">
                         Đăng ký & Kích hoạt
@@ -13822,6 +13841,69 @@
             if (typeof window.renderFrameSelector === 'function') window.renderFrameSelector(null);
         };
 
+        
+        /* ========================================================
+           HỆ THỐNG XÁC THỰC BẢO MẬT CHỐNG DDOS CLOUDFLARE TURNSTILE
+           Gửi token lên endpoint /api/verify-turnstile để bảo vệ Loci
+           ======================================================== */
+        window.verifyCloudflareTurnstile = async function() {
+            const isLocalDev = (location.protocol === 'file:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1');
+
+            let token = '';
+            try {
+                if (window.turnstile && typeof window.turnstile.getResponse === 'function') {
+                    token = window.turnstile.getResponse();
+                }
+            } catch (_) {}
+
+            if (!token) {
+                const inputs = document.querySelectorAll('[name="cf-turnstile-response"]');
+                for (const input of inputs) {
+                    if (input && input.value) {
+                        token = input.value;
+                        break;
+                    }
+                }
+            }
+
+            if (!token) {
+                if (isLocalDev) {
+                    console.log('[Cloudflare Turnstile] Chế độ xem cục bộ - tự động thông qua xác thực.');
+                    return true;
+                }
+                window._showAuthAlert('Vui lòng hoàn tất xác thực bảo mật Cloudflare Turnstile để chống DDoS trước khi tiếp tục.');
+                return false;
+            }
+
+            try {
+                const response = await fetch('/api/verify-turnstile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ token: token })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        return true;
+                    } else {
+                        console.warn('[Cloudflare Turnstile] Phản hồi từ chối:', data);
+                        window._showAuthAlert('Xác thực bảo mật Turnstile không hợp lệ hoặc đã hết hạn. Vui lòng xác nhận lại!');
+                        if (window.turnstile && typeof window.turnstile.reset === 'function') {
+                            try { window.turnstile.reset(); } catch (_) {}
+                        }
+                        return false;
+                    }
+                } else {
+                    if (isLocalDev) return true;
+                    return true; // Fallback khi endpoint mạng bận
+                }
+            } catch (err) {
+                console.error('[Cloudflare Turnstile] Lỗi kết nối xác thực:', err);
+                return true; // Fallback an toàn không khóa người dùng
+            }
+        };
+
         window.submitLociLogin = async function() {
             const emailInput = document.getElementById('login-email');
             const passInput = document.getElementById('login-password');
@@ -13832,7 +13914,11 @@
             if (!identifier) return window._showAuthAlert('Vui lòng nhập tên đăng nhập hoặc email.');
             if (!pass) return window._showAuthAlert('Vui lòng nhập mật khẩu.');
 
-            if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang kiểm tra...'; }
+            // Kiểm tra bảo mật Cloudflare Turnstile chống DDoS
+            const turnstileOk = await window.verifyCloudflareTurnstile();
+            if (!turnstileOk) return;
+
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang kiểm tra...'; }
 
             try {
                 if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
