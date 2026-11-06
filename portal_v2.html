@@ -126,6 +126,231 @@
                 } catch(_) {}
             }
         };
+        // ==========================================
+        // BỘ ĐIỀU KHIỂN AVATAR HỌC SINH TOÀN DIỆN & TẢI ẢNH TỪ THIẾT BỊ
+        // ==========================================
+        window.applyUserAvatar = function(photoUrl, initial, bgColor) {
+            try {
+                const custom = photoUrl || localStorage.getItem('loci_user_custom_avatar');
+                const activeUid = (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid)
+                    || (window._lociLocalUser && window._lociLocalUser.uid)
+                    || localStorage.getItem('loci_active_student_uid');
+                const localUidPhoto = activeUid ? localStorage.getItem('loci_user_avatar_' + activeUid) : null;
+                const finalPhoto = photoUrl || custom || localUidPhoto || (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.photoURL);
+
+                let finalInitial = initial;
+                if (!finalInitial) {
+                    const u = (window.LociFirebase && window.LociFirebase.currentUser) || window._lociLocalUser;
+                    const dName = u ? (u.displayName || u.username || (u.email ? u.email.split('@')[0] : 'U')) : 'U';
+                    finalInitial = (dName[0] || 'U').toUpperCase();
+                }
+
+                const targets = [
+                    document.getElementById('user-avatar'),
+                    document.getElementById('modal-user-avatar'),
+                    document.getElementById('head-user-avatar'),
+                    document.getElementById('setting-avatar-preview')
+                ];
+
+                targets.forEach(el => {
+                    if (!el) return;
+                    el.style.boxShadow = 'none';
+                    if (finalPhoto && finalPhoto.trim() !== '') {
+                        el.style.backgroundImage = 'url("' + finalPhoto + '")';
+                        el.style.backgroundSize = 'cover';
+                        el.style.backgroundPosition = 'center';
+                        el.style.backgroundRepeat = 'no-repeat';
+                        el.style.backgroundColor = 'transparent';
+                        el.textContent = '';
+                        const svgs = el.querySelectorAll('svg');
+                        svgs.forEach(s => s.remove());
+                    } else {
+                        el.style.backgroundImage = 'none';
+                        el.style.backgroundColor = bgColor || '#eff6ff';
+                        el.style.color = '#0284c7';
+                        el.style.display = 'flex';
+                        el.style.alignItems = 'center';
+                        el.style.justifyContent = 'center';
+                        el.style.fontWeight = '800';
+                        el.textContent = finalInitial;
+                        const svgs = el.querySelectorAll('svg');
+                        svgs.forEach(s => s.remove());
+                    }
+                });
+            } catch (err) {
+                console.warn('applyUserAvatar error:', err);
+            }
+        };
+
+        window.handleAvatarFileUpload = function(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            if (!file.type.startsWith('image/')) {
+                alert('Vui lòng chọn tệp hình ảnh hợp lệ (JPG, PNG, WebP)!');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = new Image();
+                img.onload = function() {
+                    const canvas = document.createElement('canvas');
+                    const size = 256;
+                    canvas.width = size;
+                    canvas.height = size;
+                    const ctx = canvas.getContext('2d');
+
+                    // Square crop from center
+                    const minDim = Math.min(img.width, img.height);
+                    const sx = (img.width - minDim) / 2;
+                    const sy = (img.height - minDim) / 2;
+                    ctx.drawImage(img, sx, sy, minDim, minDim, 0, 0, size, size);
+
+                    const croppedDataUrl = canvas.toDataURL('image/jpeg', 0.9);
+                    try {
+                        localStorage.setItem('loci_user_custom_avatar', croppedDataUrl);
+                        const activeUid = (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid)
+                            || (window._lociLocalUser && window._lociLocalUser.uid)
+                            || localStorage.getItem('loci_active_student_uid');
+                        if (activeUid) {
+                            localStorage.setItem('loci_user_avatar_' + activeUid, croppedDataUrl);
+                        }
+                    } catch (storageErr) {
+                        console.warn('LocalStorage save avatar warning:', storageErr);
+                    }
+
+                    window.applyUserAvatar(croppedDataUrl);
+                    window.closeAvatarPickerModal();
+
+                    // Âm thanh tinh tinh thông báo thành công
+                    try {
+                        new Audio('https://tiengdong.com/wp-content/uploads/tieng-tinh-tinh-www_tiengdong_com.mp3').play();
+                    } catch (_) {}
+
+                    alert('Đã cập nhật ảnh đại diện học sinh thành công!');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        };
+
+        window.openAvatarPickerModal = function() {
+            const modal = document.getElementById('avatar-picker-modal');
+            if (!modal) return;
+            modal.style.display = 'grid';
+            if (typeof window.renderPresetAvatars === 'function') window.renderPresetAvatars();
+        };
+
+        window.closeAvatarPickerModal = function() {
+            const modal = document.getElementById('avatar-picker-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.removeCustomAvatar = function() {
+            try {
+                localStorage.removeItem('loci_user_custom_avatar');
+                const activeUid = (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid)
+                    || (window._lociLocalUser && window._lociLocalUser.uid)
+                    || localStorage.getItem('loci_active_student_uid');
+                if (activeUid) localStorage.removeItem('loci_user_avatar_' + activeUid);
+            } catch(_) {}
+            window.applyUserAvatar('');
+            window.closeAvatarPickerModal();
+            try {
+                new Audio('https://tiengdong.com/wp-content/uploads/tieng-tinh-tinh-www_tiengdong_com.mp3').play();
+            } catch (_) {}
+            alert('Đã đặt lại ảnh đại diện mặc định!');
+        };
+
+        const PRESET_AVATAR_SVGS = [
+            {
+                id: 'laurel',
+                name: 'Vòng Nguyệt Quế',
+                desc: 'Học vị vinh danh',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#f0f9ff" stroke="#0284c7" stroke-width="1.5"/><path d="M22 8 L24 14 L30 14 L25 18 L27 24 L22 20 L17 24 L19 18 L14 14 L20 14 Z" fill="#f59e0b"/><path d="M12 30 C12 24 16 18 22 18 C28 18 32 24 32 30" stroke="#059669" stroke-width="2" fill="none"/></svg>'
+            },
+            {
+                id: 'book',
+                name: 'Sách Sử Tri Thức',
+                desc: 'Bách khoa toàn thư',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#fefce8" stroke="#ca8a04" stroke-width="1.5"/><path d="M14 14 H22 V30 H14 Z" fill="#fde047" stroke="#854d0e" stroke-width="1.2"/><path d="M22 14 H30 V30 H22 Z" fill="#fef08a" stroke="#854d0e" stroke-width="1.2"/><line x1="22" y1="14" x2="22" y2="30" stroke="#854d0e" stroke-width="1.8"/></svg>'
+            },
+            {
+                id: 'temple',
+                name: 'Cung Điện Loci',
+                desc: 'Đền thờ ký ức',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#eff6ff" stroke="#0284c7" stroke-width="1.5"/><polygon points="22,11 12,17 32,17" fill="#0284c7"/><rect x="14" y="19" width="3" height="9" fill="#38bdf8"/><rect x="20.5" y="19" width="3" height="9" fill="#38bdf8"/><rect x="27" y="19" width="3" height="9" fill="#38bdf8"/><rect x="11" y="28" width="22" height="3" rx="1" fill="#0369a1"/></svg>'
+            },
+            {
+                id: 'brain',
+                name: 'Mạng Nơ-ron',
+                desc: 'Siêu liên tưởng',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#fdf4ff" stroke="#a855f7" stroke-width="1.5"/><circle cx="16" cy="18" r="3.5" fill="#a855f7"/><circle cx="28" cy="18" r="3.5" fill="#a855f7"/><circle cx="22" cy="28" r="3.5" fill="#c084fc"/><line x1="16" y1="18" x2="28" y2="18" stroke="#d8b4fe" stroke-width="1.8"/><line x1="16" y1="18" x2="22" y2="28" stroke="#d8b4fe" stroke-width="1.8"/><line x1="28" y1="18" x2="22" y2="28" stroke="#d8b4fe" stroke-width="1.8"/></svg>'
+            },
+            {
+                id: 'compass',
+                name: 'La Bàn Thời Gian',
+                desc: 'Định hướng niên đại',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#f0fdfa" stroke="#0d9488" stroke-width="1.5"/><circle cx="22" cy="22" r="14" stroke="#14b8a6" stroke-width="1.2" stroke-dasharray="2 2"/><polygon points="22,11 25,22 22,20 19,22" fill="#ef4444"/><polygon points="22,33 25,22 22,24 19,22" fill="#0d9488"/><circle cx="22" cy="22" r="2" fill="#ffffff"/></svg>'
+            },
+            {
+                id: 'feather',
+                name: 'Bút Lông Sử Ký',
+                desc: 'Ghi chép mốc son',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#f8fafc" stroke="#64748b" stroke-width="1.5"/><path d="M28 11 C26 14 24 17 21 21 C18 25 15 28 14 32 L17 33 C18 29 21 26 25 23 C28 20 31 16 32 12 Z" fill="#64748b"/><line x1="14" y1="32" x2="13" y2="34" stroke="#0f172a" stroke-width="2"/></svg>'
+            },
+            {
+                id: 'gem',
+                name: 'Ngọc Hoàng Quang',
+                desc: 'Hào quang trí tuệ',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#fffbeb" stroke="#f59e0b" stroke-width="1.5"/><polygon points="22,10 32,18 28,31 16,31 12,18" fill="#f59e0b"/><polygon points="22,14 28,20 22,28 16,20" fill="#fef08a"/></svg>'
+            },
+            {
+                id: 'shield',
+                name: 'Khiên Thủ Tri Thức',
+                desc: 'Vững vàng phòng thi',
+                svg: '<svg viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="20" fill="#f0fdf4" stroke="#16a34a" stroke-width="1.5"/><path d="M14 14 H30 V24 C30 29 22 34 22 34 C22 34 14 29 14 24 Z" fill="#22c55e" stroke="#15803d" stroke-width="1.5"/><polyline points="18 23 21 26 27 19" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>'
+            }
+        ];
+
+        window.renderPresetAvatars = function() {
+            const grid = document.getElementById('preset-avatars-grid');
+            if (!grid) return;
+            grid.innerHTML = PRESET_AVATAR_SVGS.map(p => `
+                <div onclick="window.selectPresetAvatar('${p.id}')"
+                    style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:12px 8px; text-align:center; cursor:pointer; transition:all 0.2s;"
+                    onmouseover="this.style.borderColor='#0284c7'; this.style.transform='translateY(-2px)';"
+                    onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='none';">
+                    <div style="width:44px; height:44px; margin:0 auto 8px;">${p.svg}</div>
+                    <div style="font-size:12px; font-weight:700; color:#0f172a; margin-bottom:2px; white-space:nowrap;">${p.name}</div>
+                    <div style="font-size:10.5px; color:#64748b;">${p.desc}</div>
+                </div>
+            `).join('');
+        };
+
+        window.selectPresetAvatar = function(presetId) {
+            const found = PRESET_AVATAR_SVGS.find(p => p.id === presetId);
+            if (!found) return;
+            // Convert SVG to data URI
+            const svgString = found.svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"');
+            const dataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
+
+            try {
+                localStorage.setItem('loci_user_custom_avatar', dataUri);
+                const activeUid = (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid)
+                    || (window._lociLocalUser && window._lociLocalUser.uid)
+                    || localStorage.getItem('loci_active_student_uid');
+                if (activeUid) localStorage.setItem('loci_user_avatar_' + activeUid, dataUri);
+            } catch (_) {}
+
+            window.applyUserAvatar(dataUri);
+            window.closeAvatarPickerModal();
+            try {
+                new Audio('https://tiengdong.com/wp-content/uploads/tieng-tinh-tinh-www_tiengdong_com.mp3').play();
+            } catch (_) {}
+            alert('Đã trang bị thành công biểu tượng: ' + found.name + '!');
+        };
+
 
         window.openCloudAuthModal = function() {
             const modal = document.getElementById('cloud-modal');
@@ -178,6 +403,7 @@
             if (modalAvatar) modalAvatar.textContent = name.charAt(0).toUpperCase();
             if (topName) topName.textContent = name;
             if (topRole) topRole.innerHTML = '<span class="user-capsule-status-dot"></span> <span>Tiến trình đã lưu</span>';
+            if (typeof window.applyUserAvatar === 'function') window.applyUserAvatar('', name.charAt(0).toUpperCase());
             if (typeof window.renderTierProgression === 'function') window.renderTierProgression(user);
             if (typeof window.renderBadgesGrid === 'function') window.renderBadgesGrid(user);
         };
@@ -947,18 +1173,22 @@
         }
 
         .topbar-user-profile .avatar {
-            width: 36px;
-            height: 36px;
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            min-height: 38px;
             border-radius: 50%;
-            background: #0f766e;
-            background: linear-gradient(135deg, #0f766e, #14b8a6);
-            color: #ffffff;
+            background: #eff6ff center/cover no-repeat;
+            color: #0284c7;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 15px;
-            box-shadow: 0 0 0 2px #facc15, 0 2px 8px rgba(0, 0, 0, 0.15);
+            font-weight: 800;
+            box-shadow: none !important;
+            border: none !important;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         /* Sidebar cũ ẩn hoàn toàn */
@@ -11579,8 +11809,18 @@
             border-radius: 24px !important;
             border: 1px solid #e2e8f0 !important;
             box-shadow: 0 25px 60px rgba(15, 23, 42, 0.12) !important;
-            overflow: hidden !important;
+            max-height: 88vh !important;
+            overflow-y: auto !important;
+            overflow-x: hidden !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
+            touch-action: pan-y !important;
             transition: max-width 0.3s ease !important;
+        }
+        .cloud-modal-overlay {
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            overscroll-behavior: contain !important;
         }
         .cloud-modal-card::before { display: none !important; }
 
@@ -11602,19 +11842,24 @@
         }
     </style>
 <style>
-        /* Chuẩn hóa Avatar tròn, cắt tâm ảnh 100% không méo, không sọc */
+        /* Chuẩn hóa Avatar tròn, cắt tâm ảnh 100% không méo, không sọc, không viền vàng */
         #user-avatar, #modal-user-avatar, #head-user-avatar, #setting-avatar-preview, .avatar {
             background-size: cover !important;
             background-position: center !important;
             background-repeat: no-repeat !important;
             border-radius: 50% !important;
             overflow: hidden !important;
-            display: grid !important;
-            place-items: center !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-shadow: none !important;
+            border: none !important;
         }
         #user-avatar-wrap {
             overflow: hidden !important;
             border-radius: 50% !important;
+            box-shadow: none !important;
+            border: 1.5px solid #bfdbfe !important;
         }
     </style>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
@@ -11718,8 +11963,9 @@
                 style="cursor: pointer; display: inline-flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #dbeafe; border-radius: 99px; padding: 6px 14px 6px 7px; box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06); transition: all 0.2s;"
                 title="Tài khoản học sinh - Nhấn để Đăng nhập / Đăng ký">
                 <div class="avatar-frame-wrap" id="user-avatar-wrap"
-                    style="width: 38px; height: 38px; border-radius: 50%; background: #eff6ff; border: 1.5px solid #bfdbfe; display: grid; place-items: center; flex-shrink: 0;">
-                    <div class="avatar" id="user-avatar" style="color: #0284c7; display: grid; place-items: center; width: 100%; height: 100%;">
+                    style="width: 38px; height: 38px; min-width: 38px; min-height: 38px; border-radius: 50%; background: #eff6ff center/cover no-repeat; border: 1.5px solid #bfdbfe; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: none !important;">
+                    <div class="avatar" id="user-avatar"
+                        style="width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #0284c7; background-size: cover; background-position: center; background-repeat: no-repeat; box-shadow: none !important; border: none !important;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                             <circle cx="12" cy="7" r="4"></circle>
@@ -11828,7 +12074,125 @@
 
             <!-- KHU VỰC LINH THÚ TRI THỨC (COMPANION PET SYSTEM) -->
             <section class="pet-companion-section" style="margin-bottom: 28px;">
-                <div id="loci-pet-dashboard-slot"></div>
+                <div id="loci-pet-dashboard-slot" style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); border: 1.5px solid #bae6fd; border-radius: 20px; padding: 22px 24px; box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08); position: relative; overflow: hidden;">
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 40px; height: 40px; border-radius: 12px; background: #0284c7; color: #fff; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12 8a4 4 0 1 0 4 4 4 4 0 0 0-4-4z"></path></svg>
+                            </div>
+                            <div>
+                                <h3 style="font-size: 17.5px; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.2;">Linh Thú Tri Thức Đồng Hành</h3>
+                                <p style="font-size: 12.5px; color: #64748b; margin: 3px 0 0;">Nuôi linh thú tăng trưởng theo tiến độ học tập Loci & kết nối nuôi chung cùng đồng đội</p>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="pet-stage-badge" style="background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 12px; padding: 5px 12px; border-radius: 99px; border: 1px solid #bfdbfe;">Cấp 2 • Học Giả Trẻ</span>
+                            <button type="button" onclick="window.switchPetSelectionModal()" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 99px; padding: 5px 12px; font-size: 12px; font-weight: 700; color: #334155; cursor: pointer;">Đổi Linh Thú</button>
+                        </div>
+                    </div>
+
+                    <!-- BỐ CỤC LINH THÚ CHÍNH -->
+                    <div style="display: grid; grid-template-columns: 160px 1fr 220px; gap: 20px; align-items: center;" class="pet-grid-layout">
+                        <!-- Cột 1: Hoạt hình Linh Thú SVG -->
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 14px; position: relative;">
+                            <div id="pet-avatar-stage" style="width: 110px; height: 110px; display: grid; place-items: center; position: relative;">
+                                <!-- Animated Owl SVG (No emojis) -->
+                                <svg width="100" height="100" viewBox="0 0 100 100" fill="none" class="pet-idle-anim">
+                                    <defs>
+                                        <radialGradient id="owl-glow" cx="50%" cy="50%" r="50%">
+                                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
+                                            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                                        </radialGradient>
+                                    </defs>
+                                    <circle cx="50" cy="50" r="45" fill="url(#owl-glow)"/>
+                                    <!-- Body -->
+                                    <ellipse cx="50" cy="58" rx="28" ry="32" fill="#0284c7"/>
+                                    <ellipse cx="50" cy="62" rx="20" ry="24" fill="#e0f2fe"/>
+                                    <!-- Feathers pattern -->
+                                    <path d="M43 56 Q50 60 57 56 M45 64 Q50 68 55 64 M47 72 Q50 75 53 72" stroke="#0284c7" stroke-width="1.8" fill="none"/>
+                                    <!-- Head & Ears -->
+                                    <circle cx="50" cy="38" r="24" fill="#0369a1"/>
+                                    <polygon points="34,22 40,32 30,32" fill="#0284c7"/>
+                                    <polygon points="66,22 60,32 70,32" fill="#0284c7"/>
+                                    <!-- Eyes -->
+                                    <circle cx="41" cy="36" r="9" fill="#ffffff"/>
+                                    <circle cx="59" cy="36" r="9" fill="#ffffff"/>
+                                    <circle cx="41" cy="36" r="5" fill="#0f172a"/>
+                                    <circle cx="59" cy="36" r="5" fill="#0f172a"/>
+                                    <circle cx="39.5" cy="34.5" r="2" fill="#ffffff"/>
+                                    <circle cx="57.5" cy="34.5" r="2" fill="#ffffff"/>
+                                    <!-- Beak -->
+                                    <polygon points="50,39 46,45 54,45" fill="#f59e0b"/>
+                                    <!-- Feet -->
+                                    <ellipse cx="42" cy="88" rx="5" ry="3" fill="#f59e0b"/>
+                                    <ellipse cx="58" cy="88" rx="5" ry="3" fill="#f59e0b"/>
+                                    <!-- Scholar Cap -->
+                                    <polygon points="50,14 26,22 50,30 74,22" fill="#0f172a"/>
+                                    <polygon points="50,14 50,30 50,30" stroke="#f59e0b" stroke-width="1.5"/>
+                                    <circle cx="50" cy="22" r="2" fill="#f59e0b"/>
+                                    <path d="M50 22 L66 28 L66 33" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
+                                </svg>
+                            </div>
+                            <span id="pet-name-label" style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-top: 4px;">Cú Trí Tuệ Athena</span>
+                            <span style="font-size: 11px; color: #059669; font-weight: 700; margin-top: 2px;">Trạng thái: Tràn đầy năng lượng</span>
+                        </div>
+
+                        <!-- Cột 2: Chỉ số no nê, vui vẻ, tiến trình học tập -->
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;">
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px;">
+                                    <span>Độ No Nê (Nạp Kiến Thức)</span>
+                                    <span id="pet-hunger-pct" style="color: #0284c7;">85%</span>
+                                </div>
+                                <div style="height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden;">
+                                    <div id="pet-hunger-bar" style="height: 100%; width: 85%; background: linear-gradient(90deg, #38bdf8, #0284c7); border-radius: 99px;"></div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px;">
+                                    <span>Hạnh Phúc (Ôn Luyện Đều Đặn)</span>
+                                    <span id="pet-happy-pct" style="color: #10b981;">92%</span>
+                                </div>
+                                <div style="height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden;">
+                                    <div id="pet-happy-bar" style="height: 100%; width: 92%; background: linear-gradient(90deg, #34d399, #10b981); border-radius: 99px;"></div>
+                                </div>
+                            </div>
+
+                            <!-- Hành động tương tác -->
+                            <div style="display: flex; gap: 10px; margin-top: 4px;">
+                                <button type="button" onclick="window.interactWithPet('feed')" style="flex: 1; padding: 8px 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; color: #0284c7; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                                    Cho ăn bài học
+                                </button>
+                                <button type="button" onclick="window.interactWithPet('train')" style="flex: 1; padding: 8px 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; color: #15803d; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                                    Luyện Loci (+20 XP)
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cột 3: Nuôi pet cùng nhau (Co-op Study Group) -->
+                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: #0284c7; text-transform: uppercase; margin-bottom: 6px;">
+                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+                                    Phòng Nuôi Chung (Co-op)
+                                </div>
+                                <div style="font-size: 12.5px; font-weight: 700; color: #0f172a; margin-bottom: 2px;">Cùng học với: Minh Khang</div>
+                                <div style="font-size: 11px; color: #64748b;">Khóa 2K9 • Cú Lv.4 • +15% XP tổ đội</div>
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <button type="button" onclick="window.openCoopPetModal()" style="width: 100%; padding: 8px 10px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                    Mời Bạn Nuôi Cùng
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
             </section>
 
             <!-- SPACES TAB UI -->
@@ -13342,16 +13706,26 @@
 
                 <!-- CỘT 1 (TRÁI): THÔNG TIN HỌC SINH & TIẾN TRÌNH CẤP BẬC -->
                 <div class="student-id-card-col" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:22px; display:flex; flex-direction:column;">
-                    <div style="position:relative; width:88px; height:88px; margin:0 auto 6px; cursor:pointer;" onclick="window.openAvatarPickerModal()" title="Nhấn để đổi ảnh đại diện">
-                        <div style="width:88px; height:88px; border-radius:50%; background:#eff6ff center/cover no-repeat; border:2.5px solid #bfdbfe; color:#0284c7; font-size:34px; font-weight:800; display:grid; place-items:center; overflow:hidden; box-shadow:0 4px 14px rgba(2,132,199,0.15);" id="modal-user-avatar">
+                    <div style="position:relative; width:88px; height:88px; margin:0 auto 8px; cursor:pointer;" onclick="document.getElementById('direct-avatar-file-input').click()" title="Nhấn để tải ảnh đại diện từ thiết bị">
+                        <div style="width:88px; height:88px; border-radius:50%; background:#eff6ff center/cover no-repeat; border:2.5px solid #bfdbfe; color:#0284c7; font-size:34px; font-weight:800; display:flex; align-items:center; justify-content:center; overflow:hidden; box-shadow:0 4px 14px rgba(2,132,199,0.15);" id="modal-user-avatar">
                             U
                         </div>
                         <div style="position:absolute; bottom:0; right:0; width:28px; height:28px; border-radius:50%; background:#0284c7; color:#fff; display:grid; place-items:center; border:2px solid #fff; box-shadow:0 2px 6px rgba(0,0,0,0.2);">
                             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
                         </div>
                     </div>
-                    <button type="button" onclick="window.openAvatarPickerModal()" style="background:none; border:none; color:#0284c7; font-size:12.5px; font-weight:700; cursor:pointer; margin-bottom:12px; text-decoration:underline;">
-                        Đổi ảnh đại diện
+
+                    <!-- NÚT TẢI ẢNH ĐẠI DIỆN TRỰC TIẾP (RÕ RÀNG, NỔI BẬT THEO YÊU CẦU USER) -->
+                    <input type="file" id="direct-avatar-file-input" accept="image/*" style="display:none;" onchange="window.handleAvatarFileUpload(event)">
+                    <button type="button" onclick="document.getElementById('direct-avatar-file-input').click()"
+                        style="width:100%; margin:4px 0 6px; padding:10px 14px; background:linear-gradient(135deg, #0284c7, #0369a1); color:#ffffff; border:none; border-radius:12px; font-weight:800; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 12px rgba(2,132,199,0.28); transition:transform 0.15s;">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        <span>Tải Ảnh Đại Diện Lên</span>
+                    </button>
+                    <button type="button" onclick="window.openAvatarPickerModal()"
+                        style="width:100%; margin-bottom:12px; padding:6px 10px; background:#f0f9ff; color:#0284c7; border:1px solid #bae6fd; border-radius:10px; font-weight:700; font-size:11.5px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polygon points="12 8 8 12 12 16 16 12 12 8"></polygon></svg>
+                        <span>Chọn Biểu Tượng Có Sẵn</span>
                     </button>
                     
                     <div id="modal-user-name" style="font-size:18px; font-weight:800; color:#0f172a; text-align:center;">Học sinh Lộc</div>
@@ -13433,7 +13807,76 @@
                         <p style="font-size:12.5px; color:#64748b; margin:0 0 16px;">Tích lũy XP để mở khóa các tầng viên đá hoàng quang từ Cấp 1 đến Cấp 7. Bấm vào viên đá để xem chi tiết.</p>
                         
                         <div class="tier-stones-grid" id="tier-frames-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px;">
-                            <!-- Sẽ render động qua renderTierProgression() theo chuẩn hình ảnh 1 -->
+                            <!-- Cấp 1: Tập Sự -->
+                            <div class="tier-stone-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" fill="#fed7aa" stroke="#b45309" stroke-width="1.5"/><polygon points="22,9 31,15 31,27 22,33 13,27 13,15" fill="#f59e0b" stroke="#78350f" stroke-width="0.8"/><circle cx="22" cy="22" r="4" fill="#fef08a"/></svg>
+                                </div>
+                                <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp 1: Tập Sự</div>
+                                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">Đồng thạch • 0 XP</div>
+                                <div style="background:#dcfce7; color:#15803d; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">Đã mở</div>
+                                <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">Cần 0 XP</div>
+                            </div>
+                            <!-- Cấp 2: Học Hỏi -->
+                            <div class="tier-stone-card" style="background:#ffffff; border:1.5px solid #0284c7; box-shadow:0 4px 14px rgba(2,132,199,0.15); border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/><polygon points="22,8 25,16 34,16 27,21 30,30 22,25 14,30 17,21 10,16 19,16" fill="#38bdf8" stroke="#0369a1" stroke-width="0.8"/><circle cx="22" cy="22" r="3.5" fill="#ffffff"/></svg>
+                                </div>
+                                <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp 2: Học Hỏi</div>
+                                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">Thép bạc • 50 XP</div>
+                                <div style="background:#e0f2fe; color:#0284c7; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">Đang học</div>
+                                <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">Cần 10 XP</div>
+                            </div>
+                            <!-- Cấp 3: Học Giỏi -->
+                            <div class="tier-stone-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" fill="#a7f3d0" stroke="#059669" stroke-width="1.5"/><polygon points="22,8 32,14 32,28 22,34 12,28 12,14" fill="#10b981" stroke="#064e3b" stroke-width="0.8"/><polygon points="22,13 28,17 28,24 22,28 16,24 16,17" fill="#34d399"/><circle cx="22" cy="22" r="3" fill="#ffffff"/></svg>
+                                </div>
+                                <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp 3: Học Giỏi</div>
+                                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">Ngọc bích • 120 XP</div>
+                                <div style="background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">Chưa mở</div>
+                                <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">Cần 120 XP</div>
+                            </div>
+                            <!-- Cấp 4: Học Giả -->
+                            <div class="tier-stone-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" fill="#bae6fd" stroke="#0284c7" stroke-width="1.5"/><path d="M22 7 L34 22 L22 37 L10 22 Z" fill="#38bdf8" stroke="#0369a1" stroke-width="1"/><polygon points="22,12 29,22 22,31 15,22" fill="#0284c7" opacity="0.8"/><circle cx="22" cy="22" r="3.5" fill="#ffffff"/></svg>
+                                </div>
+                                <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp 4: Học Giả</div>
+                                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">Lam ngọc • 300 XP</div>
+                                <div style="background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">Chưa mở</div>
+                                <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">Cần 300 XP</div>
+                            </div>
+                            <!-- Cấp 5: Học Sư -->
+                            <div class="tier-stone-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" fill="#ddd6fe" stroke="#7c3aed" stroke-width="1.5"/><polygon points="22,8 31,13 34,23 28,32 16,32 10,23 13,13" fill="#9333ea" stroke="#4c1d95" stroke-width="0.8"/><circle cx="22" cy="22" r="4.5" fill="#f5d0fe"/><polygon points="22,15 25,20 22,25 19,20" fill="#ffffff"/></svg>
+                                </div>
+                                <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp 5: Học Sư</div>
+                                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">Tử thạch • 600 XP</div>
+                                <div style="background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">Chưa mở</div>
+                                <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">Cần 600 XP</div>
+                            </div>
+                            <!-- Cấp 6: Học Thánh -->
+                            <div class="tier-stone-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" fill="#fecdd3" stroke="#e11d48" stroke-width="1.5"/><polygon points="22,7 33,15 33,29 22,36 11,29 11,15" fill="#fb7185" stroke="#9f1239" stroke-width="0.8"/><polygon points="22,13 28,18 26,27 18,27 16,18" fill="#e11d48"/><circle cx="22" cy="22" r="4" fill="#ffffff"/></svg>
+                                </div>
+                                <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp 6: Học Thánh</div>
+                                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">Huyền thạch • 1200 XP</div>
+                                <div style="background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">Chưa mở</div>
+                                <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">Cần 1200 XP</div>
+                            </div>
+                            <!-- Cấp 7: Học Tôn -->
+                            <div class="tier-stone-card" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center;">
+                                <div style="width:48px; height:48px; display:grid; place-items:center; margin-bottom:10px;">
+                                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="19" fill="#fef08a" stroke="#d97706" stroke-width="1.5"/><circle cx="22" cy="22" r="12" fill="#f59e0b" stroke="#78350f" stroke-width="0.8"/><path d="M22 4v3 M22 37v3 M4 22h3 M37 22h3 M9 9l2.5 2.5 M32.5 32.5l2.5 2.5 M9 35l2.5-2.5 M32.5 11.5l2.5-2.5" stroke="#ca8a04" stroke-width="1.8" stroke-linecap="round"/><polygon points="22,12 25,18 31,22 25,26 22,32 19,26 13,22 19,18" fill="#ffffff"/></svg>
+                                </div>
+                                <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp 7: Học Tôn</div>
+                                <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">Hoàng kim • 2400 XP</div>
+                                <div style="background:#f1f5f9; color:#64748b; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">Chưa mở</div>
+                                <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">Cần 2400 XP</div>
+                            </div>
                         </div>
                     </div>
 
@@ -19241,7 +19684,44 @@
         })();
     </script>
   
-    <script src="app/loci_pet_system.js"></script>
+    <script src="app/loci_pet_system.js">
+        // ==========================================
+        // TƯƠNG TÁC LINH THÚ TRI THỨC (PET COMPANION LOGIC)
+        // ==========================================
+        window.interactWithPet = function(action) {
+            try {
+                new Audio('https://tiengdong.com/wp-content/uploads/tieng-tinh-tinh-www_tiengdong_com.mp3').play();
+            } catch (_) {}
+
+            const hungerBar = document.getElementById('pet-hunger-bar');
+            const hungerPct = document.getElementById('pet-hunger-pct');
+            const happyBar = document.getElementById('pet-happy-bar');
+            const happyPct = document.getElementById('pet-happy-pct');
+
+            if (action === 'feed') {
+                if (hungerBar) hungerBar.style.width = '100%';
+                if (hungerPct) hungerPct.textContent = '100%';
+                alert('Bạn đã cho Linh Thú nạp thêm 1 bài học lịch sử! Độ no đạt 100%.');
+            } else if (action === 'train') {
+                if (happyBar) happyBar.style.width = '100%';
+                if (happyPct) happyPct.textContent = '100%';
+                // Tăng nhẹ XP cho người dùng
+                const curXp = parseInt(localStorage.getItem('loci_user_custom_xp') || '160', 10) + 20;
+                localStorage.setItem('loci_user_custom_xp', curXp);
+                alert('Luyện tập phản xạ Loci thành công! Bạn nhận được +20 XP và Linh Thú đã vui vẻ tối đa.');
+                const u = (window.LociFirebase && window.LociFirebase.currentUser) || window._lociLocalUser;
+                if (typeof window.renderTierProgression === 'function') window.renderTierProgression(u);
+            }
+        };
+
+        window.openCoopPetModal = function() {
+            alert('Đã tạo liên kết phòng học đôi! Bạn cùng học chỉ cần quét mã QR hoặc đăng nhập để tham gia nuôi chung Linh Thú.');
+        };
+
+        window.switchPetSelectionModal = function() {
+            alert('Hiện tại Linh Thú Athena đang trong quá trình đồng hành. Bạn có thể chọn Rồng Lửa Thăng Long hoặc Cáo Băng khi đạt Cấp 4!');
+        };
+</script>
 </body>
 
 </html>
