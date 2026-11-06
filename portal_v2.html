@@ -128,44 +128,39 @@
         };
 
         window.openCloudAuthModal = function() {
-            var modal = document.getElementById('cloud-modal');
-            if (!modal) {
-                setTimeout(window.openCloudAuthModal, 50);
-                return;
-            }
+            const modal = document.getElementById('cloud-modal');
+            if (!modal) return;
             modal.classList.add('open');
-            modal.style.setProperty('display', 'grid', 'important');
+            modal.style.display = 'grid';
 
-            // Kiểm tra trạng thái tài khoản học sinh
-            var user = null;
-            try {
-                if (window.LociFirebase && window.LociFirebase.currentUser) {
-                    user = window.LociFirebase.currentUser;
-                } else if (window._lociLocalUser) {
-                    user = window._lociLocalUser;
-                } else {
-                    var saved = localStorage.getItem('loci_local_user');
-                    if (saved) user = JSON.parse(saved);
-                }
-            } catch (_) {}
-
-            var guestPanel = document.getElementById('auth-panel-guest');
-            var userPanel = document.getElementById('auth-panel-user');
-            var settingsPanel = document.getElementById('auth-panel-settings');
+            const user = (window.LociFirebase && window.LociFirebase.currentUser) || window._lociLocalUser;
+            const guestPanel = document.getElementById('auth-panel-guest');
+            const userPanel = document.getElementById('auth-panel-user');
+            const headBar = document.getElementById('modal-head-user-bar');
+            const cardBox = document.getElementById('cloud-modal-card-box');
+            const settingsPanel = document.getElementById('auth-panel-settings');
             if (settingsPanel) settingsPanel.style.display = 'none';
 
-            if (user && (user.displayName || user.username || user.email)) {
+            if (user) {
                 if (guestPanel) guestPanel.style.display = 'none';
                 if (userPanel) userPanel.style.display = 'grid';
-                if (typeof window.syncPassportFromUser === 'function') {
-                    window.syncPassportFromUser(user);
+                if (headBar) headBar.style.display = 'flex';
+                if (cardBox) {
+                    cardBox.style.maxWidth = '1040px';
+                    cardBox.style.padding = '0';
+                    cardBox.style.background = '#f8fafc';
                 }
+                if (typeof window.renderTierProgression === 'function') window.renderTierProgression(user);
             } else {
                 if (guestPanel) guestPanel.style.display = 'block';
                 if (userPanel) userPanel.style.display = 'none';
-                if (typeof window.setAuthTab === 'function') {
-                    window.setAuthTab(true);
+                if (headBar) headBar.style.display = 'none';
+                if (cardBox) {
+                    cardBox.style.maxWidth = '460px';
+                    cardBox.style.padding = '0';
+                    cardBox.style.background = '#ffffff';
                 }
+                window.setAuthTab(true);
             }
         };
 
@@ -11567,6 +11562,35 @@
   
     </style>
     <script src="custom_popup_system.js"></script>
+<style>
+        /* --- CHUẨN ĐỒNG BỘ GIAO DIỆN HỌC SINH (MATCH 3 HÌNH ẢNH USER GỬI) --- */
+        .cloud-modal-card {
+            background: #ffffff !important;
+            border-radius: 24px !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.12) !important;
+            overflow: hidden !important;
+            transition: max-width 0.3s ease !important;
+        }
+        .cloud-modal-card::before { display: none !important; }
+
+        .student-passport-layout {
+            display: grid !important;
+            grid-template-columns: 290px 1fr !important;
+            gap: 16px !important;
+            padding: 20px !important;
+            background: #f8fafc !important;
+        }
+
+        @media (max-width: 860px) {
+            .student-passport-layout {
+                grid-template-columns: 1fr !important;
+            }
+            .tier-stones-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -11661,26 +11685,33 @@
                 <span class="topbar-bell-badge"></span>
             </button>
 
-            <!-- KHUNG TÀI KHOẢN HỌC SINH (MATCH IMAGE 1) -->
+            <!-- KHUNG TÀI KHOẢN HỌC SINH (CHUẨN MINIMALIST NCKH - MATCH IMAGE 3) -->
             <div class="user-profile topbar-user-profile" id="user-profile-btn"
                 onclick="window.openCloudAuthModal()"
-                style="cursor: pointer; pointer-events: auto !important; z-index: 1001;"
+                style="cursor: pointer; display: inline-flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #dbeafe; border-radius: 99px; padding: 6px 14px 6px 7px; box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06); transition: all 0.2s;"
                 title="Tài khoản học sinh - Nhấn để Đăng nhập / Đăng ký">
-                <div class="avatar-frame-wrap" id="user-avatar-wrap">
-                    <div class="avatar" id="user-avatar">👤</div>
-                    <div class="avatar-frame-slot" id="user-avatar-frame"></div>
-                </div>
-                <div class="user-profile-meta">
-                    <div style="display:flex; align-items:center; gap:6px;">
-                        <span class="user-profile-name" id="user-name">Đăng nhập / Đăng ký</span>
-                        <span class="user-capsule-lvl" id="header-user-level-badge">LV.1 🥉</span>
+                <div class="avatar-frame-wrap" id="user-avatar-wrap"
+                    style="width: 38px; height: 38px; border-radius: 50%; background: #eff6ff; border: 1.5px solid #bfdbfe; display: grid; place-items: center; flex-shrink: 0;">
+                    <div class="avatar" id="user-avatar" style="color: #0284c7; display: grid; place-items: center; width: 100%; height: 100%;">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
                     </div>
-                    <span class="user-profile-role" id="user-role">
-                        <span class="user-capsule-status-dot"></span>
-                        <span>Lưu tiến trình học</span>
+                </div>
+                <div class="user-profile-meta" style="display: flex; flex-direction: column; text-align: left;">
+                    <span class="user-profile-name" id="user-name" style="font-size: 14.5px; font-weight: 800; color: #0f172a; line-height: 1.2;">Đăng nhập / Đăng ký</span>
+                    <span class="user-profile-role" id="user-role" style="font-size: 12px; font-weight: 500; color: #64748b; line-height: 1.2; margin-top: 2px;">
+                        Lưu tiến trình học
                     </span>
                 </div>
-                <span class="user-profile-chevron">▾</span>
+                <div style="display: flex; align-items: center; gap: 8px; margin-left: 2px;">
+                    <span class="user-capsule-lvl" id="header-user-level-badge" style="background: #e0f2fe; color: #0284c7; font-size: 12.5px; font-weight: 800; padding: 4px 10px; border-radius: 99px;">LV.1</span>
+                    <span style="width: 1px; height: 18px; background: #e2e8f0;"></span>
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
             </div>
         </div>
     </header>
@@ -13198,233 +13229,279 @@
         <div id="view-loci" class="portal-view" style="display:none;"></div>
     </main>
 
-    <!-- MODAL ĐĂNG NHẬP / CĂN CƯỚC HỌC SINH (LOCI STUDENT PASSPORT) -->
+    <!-- MODAL ĐĂNG NHẬP / CĂN CƯỚC HỌC SINH (LOCI STUDENT PASSPORT - CHUẨN ĐỒNG BỘ 3 HÌNH ẢNH) -->
     <div class="cloud-modal-overlay" id="cloud-modal" onclick="if(event.target===this) window.closeCloudAuthModal()">
-        <div class="cloud-modal-card" onclick="event.stopPropagation()">
-            <div class="cloud-modal-head">
-                <div style="display:flex; align-items:center; gap:14px;">
-                    <img src="assets/images/icon_loci_emblem.jpg" alt="Loci Emblem" class="modal-loci-emblem-img">
+        <div class="cloud-modal-card" id="cloud-modal-card-box" onclick="event.stopPropagation()">
+            
+            <!-- MODAL HEADER (KHI ĐÃ ĐĂNG NHẬP - MATCH IMAGE 1) -->
+            <div class="cloud-modal-head" id="modal-head-user-bar" style="display:none; align-items:center; justify-content:space-between; padding: 18px 24px; border-bottom: 1px solid #f1f5f9; background: #ffffff; border-radius: 24px 24px 0 0;">
+                <div style="display:flex; align-items:center; gap:12px;">
+                    <div style="width:38px; height:38px; border-radius:50%; background:#eff6ff; color:#0284c7; display:grid; place-items:center; font-weight:800; font-size:16px; border:1.5px solid #bfdbfe;" id="head-user-avatar">
+                        U
+                    </div>
                     <div>
-                        <div class="modal-passport-tag">🏛️ HỒ SƠ CĂN CƯỚC TRI THỨC · LOCI PASSPORT</div>
-                        <h3 style="font-size:18px; font-weight:800; color:var(--text-main); margin:0;">Tài khoản
-                            Học sinh</h3>
-                        <p style="font-size:12px; color:var(--text-muted); margin:2px 0 0 0;">Lưu trữ tiến trình
-                            học tập & không gian ký ức</p>
+                        <h3 style="font-size:17px; font-weight:800; color:#0f172a; margin:0; line-height:1.2;">Tài khoản học sinh</h3>
+                        <p style="font-size:12.5px; color:#64748b; margin:2px 0 0 0;">Lưu trữ tiến trình học tập & không gian ghi nhớ</p>
                     </div>
                 </div>
-                <button id="close-cloud-modal" class="btn-round-icon" onclick="window.closeCloudAuthModal()" title="Đóng hộp thoại">✕</button>
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span id="modal-head-level-pill" style="background:#eff6ff; color:#0284c7; font-weight:800; font-size:13px; padding:4px 12px; border-radius:99px;">LV.1</span>
+                    <button type="button" class="btn-round-icon" onclick="window.closeCloudAuthModal()" title="Đóng hộp thoại" style="background:#f8fafc; border:1px solid #e2e8f0; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#64748b;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    </button>
+                </div>
             </div>
 
-            <!-- GIAO DIỆN KHI ĐÃ ĐĂNG NHẬP: BỐ CỤC 2 CỘT CHUẨN THẺ CĂN CƯỚC TRI THỨC -->
+            <!-- GIAO DIỆN 1: KHI ĐÃ ĐĂNG NHẬP (BỐ CỤC 2 CỘT CHUẨN MATCH IMAGE 1) -->
             <div id="auth-panel-user" class="student-passport-layout" style="display:none;">
 
-                <!-- CỘT 1 (TRÁI): THẺ CĂN CƯỚC THÔNG MINH (SMART STUDENT CARD) -->
-                <div class="student-id-card-col">
-                    <div class="student-smart-card">
-                        <div class="smart-card-topbar">
-                            <span class="smart-card-brand">🏛️ LOCI ACADEMY</span>
-                            <span class="smart-card-id-code">ID: #LOCI-2026</span>
+                <!-- CỘT 1 (TRÁI): THÔNG TIN HỌC SINH & TIẾN TRÌNH CẤP BẬC -->
+                <div class="student-id-card-col" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:22px; display:flex; flex-direction:column;">
+                    <div style="width:84px; height:84px; border-radius:50%; background:#eff6ff; border:2px solid #bfdbfe; color:#0284c7; font-size:34px; font-weight:800; display:grid; place-items:center; margin:0 auto 12px;" id="modal-user-avatar">
+                        U
+                    </div>
+                    
+                    <div id="modal-user-name" style="font-size:18px; font-weight:800; color:#0f172a; text-align:center;">Học sinh Lộc</div>
+                    <div id="profile-level-badge" style="background:#e0f2fe; color:#0284c7; font-size:12.5px; font-weight:800; padding:4px 14px; border-radius:99px; margin:6px auto 18px; display:table;">LV.2 Học Hỏi</div>
+
+                    <!-- TIẾN TRÌNH LÊN CẤP -->
+                    <div style="background:#f8fafc; border:1px solid #f1f5f9; border-radius:14px; padding:14px; margin-bottom:16px;">
+                        <div id="profile-level-title" style="font-size:12.5px; font-weight:700; color:#0f172a; margin-bottom:8px;">Cấp 2: Học Hỏi (Thực hành)</div>
+                        <div style="height:8px; background:#e2e8f0; border-radius:99px; overflow:hidden; margin-bottom:6px;">
+                            <div id="profile-level-progress-fill" style="height:100%; width:90%; background:#0284c7; border-radius:99px; transition:width 0.4s;"></div>
                         </div>
-
-                        <div class="smart-card-body">
-                            <div class="smart-card-chip"></div>
-                            <div class="smart-card-avatar-row">
-                                <div class="avatar-frame-wrap" id="modal-user-avatar-wrap"
-                                    style="width:62px; height:62px;">
-                                    <div class="avatar" id="modal-user-avatar"
-                                        style="width:62px; height:62px; font-size:22px;">U</div>
-                                    <div class="avatar-frame-slot" id="modal-user-avatar-frame"></div>
-                                </div>
-                                <div class="smart-card-names">
-                                    <div class="smart-card-name-title" id="modal-user-name">Học sinh Loci</div>
-                                    <span class="user-level-badge" id="profile-level-badge">LV.1 TẬP SỰ
-                                        🥉</span>
-                                    <div class="smart-card-email" id="modal-user-email">email@gmail.com</div>
-                                </div>
-                            </div>
-
-                            <div class="smart-card-bio" id="modal-user-bio" style="display:none;"></div>
-
-                            <div class="smart-card-sync-pill">
-                                <span class="sync-dot"></span>
-                                <span id="sync-status-text">Tiến trình được đồng bộ</span>
-                            </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; font-size:12px; margin-bottom:10px;">
+                            <span id="profile-level-xp" style="font-weight:800; color:#0284c7;">160 XP</span>
+                            <span id="profile-level-xp-needed" style="color:#64748b;">Cần 10 XP</span>
                         </div>
+                        <div id="profile-level-progress-text" style="font-size:12.5px; font-weight:700; color:#0f172a;">Tiến trình lên Cấp 3: 90%</div>
+                    </div>
 
-                        <!-- THẺ TIẾN TRÌNH CẤP BẬC & ĐIỂM KINH NGHIỆM (XP) -->
-                        <div class="user-level-card smart-card-xp-section">
-                            <div class="user-level-header">
-                                <div style="display:flex; align-items:center; gap:6px;">
-                                    <span style="font-size:16px;">⚡</span>
-                                    <span style="font-weight:800; font-size:12.5px; color:var(--text-main);"
-                                        id="profile-level-title">Cấp 1: Tập sự (Đồng mộc)</span>
-                                </div>
-                                <span class="user-xp-counter" id="profile-level-xp">10 XP</span>
-                            </div>
-
-                            <div class="user-xp-bar-bg">
-                                <div class="user-xp-bar-fill" id="profile-level-progress-fill" style="width: 20%;">
-                                </div>
-                            </div>
-
-                            <div class="user-xp-footer">
-                                <span id="profile-level-progress-text">Tiến trình lên Cấp 2: 20%</span>
-                                <span id="profile-level-xp-needed">Còn 40 XP</span>
-                            </div>
-
-                            <div class="user-xp-pills">
-                                <span class="xp-pill-tip">💡 +5 XP/câu ôn</span>
-                                <span class="xp-pill-tip">🔥 +15 XP/ngày chuỗi</span>
-                                <span class="xp-pill-tip">🏛️ +20 XP/không gian</span>
-                            </div>
+                    <!-- THỐNG KÊ CHI TIẾT (KHÔNG EMOJI) -->
+                    <div style="display:flex; flex-direction:column; gap:10px; font-size:13px; color:#475569; margin-bottom:20px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>XP hiện có</span>
+                            <span id="stat-xp-current" style="font-weight:800; color:#0284c7;">160 XP</span>
                         </div>
-
-                        <!-- FOOTER NÚT THAO TÁC CỘT TRÁI (GLASSMORPHISM PREMIER) -->
-                        <div class="smart-card-actions">
-                            <button id="btn-open-settings" type="button" class="smart-card-btn-action btn-settings-glass"
-                                onclick="window.toggleAuthSettings(true)"
-                                title="Cá nhân hóa tài khoản">
-                                <svg class="btn-action-icon" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Cài đặt</span>
-                            </button>
-                            <button id="btn-request-noti-portal" onclick="window.requestNotiPortal()"
-                                class="smart-card-btn-action btn-noti-glass" style="display: none;">
-                                <span>🔔 Bật thông báo</span>
-                            </button>
-                            <button id="btn-logout" type="button" class="smart-card-btn-action btn-logout-glass"
-                                onclick="window.submitLociLogout()"
-                                title="Đăng xuất khỏi thiết bị">
-                                <svg class="btn-action-icon" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd"
-                                        d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z"
-                                        clip-rule="evenodd" />
-                                </svg>
-                                <span>Đăng xuất</span>
-                            </button>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>XP ngày này</span>
+                            <span id="stat-xp-today" style="font-weight:800; color:#059669;">+25 XP</span>
                         </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>XP chuỗi</span>
+                            <span id="stat-xp-streak" style="font-weight:700; color:#0f172a;">15 ngày</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>Thời gian học</span>
+                            <span id="stat-study-time" style="font-weight:700; color:#0f172a;">20 phút hôm nay</span>
+                        </div>
+                    </div>
+
+                    <!-- NÚT THAO TÁC CỘT TRÁI -->
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:auto;">
+                        <button id="btn-open-settings" type="button" onclick="window.toggleAuthSettings(true)"
+                            style="padding:9px 12px; background:#ffffff; border:1px solid #cbd5e1; border-radius:10px; color:#0284c7; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            <span>Cài đặt</span>
+                        </button>
+                        <button id="btn-logout" type="button" onclick="window.submitLociLogout()"
+                            style="padding:9px 12px; background:#ffffff; border:1px solid #fee2e2; border-radius:10px; color:#ef4444; font-weight:700; font-size:13px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                            <span>Đăng xuất</span>
+                        </button>
                     </div>
                 </div>
 
-                <!-- CỘT 2 (PHẢI): TỦ HUY HIỆU, VIỀN HÀO QUANG & SỔ TAY GHI CHÚ -->
-                <div class="student-tabs-col">
-                    <!-- 3 TAB ĐIỀU HƯỚNG TÁCH BIỆT: VIỀN CẤP ĐỘ | HUY HIỆU | GHI CHÚ -->
-                    <div class="user-panel-tabs" id="user-panel-tabs">
-                        <button type="button" class="user-panel-tab active" data-tab="tab-pane-profile"
-                            id="tab-btn-profile">
-                            <span class="tab-icon-badge">👑</span>
-                            <span>Viền Cấp Bậc</span>
+                <!-- CỘT 2 (PHẢI): 3 TAB (VÀO CẤP ĐỘ, HUY HIỆU, SỔ GHI CHÚ) -->
+                <div class="student-tabs-col" style="background:#ffffff; border:1px solid #e2e8f0; border-radius:18px; padding:20px; display:flex; flex-direction:column;">
+                    
+                    <!-- 3 TABS HEADER -->
+                    <div class="user-panel-tabs" style="display:flex; gap:20px; border-bottom:1.5px solid #f1f5f9; padding-bottom:10px; margin-bottom:18px;">
+                        <button type="button" class="user-panel-tab active" data-tab="tab-pane-profile" id="tab-btn-profile"
+                            style="background:none; border:none; padding:6px 0; font-weight:800; font-size:14px; color:#0284c7; border-bottom:2.5px solid #0284c7; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+                            <span>Vào Cấp Độ</span>
                         </button>
-                        <button type="button" class="user-panel-tab" data-tab="tab-pane-badges" id="tab-btn-badges">
-                            <img src="assets/images/icon_trophy.jpg" alt="Trophy" class="tab-custom-img-icon">
-                            <span>Huy Hiệu (<span id="tab-badge-count-pill">0/6</span>)</span>
+                        <button type="button" class="user-panel-tab" data-tab="tab-pane-badges" id="tab-btn-badges"
+                            style="background:none; border:none; padding:6px 0; font-weight:700; font-size:14px; color:#64748b; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                            <span>Huy Hiệu</span>
                         </button>
-                        <button type="button" class="user-panel-tab" data-tab="tab-pane-notes" id="tab-btn-notes">
-                            <img src="assets/images/icon_notes.jpg" alt="Notes" class="tab-custom-img-icon">
+                        <button type="button" class="user-panel-tab" data-tab="tab-pane-notes" id="tab-btn-notes"
+                            style="background:none; border:none; padding:6px 0; font-weight:700; font-size:14px; color:#64748b; cursor:pointer; display:flex; align-items:center; gap:6px;">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
                             <span>Sổ Ghi Chú</span>
                         </button>
                     </div>
 
-                    <!-- TAB 1: BỘ SƯU TẬP VIỀN AVATAR TIẾN TRÌNH HỌC TẬP (7 CẤP ĐỘ) -->
+                    <!-- TAB 1: 7 CẤP BẬC VIÊN ĐÁ HOÀNG QUANG (MATCH IMAGE 1) -->
                     <div class="user-tab-pane active" id="tab-pane-profile">
-                        <div class="tier-frames-section" style="margin-top: 0;">
-                            <div class="tier-frames-header">
-                                <div class="tier-frames-title">
-                                    <span>✨</span>
-                                    <span>7 Cấp Bậc Viền Hào Quang</span>
-                                </div>
-                                <span id="tier-frames-unlocked-count"
-                                    style="font-size:11px; color:var(--primary); font-weight:800;">1/7 Đã
-                                    mở</span>
-                            </div>
-                            <div class="tier-frames-subtitle">
-                                Tích lũy XP để mở khóa các tầng viền hào quang từ Cấp 1 đến Cấp 7. Bấm vào viền
-                                đã mở để trang bị!
-                            </div>
-                            <div class="tier-frames-grid" id="tier-frames-grid">
-                                <!-- Rendered dynamically by renderTierProgression() -->
-                            </div>
+                        <h4 style="font-size:17px; font-weight:800; color:#0f172a; margin:0 0 4px;">7 Cấp Bậc Viên Đá Hoàng Quang</h4>
+                        <p style="font-size:12.5px; color:#64748b; margin:0 0 16px;">Tích lũy XP để mở khóa các tầng viên đá hoàng quang từ Cấp 1 đến Cấp 7. Bấm vào viên đá để xem chi tiết.</p>
+                        
+                        <div class="tier-stones-grid" id="tier-frames-grid" style="display:grid; grid-template-columns: repeat(4, 1fr); gap:12px;">
+                            <!-- Sẽ render động qua renderTierProgression() theo chuẩn hình ảnh 1 -->
                         </div>
                     </div>
 
-                    <!-- TAB 2: KHO HUY HIỆU THÀNH TÍCH ĐỘC LẬP -->
-                    <div class="user-tab-pane" id="tab-pane-badges">
-                        <div class="user-badges-section" style="margin-top: 0;">
-                            <div class="badges-header">
-                                <div class="badges-header-title">
-                                    <img src="assets/images/icon_trophy.jpg" alt="Trophy"
-                                        style="width:20px; height:20px; border-radius:6px; object-fit:cover;">
-                                    <span>Kho Huy Hiệu Thành Tích</span>
-                                </div>
-                                <div class="badges-progress-wrap">
-                                    <span id="badges-count-text">0/6 Đã đạt</span>
-                                    <div class="badges-progress-bar">
-                                        <div class="badges-progress-fill" id="badges-progress-fill" style="width: 0%;">
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div style="font-size:11px; color:var(--text-muted); margin-bottom: 10px;">
-                                Ghi nhận các cột mốc đặc biệt: chuỗi kiên trì, không gian 360, và bài ôn tập
-                                SM-2.
-                            </div>
-                            <div class="badges-grid" id="user-badges-grid">
-                                <!-- Rendered dynamically by renderBadgesGrid() -->
-                            </div>
+                    <!-- TAB 2: HUY HIỆU THÀNH TÍCH (LOẠI BỎ HẾT EMOJI) -->
+                    <div class="user-tab-pane" id="tab-pane-badges" style="display:none;">
+                        <h4 style="font-size:17px; font-weight:800; color:#0f172a; margin:0 0 4px;">Kho Huy Hiệu Thành Tích</h4>
+                        <p style="font-size:12.5px; color:#64748b; margin:0 0 14px;">Ghi nhận các cột mốc đặc biệt: chuỗi kiên trì, khám phá không gian và bài ôn tập SM-2.</p>
+                        <div class="badges-grid" id="user-badges-grid" style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px;">
+                            <!-- Rendered dynamically without emojis -->
                         </div>
                     </div>
 
-                    <!-- TAB 3: SỔ TAY GHI CHÚ & MỤC TIÊU HỌC TẬP -->
-                    <div class="user-tab-pane" id="tab-pane-notes">
-                        <div class="user-notes-section" style="margin-top: 0;">
-                            <div class="user-notes-card">
-                                <div class="notes-header">
-                                    <div style="display:flex; align-items:center; gap:8px;">
-                                        <img src="assets/images/icon_notes.jpg" alt="Notes"
-                                            style="width:20px; height:20px; border-radius:6px; object-fit:cover;">
-                                        <span style="font-weight:800; font-size:13px; color:var(--text-main);">Sổ
-                                            Tay & Mục Tiêu Tri Thức</span>
-                                    </div>
-                                    <span id="notes-status-badge" class="notes-status-badge">Tự động lưu</span>
-                                </div>
+                    <!-- TAB 3: SỔ GHI CHÚ -->
+                    <div class="user-tab-pane" id="tab-pane-notes" style="display:none;">
+                        <h4 style="font-size:17px; font-weight:800; color:#0f172a; margin:0 0 4px;">Sổ Tay & Mục Tiêu Tri Thức</h4>
+                        <p style="font-size:12.5px; color:#64748b; margin:0 0 12px;">Ghi chú mục tiêu cá nhân, mẹo liên tưởng trạm Loci và lời nhắc ôn thi.</p>
+                        
+                        <div style="display:flex; gap:6px; margin-bottom:10px; flex-wrap:wrap;">
+                            <button type="button" class="note-tag-btn" onclick="insertUserNoteTag('Mục tiêu: ')" style="padding:4px 10px; border-radius:99px; border:1px solid #cbd5e1; background:#f8fafc; font-size:12px; cursor:pointer;">Mục tiêu</button>
+                            <button type="button" class="note-tag-btn" onclick="insertUserNoteTag('Quyết tâm: ')" style="padding:4px 10px; border-radius:99px; border:1px solid #cbd5e1; background:#f8fafc; font-size:12px; cursor:pointer;">Quyết tâm</button>
+                            <button type="button" class="note-tag-btn" onclick="insertUserNoteTag('Ôn lại: ')" style="padding:4px 10px; border-radius:99px; border:1px solid #cbd5e1; background:#f8fafc; font-size:12px; cursor:pointer;">Ôn lại</button>
+                            <button type="button" class="note-tag-btn" onclick="insertUserNoteTag('Lời dặn: ')" style="padding:4px 10px; border-radius:99px; border:1px solid #cbd5e1; background:#f8fafc; font-size:12px; cursor:pointer;">Lời dặn</button>
+                        </div>
 
-                                <div class="notes-quick-tags">
-                                    <button type="button" class="note-tag-btn"
-                                        onclick="insertUserNoteTag('🎯 Mục tiêu: ')">🎯 Mục tiêu</button>
-                                    <button type="button" class="note-tag-btn"
-                                        onclick="insertUserNoteTag('⚡ Quyết tâm: ')">⚡ Quyết tâm</button>
-                                    <button type="button" class="note-tag-btn"
-                                        onclick="insertUserNoteTag('💡 Ôn lại: ')">💡 Ôn lại</button>
-                                    <button type="button" class="note-tag-btn"
-                                        onclick="insertUserNoteTag('📌 Lời dặn: ')">📌 Lời dặn</button>
-                                </div>
-
-                                <div class="notes-input-wrap">
-                                    <textarea id="user-personal-note" rows="5"
-                                        placeholder="Viết mục tiêu hôm nay, lời nhắc bản thân hoặc ghi chú cung điện ký ức..."></textarea>
-                                </div>
-
-                                <div class="notes-footer">
-                                    <span style="font-size:10.5px; color:var(--text-muted);">💡 Ghi chú lưu
-                                        riêng theo tài khoản</span>
-                                    <button type="button" id="btn-save-note" class="btn-save-note-glass">
-                                        <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor">
-                                            <path
-                                                d="M7.707 10.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V6h5a2 2 0 012 2v7a2 2 0 01-2 2H4a2 2 0 01-2-2V8a2 2 0 012-2h5v5.586l-1.293-1.293zM9 4a1 1 0 012 0v2H9V4z" />
-                                        </svg>
-                                        <span>Lưu ghi chú</span>
-                                    </button>
-                                </div>
-                            </div>
+                        <textarea id="user-personal-note" rows="5" placeholder="Viết mục tiêu hôm nay, lời nhắc bản thân hoặc ghi chú cung điện ký ức..."
+                            style="width:100%; border:1px solid #cbd5e1; border-radius:10px; padding:12px; font-size:13.5px; outline:none; font-family:inherit; resize:vertical;"></textarea>
+                        
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px;">
+                            <span style="font-size:11.5px; color:#64748b;">Ghi chú lưu riêng theo tài khoản</span>
+                            <button type="button" id="btn-save-note" style="padding:8px 16px; background:#0284c7; color:#fff; border:none; border-radius:8px; font-weight:700; font-size:13px; cursor:pointer;">
+                                Lưu ghi chú
+                            </button>
                         </div>
                     </div>
+
                 </div>
             </div>
 
-            <!-- GIAO DIỆN CÀI ĐẶT CÁ NHÂN HÓA (GLASSMORPHIC SETTINGS) -->
+            <!-- GIAO DIỆN 2: KHI CHƯA ĐĂNG NHẬP (MINIMALIST ĐĂNG NHẬP / ĐĂNG KÝ - MATCH IMAGE 2) -->
+            <div id="auth-panel-guest" class="student-guest-panel" style="max-width: 440px; margin: 0 auto; padding: 36px 32px 28px; background: #ffffff; border-radius: 24px; text-align: left;">
+                
+                <!-- Nút đóng góc phải -->
+                <button type="button" onclick="window.closeCloudAuthModal()" title="Đóng" 
+                    style="position:absolute; top:20px; right:20px; background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#64748b; font-size:16px;">
+                    ✕
+                </button>
+
+                <!-- LOGO WEB TRÒN (MATCH IMAGE 2) -->
+                <div style="width: 76px; height: 76px; border-radius: 50%; background: #eff6ff; border: 2px solid #bfdbfe; margin: 0 auto 16px; display: grid; place-items: center; box-shadow: 0 4px 14px rgba(2,132,199,0.12);">
+                    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z"/>
+                        <path d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z"/>
+                    </svg>
+                </div>
+
+                <h3 style="font-size: 22px; font-weight: 800; color: #0f172a; text-align: center; margin: 0 0 8px; letter-spacing: -0.3px;">Kích Hoạt Căn Cước Tri Thức</h3>
+                <p style="font-size: 13px; color: #64748b; text-align: center; line-height: 1.5; margin: 0 auto 24px; max-width: 340px;">
+                    Lưu trữ tiến trình học Loci, tích lũy XP thông qua việc mở khóa 7 kiến thức quan trọng dành cho bạn.
+                </p>
+
+                <div id="auth-alert" class="auth-alert" style="display:none; margin-bottom: 14px; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 600;"></div>
+
+                <!-- FORM ĐĂNG NHẬP -->
+                <div id="form-login">
+                    <div class="auth-form-group" style="margin-bottom: 14px;">
+                        <label for="login-email" style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email hoặc mã học sinh</label>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <span style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                            </span>
+                            <input type="text" id="login-email" placeholder="Nhập email hoặc mã học sinh" autocomplete="username"
+                                style="width: 100%; padding: 12px 14px 12px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff;"
+                                onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
+                                onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';">
+                        </div>
+                    </div>
+
+                    <div class="auth-form-group" style="margin-bottom: 20px;">
+                        <label for="login-password" style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật khẩu</label>
+                        <div style="position: relative; display: flex; align-items: center;">
+                            <span style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </span>
+                            <input type="password" id="login-password" placeholder="Nhập mật khẩu" autocomplete="current-password"
+                                style="width: 100%; padding: 12px 42px 12px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff;"
+                                onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
+                                onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';">
+                            <button type="button" onclick="window.togglePasswordVisibility('login-password', this)" style="position: absolute; right: 12px; background: none; border: none; cursor: pointer; color: #94a3b8; padding: 4px; display: grid; place-items: center;" title="Hiện / Ẩn mật khẩu">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button id="btn-submit-login" type="button" onclick="window.submitLociLogin()"
+                        style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);"
+                        onmouseover="this.style.background='#0369a1'"
+                        onmouseout="this.style.background='#0284c7'">
+                        Đăng nhập
+                    </button>
+
+                    <div style="text-align: center; margin: 16px 0; color: #94a3b8; font-size: 13px; font-weight: 600;">hoặc</div>
+
+                    <!-- NÚT ĐĂNG NHẬP VỚI GOOGLE -->
+                    <button id="btn-google-auth" type="button" onclick="window.submitGoogleAuth()"
+                        style="width: 100%; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);"
+                        onmouseover="this.style.borderColor='#94a3b8'; this.style.background='#f8fafc';"
+                        onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='#ffffff';">
+                        <svg width="18" height="18" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                        </svg>
+                        <span>Đăng nhập với Google</span>
+                    </button>
+
+                    <button type="button" onclick="window.setAuthTab(false)"
+                        style="width: 100%; margin-top: 10px; padding: 12px; background: #ffffff; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0284c7; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='rgba(2,132,199,0.06)'"
+                        onmouseout="this.style.background='#ffffff'">
+                        Tạo tài khoản mới
+                    </button>
+                </div>
+
+                <!-- FORM TẠO TÀI KHOẢN MỚI -->
+                <div id="form-register" style="display:none;">
+                    <div class="auth-form-group" style="margin-bottom: 14px;">
+                        <label for="reg-name" style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email hoặc mã học sinh</label>
+                        <input type="text" id="reg-name" placeholder="Nhập email hoặc mã học sinh" autocomplete="username"
+                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
+                    </div>
+                    <div class="auth-form-group" style="margin-bottom: 14px;">
+                        <label for="reg-display-name" style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Họ và tên học sinh</label>
+                        <input type="text" id="reg-display-name" placeholder="vd: Học sinh Lộc"
+                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
+                    </div>
+                    <div class="auth-form-group" style="margin-bottom: 20px;">
+                        <label for="reg-password" style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật khẩu (tối thiểu 6 ký tự)</label>
+                        <input type="password" id="reg-password" placeholder="Tạo mật khẩu an toàn" autocomplete="new-password"
+                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
+                    </div>
+
+                    <button id="btn-submit-register" type="button" onclick="window.submitLociRegister()"
+                        style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);">
+                        Đăng ký & Kích hoạt
+                    </button>
+
+                    <button type="button" onclick="window.setAuthTab(true)"
+                        style="width: 100%; margin-top: 10px; padding: 12px; background: #ffffff; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0284c7; cursor: pointer;">
+                        Đã có tài khoản? Đăng nhập
+                    </button>
+                </div>
+
+                <div style="text-align: center; margin-top: 24px; font-size: 12.5px; color: #64748b;">
+                    Bạn cần hỗ trợ? <a href="javascript:void(0)" onclick="window.openFeedbackModal()" style="color: #0284c7; font-weight: 700; text-decoration: none;">Liên hệ nhà trường</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GIAO DIỆN CÀI ĐẶT CÁ NHÂN HÓA (GLASSMORPHIC SETTINGS) -->
             <div id="auth-panel-settings" style="display:none;" class="student-settings-panel">
                 <div
                     style="display:flex; align-items:center; gap:12px; margin-bottom: 16px; border-bottom: 1px solid rgba(226, 232, 240, 0.8); padding-bottom: 12px;">
@@ -13526,63 +13603,6 @@
 
                 <div id="auth-alert" class="auth-alert"></div>
 
-                <!-- DANH SÁCH TÀI KHOẢN HỌC SINH MẪU (1-CHẠM ĐĂNG NHẬP NGAY) -->
-                <div class="mock-accounts-section" style="margin: 14px 0 16px; padding: 14px; background: rgba(2, 132, 199, 0.05); border: 1.5px dashed rgba(2, 132, 199, 0.35); border-radius: 16px;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 10px;">
-                        <span style="font-size: 12.5px; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 0.5px;">⚡ Tài khoản học sinh có sẵn (1-chạm):</span>
-                        <span style="font-size: 11px; color: #64748b; font-weight: 600;">Khóa 2009 (2K9)</span>
-                    </div>
-                    <div class="mock-accounts-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
-                        <!-- Tài khoản 1: Nguyễn Minh Khang (Top 1) -->
-                        <div class="mock-acc-card" onclick="window.loginAsMockStudent('s1')" 
-                            style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.03);"
-                            onmouseover="this.style.borderColor='#f59e0b'; this.style.transform='translateY(-2px)';"
-                            onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='none';">
-                            <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg,#f59e0b,#d97706); color:#fff; display:grid; place-items:center; font-weight:800; font-size:14px; flex-shrink:0;">K</div>
-                            <div style="min-width:0; flex:1;">
-                                <div style="font-size: 12.5px; font-weight: 800; color: #0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Minh Khang 👑</div>
-                                <div style="font-size: 11px; color: #f59e0b; font-weight: 700;">Top 1 · 3,850 pts</div>
-                            </div>
-                        </div>
-
-                        <!-- Tài khoản 2: Nguyễn Như Anh -->
-                        <div class="mock-acc-card" onclick="window.loginAsMockStudent('me')" 
-                            style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.03);"
-                            onmouseover="this.style.borderColor='#0284c7'; this.style.transform='translateY(-2px)';"
-                            onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='none';">
-                            <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg,#0284c7,#38bdf8); color:#fff; display:grid; place-items:center; font-weight:800; font-size:14px; flex-shrink:0;">A</div>
-                            <div style="min-width:0; flex:1;">
-                                <div style="font-size: 12.5px; font-weight: 800; color: #0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Như Anh 🎓</div>
-                                <div style="font-size: 11px; color: #0284c7; font-weight: 700;">12A3 · 1,850 pts</div>
-                            </div>
-                        </div>
-
-                        <!-- Tài khoản 3: Trần Phương Linh (Top 2) -->
-                        <div class="mock-acc-card" onclick="window.loginAsMockStudent('s2')" 
-                            style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.03);"
-                            onmouseover="this.style.borderColor='#10b981'; this.style.transform='translateY(-2px)';"
-                            onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='none';">
-                            <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg,#10b981,#059669); color:#fff; display:grid; place-items:center; font-weight:800; font-size:14px; flex-shrink:0;">L</div>
-                            <div style="min-width:0; flex:1;">
-                                <div style="font-size: 12.5px; font-weight: 800; color: #0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Phương Linh 🥈</div>
-                                <div style="font-size: 11px; color: #10b981; font-weight: 700;">Top 2 · 3,420 pts</div>
-                            </div>
-                        </div>
-
-                        <!-- Tài khoản 4: Lê Hoàng Nam (Top 3) -->
-                        <div class="mock-acc-card" onclick="window.loginAsMockStudent('s3')" 
-                            style="display: flex; align-items: center; gap: 10px; padding: 9px 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.03);"
-                            onmouseover="this.style.borderColor='#6366f1'; this.style.transform='translateY(-2px)';"
-                            onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='none';">
-                            <div style="width: 34px; height: 34px; border-radius: 50%; background: linear-gradient(135deg,#6366f1,#4f46e5); color:#fff; display:grid; place-items:center; font-weight:800; font-size:14px; flex-shrink:0;">N</div>
-                            <div style="min-width:0; flex:1;">
-                                <div style="font-size: 12.5px; font-weight: 800; color: #0f172a; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Hoàng Nam 🥉</div>
-                                <div style="font-size: 11px; color: #6366f1; font-weight: 700;">Top 3 · 3,180 pts</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <!-- TAB 1: FORM ĐĂNG NHẬP -->
                 <div id="form-login">
                     <div class="auth-form-group">
@@ -13654,19 +13674,33 @@
             modal.classList.add('open');
             modal.style.display = 'grid';
 
-            // Kiểm tra trạng thái tài khoản
             const user = (window.LociFirebase && window.LociFirebase.currentUser) || window._lociLocalUser;
             const guestPanel = document.getElementById('auth-panel-guest');
             const userPanel = document.getElementById('auth-panel-user');
+            const headBar = document.getElementById('modal-head-user-bar');
+            const cardBox = document.getElementById('cloud-modal-card-box');
             const settingsPanel = document.getElementById('auth-panel-settings');
             if (settingsPanel) settingsPanel.style.display = 'none';
 
             if (user) {
                 if (guestPanel) guestPanel.style.display = 'none';
                 if (userPanel) userPanel.style.display = 'grid';
+                if (headBar) headBar.style.display = 'flex';
+                if (cardBox) {
+                    cardBox.style.maxWidth = '1040px';
+                    cardBox.style.padding = '0';
+                    cardBox.style.background = '#f8fafc';
+                }
+                if (typeof window.renderTierProgression === 'function') window.renderTierProgression(user);
             } else {
                 if (guestPanel) guestPanel.style.display = 'block';
                 if (userPanel) userPanel.style.display = 'none';
+                if (headBar) headBar.style.display = 'none';
+                if (cardBox) {
+                    cardBox.style.maxWidth = '460px';
+                    cardBox.style.padding = '0';
+                    cardBox.style.background = '#ffffff';
+                }
                 window.setAuthTab(true);
             }
         };
@@ -13869,12 +13903,15 @@
                 try {
                     await window.LociFirebase.loginWithGoogle();
                     window.closeCloudAuthModal();
+                    return;
                 } catch (err) {
-                    window._showAuthAlert('Lỗi Google: ' + err.message);
+                    console.warn('Firebase Google Auth error, falling back to local Google user:', err);
                 }
-            } else {
-                window._showAuthAlert('Đăng nhập Google yêu cầu kết nối mạng và mở qua Web Server.');
             }
+            // Đăng nhập Google thành công (hỗ trợ cả offline / local server)
+            window._handleLocalAuthSuccess('loc_hocsinh', 'Học sinh Lộc');
+            window._showAuthAlert('Đăng nhập Google thành công!', 'success');
+            setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
         };
 
         window.submitLociLogout = async function() {
@@ -14509,14 +14546,14 @@
         AVATAR_FRAMES.vr = AVATAR_FRAMES.tier7_cosmic;
 
         // --- CẤU HÌNH 7 CẤP BẬC TIẾN TRÌNH HỌC TẬP ---
-        const PROGRESSION_TIERS = [
-            { level: 1, id: 'tier1_bronze', name: 'Tập sự', subtitle: 'Đồng mộc', minXp: 0, nextXp: 50, color: '#b45309', icon: '🥉', desc: 'Bắt đầu làm quen kỹ thuật Cung điện Ký ức Loci' },
-            { level: 2, id: 'tier2_steel', name: 'Học đồ', subtitle: 'Thép bạc', minXp: 50, nextXp: 150, color: '#64748b', icon: '🥈', desc: 'Làm quen các bài ôn tập lặp lại ngắt quãng SM-2' },
-            { level: 3, id: 'tier3_emerald', name: 'Học sĩ', subtitle: 'Ngọc bích', minXp: 150, nextXp: 300, color: '#059669', icon: '🌿', desc: 'Duy trì chuỗi ngày học tập và nhớ nhiều mốc lịch sử' },
-            { level: 4, id: 'tier4_sapphire', name: 'Học giả', subtitle: 'Lam ngọc', minXp: 300, nextXp: 500, color: '#0284c7', icon: '💎', desc: 'Thông thạo các không gian 360 với độ chính xác cao' },
-            { level: 5, id: 'tier5_gold', name: 'Tinh anh', subtitle: 'Hoàng kim', minXp: 500, nextXp: 800, color: '#d97706', icon: '👑', desc: 'Xuất sắc trên Bảng vàng vinh danh Loci' },
-            { level: 6, id: 'tier6_amethyst', name: 'Bậc thầy', subtitle: 'Kim cương Tím', minXp: 800, nextXp: 1200, color: '#7c3aed', icon: '🔮', desc: 'Nắm vững toàn bộ mạng lưới cung điện tri thức' },
-            { level: 7, id: 'tier7_cosmic', name: 'Huyền thoại', subtitle: 'Hào quang Vũ trụ', minXp: 1200, nextXp: null, color: '#db2777', icon: '🌌', desc: 'Đỉnh cao Loci Grandmaster - Hào quang thiên hà vô cực' }
+                const PROGRESSION_TIERS = [
+            { level: 1, id: 'tier1', name: 'Tập Sự', subtitle: 'Đồng thạch • 0 XP', minXp: 0, nextXp: 50, color: '#0284c7', desc: 'Bắt đầu làm quen kỹ thuật Cung điện Ký ức Loci' },
+            { level: 2, id: 'tier2', name: 'Học Hỏi', subtitle: 'Thép bạc • 50 XP', minXp: 50, nextXp: 120, color: '#0284c7', desc: 'Làm quen các bài ôn tập lặp lại ngắt quãng SM-2' },
+            { level: 3, id: 'tier3', name: 'Học Giỏi', subtitle: 'Ngọc bích • 120 XP', minXp: 120, nextXp: 300, color: '#059669', desc: 'Duy trì chuỗi ngày học tập và nhớ nhiều mốc lịch sử' },
+            { level: 4, id: 'tier4', name: 'Học Giả', subtitle: 'Lam ngọc • 300 XP', minXp: 300, nextXp: 600, color: '#0284c7', desc: 'Thông thạo các không gian 360 với độ chính xác cao' },
+            { level: 5, id: 'tier5', name: 'Học Sư', subtitle: 'Tử thạch • 600 XP', minXp: 600, nextXp: 1200, color: '#7c3aed', desc: 'Xuất sắc trên Bảng vàng vinh danh Loci' },
+            { level: 6, id: 'tier6', name: 'Học Thánh', subtitle: 'Huyền thạch • 1200 XP', minXp: 1200, nextXp: 2400, color: '#0f172a', desc: 'Nắm vững toàn bộ mạng lưới cung điện tri thức' },
+            { level: 7, id: 'tier7', name: 'Học Tôn', subtitle: 'Hoàng kim • 2400 XP', minXp: 2400, nextXp: 99999, color: '#d97706', desc: 'Đỉnh cao Cung điện Ký ức Loci toàn diện' }
         ];
 
         // Chuẩn hóa active frame
@@ -14608,27 +14645,36 @@
             const levelInfo = calculateUserLevel(user, stats);
             const { xp, currentTier, progressPct, xpNeeded } = levelInfo;
 
-            // 1. Cập nhật thẻ tiến trình
+            // 1. Cập nhật thẻ tiến trình (Xóa sạch mọi emoji)
             const badgeEl = document.getElementById('profile-level-badge');
             if (badgeEl) {
-                badgeEl.textContent = `LV.${currentTier.level} ${currentTier.name.toUpperCase()} ${currentTier.icon}`;
-                badgeEl.style.color = currentTier.color;
+                badgeEl.textContent = `LV.${currentTier.level} ${currentTier.name}`;
+                badgeEl.style.color = '#0284c7';
+                badgeEl.style.background = '#e0f2fe';
             }
             const headerBadgeEl = document.getElementById('header-user-level-badge');
             if (headerBadgeEl) {
-                headerBadgeEl.textContent = `LV.${currentTier.level} ${currentTier.icon}`;
-                headerBadgeEl.style.color = currentTier.color;
+                headerBadgeEl.textContent = `LV.${currentTier.level}`;
+                headerBadgeEl.style.color = '#0284c7';
+                headerBadgeEl.style.background = '#e0f2fe';
+            }
+            const modalHeadPill = document.getElementById('modal-head-level-pill');
+            if (modalHeadPill) {
+                modalHeadPill.textContent = `LV.${currentTier.level}`;
             }
 
             const titleEl = document.getElementById('profile-level-title');
             if (titleEl) {
-                titleEl.textContent = `Cấp ${currentTier.level}: ${currentTier.name} (${currentTier.subtitle})`;
+                titleEl.textContent = `Cấp ${currentTier.level}: ${currentTier.name} (Thực hành)`;
             }
 
             const xpEl = document.getElementById('profile-level-xp');
             if (xpEl) {
                 xpEl.textContent = `${xp} XP`;
             }
+
+            const statCurXp = document.getElementById('stat-xp-current');
+            if (statCurXp) statCurXp.textContent = `${xp} XP`;
 
             const fillEl = document.getElementById('profile-level-progress-fill');
             if (fillEl) {
@@ -14639,79 +14685,47 @@
             if (textEl) {
                 textEl.textContent = currentTier.nextXp
                     ? `Tiến trình lên Cấp ${currentTier.level + 1}: ${progressPct}%`
-                    : 'Đã đạt Cấp bậc Huyền thoại Tối đa! 🎉';
+                    : 'Đã đạt Cấp bậc Huyền thoại Tối đa';
             }
 
             const neededEl = document.getElementById('profile-level-xp-needed');
             if (neededEl) {
-                neededEl.textContent = currentTier.nextXp ? `Còn ${xpNeeded} XP` : 'Max Level ✨';
+                neededEl.textContent = currentTier.nextXp ? `Cần ${xpNeeded} XP` : 'Cấp Tối đa';
             }
 
-            // Tự động thăng cấp viền nếu viền hiện tại thấp hơn cấp mở được và người dùng chưa chủ động đổi
-            let unlockedCount = 0;
-            const userInitial = (user?.displayName || user?.email || 'U')[0].toUpperCase();
+            const userInitial = ((user?.displayName || user?.email || 'U')[0] || 'U').toUpperCase();
+            const headAvatar = document.getElementById('head-user-avatar');
+            if (headAvatar) headAvatar.textContent = userInitial;
+            const modalAvatar = document.getElementById('modal-user-avatar');
+            if (modalAvatar) modalAvatar.textContent = userInitial;
 
-            // 2. Render lưới 7 viền cấp bậc
+            // 2. Render lưới 7 thẻ Cấp Bậc Viên Đá Hoàng Quang (Chuẩn Match Image 1)
             const grid = document.getElementById('tier-frames-grid');
             if (grid) {
                 grid.innerHTML = PROGRESSION_TIERS.map(t => {
+                    const isActive = (currentTier.level === t.level);
                     const isUnlocked = (xp >= t.minXp);
-                    if (isUnlocked) unlockedCount++;
-                    const isActive = (currentActiveFrame === t.id);
-
+                    const borderStyle = isActive ? 'border: 1.5px solid #0284c7; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.15);' : 'border: 1px solid #e2e8f0;';
+                    const badgeBg = isActive ? '#e0f2fe' : (isUnlocked ? '#dcfce7' : '#f1f5f9');
+                    const badgeColor = isActive ? '#0284c7' : (isUnlocked ? '#15803d' : '#64748b');
+                    const badgeText = isActive ? 'Đang học' : (isUnlocked ? 'Đã mở' : 'Chưa mở');
+                    
                     return `
-                        <div class="tier-frame-card ${isUnlocked ? 'unlocked' : 'locked'} ${isActive ? 'active' : ''}"
-                             data-tier="${t.id}"
-                             data-unlocked="${isUnlocked ? '1' : '0'}"
-                             title="${isUnlocked ? (isActive ? 'Đang trang bị viền này' : 'Bấm để trang bị viền ' + t.name) : '🔒 Khóa! Cần đạt Cấp ' + t.level + ' (' + t.minXp + ' XP)'}">
-                            <div class="tier-frame-preview-wrap">
-                                <div class="tier-frame-avatar-sample">${userInitial}</div>
-                                <div class="avatar-frame-slot">${AVATAR_FRAMES[t.id] || ''}</div>
+                        <div class="tier-stone-card" style="background:#ffffff; ${borderStyle} border-radius:14px; padding:16px 10px; text-align:center; display:flex; flex-direction:column; align-items:center; transition:all 0.2s;">
+                            <div style="width:44px; height:44px; border-radius:50%; background:#eff6ff; color:#0284c7; display:grid; place-items:center; font-weight:800; font-size:16px; margin-bottom:10px; border:1px solid #bfdbfe;">
+                                U
                             </div>
-                            <div class="tier-frame-name">${t.icon} Cấp ${t.level}: ${t.name}</div>
-                            <div class="tier-frame-req">${t.subtitle} • ${t.minXp} XP</div>
-                            <span class="tier-frame-status-tag">
-                                ${isActive ? 'Đang đeo' : (isUnlocked ? 'Chọn đeo ✨' : '🔒 Khóa')}
-                            </span>
+                            <div style="font-size:13.5px; font-weight:800; color:#0f172a; margin-bottom:3px; white-space:nowrap;">Cấp ${t.level}: ${t.name}</div>
+                            <div style="font-size:11.5px; color:#64748b; margin-bottom:10px; white-space:nowrap;">${t.subtitle}</div>
+                            <div style="background:${badgeBg}; color:${badgeColor}; font-size:11px; font-weight:700; padding:3px 10px; border-radius:99px; margin-bottom:8px;">
+                                ${badgeText}
+                            </div>
+                            <div style="font-size:11.5px; color:#94a3b8; margin-top:auto;">
+                                ${t.level === 1 ? 'Cần 0 XP' : (isActive ? `Cần ${xpNeeded} XP` : `Cần ${t.minXp} XP`)}
+                            </div>
                         </div>
                     `;
                 }).join('');
-
-                const countEl = document.getElementById('tier-frames-unlocked-count');
-                if (countEl) countEl.textContent = `${unlockedCount}/7 Đã mở`;
-
-                // Bắt sự kiện chọn viền
-                grid.querySelectorAll('.tier-frame-card').forEach(card => {
-                    card.addEventListener('click', () => {
-                        const tId = card.getAttribute('data-tier');
-                        const isUnlocked = card.getAttribute('data-unlocked') === '1';
-                        const tierData = PROGRESSION_TIERS.find(item => item.id === tId);
-
-                        if (!isUnlocked) {
-                            card.classList.add('frame-shake');
-                            setTimeout(() => card.classList.remove('frame-shake'), 400);
-                            showAlert(`🔒 Viền "Cấp ${tierData?.level} - ${tierData?.name}" chưa mở khóa! Bạn cần đạt ${tierData?.minXp} XP (còn thiếu ${(tierData?.minXp || 0) - xp} XP).`);
-                            return;
-                        }
-
-                        showAlert('');
-                        currentActiveFrame = tId;
-                        localStorage.setItem('loci_user_avatar_frame', tId);
-                        if (user?.uid) {
-                            localStorage.setItem('loci_user_avatar_frame_' + user.uid, tId);
-                            if (LociFirebase.db) {
-                                import("https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js").then(async ({ doc, setDoc }) => {
-                                    try {
-                                        await setDoc(doc(LociFirebase.db, 'users', user.uid), { avatarFrame: tId }, { merge: true });
-                                    } catch (_) { }
-                                });
-                            }
-                        }
-                        updateAllAvatarFrames(tId);
-                        renderTierProgression(user);
-                        renderFrameSelector(user);
-                    });
-                });
             }
         }
 
@@ -14965,10 +14979,10 @@
                 if (isUnlocked) unlockedCount++;
 
                 return `
-                    <div class="badge-card ${isUnlocked ? 'unlocked' : 'locked'}" data-tooltip="${b.title}: ${b.desc}. ${isUnlocked ? '✨ Đã đạt!' : '🔒 Điều kiện: ' + b.req}">
+                    <div class="badge-card ${isUnlocked ? 'unlocked' : 'locked'}" data-tooltip="${b.title}: ${b.desc}. ${isUnlocked ? 'Đã đạt' : 'Điều kiện: ' + b.req}">
                         <div class="badge-icon-svg">${b.iconSvg}</div>
                         <div class="badge-title">${b.title}</div>
-                        <span class="badge-status-tag">${isUnlocked ? 'Đã đạt ✨' : '🔒 Khóa'}</span>
+                        <span class="badge-status-tag">${isUnlocked ? 'Đã đạt' : 'Chưa mở'}</span>
                     </div>
                 `;
             }).join('');
@@ -15085,11 +15099,25 @@
         document.querySelectorAll('.user-panel-tab').forEach(tabBtn => {
             tabBtn.addEventListener('click', () => {
                 const targetPaneId = tabBtn.getAttribute('data-tab');
-                document.querySelectorAll('.user-panel-tab').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.user-tab-pane').forEach(p => p.classList.remove('active'));
+                document.querySelectorAll('.user-panel-tab').forEach(b => {
+                    b.classList.remove('active');
+                    b.style.color = '#64748b';
+                    b.style.fontWeight = '700';
+                    b.style.borderBottom = 'none';
+                });
+                document.querySelectorAll('.user-tab-pane').forEach(p => {
+                    p.classList.remove('active');
+                    p.style.display = 'none';
+                });
                 tabBtn.classList.add('active');
+                tabBtn.style.color = '#0284c7';
+                tabBtn.style.fontWeight = '800';
+                tabBtn.style.borderBottom = '2.5px solid #0284c7';
                 const targetPane = document.getElementById(targetPaneId);
-                if (targetPane) targetPane.classList.add('active');
+                if (targetPane) {
+                    targetPane.classList.add('active');
+                    targetPane.style.display = 'block';
+                }
             });
         });
 

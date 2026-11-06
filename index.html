@@ -12930,12 +12930,20 @@ stationGroup.add(contentGroup);
     const MOVE_SPEED = 3.6;
     const SPRINT_SPEED = 6.2;
 
-    // Loft room boundary limits (change to let so we can update for larger custom models)
-    ROOM_BOUNDS = {
-      minX: -4.2, maxX: 4.2,
-      minZ: -3.8, maxZ: 3.8,
-      eyeHeight: 1.65
-    };
+    // Loft room boundary limits (giữ phạm vi rộng -34m đến 34m nếu là phòng triển lãm Brown)
+    if (!isBrownGallery) {
+      ROOM_BOUNDS = {
+        minX: -4.2, maxX: 4.2,
+        minZ: -3.8, maxZ: 3.8,
+        eyeHeight: 1.65
+      };
+    } else {
+      ROOM_BOUNDS = {
+        minX: -34, maxX: 34,
+        minZ: -34, maxZ: 34,
+        eyeHeight: 1.65
+      };
+    }
 
     let lastJourneyStepTime = 0;
 
@@ -13406,6 +13414,7 @@ stationGroup.add(contentGroup);
     let cameraDragMoved = false;
     let lastCamMouseX = 0;
     let lastCamMouseY = 0;
+    let _lastPMCheck = 0;
 
     window.addEventListener('pointermove', (e) => {
       // 1. Đang kéo thả mốc ký ức
@@ -24583,10 +24592,12 @@ Hỏi: ...
   </script>
 <script>
     // Tự động giải mã và điền API key an toàn
-    const _decodeGeminiKey = (s) => { try { return atob(s.split('').reverse().join('')); } catch(e){ return ''; } };
-    const _autoKey = _decodeGeminiKey('=EVMvpVbxdlWRZUZQlUQM1EblZVcHBTUzYDbidXdRl2RhNGT34UdRdTdNx0S24kU4IWQuEVQ');
-    const _keyInput = document.getElementById('customApiKeyInput');
-    if (_keyInput && !_keyInput.value) _keyInput.value = _autoKey;
+    (function() {
+      const _fn = window._decodeGeminiKey || function(s) { try { return atob(s.split('').reverse().join('')); } catch(e){ return ''; } };
+      const _autoKey = _fn('=EVMvpVbxdlWRZUZQlUQM1EblZVcHBTUzYDbidXdRl2RhNGT34UdRdTdNx0S24kU4IWQuEVQ');
+      const _keyInput = document.getElementById('customApiKeyInput');
+      if (_keyInput && !_keyInput.value) _keyInput.value = _autoKey;
+    })();
 </script>
 </body>
 
