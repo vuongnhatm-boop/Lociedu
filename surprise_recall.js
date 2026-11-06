@@ -136,6 +136,9 @@
 
   // 3. THUẬT TOÁN SO KHỚP VĂN BẢN THÔNG MINH CHO CÂU HỎI GÕ ĐIỀN
   function evaluateTypeInText(typed, target, acceptedList = [], hint = '') {
+    if (window.LociSemanticEvaluator && typeof window.LociSemanticEvaluator.checkTypeInAnswer === 'function') {
+      return window.LociSemanticEvaluator.checkTypeInAnswer(typed, target, acceptedList, hint);
+    }
     if (window.LociFlashcardFormats && typeof window.LociFlashcardFormats.checkTypeInAnswer === 'function') {
       return window.LociFlashcardFormats.checkTypeInAnswer(typed, target, acceptedList, hint);
     }
@@ -158,16 +161,34 @@
       return { score: 100, status: 'exact', title: 'Chính xác 100%!', target: target, recommendedGrade: 5 };
     }
 
-    // 2. Chứa chuỗi con (nếu dài >= 3 ký tự)
-    if (allCleanAccepted.some(acc => acc.length >= 3 && (cleanTyped.includes(acc) || acc.includes(cleanTyped)))) {
-      return { score: 92, status: 'exact', title: 'Rất chính xác!', target: target, recommendedGrade: 5 };
+    // 2. Chứa toàn bộ câu trả lời chấp nhận được (người dùng viết trọn vẹn cụm từ trong câu)
+    const containsAcc = allCleanAccepted.some(acc => {
+      if (!acc || acc.length < 3) return false;
+      const regex = new RegExp('(?:^|\\s)' + acc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:$|\\s)');
+      return regex.test(cleanTyped) || cleanTyped.includes(acc);
+    });
+    if (containsAcc) {
+      return { score: 95, status: 'exact', title: 'Rất chính xác!', target: target, recommendedGrade: 5 };
     }
 
-    // 3. So khớp từ khóa cốt lõi
+    // 3. Chuỗi người dùng là chuỗi con của đáp án (Chỉ chấp nhận khi gõ được >= 65% độ dài)
+    for (const acc of allCleanAccepted) {
+      if (acc && acc.includes(cleanTyped)) {
+        if (cleanTyped.length / acc.length >= 0.65 && cleanTyped.length >= 5) {
+          return { score: 85, status: 'close', title: 'Nắm rất vững ý chính!', target: target, recommendedGrade: 5 };
+        }
+      }
+    }
+
+    // 4. So khớp từ khóa cốt lõi
     const stopwords = new Set(['va', 'cac', 'nhung', 'o', 'tai', 'trong', 'cua', 'duoc', 'la', 'vao', 've', 'cho', 'mot', 'nay', 'do', 'ngay', 'thang', 'nam']);
     const getTokens = (s) => s.split(' ').filter(w => w.length > 1 && !stopwords.has(w));
     const targetTokens = getTokens(cleanTarget);
     const typedTokens = getTokens(cleanTyped);
+
+    if (typedTokens.length <= 1 && cleanTyped.length <= 4) {
+      return { score: 0, status: 'wrong', title: 'Chưa chính xác', target: target, recommendedGrade: 1 };
+    }
 
     let matchCount = 0;
     typedTokens.forEach(t => {
@@ -175,15 +196,17 @@
     });
 
     const ratio = targetTokens.length > 0 ? (matchCount / targetTokens.length) : 0;
+    if (ratio >= 0.7 && matchCount >= 2) {
+      return { score: 90, status: 'close', title: 'Nắm rất vững ý chính!', target: target, recommendedGrade: 5 };
+    }
     if (ratio >= 0.35 || matchCount >= 2) {
-      return { score: Math.round(Math.max(ratio * 100, 85)), status: 'close', title: 'Nắm rất vững ý chính!', target: target, recommendedGrade: 5 };
+      return { score: 75, status: 'close', title: 'Nắm được ý chính cốt lõi!', target: target, recommendedGrade: 4 };
+    }
+    if (ratio >= 0.2 || matchCount >= 1) {
+      return { score: 55, status: 'vague', title: 'Có ý đúng nhưng chưa trọn vẹn', target: target, recommendedGrade: 3 };
     }
 
-    if (ratio >= 0.18 || matchCount >= 1) {
-      return { score: 60, status: 'vague', title: 'Có ý đúng nhưng chưa trọn vẹn', target: target, recommendedGrade: 3 };
-    }
-
-    return { score: Math.round(ratio * 100), status: 'wrong', title: 'Chưa chính xác', target: target, recommendedGrade: 1 };
+    return { score: Math.min(25, Math.round(ratio * 100)), status: 'wrong', title: 'Chưa chính xác', target: target, recommendedGrade: 1 };
   }
 
   // 4. INJECT CSS GIAO DIỆN GLASSMORPHISM SANG TRỌNG

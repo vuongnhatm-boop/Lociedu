@@ -24,28 +24,18 @@
       .trim();
   }
 
-  const HISTORICAL_SYNONYMS = {
-    '15/8/1945': ['15/8', '15-8', '15 thang 8', 'giua thang 8', '15/8/1945', 'nhat dau hang', 'nhat ban dau hang'],
-    '13/8/1945': ['13/8', '13-8', '13 thang 8', 'quan lenh so 1', 'quan lenh 1', 'dem 13'],
-    '14/8/1945': ['14/8', '14-8', 'hoi nghi toan quoc'],
-    '16/8/1945': ['16/8', '16-8', 'dai hoi quoc dan', 'tan trao', '10 chinh sach'],
-    '19/8/1945': ['19/8', '19-8', 'ha noi', 'nha hat lon', 'bac bo phu', 'khoi nghia ha noi'],
-    '23/8/1945': ['23/8', '23-8', 'khoi nghia hue', 'hue'],
-    '25/8/1945': ['25/8', '25-8', 'sai gon', 'khoi nghia sai gon'],
-    '30/8/1945': ['30/8', '30-8', 'bao dai', 'thoai vi', 'an kiem', 'ngo mon'],
-    '2/9/1945': ['2/9', '2-9', '2 thang 9', 'ba dinh', 'tuyen ngon doc lap', 'khai sinh'],
-    'ho chi minh': ['bac ho', 'ho chi minh', 'nguyen ai quoc', 'chu tich ho chi minh'],
-    'vo nguyen giap': ['vo nguyen giap', 'dong chi giap', 'dai tuong'],
-    'quan lenh so 1': ['quan lenh so 1', 'quan lenh 1', 'uy ban khoi nghia', 'phat lenh'],
-    'bom nguyen tu': ['bom nguyen tu', 'little boy', 'fat man', 'hiroshima', 'nagasaki', 'hi ro si ma', 'na ga sa ki'],
-    'lien xo': ['lien xo', 'hong quan', 'man chau', 'dao quan quan dong'],
-    'thoi co': ['thoi co', 'ngan nam co mot', 'thoi co vang', 'khach quan', 'chu quan']
-  };
-
   /**
    * CHẤM ĐIỂM NGỮ NGHĨA CHO TỪNG PHẦN KIẾN THỨC RIÊNG BIỆT (Step-by-Step Evaluator)
+   * Sử dụng LociSemanticEvaluator chuẩn SGK Chủ đề 3 hoặc thuật toán nâng cao nội tại
    */
   function evaluateStepRecall(userRawText, targetPointText, locus) {
+    if (window.LociSemanticEvaluator && typeof window.LociSemanticEvaluator.evaluateStepRecall === 'function') {
+      return window.LociSemanticEvaluator.evaluateStepRecall(userRawText, targetPointText, locus);
+    }
+    if (window.LociFlashcardFormats && typeof window.LociFlashcardFormats.evaluateStepRecall === 'function') {
+      return window.LociFlashcardFormats.evaluateStepRecall(userRawText, targetPointText, locus);
+    }
+
     if (!userRawText || userRawText.trim().length === 0) {
       return {
         score: 0,
@@ -58,35 +48,37 @@
       };
     }
 
-    const normUser = normalizeText(userRawText);
-    const normTarget = normalizeText(targetPointText);
-    const cleanTarget = targetPointText.replace(/^[•\-\s\d\.]+/, '').trim();
+    // Fallback: Nếu LociSemanticEvaluator chưa nạp kịp, chuẩn hóa tự động
+    const cleanNorm = (str) => {
+      if (!str) return '';
+      return String(str).toLowerCase().trim().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[–—]/g, '-').replace(/[^\w\s\d]/g, ' ').replace(/\s+/g, ' ').trim();
+    };
 
-    // 1. Kiểm tra ngày tháng trong phần này
-    const dates = cleanTarget.match(/\b\d{1,2}[\/\-\.]\d{1,2}([\/\-\.]\d{4})?\b/g) || [];
+    const normUser = cleanNorm(userRawText);
+    const cleanTarget = targetPointText.replace(/^[•\-\s\d\.]+/, '').trim();
+    const normTarget = cleanNorm(cleanTarget);
+
+    // Chuẩn hóa ngày tháng & năm
+    const rawDates = cleanTarget.match(/\b\d{1,2}[\/\-\.\s–—]+\d{1,2}([\/\-\.\s–—]+\d{4})?\b/g) || [];
     let dateScore = 0;
-    let maxDateScore = dates.length * 30;
     const matchedDates = [];
     const missingDates = [];
 
-    dates.forEach(d => {
-      const normD = d.replace(/[\-\.]/g, '/');
-      let hit = normUser.includes(normalizeText(d));
-      if (!hit && HISTORICAL_SYNONYMS[normD]) {
-        hit = HISTORICAL_SYNONYMS[normD].some(s => normUser.includes(normalizeText(s)));
-      }
+    rawDates.forEach(d => {
+      const cleanD = d.replace(/[\-\.\s–—]+/g, '/');
+      const parts = cleanD.split('/');
+      let hit = normUser.includes(parts.slice(0, 2).join(' ')) || normUser.includes(cleanD) || normUser.includes(parts.slice(0, 2).join('/'));
       if (hit) {
-        dateScore += 30;
+        dateScore += 35;
         matchedDates.push('Thời gian: ' + d);
       } else {
         missingDates.push('Mốc thời gian: ' + d);
       }
     });
 
-    // 2. Kiểm tra từ khóa thực thể trong phần này
     const targetWords = normTarget.split(' ').filter(w => w.length > 2);
     const uniqueWords = [...new Set(targetWords)];
-    const stopWords = ['cua', 'va', 'la', 'cac', 'nhung', 'cho', 'trong', 'duoc', 'voi', 'mot', 'ngay', 'thang', 'nam', 'sau', 'khi', 'de'];
+    const stopWords = ['cua', 'va', 'la', 'cac', 'nhung', 'cho', 'trong', 'duoc', 'voi', 'mot', 'ngay', 'thang', 'nam', 'sau', 'khi', 'de', 'den', 'ra', 'co', 'da'];
     const meaningfulWords = uniqueWords.filter(w => !stopWords.includes(w));
 
     let hitWordsCount = 0;
@@ -95,50 +87,22 @@
     });
 
     const coverage = meaningfulWords.length > 0 ? (hitWordsCount / meaningfulWords.length) : 0;
-    let wordScore = Math.round(coverage * 70);
-
-    let totalPossible = (maxDateScore > 0 ? maxDateScore : 0) + 70;
-    let totalScore = dateScore + wordScore;
-    let finalScore = totalPossible > 0 ? Math.round((totalScore / totalPossible) * 100) : 0;
-
-    // Bonus độ dài & diễn đạt câu
-    const userWordsCount = userRawText.trim().split(/\s+/).length;
-    if (userWordsCount >= 8 && finalScore > 0) finalScore = Math.min(100, finalScore + 8);
-    if (userWordsCount >= 18 && finalScore > 0) finalScore = Math.min(100, finalScore + 12);
-    if (hitWordsCount === 0 && matchedDates.length === 0) finalScore = Math.min(finalScore, 15);
+    let finalScore = Math.min(100, Math.round(dateScore + (coverage * 65)));
+    if (hitWordsCount >= 4 && dateScore > 0) finalScore = Math.max(finalScore, 85);
+    if (hitWordsCount >= 2 && dateScore > 0) finalScore = Math.max(finalScore, 75);
 
     const passed = finalScore >= 50;
-
-    let grade = 'Chưa đạt yêu cầu';
-    let gradeColor = '#ef4444';
-    let feedback = '';
-
-    if (finalScore >= 85) {
-      grade = 'Xuất sắc — Vượt qua phần này! 🌟';
-      gradeColor = '#10b981';
-      feedback = 'Bạn nhớ rất chính xác các chi tiết lịch sử cốt lõi của phần này!';
-    } else if (finalScore >= 70) {
-      grade = 'Tốt — Đủ điểm qua phần này! 👍';
-      gradeColor = '#06b6d4';
-      feedback = 'Nắm vững các ý chính. Đã đủ điều kiện mở khóa phần tiếp theo!';
-    } else if (finalScore >= 50) {
-      grade = 'Đạt yêu cầu qua phần này ⚠️';
-      gradeColor = '#f59e0b';
-      feedback = 'Đã đạt điều kiện để qua phần này. Hãy đối chiếu kiến thức gốc để nhớ sâu hơn.';
-    } else {
-      grade = 'Chưa đủ điểm để qua (Cần >= 50%) ❌';
-      gradeColor = '#ef4444';
-      feedback = 'Bạn cần viết thêm chi tiết lịch sử (thời gian, địa danh, hành động) để qua phần này!';
-    }
+    let grade = passed ? (finalScore >= 85 ? 'Xuất sắc — Vượt qua phần này! 🌟' : 'Tốt — Đủ điểm qua phần này! 👍') : 'Chưa đủ điểm để qua (Cần >= 50%) ❌';
+    let gradeColor = passed ? (finalScore >= 85 ? '#10b981' : '#06b6d4') : '#ef4444';
 
     return {
       score: finalScore,
-      passed,
-      grade,
-      gradeColor,
+      passed: passed,
+      grade: grade,
+      gradeColor: gradeColor,
       matched: matchedDates,
       missing: missingDates,
-      feedback
+      feedback: passed ? 'Nắm vững ý chính lịch sử!' : 'Hãy đọc kỹ lại mốc thời gian và chi tiết sự kiện.'
     };
   }
 
