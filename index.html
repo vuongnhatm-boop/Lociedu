@@ -5759,7 +5759,7 @@
     if (urlParams.get('lesson') === 'bai_7' && !customModelUrl) {
       customModelUrl = 'backrooms_vr.glb';
     } else if (isBrownGallery && !customModelUrl) {
-      customModelUrl = 'Không gian chuẩn/Đơn/triển lãm nâu.glb';
+      customModelUrl = 'trien_lam_nau.glb';
     }
 
     // Chế độ bài học: ?lesson=bai_6 ... -> nạp sẵn các mốc chuẩn (khóa nội dung, chỉ cho kéo thả vị trí)
@@ -12786,11 +12786,13 @@ stationGroup.add(contentGroup);
         const box = new THREE.Box3().setFromObject(roomMesh);
         const center = box.getCenter(new THREE.Vector3());
 
-        let limitSize = 34;
-        ROOM_BOUNDS.minX = -limitSize;
-        ROOM_BOUNDS.maxX = limitSize;
-        ROOM_BOUNDS.minZ = -limitSize;
-        ROOM_BOUNDS.maxZ = limitSize;
+        const size = box.getSize(new THREE.Vector3());
+        let limitX = Math.max(35, (size.x / 2) + 8);
+        let limitZ = Math.max(35, (size.z / 2) + 8);
+        ROOM_BOUNDS.minX = -limitX;
+        ROOM_BOUNDS.maxX = limitX;
+        ROOM_BOUNDS.minZ = -limitZ;
+        ROOM_BOUNDS.maxZ = limitZ;
         ROOM_BOUNDS.eyeHeight = 1.65;
 
         camera.far = 400;
@@ -12931,19 +12933,12 @@ stationGroup.add(contentGroup);
     const SPRINT_SPEED = 6.2;
 
     // Loft room boundary limits (giữ phạm vi rộng -34m đến 34m nếu là phòng triển lãm Brown)
-    if (!isBrownGallery) {
-      ROOM_BOUNDS = {
-        minX: -4.2, maxX: 4.2,
-        minZ: -3.8, maxZ: 3.8,
-        eyeHeight: 1.65
-      };
-    } else {
-      ROOM_BOUNDS = {
-        minX: -34, maxX: 34,
-        minZ: -34, maxZ: 34,
-        eyeHeight: 1.65
-      };
-    }
+    // Không gian chuyển động rộng rãi, tự thích ứng với kích thước mô hình
+    ROOM_BOUNDS = {
+      minX: -50, maxX: 50,
+      minZ: -50, maxZ: 50,
+      eyeHeight: 1.65
+    };
 
     let lastJourneyStepTime = 0;
 
