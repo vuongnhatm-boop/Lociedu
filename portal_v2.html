@@ -11798,7 +11798,7 @@
     </script>
     <!-- HERO CHÀO MỪNG CĂN GIỮA (MATCH IMAGE 2) -->
             <div class="welcome-hero-centered">
-                <h1 class="welcome-hero-title">Chào mừng trở lại! 👋</h1>
+                <h1 class="welcome-hero-title">Chào mừng trở lại!</h1>
                 <p class="welcome-hero-subtitle">Hôm nay bạn muốn khám phá không gian lịch sử nào?</p>
                 <div class="welcome-hero-action">
                     <a href="javascript:void(0)" class="welcome-loci-pill"
@@ -11809,16 +11809,25 @@
                 </div>
             </div>
 
+            <!-- KHU VỰC LINH THÚ TRI THỨC (COMPANION PET SYSTEM) -->
+            <section class="pet-companion-section" style="margin-bottom: 28px;">
+                <div id="loci-pet-dashboard-slot"></div>
+            </section>
+
             <!-- SPACES TAB UI -->
             <div
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
                 <h2 class="section-title" style="margin-bottom: 0;">Khám phá Cung điện</h2>
                 <div class="picker-tabs"
                     style="margin-bottom: 0; border: none; padding-bottom: 0; background: rgba(255,255,255,0.6); padding: 6px; border-radius: 99px; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                    <button class="p-tab active" onclick="switchPickerTab('sys', this)"><span>🏛️</span> 3D có
-                        sẵn</button>
-                    <button class="p-tab" onclick="switchPickerTab('usr', this)"><span>📸</span> Phòng 360° Online & Tự
-                        tạo</button>
+                    <button class="p-tab active" onclick="switchPickerTab('sys', this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:text-bottom; margin-right:4px;"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+                        3D có sẵn
+                    </button>
+                    <button class="p-tab" onclick="switchPickerTab('usr', this)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:text-bottom; margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg>
+                        Phòng 360° Online & Tự tạo
+                    </button>
                 </div>
             </div>
 
@@ -11881,12 +11890,12 @@
                         </div>
                     </div>
                     <div id="st-week-milestone" style="margin-top: 10px; font-size: 12.5px; font-weight: 600; color: #0284c7;">
-                        Đang ghi nhận liên tục theo thời gian học thực tế 🚀
+                        Đang ghi nhận liên tục theo thời gian học thực tế
                     </div>
                 </div>
 
                 <div class="glass-card stat-card-green">
-                    <div class="stat-title"><span class="stat-icon-badge green">✨</span> Câu hỏi đã làm</div>
+                    <div class="stat-title"><span class="stat-icon-badge green"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></span> Câu hỏi đã làm</div>
                     <div class="stat-value" id="st-answered">0</div>
                     <div id="st-acc"
                         style="margin-top: 12px; font-size: 14px; font-weight: 600; color: #10b981; display: flex; align-items: center; gap: 4px;">
@@ -11895,7 +11904,7 @@
                 </div>
 
                 <div class="glass-card stat-card-neutral">
-                    <div class="stat-title"><span class="stat-icon-badge neutral">🔥</span> Chuỗi ngày học</div>
+                    <div class="stat-title"><span class="stat-icon-badge neutral"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2c0 4-4 6-4 10a6 6 0 0 0 12 0c0-4-4-6-4-10z"></path></svg></span> Chuỗi ngày học</div>
                     <div class="stat-value"><span id="st-streak">0</span> <span
                             style="font-size:20px; color:var(--text-muted); font-weight:600;">Ngày</span></div>
                     <div id="st-streak-note"
@@ -11910,7 +11919,7 @@
                 aria-label="Bảng Vàng Vinh Danh">
                 <div class="overview-top3-header">
                     <div class="overview-top3-title-wrap">
-                        <div class="overview-top3-icon">👑</div>
+                        <div class="overview-top3-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fbbf24" stroke="#d97706" stroke-width="1.5"><polygon points="2 4 7 14 12 6 17 14 22 4 20 20 4 20 2 4"></polygon></svg></div>
                         <div>
                             <h2 class="overview-top3-title">Bảng Vàng Vinh Danh · Top 3 Xuất Sắc Nhất</h2>
                             <p class="overview-top3-subtitle">Tôn vinh những kỷ lục gia dẫn đầu toàn hệ thống Cung điện
@@ -12687,10 +12696,6 @@
                                 <p class="loci-sec-sub">Hệ thống 12 trạm Loci Lịch sử 12 chuẩn Nghiên Cứu Khoa Học (Trích xuất từ Chủ Đề 3)</p>
                             </div>
                             <div class="diagram-actions">
-                                <a href="assets/docs/Cung_Dien_Ky_Uc.pdf" download="Cung_Dien_Ky_Uc_Chu_De_3.pdf"
-                                    class="btn-diagram-download">
-                                    📥 Tải PDF Gốc (12MB)
-                                </a>
                                 <a href="trinh_chieu_loci.html" target="_blank" class="btn-diagram-expand">
                                     🖥️ Xem Trình Chiếu Toàn Màn Hình <span class="loci-btn-arrow">↗</span>
                                 </a>
@@ -13771,7 +13776,7 @@
                 if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
                     try {
                         await window.LociFirebase.loginUser(identifier, pass);
-                        window._showAuthAlert('Đăng nhập thành công!', 'success');
+                        if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập thành công!', 'success');
                         setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
                         return;
                     } catch (err) {
@@ -13790,7 +13795,7 @@
 
                 // Fallback Local Login
                 window._handleLocalAuthSuccess(identifier, identifier);
-                window._showAuthAlert('Đăng nhập thành công!', 'success');
+                if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập thành công!', 'success');
                 setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
             } catch (e) {
                 window._showAuthAlert('Lỗi: ' + e.message);
@@ -13870,7 +13875,7 @@
             }
             // Đăng nhập Google thành công (hỗ trợ cả offline / local server)
             window._handleLocalAuthSuccess('loc_hocsinh', 'Học sinh Lộc');
-            window._showAuthAlert('Đăng nhập Google thành công!', 'success');
+            if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập Google thành công!', 'success');
             setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
         };
 
@@ -13904,9 +13909,28 @@
         const BASE = 'model không gian1 3d/';
         // Mỗi không gian: file (so với thư mục model), dung lượng, ảnh nền có sẵn hoặc màu + biểu tượng (Calm Blue + Soft Green + Light Neutral)
         const SPACES = [
-            { name: 'Triển lãm Nâu (Bài 6)', note: '✨ 9 mốc 3D Loci chân thực · Bài 6 CM Tháng Tám · Ảnh tư liệu chuẩn SGK', file: 'trien_lam_nau.glb', bg: 'linear-gradient(135deg,#fed7aa,#fdba74)', icon: '🏛️', lesson: 'bai_6', def: true },
-            { name: 'Không gian Bài 7 (Kháng chiến chống Pháp)', note: '⚔️ 9 mốc Kháng chiến chống Pháp (1945 – 1954)', file: 'backrooms_vr.glb', bg: 'linear-gradient(135deg,#fde68a,#f59e0b)', icon: '⚔️', lesson: 'bai_7' },
-            { name: 'Triển lãm Nâu (Bài 8)', note: '🚀 9 mốc Kháng chiến chống Mỹ (1954 – 1975)', file: 'trien_lam_nau.glb', bg: 'linear-gradient(135deg,#bae6fd,#0284c7)', icon: '🚀', lesson: 'bai_8' }
+            { 
+                name: 'Triển lãm Nâu (Bài 6)', 
+                note: '9 mốc 3D Loci chân thực · Cách mạng Tháng Tám (1945) · Tư liệu SGK Lịch sử 12', 
+                file: 'trien_lam_nau.glb', 
+                img: 'assets/images/bai6/tram5_bac_bo_phu.jpg', 
+                lesson: 'bai_6', 
+                def: true 
+            },
+            { 
+                name: 'Không gian Bài 7 (Kháng chiến chống Pháp)', 
+                note: '9 mốc Kháng chiến chống thực dân Pháp (1945 – 1954) · Chiến dịch Điện Biên Phủ', 
+                file: 'backrooms_vr.glb', 
+                img: 'assets/images/bai7/tram5.jpg', 
+                lesson: 'bai_7' 
+            },
+            { 
+                name: 'Triển lãm Nâu (Bài 8)', 
+                note: '9 mốc Kháng chiến chống Mỹ cứu nước (1954 – 1975) · Chiến dịch Hồ Chí Minh', 
+                file: 'trien_lam_nau.glb', 
+                img: 'assets/images/bai8/b8_img15.jpg', 
+                lesson: 'bai_8' 
+            }
         ];
         const grid = document.getElementById('space-grid');
         grid.innerHTML = SPACES.map(s => {
@@ -13919,9 +13943,11 @@
                 href += '&lesson=' + encodeURIComponent(s.lesson);
             }
             href += '&skip_start=1&direct=1';
-            const thumb = s.img ? `background-image:url('${s.img}')` : `background:${s.bg}`;
-            return `<a class="space" href="${href}"><div class="space-thumb" style="${thumb}">${s.img ? '' : s.icon}</div>
-                <div class="space-body"><b>${s.name}</b><small>${s.note}</small>${s.def ? '<br><span class="space-tag def">MẶC ĐỊNH</span>' : ''}</div></a>`;
+            const thumbStyle = `background: url('${s.img}') center/cover no-repeat;`;
+            return `<a class="space" href="${href}">
+                <div class="space-thumb" style="${thumbStyle}"></div>
+                <div class="space-body"><b>${s.name}</b><small>${s.note}</small>${s.def ? '<br><span class="space-tag def">MẶC ĐỊNH</span>' : ''}</div>
+            </a>`;
         }).join('');
 
         // Tải các không gian tự chụp từ localStorage & Cloud
@@ -19048,6 +19074,7 @@
         })();
     </script>
   
+    <script src="app/loci_pet_system.js"></script>
 </body>
 
 </html>
