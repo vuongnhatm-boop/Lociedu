@@ -11863,6 +11863,27 @@
         }
     </style>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<style>
+/* Responsive mascot dashboard matching user screenshot */
+.mascot-dash-grid {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: 32px;
+    align-items: center;
+}
+@media (max-width: 860px) {
+    .mascot-dash-grid {
+        grid-template-columns: 1fr !important;
+        gap: 24px !important;
+    }
+    .mascot-dash-grid > div:last-child {
+        border-left: none !important;
+        border-top: 1px solid #f1f5f9 !important;
+        padding-left: 0 !important;
+        padding-top: 20px !important;
+    }
+}
+</style>
 </head>
 
 <body>
@@ -12073,127 +12094,227 @@
             </div>
 
             <!-- KHU VỰC LINH THÚ TRI THỨC (COMPANION PET SYSTEM) -->
-            <section class="pet-companion-section" style="margin-bottom: 28px;">
-                <div id="loci-pet-dashboard-slot" style="background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%); border: 1.5px solid #bae6fd; border-radius: 20px; padding: 22px 24px; box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08); position: relative; overflow: hidden;">
-                    
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 12px;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 40px; height: 40px; border-radius: 12px; background: #0284c7; color: #fff; display: grid; place-items: center; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
-                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2z"></path><path d="M12 8a4 4 0 1 0 4 4 4 4 0 0 0-4-4z"></path></svg>
-                            </div>
-                            <div>
-                                <h3 style="font-size: 17.5px; font-weight: 800; color: #0f172a; margin: 0; line-height: 1.2;">Linh Thú Tri Thức Đồng Hành</h3>
-                                <p style="font-size: 12.5px; color: #64748b; margin: 3px 0 0;">Nuôi linh thú tăng trưởng theo tiến độ học tập Loci & kết nối nuôi chung cùng đồng đội</p>
-                            </div>
+                        <!-- KHU VỰC TIẾN ĐỘ HỌC TẬP & LINH THÚ TRI THỨC (THEO GIAO DIỆN CHUẨN) -->
+            <section class="learning-mascot-section" style="margin-bottom: 28px;">
+                <!-- 1. BANNER ĐẾM NGƯỢC NGÀY VƯỢT VŨ MÔN -->
+                <div class="countdown-banner" style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%); border: 1.5px solid #a7f3d0; border-radius: 16px; padding: 12px 22px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.05); flex-wrap: wrap; gap: 14px;">
+                    <!-- Trái: Icon & Tiêu đề -->
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 40px; height: 40px; border-radius: 10px; background: #d1fae5; color: #059669; display: grid; place-items: center; border: 1px solid #a7f3d0; flex-shrink: 0;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span id="pet-stage-badge" style="background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 12px; padding: 5px 12px; border-radius: 99px; border: 1px solid #bfdbfe;">Cấp 2 • Học Giả Trẻ</span>
-                            <button type="button" onclick="window.switchPetSelectionModal()" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 99px; padding: 5px 12px; font-size: 12px; font-weight: 700; color: #334155; cursor: pointer;">Đổi Linh Thú</button>
+                        <div>
+                            <div style="font-size: 15px; font-weight: 800; color: #0f172a; line-height: 1.25;">Đếm Ngược Ngày Vượt Vũ Môn</div>
+                            <div style="font-size: 12px; color: #475569; margin-top: 2px;">Kiên trì mỗi ngày, chạm đích vinh quang!</div>
                         </div>
                     </div>
 
-                    <!-- BỐ CỤC LINH THÚ CHÍNH -->
-                    <div style="display: grid; grid-template-columns: 160px 1fr 220px; gap: 20px; align-items: center;" class="pet-grid-layout">
-                        <!-- Cột 1: Hoạt hình Linh Thú SVG -->
-                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 14px; position: relative;">
-                            <div id="pet-avatar-stage" style="width: 110px; height: 110px; display: grid; place-items: center; position: relative;">
-                                <!-- Animated Owl SVG (No emojis) -->
-                                <svg width="100" height="100" viewBox="0 0 100 100" fill="none" class="pet-idle-anim">
+                    <!-- Giữa: Các ô đếm ngược thời gian thực -->
+                    <div style="display: flex; align-items: center; gap: 8px;" id="vuot-vu-mon-timer">
+                        <div style="text-align: center;">
+                            <div id="vvm-days" style="min-width: 44px; padding: 5px 8px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 18px; font-weight: 800; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">28</div>
+                            <div style="font-size: 10.5px; font-weight: 700; color: #64748b; margin-top: 3px;">Ngày</div>
+                        </div>
+                        <span style="font-weight: 800; color: #0f172a; font-size: 16px; margin-bottom: 14px;">:</span>
+                        <div style="text-align: center;">
+                            <div id="vvm-hours" style="min-width: 44px; padding: 5px 8px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 18px; font-weight: 800; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">14</div>
+                            <div style="font-size: 10.5px; font-weight: 700; color: #64748b; margin-top: 3px;">Giờ</div>
+                        </div>
+                        <span style="font-weight: 800; color: #0f172a; font-size: 16px; margin-bottom: 14px;">:</span>
+                        <div style="text-align: center;">
+                            <div id="vvm-mins" style="min-width: 44px; padding: 5px 8px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 18px; font-weight: 800; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">36</div>
+                            <div style="font-size: 10.5px; font-weight: 700; color: #64748b; margin-top: 3px;">Phút</div>
+                        </div>
+                        <span style="font-weight: 800; color: #0f172a; font-size: 16px; margin-bottom: 14px;">:</span>
+                        <div style="text-align: center;">
+                            <div id="vvm-secs" style="min-width: 44px; padding: 5px 8px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 8px; font-size: 18px; font-weight: 800; color: #0f172a; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">52</div>
+                            <div style="font-size: 10.5px; font-weight: 700; color: #64748b; margin-top: 3px;">Giây</div>
+                        </div>
+                    </div>
+
+                    <!-- Phải: Họa tiết Cổng Tam Quan / Khuê Văn Các truyền thống -->
+                    <div style="display: flex; align-items: center; opacity: 0.85;">
+                        <svg width="140" height="52" viewBox="0 0 140 52" fill="none">
+                            <path d="M0 52 Q 35 42, 70 48 T 140 48 L 140 52 Z" fill="#bbf7d0" opacity="0.4"/>
+                            <path d="M46 50 L46 22 L50 22 L50 50 Z" fill="#10b981"/>
+                            <path d="M90 50 L90 22 L94 22 L94 50 Z" fill="#10b981"/>
+                            <path d="M40 23 C40 23, 68 12, 100 23 C92 19, 48 19, 40 23 Z" fill="#059669"/>
+                            <path d="M48 18 L48 9 L92 9 L92 18 Z" fill="#047857"/>
+                            <path d="M36 10 C36 10, 70 0, 104 10 C92 7, 48 7, 36 10 Z" fill="#065f46"/>
+                            <path d="M50 38 Q 70 27, 90 38 L 90 50 L 50 50 Z" fill="#a7f3d0" opacity="0.3"/>
+                            <circle cx="26" cy="40" r="9" fill="#34d399"/>
+                            <circle cx="18" cy="44" r="7" fill="#10b981"/>
+                            <path d="M24 52 L24 43 L26 43 L26 52 Z" fill="#047857"/>
+                            <circle cx="114" cy="38" r="10" fill="#34d399"/>
+                            <circle cx="123" cy="42" r="8" fill="#10b981"/>
+                            <path d="M117 52 L117 43 L119 43 L119 52 Z" fill="#047857"/>
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- 2. DÒNG LỜI CHÀO -->
+                <div style="margin-bottom: 16px;">
+                    <h2 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 5px 0; letter-spacing: -0.02em;">Chào mừng trở lại!</h2>
+                    <p style="font-size: 13.5px; color: #64748b; margin: 0;">Tiếp tục hành trình chinh phục tri thức của bạn.</p>
+                </div>
+
+                <!-- 3. CARD LINH THÚ & TIẾN ĐỘ HỌC TẬP (GIỐNG ẢNH 100%) -->
+                <div id="loci-pet-dashboard-slot" style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 22px; padding: 26px 28px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04); position: relative; overflow: hidden;">
+                    <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 32px; align-items: center;" class="mascot-dash-grid">
+                        <!-- Cột Trái: Cú Tím Cử Nhân + Đại Hội Thần Tốc + Chips + Nút Tiếp tục học -->
+                        <div style="display: flex; gap: 24px; align-items: center;">
+                            <!-- Linh thú Cú tím cử nhân cầm sách mở -->
+                            <div style="flex-shrink: 0; width: 135px; height: 155px; display: grid; place-items: center;">
+                                <svg width="135" height="155" viewBox="0 0 135 155" fill="none" style="filter: drop-shadow(0 8px 16px rgba(109,40,217,0.12));">
                                     <defs>
-                                        <radialGradient id="owl-glow" cx="50%" cy="50%" r="50%">
-                                            <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.3"/>
-                                            <stop offset="100%" stop-color="#38bdf8" stop-opacity="0"/>
+                                        <radialGradient id="owl-ground-shadow" cx="50%" cy="50%" r="50%">
+                                            <stop offset="0%" stop-color="#0f172a" stop-opacity="0.16"/>
+                                            <stop offset="100%" stop-color="#0f172a" stop-opacity="0"/>
                                         </radialGradient>
                                     </defs>
-                                    <circle cx="50" cy="50" r="45" fill="url(#owl-glow)"/>
-                                    <!-- Body -->
-                                    <ellipse cx="50" cy="58" rx="28" ry="32" fill="#0284c7"/>
-                                    <ellipse cx="50" cy="62" rx="20" ry="24" fill="#e0f2fe"/>
-                                    <!-- Feathers pattern -->
-                                    <path d="M43 56 Q50 60 57 56 M45 64 Q50 68 55 64 M47 72 Q50 75 53 72" stroke="#0284c7" stroke-width="1.8" fill="none"/>
-                                    <!-- Head & Ears -->
-                                    <circle cx="50" cy="38" r="24" fill="#0369a1"/>
-                                    <polygon points="34,22 40,32 30,32" fill="#0284c7"/>
-                                    <polygon points="66,22 60,32 70,32" fill="#0284c7"/>
-                                    <!-- Eyes -->
-                                    <circle cx="41" cy="36" r="9" fill="#ffffff"/>
-                                    <circle cx="59" cy="36" r="9" fill="#ffffff"/>
-                                    <circle cx="41" cy="36" r="5" fill="#0f172a"/>
-                                    <circle cx="59" cy="36" r="5" fill="#0f172a"/>
-                                    <circle cx="39.5" cy="34.5" r="2" fill="#ffffff"/>
-                                    <circle cx="57.5" cy="34.5" r="2" fill="#ffffff"/>
-                                    <!-- Beak -->
-                                    <polygon points="50,39 46,45 54,45" fill="#f59e0b"/>
-                                    <!-- Feet -->
-                                    <ellipse cx="42" cy="88" rx="5" ry="3" fill="#f59e0b"/>
-                                    <ellipse cx="58" cy="88" rx="5" ry="3" fill="#f59e0b"/>
-                                    <!-- Scholar Cap -->
-                                    <polygon points="50,14 26,22 50,30 74,22" fill="#0f172a"/>
-                                    <polygon points="50,14 50,30 50,30" stroke="#f59e0b" stroke-width="1.5"/>
-                                    <circle cx="50" cy="22" r="2" fill="#f59e0b"/>
-                                    <path d="M50 22 L66 28 L66 33" stroke="#f59e0b" stroke-width="1.5" fill="none"/>
+                                    <!-- Bóng đổ mặt đất -->
+                                    <ellipse cx="67.5" cy="148" rx="46" ry="6" fill="url(#owl-ground-shadow)"/>
+                                    
+                                    <!-- Chân cú màu vàng cam -->
+                                    <ellipse cx="50" cy="144" rx="9" ry="5" fill="#f59e0b"/>
+                                    <ellipse cx="85" cy="144" rx="9" ry="5" fill="#f59e0b"/>
+
+                                    <!-- Thân cú màu tím hoàng gia -->
+                                    <path d="M26 95 C26 55, 109 55, 109 95 C109 130, 95 145, 67.5 145 C40 145, 26 130, 26 95 Z" fill="#6d28d9"/>
+                                    
+                                    <!-- Bụng cú màu tím hoa cà / lavender sáng -->
+                                    <ellipse cx="67.5" cy="108" rx="28" ry="30" fill="#ede9fe"/>
+                                    <path d="M57 96 Q67.5 102 78 96 M59 108 Q67.5 114 76 108 M61 120 Q67.5 125 74 120" stroke="#c4b5fd" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+
+                                    <!-- Đầu & Lông tai cú -->
+                                    <path d="M22 62 C22 36, 113 36, 113 62 C113 78, 105 85, 67.5 85 C30 85, 22 78, 22 62 Z" fill="#7c3aed"/>
+                                    <polygon points="30,42 20,20 44,34" fill="#6d28d9"/>
+                                    <polygon points="105,42 115,20 91,34" fill="#6d28d9"/>
+
+                                    <!-- Đôi mắt to tròn long lanh -->
+                                    <circle cx="48" cy="58" r="19" fill="#ffffff" stroke="#ede9fe" stroke-width="2"/>
+                                    <circle cx="87" cy="58" r="19" fill="#ffffff" stroke="#ede9fe" stroke-width="2"/>
+                                    <circle cx="48" cy="58" r="10" fill="#1e1b4b"/>
+                                    <circle cx="87" cy="58" r="10" fill="#1e1b4b"/>
+                                    <circle cx="45" cy="54" r="4.5" fill="#ffffff"/>
+                                    <circle cx="84" cy="54" r="4.5" fill="#ffffff"/>
+                                    <circle cx="52" cy="62" r="2" fill="#ffffff"/>
+                                    <circle cx="91" cy="62" r="2" fill="#ffffff"/>
+
+                                    <!-- Mỏ vàng cam hình tam giác -->
+                                    <polygon points="67.5,75 59,62 76,62" fill="#f59e0b"/>
+                                    <polygon points="67.5,75 62,62 73,62" fill="#d97706"/>
+
+                                    <!-- Mũ cử nhân tốt nghiệp màu tím đậm với nút vàng và tua rua -->
+                                    <polygon points="67.5,12 122,25 67.5,38 13,25" fill="#4c1d95"/>
+                                    <polygon points="67.5,14 116,25 67.5,36 19,25" fill="#5b21b6"/>
+                                    <path d="M42 29 Q67.5 35 93 29 L91 42 Q67.5 48 44 42 Z" fill="#3b0764"/>
+                                    <circle cx="67.5" cy="25" r="3.5" fill="#fbbf24"/>
+                                    <path d="M67.5 25 C50 25, 28 35, 27 52" stroke="#fbbf24" stroke-width="2" fill="none"/>
+                                    <polygon points="27,52 24,65 31,65" fill="#f59e0b"/>
+
+                                    <!-- Cuốn sách mở cầm trước bụng -->
+                                    <path d="M30 106 Q67.5 116 67.5 136 Q67.5 116 105 106 L108 132 Q67.5 142 67.5 144 Q67.5 142 27 132 Z" fill="#4c1d95"/>
+                                    <path d="M31 108 Q67.5 118 67.5 137 L67.5 140 Q67.5 120 31 112 Z" fill="#f8fafc"/>
+                                    <path d="M104 108 Q67.5 118 67.5 137 L67.5 140 Q67.5 120 104 112 Z" fill="#ffffff"/>
+                                    <line x1="67.5" y1="118" x2="67.5" y2="139" stroke="#cbd5e1" stroke-width="1.5"/>
+                                    <line x1="39" y1="117" x2="60" y2="123" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+                                    <line x1="39" y1="124" x2="57" y2="129" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+                                    <line x1="75" y1="123" x2="96" y2="117" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+                                    <line x1="78" y1="129" x2="96" y2="124" stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+
+                                    <!-- Đôi cánh giữ cuốn sách -->
+                                    <path d="M22 92 C22 108, 32 118, 40 120 C36 112, 32 102, 30 92 Z" fill="#5b21b6"/>
+                                    <path d="M113 92 C113 108, 103 118, 95 120 C99 112, 103 102, 105 92 Z" fill="#5b21b6"/>
                                 </svg>
                             </div>
-                            <span id="pet-name-label" style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-top: 4px;">Cú Trí Tuệ Athena</span>
-                            <span style="font-size: 11px; color: #059669; font-weight: 700; margin-top: 2px;">Trạng thái: Tràn đầy năng lượng</span>
-                        </div>
 
-                        <!-- Cột 2: Chỉ số no nê, vui vẻ, tiến trình học tập -->
-                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 16px 18px; display: flex; flex-direction: column; gap: 12px;">
-                            <div>
-                                <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px;">
-                                    <span>Độ No Nê (Nạp Kiến Thức)</span>
-                                    <span id="pet-hunger-pct" style="color: #0284c7;">85%</span>
+                            <!-- Nội dung văn bản -->
+                            <div style="flex: 1;">
+                                <span style="display: inline-block; background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 11.5px; padding: 3px 10px; border-radius: 99px; border: 1px solid #bae6fd;">Cấp 2</span>
+                                
+                                <h3 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 8px 0 6px 0; letter-spacing: -0.01em;">Đại Hội Thần Tốc</h3>
+                                
+                                <p style="font-size: 13.5px; color: #64748b; margin: 0 0 14px 0; line-height: 1.45;">Lộ trình luyện tập tăng tốc, bám sát chương trình và giúp bạn về đích vững vàng.</p>
+                                
+                                <!-- 3 Chips / Thẻ tính năng -->
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+                                    <span style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                        Bám sát chương trình
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+                                        Luyện tập tăng tốc
+                                    </span>
+                                    <span style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                                        Tiến bộ mỗi ngày
+                                    </span>
                                 </div>
-                                <div style="height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden;">
-                                    <div id="pet-hunger-bar" style="height: 100%; width: 85%; background: linear-gradient(90deg, #38bdf8, #0284c7); border-radius: 99px;"></div>
-                                </div>
-                            </div>
 
-                            <div>
-                                <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 5px;">
-                                    <span>Hạnh Phúc (Ôn Luyện Đều Đặn)</span>
-                                    <span id="pet-happy-pct" style="color: #10b981;">92%</span>
-                                </div>
-                                <div style="height: 8px; background: #e2e8f0; border-radius: 99px; overflow: hidden;">
-                                    <div id="pet-happy-bar" style="height: 100%; width: 92%; background: linear-gradient(90deg, #34d399, #10b981); border-radius: 99px;"></div>
-                                </div>
-                            </div>
-
-                            <!-- Hành động tương tác -->
-                            <div style="display: flex; gap: 10px; margin-top: 4px;">
-                                <button type="button" onclick="window.interactWithPet('feed')" style="flex: 1; padding: 8px 12px; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; color: #0284c7; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                                    Cho ăn bài học
-                                </button>
-                                <button type="button" onclick="window.interactWithPet('train')" style="flex: 1; padding: 8px 12px; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; color: #15803d; font-size: 12.5px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                                    Luyện Loci (+20 XP)
+                                <!-- Nút Tiếp tục học -->
+                                <button type="button" onclick="document.getElementById('space-grid') ? document.getElementById('space-grid').scrollIntoView({behavior:'smooth'}) : (window.location.href='#spaces-section')" style="background: #2563eb; color: #ffffff; border: none; border-radius: 12px; padding: 10px 22px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); transition: all 0.2s;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                    Tiếp tục học
                                 </button>
                             </div>
                         </div>
 
-                        <!-- Cột 3: Nuôi pet cùng nhau (Co-op Study Group) -->
-                        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 18px; padding: 14px 16px; display: flex; flex-direction: column; justify-content: space-between;">
-                            <div>
-                                <div style="display: flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 800; color: #0284c7; text-transform: uppercase; margin-bottom: 6px;">
-                                    <span style="width: 7px; height: 7px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-                                    Phòng Nuôi Chung (Co-op)
-                                </div>
-                                <div style="font-size: 12.5px; font-weight: 700; color: #0f172a; margin-bottom: 2px;">Cùng học với: Minh Khang</div>
-                                <div style="font-size: 11px; color: #64748b;">Khóa 2K9 • Cú Lv.4 • +15% XP tổ đội</div>
+                        <!-- Cột Phải: Tiến độ học tập & Thống kê cá nhân -->
+                        <div style="border-left: 1px solid #f1f5f9; padding-left: 28px;">
+                            <div style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                Tiến độ học tập
                             </div>
-                            <div style="margin-top: 10px;">
-                                <button type="button" onclick="window.openCoopPetModal()" style="width: 100%; padding: 8px 10px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-weight: 700; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px;">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                                    Mời Bạn Nuôi Cùng
+
+                            <!-- Phần trăm và số XP -->
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                                <span id="dash-progress-pct" style="font-size: 24px; font-weight: 800; color: #0f172a;">42%</span>
+                                <span id="dash-xp-fraction" style="font-size: 13.5px; font-weight: 700; color: #64748b;">160 XP / 380 XP</span>
+                            </div>
+
+                            <!-- Thanh tiến trình -->
+                            <div style="height: 9px; background: #f1f5f9; border-radius: 99px; overflow: hidden; margin-bottom: 18px;">
+                                <div id="dash-progress-bar" style="height: 100%; width: 42%; background: #2563eb; border-radius: 99px;"></div>
+                            </div>
+
+                            <!-- Bảng thông số chi tiết -->
+                            <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; margin-bottom: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">XP hiện có</span>
+                                    <strong id="dash-xp-cur" style="color: #0f172a; font-weight: 700;">160 XP</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">Xp cần để lên Cấp 3</span>
+                                    <strong id="dash-xp-next" style="color: #0f172a; font-weight: 700;">220 XP</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">Chuỗi học tập</span>
+                                    <strong id="dash-streak" style="color: #0f172a; font-weight: 700;">15 ngày</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">Thời gian học tuần này</span>
+                                    <strong id="dash-study-time" style="color: #0f172a; font-weight: 700;">2 giờ 30 phút</strong>
+                                </div>
+                            </div>
+
+                            <!-- Hai nút hành động ở chân cột phải -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <button type="button" onclick="window.openSpacedRepetitionModal ? window.openSpacedRepetitionModal() : (document.getElementById('space-grid') && document.getElementById('space-grid').scrollIntoView({behavior:'smooth'}))" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    Xem kế hoạch
+                                </button>
+                                <button type="button" onclick="window.openCloudAuthModal ? window.openCloudAuthModal() : alert('Đang mở thống kê cá nhân')" style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+                                    Xem thống kê
                                 </button>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </section>
+
 
             <!-- SPACES TAB UI -->
             <div
@@ -19721,6 +19842,38 @@
         window.switchPetSelectionModal = function() {
             alert('Hiện tại Linh Thú Athena đang trong quá trình đồng hành. Bạn có thể chọn Rồng Lửa Thăng Long hoặc Cáo Băng khi đạt Cấp 4!');
         };
+</script>
+<script>
+// Live countdown timer for 'Đếm Ngược Ngày Vượt Vũ Môn'
+(function initVuotVuMonTimer() {
+    let days = 28, hours = 14, mins = 36, secs = 52;
+    setInterval(function() {
+        secs--;
+        if (secs < 0) {
+            secs = 59;
+            mins--;
+        }
+        if (mins < 0) {
+            mins = 59;
+            hours--;
+        }
+        if (hours < 0) {
+            hours = 23;
+            days--;
+        }
+        if (days < 0) {
+            days = 0; hours = 0; mins = 0; secs = 0;
+        }
+        const dEl = document.getElementById('vvm-days');
+        const hEl = document.getElementById('vvm-hours');
+        const mEl = document.getElementById('vvm-mins');
+        const sEl = document.getElementById('vvm-secs');
+        if (dEl) dEl.textContent = days;
+        if (hEl) hEl.textContent = String(hours).padStart(2, '0');
+        if (mEl) mEl.textContent = String(mins).padStart(2, '0');
+        if (sEl) sEl.textContent = String(secs).padStart(2, '0');
+    }, 1000);
+})();
 </script>
 </body>
 
