@@ -13409,11 +13409,7 @@ stationGroup.add(contentGroup);
     let cameraDragMoved = false;
     let lastCamMouseX = 0;
     let lastCamMouseY = 0;
-    let _lastPMCheck = 0;
-
-    window._lastPMCheck = 0;
-    let _lastPMCheck = 0;
-    window.addEventListener('pointermove', (e) => {
+window.addEventListener('pointermove', (e) => {
       // 1. Đang kéo thả mốc ký ức
       if (draggingMarker) {
         if (Math.abs(e.clientX - canvasClickStartX) > 4 || Math.abs(e.clientY - canvasClickStartY) > 4) dragMoved = true;
@@ -17060,10 +17056,7 @@ stationGroup.add(contentGroup);
       if (ghostMarker) ghostMarker.visible = false;
       if (placingHudBanner) placingHudBanner.style.display = 'none';
     }
-
-    window._lastPMCheck = 0;
-    let _lastPMCheck = 0;
-    window.addEventListener('pointermove', (e) => {
+window.addEventListener('pointermove', (e) => {
       if (pendingPlacingAnchor && ghostMarker) {
         updateGhostMarkerPosition(e);
       }
@@ -18919,9 +18912,7 @@ stationGroup.add(contentGroup);
       joystickActive = true;
       updateJoystick(e);
     }, { passive: true });
-    window._lastPMCheck = 0;
-    let _lastPMCheck = 0;
-    window.addEventListener('pointermove', (e) => {
+window.addEventListener('pointermove', (e) => {
       if (!joystickActive) return;
       updateJoystick(e);
     }, { passive: true });
