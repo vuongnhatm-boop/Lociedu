@@ -833,91 +833,91 @@
     bai_8: [
       {
         order: 1,
-        modelName: "Xây dựng CNXH ở miền Bắc & Đấu tranh chính trị miền Nam",
-        modelUrl: "assets/models/bai8/tram1/xay_dung_xa_hoi_chu_nghia.glb",
-        prompt: "Mô hình 3D Xây dựng CNXH: Gõ tên dòng sông lịch sử là giới tuyến quân sự tạm thời chia cắt hai miền Nam - Bắc theo Hiệp định Giơ-ne-vơ 1954:",
+        modelName: "Mỹ bắt tay lập chính quyền Ngô Đình Diệm & Vĩ tuyến 17",
+        modelUrl: "assets/models/bai8/tram1/my_bat_tay.glb",
+        prompt: "Mô hình 3D Bối cảnh 1954: Gõ tên dòng sông lịch sử là giới tuyến quân sự tạm thời chia cắt hai miền Nam - Bắc theo Hiệp định Giơ-ne-vơ 1954:",
         target: "Sông Bến Hải",
         accepted: ["Sông Bến Hải", "Song Ben Hai", "Bến Hải", "Ben Hai", "sông Bến Hải", "vĩ tuyến 17"],
         hint: "Dòng sông thuộc tỉnh Quảng Trị nằm trên vĩ tuyến 17",
         explanation: "Theo Hiệp định Giơ-ne-vơ 1954, sông Bến Hải (vĩ tuyến 17) là giới tuyến quân sự tạm thời phân chia vùng tập kết của quân đội hai bên.",
-        offset: { x: 0, y: 0.45, z: 0 }
+        offset: { x: -1.25, y: 0.45, z: 0.40 }
       },
       {
         order: 2,
-        modelName: "Đội quân tóc dài & Ngọn cờ Phong trào 'Đồng khởi' Bến Tre",
-        modelUrl: "assets/models/bai8/tram2/doi_quan_toc_dai_ben_tre.glb",
-        prompt: "Mô hình 3D Đội quân tóc dài: Gõ tên tỉnh nơi ngọn lửa Phong trào 'Đồng khởi' bùng nổ đầu tiên ngày 17/1/1960:",
+        modelName: "Miền Nam đấu tranh & Phong trào 'Đồng khởi' Bến Tre",
+        modelUrl: "assets/models/bai8/tram2/mien_nam_dau_tranh.glb",
+        prompt: "Mô hình 3D Đồng khởi: Gõ tên tỉnh nơi ngọn lửa Phong trào 'Đồng khởi' bùng nổ đầu tiên ngày 17/1/1960:",
         target: "Bến Tre",
         accepted: ["Bến Tre", "Ben Tre", "Mỏ Cày Bến Tre", "Mo Cay Ben Tre", "huyện Mỏ Cày, tỉnh Bến Tre"],
         hint: "Tỉnh thuộc đồng bằng sông Cửu Long, xứ sở dừa ngút ngàn",
         explanation: "Phong trào Đồng khởi (17/1/1960) tại Mỏ Cày (Bến Tre) đã chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công mạnh mẽ.",
-        offset: { x: 0, y: 0.45, z: 0 }
+        offset: { x: -1.15, y: 0.45, z: 0.40 }
       },
       {
         order: 3,
-        modelName: "Chiến thuật Trực thăng vận & Chiến thắng Ấp Bắc lịch sử",
-        modelUrl: "assets/models/bai8/tram3/my_dung_truc_thang_van.glb",
-        prompt: "Mô hình 3D Trực thăng vận: Gõ tên trận đánh vang dội (2/1/1963 tại Mỹ Tho) mở đầu cao trào 'Thi đua Ấp Bắc, giết giặc lập công':",
+        modelName: "Chiến thắng Ấp Bắc bẻ gãy chiến thuật trực thăng vận của Mỹ",
+        modelUrl: "assets/models/bai8/tram3/chien_thang_ap_bac.glb",
+        prompt: "Mô hình 3D Trận Ấp Bắc: Gõ tên trận đánh vang dội (2/1/1963 tại Mỹ Tho) mở đầu cao trào 'Thi đua Ấp Bắc, giết giặc lập công':",
         target: "Ấp Bắc",
         accepted: ["Ấp Bắc", "Ap Bac", "Trận Ấp Bắc", "Chiến thắng Ấp Bắc", "ap bac"],
         hint: "Địa danh thuộc tỉnh Mỹ Tho (nay thuộc tỉnh Tiền Giang)",
         explanation: "Chiến thắng Ấp Bắc (2/1/1963) khẳng định quân dân miền Nam hoàn toàn có khả năng đánh bại chiến thuật 'trực thăng vận' và 'thiết xa vận' của Mỹ.",
-        offset: { x: 0, y: 0.45, z: 0 }
+        offset: { x: 1.05, y: 0.45, z: 0.20 }
       },
       {
         order: 4,
-        modelName: "Xe đạp thồ chi viện tiền tuyến & Trận đầu thắng Mỹ tại Vạn Tường",
-        modelUrl: "assets/models/bai8/tram4/xe_dap_tho.glb",
-        prompt: "Mô hình 3D Xe đạp thồ & Vạn Tường: Gõ tên trận thắng đầu tiên (8/1965 tại Quảng Ngãi) mở đầu cao trào 'Tìm Mỹ mà đánh, lùng ngụy mà diệt':",
+        modelName: "Chiến thắng Vạn Tường mở đầu cao trào 'Tìm Mỹ mà đánh'",
+        modelUrl: "assets/models/bai8/tram4/chien_thang_van_tuong.glb",
+        prompt: "Mô hình 3D Chiến thắng Vạn Tường: Gõ tên trận thắng đầu tiên (18/8/1965 tại Quảng Ngãi) mở đầu cao trào 'Tìm Mỹ mà đánh, lùng ngụy mà diệt':",
         target: "Vạn Tường",
         accepted: ["Vạn Tường", "Van Tuong", "Chiến thắng Vạn Tường", "Trận Vạn Tường"],
         hint: "Thôn Vạn Tường thuộc xã Bình Hải, huyện Bình Sơn, tỉnh Quảng Ngãi",
         explanation: "Chiến thắng Vạn Tường (18/8/1965) được coi là 'trận Ấp Bắc đối với quân Mỹ', chứng minh quân dân ta hoàn toàn có thể đánh bại quân viễn chinh Mỹ.",
-        offset: { x: 0, y: 0.45, z: -0.65 }
+        offset: { x: 1.05, y: 0.85, z: 0.40 }
       },
       {
         order: 5,
-        modelName: "Đặc công đánh chiếm Đại sứ quán Mỹ trong Tết Mậu Thân 1968",
+        modelName: "Tổng tiến công và nổi dậy Xuân Mậu Thân 1968",
         modelUrl: "assets/models/bai8/tram5/tong_tien_cong_mau_than.glb",
         prompt: "Mô hình 3D Tổng tiến công Mậu Thân: Gõ tên cơ quan ngoại giao đầu não của Mỹ tại Sài Gòn bị đặc công ta đánh chiếm rung chuyển Nhà Trắng:",
         target: "Đại sứ quán Mỹ",
         accepted: ["Đại sứ quán Mỹ", "Dai su quan My", "Tòa Đại sứ Mỹ", "Toa dai su My", "Đại sứ quán", "Tòa Đại sứ"],
         hint: "Cơ quan ngoại giao đại diện chính phủ Mỹ ở trung tâm Sài Gòn",
         explanation: "Đòn đánh táo bạo vào Tòa Đại sứ Mỹ Tết Mậu Thân 1968 làm rung chuyển dư luận nước Mỹ, buộc Mỹ tuyên bố ngừng ném bom miền Bắc và chấp nhận đàm phán tại Paris.",
-        offset: { x: -1.05, y: 0.45, z: 0.40 }
+        offset: { x: 0, y: 0.45, z: -0.65 }
       },
       {
         order: 6,
-        modelName: "Thành cổ Quảng Trị kiên cường 81 ngày đêm mùa hè đỏ lửa 1972",
-        modelUrl: "assets/models/bai8/tram6/mat_tran_quang_tri.glb",
-        prompt: "Mô hình 3D Thành cổ Quảng Trị: Gõ số ngày đêm quân dân ta anh dũng giữ chốt dưới mưa bom bão đạn bảo vệ Thành cổ Quảng Trị năm 1972:",
-        target: "81 ngày đêm",
-        accepted: ["81 ngày đêm", "81 ngay dem", "81 ngày", "81 ngay", "81", "tam muoi mot ngay dem"],
-        hint: "Hơn 2 tháng rưỡi (chính xác là 81 ngày đêm năm 1972)",
-        explanation: "81 ngày đêm Thành cổ Quảng Trị kiên cường tạo thế áp đảo trên bàn đàm phán Paris, giáng đòn nặng nề vào chiến lược 'Việt Nam hóa chiến tranh'.",
-        offset: { x: -1.05, y: 0.45, z: 0.40 }
+        modelName: "Đoàn kết 3 nước Đông Dương (Việt Nam - Lào - Campuchia)",
+        modelUrl: "assets/models/bai8/tram6/lao_vn_campuchia.glb",
+        prompt: "Mô hình 3D Liên minh 3 nước Đông Dương: Gõ tên 3 nước anh em kề vai sát cánh chống kẻ thù chung đế quốc Mỹ:",
+        target: "Việt Nam - Lào - Campuchia",
+        accepted: ["Việt Nam - Lào - Campuchia", "Việt Nam Lào Campuchia", "VN - Lào - Campuchia", "3 nước Đông Dương"],
+        hint: "3 nước bán đảo Đông Dương",
+        explanation: "Hội nghị cấp cao ba nước Đông Dương (4/1970) biểu thị quyết tâm đoàn kết chiến đấu đánh bại đế quốc Mỹ của nhân dân Việt Nam, Lào và Campuchia.",
+        offset: { x: 0.95, y: 0.45, z: 0.20 }
       },
       {
         order: 7,
-        modelName: "Tên lửa SAM-2 hạ pháo đài bay B-52 & Hiệp định Paris 1973",
-        modelUrl: "assets/models/bai8/tram7/ban_pha_phao_dai_bay_b52.glb",
-        prompt: "Mô hình 3D Điện Biên Phủ trên không: Gõ tên loại tên lửa phòng không của ta đã bắn rụng hàng loạt pháo đài bay B-52 trên bầu trời Hà Nội:",
-        target: "SAM-2",
-        accepted: ["SAM-2", "SAM 2", "Sam 2", "sam-2", "Tên lửa SAM-2", "S-75", "sam 2"],
-        hint: "Tên lửa do Liên Xô viện trợ, bắt đầu bằng chữ 'SAM-...'",
-        explanation: "Tên lửa SAM-2 lập công xuất sắc trong 12 ngày đêm Điện Biên Phủ trên không, hạ gục uy danh pháo đài bay B-52, buộc Mỹ phải ký Hiệp định Paris 1973.",
+        modelName: "Ký kết Hiệp định Paris (27/1/1973) lập lại hòa bình",
+        modelUrl: "assets/models/bai8/tram7/hiep_dinh.glb",
+        prompt: "Mô hình 3D Ký Hiệp định Paris: Gõ tên hiệp định quốc tế ký ngày 27/1/1973 buộc Mỹ phải rút hết quân viễn chinh về nước:",
+        target: "Hiệp định Paris",
+        accepted: ["Hiệp định Paris", "Hiep dinh Paris", "Hiệp định Pa-ri", "Hiep dinh Pa-ri", "Paris"],
+        hint: "Hiệp định mang tên thủ đô nước Pháp",
+        explanation: "Hiệp định Paris 1973 đánh dấu thắng lợi to lớn 'Đánh cho Mỹ cút', tạo thời cơ quyết định để tiến lên giải phóng hoàn toàn miền Nam.",
         offset: { x: -1.05, y: 0.45, z: 0.40 }
       },
       {
         order: 8,
-        modelName: "Hội nghị Trung ương 21 & Đòn trinh sát chiến lược Phước Long",
-        modelUrl: "assets/models/bai8/tram8/chien_thang_phuoc_long.glb",
-        prompt: "Mô hình 3D Chiến thắng Phước Long: Gõ tên tỉnh đầu tiên ở miền Nam được giải phóng hoàn toàn (1/1975) được coi là 'đòn trinh sát chiến lược':",
-        target: "Phước Long",
-        accepted: ["Phước Long", "Phuoc Long", "Đường 14 Phước Long", "Đường 14 - Phước Long", "tỉnh Phước Long"],
-        hint: "Tỉnh thuộc miền Đông Nam Bộ (nay là một phần tỉnh Bình Phước)",
-        explanation: "Chiến thắng Phước Long (6/1/1975) chứng minh ngụy quân bất lực và Mỹ không thể can thiệp trở lại, củng cố quyết tâm giải phóng miền Nam trong năm 1975.",
-        offset: { x: -0.90, y: 0.45, z: 0 }
+        modelName: "2 Cố vấn quân sự Mỹ & Âm mưu phá hoại Hiệp định Paris",
+        modelUrl: "assets/models/bai8/tram8/hai_co_van_my.glb",
+        prompt: "Mô hình 3D Cố vấn quân sự Mỹ: Sau Hiệp định Paris 1973, Mỹ đã lén giữ lại hơn bao nhiêu vạn 'cố vấn' quân sự mặc thường phục?",
+        target: "2 vạn",
+        accepted: ["2 vạn", "hơn 2 vạn", "2 van", "hon 2 van", "20000", "20.000"],
+        hint: "Hơn 20.000 người (hơn 2 vạn)",
+        explanation: "Đế quốc Mỹ chưa chịu từ bỏ dã tâm, để lại hơn 2 vạn cố vấn quân sự mặc thường phục và viện trợ quân sự, kinh tế để chính quyền Sài Gòn ngang nhiên phá hoại Hiệp định Paris.",
+        offset: { x: -1.05, y: 0.45, z: 0.35 }
       },
       {
         order: 9,

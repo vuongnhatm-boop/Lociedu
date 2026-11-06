@@ -2798,8 +2798,10 @@ window.LOCI_ANCHORS = {
         "wallName": "Tâm điểm Vách Nam",
         "summary": "Năm 1968 (Xuân Mậu Thân), ta mở cuộc Tổng tiến công và nổi dậy trên toàn miền Nam, trọng tâm ở các đô thị, buộc Mỹ tuyên bố 'phi Mỹ hoá' chiến tranh.",
         "keyPoints": [
-          "Diễn biến: Năm 1968 (Xuân Mậu Thân), quân dân ta mở cuộc Tổng tiến công và nổi dậy trên toàn miền Nam, trọng tâm là ở các đô thị.",
-          "Ý nghĩa bước ngoặt: Mở ra bước ngoặt của cuộc kháng chiến chống Mỹ, cứu nước: làm lung lay ý chí xâm lược của Mỹ, buộc Mỹ phải “phi Mỹ hoá” chiến tranh xâm lược (thừa nhận thất bại của “Chiến tranh cục bộ”), chấm dứt không điều kiện chiến tranh phá hoại miền Bắc, chấp nhận đàm phán ở Pa-ri để bàn về chấm dứt chiến tranh."
+          "Đột kích đồng loạt các đô thị: Đêm 30 rạng sáng 31/1/1968 (Tết Mậu Thân), quân dân ta bất ngờ mở cuộc Tổng tiến công và nổi dậy trên toàn miền Nam, trọng tâm là ở các đô thị lớn.",
+          "Đánh trúng cơ quan đầu não đối phương: Các lực lượng đặc công và quân giải phóng táo bạo tập kích vào các mục tiêu xung yếu: Tòa Đại sứ Mỹ, Dinh Độc Lập, Đài phát thanh Sài Gòn, Bộ Tổng tham mưu quân đội Sài Gòn.",
+          "Bước ngoặt chiến lược lịch sử: Làm đảo lộn thế bố trí chiến lược của Mỹ, làm lung lay ý chí xâm lược của đế quốc Mỹ, buộc Mỹ phải tuyên bố 'phi Mỹ hoá' chiến tranh xâm lược (thừa nhận thất bại của 'Chiến tranh cục bộ').",
+          "Mặt trận ngoại giao mở ra: Buộc chính quyền Mỹ phải chấm dứt không điều kiện chiến tranh phá hoại miền Bắc và chấp nhận ngồi vào bàn đàm phán tại Paris để bàn về chấm dứt chiến tranh."
         ],
         "typeins": [
           {
@@ -3309,8 +3311,8 @@ window.LOCI_ANCHORS = {
         "keyPoints": [
           "Cuộc Tổng tiến công và nổi dậy Xuân 1975: Tháng 3/1975 mở cuộc tổng tiến công trải qua ba chiến dịch lớn: (1) Chiến dịch Tây Nguyên, (2) Chiến dịch Huế – Đà Nẵng, (3) Chiến dịch giải phóng Sài Gòn – Gia Định (Chiến dịch Hồ Chí Minh).",
           "Thời khắc lịch sử: 11 giờ 30 phút ngày 30 – 4, lá cờ cách mạng tung bay trên nóc Dinh Độc Lập, báo hiệu sự toàn thắng của Chiến dịch Hồ Chí Minh lịch sử.",
-          "Nguyên nhân thắng lợi: Chủ quan (Lãnh đạo sáng suốt của Đảng, Hồ Chí Minh; nhân dân yêu nước, đoàn kết, cần cù, dũng cảm; hậu phương miền Bắc lớn mạnh); Khách quan (Phối hợp 3 nước Đông Dương; sự đồng tình ủng hộ to lớn của các lực lượng hòa bình, dân chủ và các nước XHCN, nhất là Liên Xô và Trung Quốc; phong trào phản chiến của nhân dân Mỹ và thế giới).",
-          "Ý nghĩa lịch sử: Với VN (Kết thúc 21 năm chống Mỹ, 30 năm chiến tranh cách mạng; chấm dứt ách thống trị của chủ nghĩa đế quốc; kết thúc thắng lợi CM DTDCND cả nước; mở ra kỉ nguyên hoà bình, độc lập, thống nhất, đi lên CNXH); Với thế giới (Góp phần làm sụp đổ chủ nghĩa thực dân mới, cổ vũ phong trào giải phóng dân tộc và hòa bình thế giới)."
+          "Nguyên nhân thắng lợi:\n• Về chủ quan:\n  - Sự lãnh đạo sáng suốt của Đảng, đứng đầu là Chủ tịch Hồ Chí Minh với đường lối độc lập, tự chủ, sáng tạo.\n  - Nhân dân yêu nước nồng nàn, đoàn kết, lao động cần cù và chiến đấu dũng cảm.\n  - Hậu phương miền Bắc không ngừng lớn mạnh, chi viện kịp thời cho tiền tuyến.\n• Về khách quan:\n  - Tình đoàn kết chiến đấu của 3 nước Việt Nam – Lào – Campuchia.\n  - Sự ủng hộ to lớn của Liên Xô, Trung Quốc và các nước XHCN anh em.\n  - Phong trào phản chiến mạnh mẽ của nhân dân Mỹ và thế giới.",
+          "Ý nghĩa lịch sử:\n• Đối với Việt Nam:\n  - Kết thúc 21 năm kháng chiến chống Mỹ và 30 năm chiến tranh giải phóng dân tộc.\n  - Chấm dứt ách thống trị của chủ nghĩa thực dân, hoàn thành cách mạng DTDCND cả nước.\n  - Mở ra kỷ nguyên mới: Đất nước hòa bình, độc lập, thống nhất, đi lên CNXH.\n• Đối với thế giới:\n  - Góp phần làm sụp đổ chủ nghĩa thực dân mới, làm đảo lộn chiến lược toàn cầu của Mỹ.\n  - Cổ vũ mạnh mẽ phong trào giải phóng dân tộc và hòa bình thế giới."
         ],
         "typeins": [
           {
