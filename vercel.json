@@ -1,7 +1,9 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/", "destination": "/portal_v2.html", "permanent": false }
+  ],
   "rewrites": [
-    { "source": "/", "destination": "/portal_v2.html" },
     { "source": "/portal", "destination": "/portal_v2.html" },
     { "source": "/3d", "destination": "/index.html" },
     { "source": "/trinh-chieu", "destination": "/trinh_chieu_loci.html" },
