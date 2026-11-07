@@ -85,6 +85,24 @@
 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
+    <script id="desktop-scale-meta-controller">
+    (function enforceDesktopProportionOnMobile() {
+        try {
+            var screenW = window.screen.width;
+            var targetW = 1200; // Layout chuẩn máy tính (PC)
+            if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
+                var scale = (screenW / targetW).toFixed(4);
+                var mv = document.querySelector('meta[name="viewport"]');
+                if (mv) {
+                    mv.setAttribute('content', 'width=' + targetW + ', initial-scale=' + scale + ', maximum-scale=3.0, user-scalable=yes');
+                }
+            }
+        } catch (e) {}
+    })();
+    </script>
+
   <title>Cung Điện Ký Ức - Lịch Sử 12 | 3D Loft Living Room</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏛️</text></svg>">
 
@@ -4171,6 +4189,7 @@
       border-radius: 24px !important;
     }
   </style>
+  <script src="flashcard_formats.js"></script>
   <script src="spatial_recall_mode.js"></script>
   <style>
     /* Giao diện AI Drawer tách biệt sắc nét, không đè hay dính vào thanh đáy */
@@ -5741,7 +5760,7 @@
     if (urlParams.get('lesson') === 'bai_7' && !customModelUrl) {
       customModelUrl = 'backrooms_vr.glb';
     } else if (isBrownGallery && !customModelUrl) {
-      customModelUrl = 'Không gian chuẩn/Đơn/triển lãm nâu.glb';
+      customModelUrl = 'trien_lam_nau.glb';
     }
 
     // Chế độ bài học: ?lesson=bai_6 ... -> nạp sẵn các mốc chuẩn (khóa nội dung, chỉ cho kéo thả vị trí)
@@ -11113,14 +11132,21 @@ stationGroup.add(contentGroup);
           {
             title: '1. Thù trong giặc ngoài (Quân Đồng minh)',
             url: 'assets/models/bai7/tram1/3ooong.glb',
-            pos: [-0.75, 0.086, 0],
+            pos: [-1.0, 0.086, -0.1],
             targetDim: 1.35,
             rotY: 0.25
           },
           {
-            title: '2. Kinh tế kiệt quệ & Ngân sách rỗng',
+            title: '2. Nhân dân đã giành quyền làm chủ, đồng lòng ủng hộ cách mạng',
+            url: 'assets/models/bai7/tram1/nhan_dan_lam_chu.glb',
+            pos: [0.0, 0.086, 0.2],
+            targetDim: 1.45,
+            rotY: 0
+          },
+          {
+            title: '3. Nền kinh tế nghèo nàn, kiệt quệ sau chiến tranh',
             url: 'assets/models/bai7/tram1/kinh_te_lac_hau.glb',
-            pos: [0.75, 0.086, 0],
+            pos: [1.0, 0.086, -0.1],
             targetDim: 1.35,
             rotY: -0.25
           }
@@ -11137,17 +11163,24 @@ stationGroup.add(contentGroup);
         name: 'bai7_station_2_nambo',
         models: [
           {
-            title: 'Pháp xả súng mít tinh độc lập (2/9/1945)',
+            title: '1. Pháp xả súng mít tinh độc lập (2/9/1945)',
             url: 'assets/models/bai7/tram2/mit_tinh_saigon_phap_danh.glb',
-            pos: [-0.90, 0.086, 0],
-            targetDim: 1.55,
+            pos: [-1.0, 0.086, 0],
+            targetDim: 1.45,
             rotY: 0.30
           },
           {
-            title: 'Nhân dân Nam Bộ anh dũng chiến đấu (23/9/1945)',
+            title: '2. Nhân dân Nam Bộ anh dũng chiến đấu (23/9/1945)',
             url: 'assets/models/bai7/tram2/nhan_dan_nambo_chien_dau.glb',
-            pos: [0.90, 0.086, 0],
-            targetDim: 1.55,
+            pos: [0.0, 0.086, 0],
+            targetDim: 1.45,
+            rotY: 0
+          },
+          {
+            title: '3. Cả nước chi viện cho Nam Bộ kháng chiến (Đoàn quân Nam tiến)',
+            url: 'assets/models/bai7/tram2/chi_vien_cho_mien_nam.glb',
+            pos: [1.0, 0.086, 0],
+            targetDim: 1.45,
             rotY: -0.30
           }
         ]
@@ -11163,11 +11196,18 @@ stationGroup.add(contentGroup);
         name: 'bai7_station_3_toanquoc',
         models: [
           {
-            title: 'Thiện chí hòa bình & Bác Hồ ký cam kết (1946)',
+            title: '1. Thiện chí hòa bình & Bác Hồ ký cam kết (1946)',
             url: 'assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb',
-            pos: [0, 0.086, 0],
-            targetDim: 2.10,
-            rotY: 0
+            pos: [-0.85, 0.086, 0],
+            targetDim: 1.65,
+            rotY: 0.25
+          },
+          {
+            title: '2. Bác Hồ ra Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)',
+            url: 'assets/models/bai7/tram3/bac_ho_keu_goi_toan_quoc_khang_chien.glb',
+            pos: [0.85, 0.086, 0],
+            targetDim: 1.70,
+            rotY: -0.25
           }
         ]
       });
@@ -11182,17 +11222,24 @@ stationGroup.add(contentGroup);
         name: 'bai7_station_4_dothi',
         models: [
           {
-            title: 'Chiến sĩ Quyết tử quân giam chân địch',
+            title: '1. Chiến sĩ Quyết tử quân chiến đấu tại các đô thị',
             url: 'assets/models/bai7/tram4/chien_si_chien_dau.glb',
-            pos: [-0.90, 0.086, 0],
-            targetDim: 1.55,
+            pos: [-1.0, 0.086, 0],
+            targetDim: 1.45,
             rotY: 0.30
           },
           {
-            title: 'Trung đoàn Thủ Đô vượt sông Hồng an toàn',
+            title: '2. Giam chân quân Pháp trong các thành phố',
+            url: 'assets/models/bai7/tram4/giam_chan_quan_phap.glb',
+            pos: [0.0, 0.086, 0],
+            targetDim: 1.45,
+            rotY: 0
+          },
+          {
+            title: '3. Trung đoàn Thủ Đô vượt sông Hồng an toàn rút lên chiến khu',
             url: 'assets/models/bai7/tram4/vuot_song_hong.glb',
-            pos: [0.90, 0.086, 0],
-            targetDim: 1.55,
+            pos: [1.0, 0.086, 0],
+            targetDim: 1.45,
             rotY: -0.30
           }
         ]
@@ -11540,8 +11587,55 @@ stationGroup.add(contentGroup);
       const g = new THREE.Group();
       g.name = "cau_hien_luong_vi_tuyen_17";
 
-      // 1. Mặt nước sông Bến Hải (phản chiếu gợn sóng)
-      const waterGeo = new THREE.PlaneGeometry(2.4, 1.25);
+      // 1. Sa bàn nổi 3D Địa hình Việt Nam hình chữ S (Vietnam S-Shape 3D Relief Map)
+      const mapBaseGeo = new THREE.CylinderGeometry(1.35, 1.45, 0.06, 32);
+      const mapBaseMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.8, metalness: 0.3 });
+      const mapBase = new THREE.Mesh(mapBaseGeo, mapBaseMat);
+      mapBase.position.set(0, 0.03, 0);
+      g.add(mapBase);
+
+      // Thân bản đồ hình chữ S (Khối địa hình đa giác đùn 3D)
+      const vnShape = new THREE.Shape();
+      vnShape.moveTo(-0.45, 0.95);
+      vnShape.quadraticCurveTo(-0.15, 1.05, 0.35, 0.90);
+      vnShape.quadraticCurveTo(0.20, 0.70, 0.05, 0.50);
+      vnShape.quadraticCurveTo(-0.08, 0.25, -0.05, 0.05); // Vĩ tuyến 17
+      vnShape.quadraticCurveTo(0.12, -0.20, 0.22, -0.45);
+      vnShape.quadraticCurveTo(0.15, -0.75, -0.10, -0.85);
+      vnShape.quadraticCurveTo(-0.25, -0.80, -0.20, -0.65);
+      vnShape.quadraticCurveTo(-0.02, -0.50, 0.05, -0.25);
+      vnShape.quadraticCurveTo(-0.20, 0.05, -0.22, 0.35);
+      vnShape.quadraticCurveTo(-0.35, 0.65, -0.45, 0.95);
+
+      const extrudeSettings = { depth: 0.045, bevelEnabled: true, bevelSegments: 3, steps: 1, bevelSize: 0.015, bevelThickness: 0.015 };
+      const vnGeo = new THREE.ExtrudeGeometry(vnShape, extrudeSettings);
+      const vnMatNorth = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.6, metalness: 0.1 });
+      const vnMesh = new THREE.Mesh(vnGeo, vnMatNorth);
+      vnMesh.rotation.x = -Math.PI / 2;
+      vnMesh.position.set(0, 0.065, 0);
+      g.add(vnMesh);
+
+      // Quần đảo Hoàng Sa (Paracel Islands)
+      const hsGeo = new THREE.DodecahedronGeometry(0.045);
+      const hsMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.5 });
+      const hsMesh = new THREE.Mesh(hsGeo, hsMat);
+      hsMesh.position.set(0.48, 0.08, -0.15);
+      g.add(hsMesh);
+
+      // Quần đảo Trường Sa (Spratly Islands)
+      const tsMesh = new THREE.Mesh(hsGeo, hsMat);
+      tsMesh.position.set(0.62, 0.08, 0.45);
+      g.add(tsMesh);
+
+      // Vạch ranh giới đỏ phát sáng cắt ngang tại VĨ TUYẾN 17 (17°N / Sông Bến Hải)
+      const vt17LineGeo = new THREE.BoxGeometry(1.15, 0.025, 0.04);
+      const vt17LineMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+      const vt17Line = new THREE.Mesh(vt17LineGeo, vt17LineMat);
+      vt17Line.position.set(0, 0.125, 0);
+      g.add(vt17Line);
+
+      // Mặt nước sông Bến Hải (phản chiếu gợn sóng)
+      const waterGeo = new THREE.PlaneGeometry(2.0, 0.45);
       const waterMat = new THREE.MeshStandardMaterial({
         color: 0x0284c7,
         roughness: 0.18,
@@ -11551,77 +11645,44 @@ stationGroup.add(contentGroup);
       });
       const water = new THREE.Mesh(waterGeo, waterMat);
       water.rotation.x = -Math.PI / 2;
-      water.position.set(0, 0.012, 0);
+      water.position.set(0, 0.085, 0);
       g.add(water);
 
-      // Hai bờ sông phù sa
-      const bankGeo = new THREE.BoxGeometry(0.35, 0.03, 1.28);
-      const bankMat = new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.9 });
-      const northBank = new THREE.Mesh(bankGeo, bankMat);
-      northBank.position.set(-1.18, 0.018, 0);
-      g.add(northBank);
-      const southBank = northBank.clone();
-      southBank.position.set(1.18, 0.018, 0);
-      g.add(southBank);
-
-      // 2. Dầm thép cầu Hiền Lương
-      const girderGeo = new THREE.BoxGeometry(2.02, 0.045, 0.42);
+      // 2. Dầm thép cầu Hiền Lương & Mặt sàn ván gỗ 2 màu
+      const girderGeo = new THREE.BoxGeometry(1.65, 0.035, 0.28);
       const girderMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.85, roughness: 0.35 });
       const girder = new THREE.Mesh(girderGeo, girderMat);
-      girder.position.set(0, 0.065, 0);
+      girder.position.set(0, 0.13, 0);
       g.add(girder);
 
-      // Trụ cầu cắm xuống sông Bến Hải
-      const pierGeo = new THREE.CylinderGeometry(0.04, 0.05, 0.12, 12);
-      const pierMat = new THREE.MeshStandardMaterial({ color: 0x64748b, roughness: 0.7 });
-      [-0.55, 0, 0.55].forEach(px => {
-        const p1 = new THREE.Mesh(pierGeo, pierMat);
-        p1.position.set(px, 0.05, -0.16);
-        g.add(p1);
-        const p2 = p1.clone();
-        p2.position.set(px, 0.05, 0.16);
-        g.add(p2);
-      });
-
-      // 3. Mặt cầu ván gỗ chia đúng 2 màu lịch sử:
-      // NỬA BẮC (X: -1.0 đến 0): Sơn màu XANH HÒA BÌNH (#0284c7)
-      const northDeckGeo = new THREE.BoxGeometry(0.99, 0.018, 0.40);
+      // Nửa Bắc xanh (#0284c7)
+      const northDeckGeo = new THREE.BoxGeometry(0.81, 0.018, 0.26);
       const northDeckMat = new THREE.MeshStandardMaterial({ color: 0x0284c7, roughness: 0.45, metalness: 0.15 });
       const northDeck = new THREE.Mesh(northDeckGeo, northDeckMat);
-      northDeck.position.set(-0.50, 0.09, 0);
+      northDeck.position.set(-0.41, 0.15, 0);
       g.add(northDeck);
 
-      // NỬA NAM (X: 0 đến 1.0): Sơn màu VÀNG HOÀNG CÚC (#eab308)
-      const southDeckGeo = new THREE.BoxGeometry(0.99, 0.018, 0.40);
+      // Nửa Nam vàng (#eab308)
+      const southDeckGeo = new THREE.BoxGeometry(0.81, 0.018, 0.26);
       const southDeckMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.45, metalness: 0.15 });
       const southDeck = new THREE.Mesh(southDeckGeo, southDeckMat);
-      southDeck.position.set(0.50, 0.09, 0);
+      southDeck.position.set(0.41, 0.15, 0);
       g.add(southDeck);
 
-      // Vạch sơn trắng chia đôi ranh giới vĩ tuyến 17
+      // Vạch trắng chia đôi vĩ tuyến 17
       const divLine = new THREE.Mesh(
-        new THREE.BoxGeometry(0.035, 0.022, 0.41),
+        new THREE.BoxGeometry(0.025, 0.022, 0.28),
         new THREE.MeshBasicMaterial({ color: 0xffffff })
       );
-      divLine.position.set(0, 0.092, 0);
+      divLine.position.set(0, 0.152, 0);
       g.add(divLine);
 
-      // Lan can thành cầu
-      const railGeo = new THREE.BoxGeometry(2.0, 0.07, 0.015);
-      const railMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.7, roughness: 0.3 });
-      const r1 = new THREE.Mesh(railGeo, railMat);
-      r1.position.set(0, 0.14, -0.20);
-      g.add(r1);
-      const r2 = r1.clone();
-      r2.position.set(0, 0.14, 0.20);
-      g.add(r2);
-
-      // 4. Kỳ đài cờ đỏ sao vàng ở bờ Bắc (X = -1.18, Z = -0.32)
+      // Kỳ đài cờ đỏ sao vàng ở bờ Bắc (X = -0.95, Z = -0.22)
       const pole = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.012, 0.018, 1.35, 12),
+        new THREE.CylinderGeometry(0.010, 0.014, 1.15, 12),
         new THREE.MeshStandardMaterial({ color: 0xf1f5f9, metalness: 0.9, roughness: 0.1 })
       );
-      pole.position.set(-1.18, 0.72, -0.32);
+      pole.position.set(-0.95, 0.65, -0.22);
       g.add(pole);
 
       const flagCanvas = document.createElement('canvas');
@@ -11640,68 +11701,45 @@ stationGroup.add(contentGroup);
       fctx.fill();
       const flagTex = new THREE.CanvasTexture(flagCanvas);
       const flagMesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.38, 0.24),
+        new THREE.PlaneGeometry(0.32, 0.20),
         new THREE.MeshStandardMaterial({ map: flagTex, side: THREE.DoubleSide, roughness: 0.4 })
       );
-      flagMesh.position.set(-1.18 + 0.20, 1.25, -0.32);
+      flagMesh.position.set(-0.95 + 0.17, 1.10, -0.22);
       g.add(flagMesh);
 
-      // 5. Bia mốc Vĩ tuyến 17 ở bờ Nam (X = 1.18, Z = -0.28)
+      // Bia mốc Vĩ tuyến 17 ở bờ Nam (X = 0.95, Z = -0.20)
       const stele = new THREE.Mesh(
-        new THREE.BoxGeometry(0.18, 0.36, 0.08),
+        new THREE.BoxGeometry(0.16, 0.30, 0.06),
         new THREE.MeshStandardMaterial({ color: 0x334155, roughness: 0.3, metalness: 0.2 })
       );
-      stele.position.set(1.18, 0.20, -0.28);
+      stele.position.set(0.95, 0.22, -0.20);
       g.add(stele);
 
-      const steleCanvas = document.createElement('canvas');
-      steleCanvas.width = 128; steleCanvas.height = 128;
-      const sctx = steleCanvas.getContext('2d');
-      sctx.fillStyle = '#0f172a';
-      sctx.fillRect(0, 0, 128, 128);
-      sctx.strokeStyle = '#f59e0b';
-      sctx.lineWidth = 4;
-      sctx.strokeRect(4, 4, 120, 120);
-      sctx.fillStyle = '#fbbf24';
-      sctx.font = 'bold 15px sans-serif';
-      sctx.textAlign = 'center';
-      sctx.fillText('VĨ TUYẾN 17', 64, 42);
-      sctx.fillStyle = '#ffffff';
-      sctx.font = '12px sans-serif';
-      sctx.fillText('SÔNG BẾN HẢI', 64, 70);
-      sctx.fillStyle = '#38bdf8';
-      sctx.font = 'bold 14px sans-serif';
-      sctx.fillText('1954', 64, 98);
-      const steleTex = new THREE.CanvasTexture(steleCanvas);
-      const steleFace = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.16, 0.30),
-        new THREE.MeshBasicMaterial({ map: steleTex })
-      );
-      steleFace.position.set(1.18, 0.20, -0.238);
-      g.add(steleFace);
-
-      // 6. Bảng chữ 3D Vàng Kim trên cầu
+      // Bảng chữ 3D Vàng Kim trên sa bàn bản đồ
       const bannerCanvas = document.createElement('canvas');
-      bannerCanvas.width = 512; bannerCanvas.height = 80;
+      bannerCanvas.width = 512; bannerCanvas.height = 96;
       const bctx = bannerCanvas.getContext('2d');
-      bctx.fillStyle = 'rgba(15, 23, 42, 0.92)';
-      bctx.fillRect(0, 0, 512, 80);
+      bctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      bctx.fillRect(0, 0, 512, 96);
       bctx.strokeStyle = '#f59e0b';
       bctx.lineWidth = 5;
-      bctx.strokeRect(3, 3, 506, 74);
+      bctx.strokeRect(3, 3, 506, 90);
       bctx.fillStyle = '#fbbf24';
-      bctx.font = 'bold 22px sans-serif';
+      bctx.font = 'bold 20px sans-serif';
       bctx.textAlign = 'center';
-      bctx.fillText('CẦU HIỀN LƯƠNG — VĨ TUYẾN 17 (1954)', 256, 36);
-      bctx.fillStyle = '#94a3b8';
-      bctx.font = '14px sans-serif';
+      bctx.fillText('BẢN ĐỒ VIỆT NAM — VĨ TUYẾN 17 (1954)', 256, 36);
+      bctx.fillStyle = '#ef4444';
+      bctx.font = 'bold 15px sans-serif';
       bctx.fillText('Giới tuyến quân sự tạm thời chia cắt hai miền Nam - Bắc', 256, 62);
+      bctx.fillStyle = '#38bdf8';
+      bctx.font = '13px sans-serif';
+      bctx.fillText('Bờ Bắc: Sông Bến Hải • Bờ Nam: Cầu Hiền Lương', 256, 84);
       const bTex = new THREE.CanvasTexture(bannerCanvas);
       const bannerMesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(1.65, 0.32),
+        new THREE.PlaneGeometry(1.65, 0.36),
         new THREE.MeshBasicMaterial({ map: bTex, side: THREE.DoubleSide, depthTest: false, transparent: true })
       );
-      bannerMesh.position.set(0, 1.45, 0);
+      bannerMesh.position.set(0, 1.35, 0);
       g.add(bannerMesh);
 
       return g;
@@ -11716,21 +11754,106 @@ stationGroup.add(contentGroup);
         name: 'bai8_station_1_haimien',
         models: [
           {
+            title: 'Mỹ bắt tay dựng chính quyền tay sai Ngô Đình Diệm',
+            url: 'assets/models/bai8/tram1/my_bat_tay.glb',
+            pos: [-1.20, 0.01, 0.45],
+            targetDim: 1.40,
+            rotY: 0.35
+          },
+          {
             title: 'Miền Bắc: Khôi phục kinh tế, cải tạo & xây dựng CNXH',
             url: 'assets/models/bai8/tram1/xay_dung_xa_hoi_chu_nghia.glb',
-            pos: [0.90, 0.01, 0],
-            targetDim: 1.55,
-            rotY: -0.30
+            pos: [0.60, 0.01, 0.45],
+            targetDim: 1.30,
+            rotY: -0.25
+          },
+          {
+            title: 'Miền Nam: Kiên cường chống Mỹ - Diệm và bè lũ tay sai',
+            url: 'assets/models/bai8/tram1/mien_nam_chong_my.glb',
+            pos: [1.35, 0.01, 0.45],
+            targetDim: 1.30,
+            rotY: -0.45
+          },
+          {
+            title: 'Cục diện Chiến tranh Lạnh: Đối đầu hai cực Liên Xô và Mỹ',
+            url: 'assets/models/bai8/tram1/chien_tranh_lanh_2_tay.glb',
+            pos: [0.65, 0.01, -0.65],
+            targetDim: 1.45,
+            rotY: 0
           }
         ]
       });
 
-      // Thêm Cầu Hiền Lương & Cột mốc Vĩ tuyến 17 vào bên trái sa bàn
-      const cauGroup = createCauHienLuongModelGroup();
-      cauGroup.position.set(-0.90, 0.01, 0);
-      cauGroup.rotation.y = 0.25;
       const content = base.getObjectByName('bai8_station_1_haimien_content') || base;
+
+      // 1. Thêm Sa bàn Bản đồ Việt Nam vĩ tuyến 17 & Cầu Hiền Lương (Phần 2)
+      const cauGroup = createCauHienLuongModelGroup();
+      cauGroup.position.set(-0.95, 0.01, -0.65);
+      cauGroup.scale.set(0.95, 0.95, 0.95);
       content.add(cauGroup);
+
+      // 2. Dầm liên kết sáng nối 2 mô hình Miền Bắc và Miền Nam (Phần 3)
+      const dualBridgeGeo = new THREE.BoxGeometry(0.75, 0.04, 0.12);
+      const dualBridgeMat = new THREE.MeshStandardMaterial({
+        color: 0x38bdf8,
+        emissive: 0x0284c7,
+        emissiveIntensity: 0.6,
+        roughness: 0.2
+      });
+      const dualBridge = new THREE.Mesh(dualBridgeGeo, dualBridgeMat);
+      dualBridge.position.set(0.975, 0.06, 0.45);
+      dualBridge.name = 'bai8_dual_strategic_bridge';
+      content.add(dualBridge);
+
+      // 3. Cờ Liên Xô bên tay đỏ và Cờ Mỹ bên tay xanh cho Mục 4 Chiến tranh Lạnh
+      const coldWarGroup = new THREE.Group();
+      coldWarGroup.name = 'bai8_coldwar_flags_and_bombs';
+      coldWarGroup.position.set(0.65, 1.25, -0.65);
+
+      // Cờ Liên Xô (Tay đỏ, bên trái X = -0.45)
+      const sovCanvas = document.createElement('canvas');
+      sovCanvas.width = 128; sovCanvas.height = 80;
+      const sctx = sovCanvas.getContext('2d');
+      sctx.fillStyle = '#cc0000'; sctx.fillRect(0, 0, 128, 80);
+      sctx.fillStyle = '#ffd700'; sctx.font = 'bold 26px sans-serif';
+      sctx.fillText('☭', 18, 38);
+      const sovTex = new THREE.CanvasTexture(sovCanvas);
+      const sovFlag = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.32, 0.20),
+        new THREE.MeshBasicMaterial({ map: sovTex, side: THREE.DoubleSide })
+      );
+      sovFlag.position.set(-0.45, 0.25, 0);
+      coldWarGroup.add(sovFlag);
+
+      // Cờ Mỹ (Tay xanh, bên phải X = +0.45)
+      const usCanvas = document.createElement('canvas');
+      usCanvas.width = 128; usCanvas.height = 80;
+      const uctx = usCanvas.getContext('2d');
+      uctx.fillStyle = '#b22234'; uctx.fillRect(0, 0, 128, 80);
+      uctx.fillStyle = '#ffffff';
+      for (let i = 0; i < 7; i++) {
+        if (i % 2 === 1) uctx.fillRect(0, i * 11.4, 128, 5.7);
+      }
+      uctx.fillStyle = '#3c3b6e'; uctx.fillRect(0, 0, 52, 45);
+      uctx.fillStyle = '#ffffff'; uctx.font = '10px sans-serif'; uctx.fillText('★ ★ ★', 6, 26);
+      const usTex = new THREE.CanvasTexture(usCanvas);
+      const usFlag = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.32, 0.20),
+        new THREE.MeshBasicMaterial({ map: usTex, side: THREE.DoubleSide })
+      );
+      usFlag.position.set(0.45, 0.25, 0);
+      coldWarGroup.add(usFlag);
+
+      // Tia lửa đạn pháo đối đầu ở trung tâm giữa 2 bàn tay
+      const sparkGeo = new THREE.SphereGeometry(0.06, 8, 8);
+      const sparkMat = new THREE.MeshBasicMaterial({ color: 0xf59e0b });
+      for (let si = 0; si < 5; si++) {
+        const sp = new THREE.Mesh(sparkGeo, sparkMat);
+        sp.position.set((Math.random() - 0.5) * 0.25, (Math.random() - 0.5) * 0.25, (Math.random() - 0.5) * 0.2);
+        sp.scale.setScalar(0.4 + Math.random() * 0.6);
+        coldWarGroup.add(sp);
+      }
+      content.add(coldWarGroup);
 
       return base;
     }
@@ -11744,24 +11867,31 @@ stationGroup.add(contentGroup);
         name: 'bai8_station_2_dongkhoi',
         models: [
           {
-            title: 'Đội quân tóc dài & Khởi nghĩa Bến Tre 1960',
-            url: 'assets/models/bai8/tram2/doi_quan_toc_dai_ben_tre.glb',
-            pos: [-1.05, 0.01, 0.40],
+            title: 'Miền Nam đấu tranh chống chế độ Mỹ - Diệm (Phần 1)',
+            url: 'assets/models/bai8/tram2/mien_nam_dau_tranh.glb',
+            pos: [-1.15, 0.01, 0.40],
             targetDim: 1.40,
             rotY: 0.35
           },
           {
-            title: 'Đại hội Đại biểu Toàn quốc lần III của Đảng (9/1960)',
+            title: 'Hội nghị 15 BCH Trung ương & Đại hội III của Đảng (Phần 2)',
             url: 'assets/models/bai8/tram2/dai_hoi_dang_toan_quoc.glb',
             pos: [0, 0.01, -0.65],
-            targetDim: 1.60,
+            targetDim: 1.55,
             rotY: 0
           },
           {
-            title: 'Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960)',
+            title: 'Đội quân tóc dài & Khởi nghĩa Bến Tre 1960 (Phần 3)',
+            url: 'assets/models/bai8/tram2/doi_quan_toc_dai_ben_tre.glb',
+            pos: [-0.40, 0.01, 0.40],
+            targetDim: 1.35,
+            rotY: 0.20
+          },
+          {
+            title: 'Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960) (Phần 4)',
             url: 'assets/models/bai8/tram2/mat_tran_dan_toc_giai_phong.glb',
-            pos: [1.05, 0.01, 0.40],
-            targetDim: 1.40,
+            pos: [1.15, 0.01, 0.40],
+            targetDim: 1.45,
             rotY: -0.35
           }
         ]
@@ -11777,17 +11907,24 @@ stationGroup.add(contentGroup);
         name: 'bai8_station_3_chientranhdacbiet',
         models: [
           {
-            title: 'Quân Giải phóng miền Nam thành lập (15/2/1961)',
-            url: 'assets/models/bai8/tram1/phong_trao_dau_tranh_chinh_tri.glb',
-            pos: [-0.90, 0.01, 0],
-            targetDim: 1.55,
+            title: 'Quân Giải phóng miền Nam thành lập (15/2/1961) (Phần 1)',
+            url: 'assets/models/bai8/tram3/luc_luong_quan_giai_phong.glb',
+            pos: [-1.05, 0.01, 0.20],
+            targetDim: 1.45,
             rotY: 0.30
           },
           {
-            title: 'Chiến thuật Trực thăng vận & Thiết xa vận của Mỹ',
+            title: 'Chiến thuật Trực thăng vận & Thiết xa vận của Mỹ (Phần 2)',
             url: 'assets/models/bai8/tram3/my_dung_truc_thang_van.glb',
-            pos: [0.90, 0.01, 0],
+            pos: [0, 0.01, -0.65],
             targetDim: 1.55,
+            rotY: 0
+          },
+          {
+            title: 'Chiến thắng Ấp Bắc (2/1/1963) bẻ gãy chiến thuật của Mỹ (Phần 3)',
+            url: 'assets/models/bai8/tram3/chien_thang_ap_bac.glb',
+            pos: [1.05, 0.01, 0.20],
+            targetDim: 1.45,
             rotY: -0.30
           }
         ]
@@ -11803,22 +11940,15 @@ stationGroup.add(contentGroup);
         name: 'bai8_station_4_cucbo',
         models: [
           {
-            title: 'Âm mưu Chiến lược Chiến tranh Cục bộ của Mỹ',
-            url: 'assets/models/bai8/tram4/am_muu_chien_tranh_cuc_bo.glb',
-            pos: [-1.05, 0.01, 0.40],
-            targetDim: 1.40,
-            rotY: 0.35
-          },
-          {
-            title: 'Miền Bắc chi viện — Xe đạp thồ vận tải',
+            title: 'Miền Bắc chi viện — Xe đạp thồ vận tải (Phần 2)',
             url: 'assets/models/bai8/tram4/xe_dap_tho.glb',
             pos: [0, 0.01, -0.65],
             targetDim: 1.50,
             rotY: 0
           },
           {
-            title: 'Chiến thắng Vạn Tường (1965) mở đầu cao trào đánh Mỹ',
-            url: 'assets/models/bai8/tram4/danh_bai_hai_mua_kho.glb',
+            title: 'Chiến thắng Vạn Tường (18/8/1965) mở đầu cao trào đánh Mỹ (Phần 3)',
+            url: 'assets/models/bai8/tram4/chien_thang_van_tuong.glb',
             pos: [1.05, 0.01, 0.40],
             targetDim: 1.45,
             rotY: -0.35
@@ -11853,7 +11983,7 @@ stationGroup.add(contentGroup);
       vtBanner.position.set(1.05, 2.85, 0.40);
       content.add(vtBanner);
 
-      // 2. MÁY BAY NÉM BOM B52 & BOMB NÉM XUỐNG CHO PHẦN 1
+      // 2. MÁY BAY NÉM BOM B52 & BOMB NÉM XUỐNG CHO PHẦN 1 (KHÔNG CÓ ẤP BẮC Ở ĐÂY)
       const bomberGroup = new THREE.Group();
       bomberGroup.name = 'bai8_bomber_airstrike';
       bomberGroup.position.set(-1.05, 3.65, 0.40);
@@ -11882,7 +12012,7 @@ stationGroup.add(contentGroup);
         bombs.push(bomb);
       }
       bomberGroup.userData.bombs = bombs;
-      bomberGroup.visible = false; // Mặc định ẩn, hiện khi ở phần 1
+      bomberGroup.visible = false;
       content.add(bomberGroup);
 
       base.userData.bomberGroup = bomberGroup;
@@ -11899,21 +12029,21 @@ stationGroup.add(contentGroup);
         name: 'bai8_station_5_mauthan',
         models: [
           {
-            title: 'Đặc công đánh chiếm Đại sứ quán Mỹ',
+            title: 'Đặc công đánh chiếm Đại sứ quán Mỹ & các đô thị lớn (Phần 1)',
             url: 'assets/models/bai8/tram5/danh_chiem_dai_su_my.glb',
             pos: [-1.05, 0.01, 0.40],
             targetDim: 1.40,
             rotY: 0.35
           },
           {
-            title: 'Tổng tiến công và nổi dậy Xuân Mậu Thân 1968',
+            title: 'Tổng tiến công và nổi dậy Xuân Mậu Thân 1968 (Phần 2 & 3)',
             url: 'assets/models/bai8/tram5/tong_tien_cong_mau_than.glb',
             pos: [0, 0.01, -0.65],
             targetDim: 1.60,
             rotY: 0
           },
           {
-            title: 'Buộc Mỹ phải xuống thang & Đàm phán Paris',
+            title: 'Buộc Mỹ phải xuống thang phi Mỹ hoá & Đàm phán Paris (Phần 4)',
             url: 'assets/models/bai8/tram5/dam_phan_pari_1968.glb',
             pos: [1.05, 0.01, 0.40],
             targetDim: 1.40,
@@ -11932,25 +12062,18 @@ stationGroup.add(contentGroup);
         name: 'bai8_station_6_vietnamhoa',
         models: [
           {
-            title: '81 ngày đêm Thành cổ Quảng Trị kiên cường (1972)',
+            title: '81 ngày đêm Thành cổ Quảng Trị kiên cường (1972) (Phần 1)',
             url: 'assets/models/bai8/tram6/mat_tran_quang_tri.glb',
-            pos: [-1.05, 0.01, 0.40],
-            targetDim: 1.40,
+            pos: [-0.95, 0.01, 0.20],
+            targetDim: 1.45,
             rotY: 0.35
           },
           {
-            title: 'Chính phủ Cách mạng Lâm thời CHMNVN thành lập (6/1969)',
-            url: 'assets/models/bai8/tram6/chinh_phu_lam_thoi_cong_hoa.glb',
-            pos: [0, 0.01, -0.65],
-            targetDim: 1.60,
-            rotY: 0
-          },
-          {
-            title: 'Đấu tranh ngoại giao chống thủ đoạn cô lập của Mỹ',
-            url: 'assets/models/bai8/tram6/my_bat_tay_trung_xo.glb',
-            pos: [1.05, 0.01, 0.40],
-            targetDim: 1.40,
-            rotY: -0.35
+            title: 'Liên minh đoàn kết 3 nước Đông Dương (Việt Nam - Lào - Campuchia) (Phần 2 & 3)',
+            url: 'assets/models/bai8/tram6/lao_vn_campuchia.glb',
+            pos: [0.95, 0.01, 0.20],
+            targetDim: 1.55,
+            rotY: -0.30
           }
         ]
       });
@@ -11965,22 +12088,22 @@ stationGroup.add(contentGroup);
         name: 'bai8_station_7_dienbienphutrenkhong',
         models: [
           {
-            title: 'Tên lửa SAM-2 hạ pháo đài bay B-52 trên bầu trời Hà Nội',
-            url: 'assets/models/bai8/tram7/ban_pha_phao_dai_bay_b52.glb',
+            title: 'Bộ trưởng Nguyễn Thị Bình ký Hiệp định Paris (27/1/1973) (Phần 1)',
+            url: 'assets/models/bai8/tram7/hiep_dinh.glb',
             pos: [-1.05, 0.01, 0.40],
             targetDim: 1.45,
             rotY: 0.35
           },
           {
-            title: 'Toán lính Mỹ cuối cùng cuốn cờ rút về nước (3/1973)',
-            url: 'assets/models/bai8/tram7/quan_my_rut_quan_1973.glb',
+            title: 'Tên lửa SAM-2 hạ pháo đài bay B-52 trên bầu trời Hà Nội (Phần 2)',
+            url: 'assets/models/bai8/tram7/ban_pha_phao_dai_bay_b52.glb',
             pos: [0, 0.01, -0.65],
-            targetDim: 1.55,
+            targetDim: 1.50,
             rotY: 0
           },
           {
-            title: 'Bộ trưởng Nguyễn Thị Bình ký Hiệp định Paris (27/1/1973)',
-            url: 'assets/models/bai8/tram7/hiep_dinh.glb',
+            title: 'Toán lính Mỹ cuối cùng cuốn cờ rút về nước (3/1973) (Phần 3)',
+            url: 'assets/models/bai8/tram7/quan_my_rut_quan_1973.glb',
             pos: [1.05, 0.01, 0.40],
             targetDim: 1.45,
             rotY: -0.35
@@ -11993,26 +12116,102 @@ stationGroup.add(contentGroup);
     // BÀI 8 — TRẠM 8: TẠO THẾ VÀ LỰC TIẾN TỚI GIẢI PHÓNG MIỀN NAM (1973 - 1975)
     // ──────────────────────────────────────────────────────────────────────────
     function buildBai8Station8(locus) {
-      return createBai8DioramaBase(locus, {
+      const base = createBai8DioramaBase(locus, {
         stationOrder: 8,
         name: 'bai8_station_8_taothevaluc',
         models: [
           {
-            title: 'Nghị quyết Hội nghị 21 BCH Trung ương Đảng (7/1973)',
-            url: 'assets/models/bai8/tram8/hiep_dinh_hoi_nghi_21.glb',
-            pos: [-0.90, 0.01, 0],
-            targetDim: 1.55,
+            title: 'Mỹ lén để lại hơn 2 vạn cố vấn quân sự phá hoại Hiệp định Paris (Phần 1)',
+            url: 'assets/models/bai8/tram8/hai_co_van_my.glb',
+            pos: [-1.05, 0.01, 0.35],
+            targetDim: 1.45,
             rotY: 0.30
           },
           {
-            title: 'Chiến dịch Đường 14 — Phước Long (Đòn trinh sát chiến lược)',
-            url: 'assets/models/bai8/tram8/chien_thang_phuoc_long.glb',
-            pos: [0.90, 0.01, 0],
+            title: 'Nghị quyết Hội nghị 21 BCH Trung ương Đảng (7/1973) (Phần 2)',
+            url: 'assets/models/bai8/tram8/hiep_dinh_hoi_nghi_21.glb',
+            pos: [0, 0.01, -0.65],
             targetDim: 1.55,
+            rotY: 0
+          },
+          {
+            title: 'Chiến dịch Đường 14 — Phước Long (Đòn trinh sát chiến lược) (Phần 3)',
+            url: 'assets/models/bai8/tram8/chien_thang_phuoc_long.glb',
+            pos: [1.05, 0.01, 0.35],
+            targetDim: 1.45,
             rotY: -0.30
           }
         ]
       });
+
+      const content = base.getObjectByName('bai8_station_8_taothevaluc_content') || base;
+
+      // ANIMATION 7 GIÂY: CỜ VIỆT NAM BAY LÊN VINH QUANG, CỜ MỸ & VNCH LỤI TÀN TAN BIẾN (PHẦN 4)
+      const flagAnimGroup = new THREE.Group();
+      flagAnimGroup.name = 'bai8_flag_victory_group';
+      flagAnimGroup.position.set(0, 0.01, 0.15);
+
+      // Cờ Việt Nam ở giữa
+      const vnCanvas = document.createElement('canvas');
+      vnCanvas.width = 128; vnCanvas.height = 80;
+      const vctx = vnCanvas.getContext('2d');
+      vctx.fillStyle = '#da251d'; vctx.fillRect(0, 0, 128, 80);
+      vctx.fillStyle = '#ffde00'; vctx.beginPath();
+      const vcx = 64, vcy = 40, vrO = 16, vrI = 6.4;
+      for (let i = 0; i < 5; i++) {
+        vctx.lineTo(vcx + Math.cos((18 + i * 72) * Math.PI / 180) * vrO, vcy - Math.sin((18 + i * 72) * Math.PI / 180) * vrO);
+        vctx.lineTo(vcx + Math.cos((54 + i * 72) * Math.PI / 180) * vrI, vcy - Math.sin((54 + i * 72) * Math.PI / 180) * vrI);
+      }
+      vctx.closePath(); vctx.fill();
+      const vnTex = new THREE.CanvasTexture(vnCanvas);
+      const vnFlagMat = new THREE.MeshStandardMaterial({ map: vnTex, side: THREE.DoubleSide, roughness: 0.3 });
+      const vnFlag = new THREE.Mesh(new THREE.PlaneGeometry(0.55, 0.35), vnFlagMat);
+      vnFlag.position.set(0, 1.2, 0);
+      flagAnimGroup.add(vnFlag);
+
+      // Cột cờ vinh quang
+      const pole = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.012, 0.018, 2.2, 12),
+        new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.8, roughness: 0.2 })
+      );
+      pole.position.set(-0.28, 1.1, 0);
+      flagAnimGroup.add(pole);
+
+      // Cờ Mỹ bên trái (lụi tàn)
+      const usCanvas2 = document.createElement('canvas');
+      usCanvas2.width = 128; usCanvas2.height = 80;
+      const uctx2 = usCanvas2.getContext('2d');
+      uctx2.fillStyle = '#b22234'; uctx2.fillRect(0, 0, 128, 80);
+      uctx2.fillStyle = '#ffffff';
+      for (let i = 0; i < 7; i++) { if (i % 2 === 1) uctx2.fillRect(0, i * 11.4, 128, 5.7); }
+      uctx2.fillStyle = '#3c3b6e'; uctx2.fillRect(0, 0, 52, 45);
+      const usTex2 = new THREE.CanvasTexture(usCanvas2);
+      const usFlagMat = new THREE.MeshStandardMaterial({ map: usTex2, side: THREE.DoubleSide, transparent: true, opacity: 1.0 });
+      const usFlag = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.24), usFlagMat);
+      usFlag.position.set(-0.65, 0.8, 0);
+      flagAnimGroup.add(usFlag);
+
+      // Cờ Việt Nam Cộng hòa bên phải (lụi tàn)
+      const rvnCanvas = document.createElement('canvas');
+      rvnCanvas.width = 128; rvnCanvas.height = 80;
+      const rctx = rvnCanvas.getContext('2d');
+      rctx.fillStyle = '#facc15'; rctx.fillRect(0, 0, 128, 80);
+      rctx.fillStyle = '#dc2626';
+      rctx.fillRect(0, 26, 128, 6);
+      rctx.fillRect(0, 37, 128, 6);
+      rctx.fillRect(0, 48, 128, 6);
+      const rvnTex = new THREE.CanvasTexture(rvnCanvas);
+      const rvnFlagMat = new THREE.MeshStandardMaterial({ map: rvnTex, side: THREE.DoubleSide, transparent: true, opacity: 1.0 });
+      const rvnFlag = new THREE.Mesh(new THREE.PlaneGeometry(0.38, 0.24), rvnFlagMat);
+      rvnFlag.position.set(0.65, 0.8, 0);
+      flagAnimGroup.add(rvnFlag);
+
+      flagAnimGroup.userData = { vnFlag, usFlag, rvnFlag, usFlagMat, rvnFlagMat };
+      flagAnimGroup.visible = false;
+      content.add(flagAnimGroup);
+
+      base.userData.flagAnimGroup = flagAnimGroup;
+      return base;
     }
 
     // ──────────────────────────────────────────────────────────────────────────
@@ -12026,21 +12225,21 @@ stationGroup.add(contentGroup);
           {
             title: 'Chiến dịch Tây Nguyên (4/3 - 24/3/1975) — Mở màn Buôn Ma Thuột',
             url: 'assets/models/bai8/tram9/chien_thang_tay_nguyen.glb',
-            pos: [-1.10, 0.01, 0.0],
-            targetDim: 1.30,
-            rotY: 0.30
+            pos: [-1.25, 0.01, 0.20],
+            targetDim: 1.35,
+            rotY: 0.35
           },
           {
             title: 'Chiến dịch Huế — Đà Nẵng (21/3 - 29/3/1975)',
             url: 'assets/models/bai8/tram9/chien_dich_hue_da_nang.glb',
-            pos: [1.10, 0.01, 0.0],
-            targetDim: 1.30,
-            rotY: -0.30
+            pos: [1.25, 0.01, 0.20],
+            targetDim: 1.35,
+            rotY: -0.35
           },
           {
             title: 'Cổng Dinh Độc Lập (Trưa 30/4/1975)',
             url: 'assets/models/bai8/tram9/cong_dinh_doc_lap.glb',
-            pos: [0, 0.01, -0.55],
+            pos: [0, 0.01, -0.65],
             targetDim: 1.65,
             rotY: 0.0
           },
@@ -12079,7 +12278,7 @@ stationGroup.add(contentGroup);
       );
       vicBanner.name = 'bai8_victory_projection';
       vicBanner.position.set(0, 2.65, 0.15);
-      vicBanner.visible = false; // Hiện từ phần 3 trở đi
+      vicBanner.visible = false;
       content.add(vicBanner);
 
       base.userData.victoryBanner = vicBanner;
@@ -12768,11 +12967,13 @@ stationGroup.add(contentGroup);
         const box = new THREE.Box3().setFromObject(roomMesh);
         const center = box.getCenter(new THREE.Vector3());
 
-        let limitSize = 34;
-        ROOM_BOUNDS.minX = -limitSize;
-        ROOM_BOUNDS.maxX = limitSize;
-        ROOM_BOUNDS.minZ = -limitSize;
-        ROOM_BOUNDS.maxZ = limitSize;
+        const size = box.getSize(new THREE.Vector3());
+        let limitX = Math.max(35, (size.x / 2) + 8);
+        let limitZ = Math.max(35, (size.z / 2) + 8);
+        ROOM_BOUNDS.minX = -limitX;
+        ROOM_BOUNDS.maxX = limitX;
+        ROOM_BOUNDS.minZ = -limitZ;
+        ROOM_BOUNDS.maxZ = limitZ;
         ROOM_BOUNDS.eyeHeight = 1.65;
 
         camera.far = 400;
@@ -12912,10 +13113,11 @@ stationGroup.add(contentGroup);
     const MOVE_SPEED = 3.6;
     const SPRINT_SPEED = 6.2;
 
-    // Loft room boundary limits (change to let so we can update for larger custom models)
+    // Loft room boundary limits (giữ phạm vi rộng -34m đến 34m nếu là phòng triển lãm Brown)
+    // Không gian chuyển động rộng rãi, tự thích ứng với kích thước mô hình
     ROOM_BOUNDS = {
-      minX: -4.2, maxX: 4.2,
-      minZ: -3.8, maxZ: 3.8,
+      minX: -50, maxX: 50,
+      minZ: -50, maxZ: 50,
       eyeHeight: 1.65
     };
 
@@ -14743,9 +14945,11 @@ window.addEventListener('pointermove', (e) => {
 
     function highlightBrownKeywords(str) {
       if (!str) return '';
-      return str
+      let formatted = str
+        .replace(/\n/g, '<br>')
         .replace(/(\b\d{1,2}(?:[-–]\d{1,2})?\/\d{1,2}(?:\/\d{4})?|\btháng \d+\/\d{4}\b|\b\d{4}\b|\bhơn 80 năm\b|\bgần 5 năm\b|\bhơn 1\.?000 năm\b|\b15 ngày\b|\b10 chính sách\b|\b1776\b|\b1789\b)/gi, '<strong style="color:#38bdf8; font-weight:800;">$1</strong>')
-        .replace(/(Quân lệnh số 1|Quân lệnh 1|Tuyên ngôn Độc lập|Đại hội Quốc dân|Quốc dân Đại hội|Hội nghị toàn quốc|Ủy ban Khởi nghĩa Toàn quốc|Ủy ban Khởi nghĩa|Ủy ban Dân tộc giải phóng|Chính phủ lâm thời|Hi-rô-si-ma|Hiroshima|Na-ga-xa-ki|Na-ga-sa-ki|Nagasaki|Hà Nội|Huế|Sài Gòn|Ba Đình|Quảng trường Ba Đình|Tân Trào|Đình Tân Trào|Lán Nà Nưa|Nà Nưa|Bảo Đại|Vua Bảo Đại|Việt Minh|Mặt trận Việt Minh|Giải phóng quân|Võ Nguyên Giáp|Hồ Chí Minh|HỒ CHÍ MINH|Đồng minh|Liên Xô|Phát xít Nhật|Phát xít|Chiếu thoái vị|Quốc ấn|Bảo kiếm|Trần Huy Liệu|Cù Huy Cận|Bắc Giang|Hải Dương|Hà Tĩnh|Quảng Nam|Đồng Nai Thượng|Hà Tiên|Nhà hát Lớn|Bắc Bộ Phủ|Trại lính bảo an|Ba Tơ|Trường Sơn|KHÔNG ĐIỀU KIỆN|ngàn năm có một|chớp thời cơ|đại đoàn kết|Đảng|Kỳ đài|Mỹ|Pháp|quyền tự quyết)/gi, '<strong style="color:#38bdf8; text-decoration:underline dotted #38bdf8; font-weight:800;">$1</strong>');
+        .replace(/(Quân lệnh số 1|Quân lệnh 1|Tuyên ngôn Độc lập|Đại hội Quốc dân|Quốc dân Đại hội|Hội nghị toàn quốc|Ủy ban Khởi nghĩa Toàn quốc|Ủy ban Khởi nghĩa|Ủy ban Dân tộc giải phóng|Chính phủ lâm thời|Hi-rô-si-ma|Hiroshima|Na-ga-xa-ki|Na-ga-sa-ki|Nagasaki|Hà Nội|Huế|Sài Gòn|Ba Đình|Quảng trường Ba Đình|Tân Trào|Đình Tân Trào|Lán Nà Nưa|Nà Nưa|Bảo Đại|Vua Bảo Đại|Việt Minh|Mặt trận Việt Minh|Giải phóng quân|Võ Nguyên Giáp|Hồ Chí Minh|HỒ CHÍ MINH|Đồng minh|Liên Xô|Phát xít Nhật|Phát xít|Chiếu thoái vị|Quốc ấn|Bảo kiếm|Trần Huy Liệu|Cù Huy Cận|Bắc Giang|Hải Dương|Hà Tĩnh|Quảng Nam|Đồng Nai Thượng|Hà Tiên|Nhà hát Lớn|Bắc Bộ Phủ|Trại lính bảo an|Ba Tơ|Trường Sơn|KHÔNG ĐIỀU KIỆN|ngàn năm có một|chớp thời cơ|đại đoàn kết|Đảng|Kỳ đài|Mỹ|Pháp|quyền tự quyết|Vạn Tường|Ấp Bắc|Phước Long|Hiệp định Pa-ri|Hiệp định Paris|Mậu Thân)/gi, '<strong style="color:#38bdf8; text-decoration:underline dotted #38bdf8; font-weight:800;">$1</strong>');
+      return formatted;
     }
 
     
@@ -16093,54 +16297,104 @@ window.addEventListener('pointermove', (e) => {
       ]
     };
     window.STATION_STEP_MODEL_OFFSETS = STATION_STEP_MODEL_OFFSETS;
-    const STATION_STEP_MODEL_OFFSETS_BAI8 = {
+
+    const STATION_STEP_MODEL_OFFSETS_BAI7 = {
       1: [
-        { x: -0.90, y: 0.45, z: 0, label: "Vĩ tuyến 17 & Cầu Hiền Lương: Đất nước tạm thời chia cắt" },
-        { x: -0.90, y: 0.45, z: 0, label: "Âm mưu của Mỹ biến miền Nam thành thuộc địa kiểu mới" },
-        { x: 0.90, y: 0.45, z: 0, label: "Miền Bắc: Khôi phục kinh tế, cải tạo & xây dựng CNXH" },
-        { x: 0.0, y: 0.65, z: 0, isMultiModel: true, label: "Bối cảnh hai miền và cục diện thế giới" }
+        { x: -1.0, y: 0.55, z: -0.1, label: "Thù trong giặc ngoài (Quân Đồng minh)" },
+        { x: 0.0, y: 0.65, z: 0.2, label: "Thuận lợi: Nhân dân đã giành quyền làm chủ, ủng hộ cách mạng" },
+        { x: 1.0, y: 0.55, z: -0.1, label: "Khó khăn: Nền kinh tế nghèo nàn, kiệt quệ sau chiến tranh" },
+        { x: 0.0, y: 0.85, z: 0.0, label: "Tình thế hiểm nghèo 'ngàn cân treo sợi tóc'", isMultiModel: true }
       ],
       2: [
-        { x: -1.05, y: 0.45, z: 0.40, label: "Đội quân tóc dài & Phong trào Đồng khởi" },
-        { x: 0, y: 0.45, z: -0.65, label: "Hội nghị 15 BCH Trung ương Đảng (1/1959)" },
-        { x: -1.05, y: 0.45, z: 0.40, label: "Khởi nghĩa Bến Tre 1960 — Đội quân tóc dài" },
-        { x: 0, y: 0.70, z: 0.0, isMultiModel: true, label: "Ý nghĩa lịch sử phong trào Đồng Khởi (Bao quát cả 3 mô hình)" }
+        { x: -1.0, y: 0.55, z: 0.0, label: "Pháp xả súng mít tinh độc lập tại Sài Gòn (2/9/1945)" },
+        { x: 0.0, y: 0.55, z: 0.0, label: "Nhân dân Nam Bộ anh dũng đứng lên chiến đấu (23/9/1945)" },
+        { x: 1.0, y: 0.55, z: 0.0, label: "Cả nước chi viện cho Nam Bộ kháng chiến — Đoàn quân Nam tiến" },
+        { x: 0.0, y: 0.75, z: 0.0, label: "Làm thất bại bước đầu kế hoạch đánh nhanh thắng nhanh của Pháp" }
       ],
       3: [
-        { x: -0.90, y: 0.45, z: 0, label: "Quân Giải phóng miền Nam thành lập (15/2/1961)" },
-        { x: 0.90, y: 0.45, z: 0, label: "Chiến thuật Trực thăng vận & Thiết xa vận của Mỹ" },
-        { x: -0.90, y: 0.45, z: 0, label: "Quân Giải phóng miền Nam bẻ gãy chiến thuật của Mỹ" }
+        { x: -0.85, y: 0.55, z: 0.0, label: "Bác Hồ ký cam kết hòa hoãn (Hiệp định Sơ bộ & Tạm ước)" },
+        { x: -0.30, y: 0.65, z: 0.0, label: "Pháp bội ước khiêu khích chiến tranh" },
+        { x: 0.85, y: 0.65, z: 0.0, label: "Bác Hồ ra Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)" },
+        { x: 0.85, y: 0.65, z: 0.0, label: "Đường lối kháng chiến toàn dân, toàn diện, trường kỳ, tự lực cánh sinh" }
       ],
       4: [
-        { x: -1.05, y: 0.45, z: 0.40, label: "Chiến lược Chiến tranh cục bộ & Không kích ném bom" },
-        { x: 0, y: 0.45, z: -0.65, label: "Miền Bắc chi viện — Xe đạp thồ vận tải" },
-        { x: 1.05, y: 0.85, z: 0.40, label: "Chiến thắng Vạn Tường (1965) mở đầu cao trào đánh Mỹ" }
+        { x: -1.0, y: 0.55, z: 0.0, label: "Thời gian: 19/12/1946 đến 17/2/1947" },
+        { x: -1.0, y: 0.55, z: 0.0, label: "Chiến sĩ Quyết tử quân chiến đấu tại các đô thị (Bắc Bộ Phủ, Đồng Xuân)" },
+        { x: 0.0, y: 0.55, z: 0.0, label: "Giam chân quân Pháp trong các thành phố" },
+        { x: 1.0, y: 0.55, z: 0.0, label: "Trung đoàn Thủ Đô vượt sông Hồng an toàn rút lên chiến khu" }
       ],
       5: [
-        { x: -1.05, y: 0.45, z: 0.40, label: "Đặc công đánh chiếm Đại sứ quán Mỹ" },
-        { x: 0, y: 0.45, z: -0.65, label: "Tổng tiến công và nổi dậy Xuân Mậu Thân 1968" },
-        { x: 1.05, y: 0.45, z: 0.40, label: "Buộc Mỹ phải xuống thang & Đàm phán Paris" }
+        { x: -0.90, y: 0.55, z: 0.0, label: "Lực lượng ta sẵn sàng cho chiến dịch Việt Bắc thu – đông 1947" },
+        { x: 0.90, y: 0.55, z: 0.0, label: "Quân dân bẻ gãy gọng kìm, bảo vệ an toàn cơ quan đầu não" },
+        { x: 0.0, y: 0.85, z: 0.0, label: "Chiến dịch phản công lớn đầu tiên làm phá sản hoàn toàn 'đánh nhanh thắng nhanh'", isMultiModel: true }
       ],
       6: [
-        { x: -1.05, y: 0.45, z: 0.40, label: "81 ngày đêm Thành cổ Quảng Trị kiên cường (1972)" },
-        { x: 0, y: 0.45, z: -0.65, label: "Chính phủ Cách mạng Lâm thời CHMNVN thành lập (6/1969)" },
-        { x: 1.05, y: 0.45, z: 0.40, label: "Đấu tranh ngoại giao chống thủ đoạn cô lập của Mỹ" }
+        { x: 0.0, y: 0.65, z: 0.0, label: "Chủ tịch Hồ Chí Minh trực tiếp chỉ đạo chiến dịch Biên giới thu – đông 1950" }
       ],
       7: [
-        { x: -1.05, y: 0.45, z: 0.40, label: "Tên lửa SAM-2 hạ pháo đài bay B-52 trên bầu trời Hà Nội" },
-        { x: -1.05, y: 0.45, z: 0.40, label: "Quân dân ta bắn hạ B-52 làm nên Điện Biên Phủ trên không" },
-        { x: 0, y: 0.45, z: -0.65, label: "Toán lính Mỹ cuối cùng cuốn cờ rút về nước (3/1973)" },
-        { x: 1.05, y: 0.45, z: 0.40, label: "Bộ trưởng Nguyễn Thị Bình ký Hiệp định Paris (27/1/1973)" }
+        { x: -0.65, y: 0.55, z: 0.0, label: "Đại hội đại biểu lần thứ II của Đảng tại Chiêm Hóa (Tuyên Quang)" },
+        { x: 0.65, y: 0.55, z: 0.0, label: "Hậu phương vững chắc & Đoàn xe đạp thồ chi viện tiền tuyến" }
       ],
       8: [
-        { x: -0.90, y: 0.45, z: 0, label: "Nghị quyết Hội nghị 21 BCH Trung ương Đảng (7/1973)" },
-        { x: -0.90, y: 0.45, z: 0, label: "Hội nghị 21 khẳng định con đường bạo lực cách mạng" },
-        { x: 0.90, y: 0.45, z: 0, label: "Chiến dịch Đường 14 — Phước Long (Đòn trinh sát chiến lược)" },
-        { x: 0.90, y: 0.45, z: 0, label: "Ý nghĩa chiến thắng Phước Long: Khả năng thắng lớn của quân ta" }
+        { x: -0.85, y: 0.55, z: 0.0, label: "Kế hoạch Na-va & Tướng chỉ huy Đờ Cát" },
+        { x: 0.85, y: 0.55, z: 0.0, label: "Đại tướng Võ Nguyên Giáp chỉ huy Tiến công chiến lược Đông – Xuân" }
       ],
       9: [
-        { x: -1.10, y: 0.45, z: 0.0, label: "Chiến dịch Tây Nguyên (4/3 - 24/3/1975) — Mở màn Buôn Ma Thuột" },
-        { x: 1.10, y: 0.45, z: 0.0, label: "Chiến dịch Huế — Đà Nẵng (21/3 - 29/3/1975)" },
+        { x: -1.0, y: 0.55, z: 0.0, label: "Kéo pháo vào Điện Biên Phủ" },
+        { x: 0.0, y: 0.55, z: 0.0, label: "Tướng Đờ Cát cùng toàn bộ bộ chỉ huy Pháp bị bắt sống" },
+        { x: 1.0, y: 0.55, z: 0.0, label: "Ký kết Hiệp định Giơ-ne-vơ (1954)" }
+      ]
+    };
+    window.STATION_STEP_MODEL_OFFSETS_BAI7 = STATION_STEP_MODEL_OFFSETS_BAI7;
+
+    const STATION_STEP_MODEL_OFFSETS_BAI8 = {
+      1: [
+        { x: -1.20, y: 0.45, z: 0.45, label: "Mỹ bắt tay lập chính quyền Ngô Đình Diệm" },
+        { x: -0.95, y: 0.45, z: -0.65, label: "Bản đồ Việt Nam: Giới tuyến quân sự tạm thời tại Vĩ tuyến 17" },
+        { x: 1.00, y: 0.55, z: 0.45, label: "Hai miền song song: Miền Bắc xây dựng CNXH & Miền Nam chống Mỹ" },
+        { x: 0.65, y: 0.55, z: -0.65, label: "Chiến tranh Lạnh đối đầu hai cực: Liên Xô và Mỹ" }
+      ],
+      2: [
+        { x: -1.15, y: 0.45, z: 0.40, label: "Miền Nam đấu tranh chống chế độ Mỹ - Diệm" },
+        { x: 0, y: 0.45, z: -0.65, label: "Hội nghị 15 BCH Trung ương Đảng & Đại hội III" },
+        { x: -0.40, y: 0.45, z: 0.40, label: "Khởi nghĩa Bến Tre 1960 — Đội quân tóc dài" },
+        { x: 1.15, y: 0.45, z: 0.40, label: "Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960)" }
+      ],
+      3: [
+        { x: -1.05, y: 0.45, z: 0.20, label: "Quân Giải phóng miền Nam thành lập (15/2/1961)" },
+        { x: 0, y: 0.45, z: -0.65, label: "Chiến thuật Trực thăng vận & Thiết xa vận của Mỹ" },
+        { x: 1.05, y: 0.45, z: 0.20, label: "Chiến thắng Ấp Bắc (2/1/1963) bẻ gãy chiến thuật của Mỹ" }
+      ],
+      4: [
+        { x: -1.05, y: 1.65, z: 0.40, label: "Chiến lược Chiến tranh cục bộ & Không kích ném bom" },
+        { x: 0, y: 0.45, z: -0.65, label: "Miền Bắc chi viện — Xe đạp thồ vận tải" },
+        { x: 1.05, y: 0.85, z: 0.40, label: "Chiến thắng Vạn Tường (18/8/1965) mở đầu cao trào đánh Mỹ" }
+      ],
+      5: [
+        { x: -1.05, y: 0.45, z: 0.40, label: "Đặc công đánh chiếm Đại sứ quán Mỹ & các đô thị lớn" },
+        { x: -1.05, y: 0.45, z: 0.40, label: "Đánh trúng cơ quan đầu não đối phương gây chấn động nước Mỹ" },
+        { x: 0, y: 0.45, z: -0.65, label: "Tổng tiến công và nổi dậy Xuân Mậu Thân 1968 làm lung lay ý chí Mỹ" },
+        { x: 1.05, y: 0.45, z: 0.40, label: "Buộc Mỹ 'phi Mỹ hoá' chiến tranh & chấp nhận đàm phán Paris" }
+      ],
+      6: [
+        { x: -0.95, y: 0.45, z: 0.20, label: "81 ngày đêm Thành cổ Quảng Trị kiên cường (1972)" },
+        { x: 0.95, y: 0.45, z: 0.20, label: "Khối liên minh đoàn kết 3 nước Đông Dương (Việt - Lào - Campuchia)" },
+        { x: 0.95, y: 0.45, z: 0.20, label: "Đấu tranh ngoại giao & đoàn kết 3 nước Đông Dương chống Mỹ" }
+      ],
+      7: [
+        { x: -1.05, y: 0.45, z: 0.40, label: "Bộ trưởng Nguyễn Thị Bình ký kết Hiệp định Paris (27/1/1973)" },
+        { x: 0, y: 0.45, z: -0.65, label: "Điện Biên Phủ trên không: Bắn hạ pháo đài bay B-52 (12/1972)" },
+        { x: 1.05, y: 0.45, z: 0.40, label: "Toán lính Mỹ cuối cùng cuốn cờ rút về nước (3/1973)" }
+      ],
+      8: [
+        { x: -1.05, y: 0.45, z: 0.35, label: "Mỹ lén để lại 2 vạn cố vấn quân sự phá hoại Hiệp định Paris" },
+        { x: 0, y: 0.45, z: -0.65, label: "Hội nghị Trung ương 21 khẳng định con đường bạo lực cách mạng" },
+        { x: 1.05, y: 0.45, z: 0.35, label: "Chiến thắng Đường 14 — Phước Long (Đòn trinh sát chiến lược)" },
+        { x: 0, y: 1.25, z: 0.0, isMultiModel: true, label: "Cờ Việt Nam bay cao vinh quang — Cờ Mỹ và ngụy quyền sụp đổ tan biến" }
+      ],
+      9: [
+        { x: -1.25, y: 0.50, z: 0.20, label: "Chiến dịch Tây Nguyên (4/3 - 24/3/1975) — Đòn mở màn Buôn Ma Thuột" },
+        { x: 1.25, y: 0.50, z: 0.20, label: "Chiến dịch Huế — Đà Nẵng (21/3 - 29/3/1975)" },
         { x: 0, y: 0.85, z: 0.0, label: "11h30 Ngày 30/4/1975: Xe tăng 390 húc đổ cổng Dinh Độc Lập — Toàn thắng!" },
         { x: 0, y: 1.05, z: 0.0, label: "Đất nước trọn niềm vui — Non sông thu về một mối" }
       ]
@@ -23676,7 +23930,18 @@ Hỏi: ...
       onStepChange: function(order, stepIdx, locus) {
         if (!locus) return;
 
-        // 1. TRẠM 4: CHIẾN TRANH CỤC BỘ — MÁY BAY NÉM BOM (PHẦN 1), XE ĐẠP THỒ (PHẦN 2), VẠN TƯỜNG (PHẦN 3)
+        // 1. TRẠM 1: BỐI CẢNH 1954 & CHIẾN TRANH LẠNH
+        if (order === 1) {
+          const stGroup = scene.getObjectByName('bai8_station_1_haimien');
+          if (stGroup) {
+            const bridge = stGroup.getObjectByName('bai8_dual_strategic_bridge');
+            if (bridge) {
+              bridge.material.emissiveIntensity = (stepIdx === 2) ? 1.0 : 0.4;
+            }
+          }
+        }
+
+        // 2. TRẠM 4: CHIẾN TRANH CỤC BỘ — MÁY BAY NÉM BOM (PHẦN 1), VẠN TƯỜNG (PHẦN 3)
         if (order === 4) {
           const stGroup = scene.getObjectByName('bai8_station_4_cucbo');
           if (stGroup) {
@@ -23722,7 +23987,56 @@ Hỏi: ...
           }
         }
 
-        // 2. TRẠM 9: TỔNG TIẾN CÔNG XUÂN 1975 — CHIẾU CHỮ VÀ ANIMATION TỪ PHẦN 3 (STEP >= 2)
+        // 3. TRẠM 8: CỜ VIỆT NAM BAY LÊN VINH QUANG, CỜ MỸ & VNCH LỤI TÀN (7s loop) (PHẦN 4, stepIdx === 3)
+        if (order === 8) {
+          const stGroup = scene.getObjectByName('bai8_station_8_taothevaluc');
+          if (stGroup) {
+            const flagGroup = stGroup.getObjectByName('bai8_flag_victory_group');
+            if (flagGroup) {
+              if (stepIdx === 3) {
+                flagGroup.visible = true;
+                if (!flagGroup._animRunning) {
+                  flagGroup._animRunning = true;
+                  let t0 = performance.now();
+                  const flagLoop = (now) => {
+                    if (!flagGroup.visible || !isBrownDualTabsOpen) {
+                      flagGroup._animRunning = false;
+                      return;
+                    }
+                    const elapsed = ((now - t0) / 1000) % 7.0; // 7 giây tuần hoàn
+                    const tNorm = elapsed / 7.0;
+                    
+                    const { vnFlag, usFlag, rvnFlag, usFlagMat, rvnFlagMat } = flagGroup.userData || {};
+                    if (vnFlag) {
+                      const h = 1.0 + Math.min(1.0, tNorm * 1.4) * 1.1;
+                      vnFlag.position.y = h + Math.sin(now * 0.005) * 0.05;
+                      vnFlag.rotation.y = Math.sin(now * 0.003) * 0.15;
+                    }
+                    if (usFlag && usFlagMat) {
+                      const fade = Math.max(0, 1.0 - tNorm * 1.5);
+                      usFlagMat.opacity = fade;
+                      usFlag.scale.setScalar(Math.max(0.01, fade));
+                      usFlag.position.y = 0.8 - tNorm * 0.5;
+                    }
+                    if (rvnFlag && rvnFlagMat) {
+                      const fade = Math.max(0, 1.0 - tNorm * 1.5);
+                      rvnFlagMat.opacity = fade;
+                      rvnFlag.scale.setScalar(Math.max(0.01, fade));
+                      rvnFlag.position.y = 0.8 - tNorm * 0.5;
+                    }
+
+                    requestAnimationFrame(flagLoop);
+                  };
+                  requestAnimationFrame(flagLoop);
+                }
+              } else {
+                flagGroup.visible = false;
+              }
+            }
+          }
+        }
+
+        // 4. TRẠM 9: TỔNG TIẾN CÔNG XUÂN 1975 — CHIẾU CHỮ VÀ ANIMATION TỪ PHẦN 3 (STEP >= 2)
         if (order === 9) {
           const stGroup = scene.getObjectByName('bai8_station_9_toanthang1975');
           if (stGroup) {
@@ -23759,7 +24073,13 @@ Hỏi: ...
     function zoomCameraToStepModel(locus, stepIdx) {
       if (!locus || !locus.pos || !window.camera) return;
       const isB8 = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY === 'bai_8');
-      const offsetMap = isB8 ? (typeof STATION_STEP_MODEL_OFFSETS_BAI8 !== 'undefined' ? STATION_STEP_MODEL_OFFSETS_BAI8 : STATION_STEP_MODEL_OFFSETS) : STATION_STEP_MODEL_OFFSETS;
+      const isB7 = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY === 'bai_7');
+      let offsetMap = STATION_STEP_MODEL_OFFSETS;
+      if (isB8 && typeof STATION_STEP_MODEL_OFFSETS_BAI8 !== 'undefined') {
+        offsetMap = STATION_STEP_MODEL_OFFSETS_BAI8;
+      } else if (isB7 && typeof STATION_STEP_MODEL_OFFSETS_BAI7 !== 'undefined') {
+        offsetMap = STATION_STEP_MODEL_OFFSETS_BAI7;
+      }
       const offsets = offsetMap ? offsetMap[locus.order] : null;
       const modelOffset = (offsets && offsets[stepIdx]) ? offsets[stepIdx] : (offsets && offsets[0] ? offsets[0] : { x: 0, y: 0.95, z: 0 });
 
@@ -23784,6 +24104,11 @@ Hỏi: ...
         // Zoom cận cảnh trực tiếp model minh họa (khoảng cách 1.55m, cao 1.25m)
         let dir = camera.position.clone().sub(targetModelPos);
         dir.y = 0;
+        if (isB8 && locus.order === 9) {
+          // Trạm 9: Tách biệt rõ ràng góc nhìn Tây Nguyên (bên trái) và Huế - Đà Nẵng (bên phải), tuyệt đối không chéo ngược
+          if (stepIdx === 0) dir.set(-0.35, 0, 0.95);
+          else if (stepIdx === 1) dir.set(0.35, 0, 0.95);
+        }
         if (dir.lengthSq() < 0.05) dir.set(0, 0, 1);
         dir.normalize();
         endCamPos = targetModelPos.clone().addScaledVector(dir, 1.55);
@@ -24563,10 +24888,12 @@ Hỏi: ...
   </script>
 <script>
     // Tự động giải mã và điền API key an toàn
-    const _decodeGeminiKey = (s) => { try { return atob(s.split('').reverse().join('')); } catch(e){ return ''; } };
-    const _autoKey = _decodeGeminiKey('=EVMvpVbxdlWRZUZQlUQM1EblZVcHBTUzYDbidXdRl2RhNGT34UdRdTdNx0S24kU4IWQuEVQ');
-    const _keyInput = document.getElementById('customApiKeyInput');
-    if (_keyInput && !_keyInput.value) _keyInput.value = _autoKey;
+    (function() {
+      const _fn = window._decodeGeminiKey || function(s) { try { return atob(s.split('').reverse().join('')); } catch(e){ return ''; } };
+      const _autoKey = _fn('=EVMvpVbxdlWRZUZQlUQM1EblZVcHBTUzYDbidXdRl2RhNGT34UdRdTdNx0S24kU4IWQuEVQ');
+      const _keyInput = document.getElementById('customApiKeyInput');
+      if (_keyInput && !_keyInput.value) _keyInput.value = _autoKey;
+    })();
 </script>
 </body>
 

@@ -374,9 +374,9 @@
             height: 128
         });
         const textPlaneGeo = new THREE.PlaneGeometry(1.6, 0.42);
-        const textPlaneMat = new THREE.MeshBasicMaterial({, depthTest: false, depthWrite: false});
+        const textPlaneMat = new THREE.MeshBasicMaterial({ map: textTex, transparent: true, depthTest: false, depthWrite: false });
         const textMesh = new THREE.Mesh(textPlaneGeo, textPlaneMat);
-        textMesh.position.set(); textMesh.renderOrder = 99999;
+        textMesh.position.set(0, 1.95, 0.4); textMesh.renderOrder = 99999;
         group.add(textMesh);
 
         // Cờ Pháp
@@ -574,9 +574,9 @@
                 height: 100
             });
             const pGeo = new THREE.PlaneGeometry(1.15, 0.28);
-            const pMat = new THREE.MeshBasicMaterial({, depthTest: false, depthWrite: false});
+            const pMat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, depthTest: false, depthWrite: false });
             const pMesh = new THREE.Mesh(pGeo, pMat);
-            pMesh.position.set(); pMesh.renderOrder = 99999;
+            pMesh.position.set(lb.offset[0], lb.offset[1], lb.offset[2]); pMesh.renderOrder = 99999;
             pMesh.userData = { origPos: pMesh.position.clone(), speed: 2.0 + Math.random() * 2.0 };
             group.add(pMesh);
             labelMeshes.push(pMesh);
@@ -609,7 +609,7 @@
         });
         const mapMat = new THREE.MeshBasicMaterial({ map: mapTex, transparent: true, opacity: 0.85 });
         const mapMesh = new THREE.Mesh(mapGeo, mapMat);
-        mapMesh.position.set(); pMesh.renderOrder = 99999;
+        mapMesh.position.set(0, 0.05, 0); mapMesh.rotation.x = -Math.PI / 2; mapMesh.renderOrder = 99999;
         group.add(mapMesh);
 
         // 3 Mũi tên tiến công đỏ rực đại diện cho 3 đợt:
@@ -667,9 +667,9 @@
             height: 70
         });
         const lblGeo = new THREE.PlaneGeometry(0.7, 0.16);
-        const lblMat = new THREE.MeshBasicMaterial({, depthTest: false, depthWrite: false});
+        const lblMat = new THREE.MeshBasicMaterial({ map: lblTex, transparent: true, depthTest: false, depthWrite: false });
         const lblMesh = new THREE.Mesh(lblGeo, lblMat);
-        lblMesh.position.set(); lblMesh.renderOrder = 99999;
+        lblMesh.position.set(0, 0.25, 0); lblMesh.renderOrder = 99999;
         g.add(lblMesh);
 
         return g;
@@ -696,9 +696,9 @@
             height: 110
         });
         const bannerGeo = new THREE.PlaneGeometry(1.6, 0.38);
-        const bannerMat = new THREE.MeshBasicMaterial({, depthTest: false, depthWrite: false});
+        const bannerMat = new THREE.MeshBasicMaterial({ map: bannerTex, transparent: true, depthTest: false, depthWrite: false });
         const bannerMesh = new THREE.Mesh(bannerGeo, bannerMat);
-        bannerMesh.position.set(); bannerMesh.renderOrder = 99999;
+        bannerMesh.position.set(0, 2.1, 0.3); bannerMesh.renderOrder = 99999;
         group.add(bannerMesh);
 
         dynamicPropsGroup.add(group);
@@ -720,9 +720,9 @@
             height: 160
         });
         const triumphGeo = new THREE.PlaneGeometry(1.8, 0.56);
-        const triumphMat = new THREE.MeshBasicMaterial({, depthTest: false, depthWrite: false});
+        const triumphMat = new THREE.MeshBasicMaterial({ map: triumphTex, transparent: true, depthTest: false, depthWrite: false });
         const triumphMesh = new THREE.Mesh(triumphGeo, triumphMat);
-        triumphMesh.position.set(); triumphMesh.renderOrder = 99999;
+        triumphMesh.position.set(0, 2.3, 0.3); triumphMesh.renderOrder = 99999;
         group.add(triumphMesh);
 
         // Vòng hào quang vàng kim xoay quanh
@@ -762,21 +762,41 @@
         // ==========================================
         if (stationOrder === 1) {
             if (stepIdx === 0) {
-                // Phần 1: Mũi tên hướng về 3 ông ngồi ghế (3ooong.glb tại x: -0.75)
+                // Phần 1: Mũi tên hướng về 3 ông ngồi ghế (3ooong.glb tại x: -1.0)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x - 0.75, stBase.y + 1.5, stBase.z);
+                targetPos.set(stBase.x - 1.0, stBase.y + 1.5, stBase.z - 0.1);
                 currentPos.copy(targetPos);
             } else if (stepIdx === 1) {
-                // Phần 2: Cờ Việt Nam tung bay rực rỡ
-                const flagTex = createVietnamFlagTexture(false);
-                createWavingFlagProp(flagTex, new THREE.Vector3(stBase.x, stBase.y, stBase.z + 0.4), false);
+                // Phần 2: CHỈ RÕ RÀNG VÀO MODEL "Nhân dân làm chủ.glb" (tại x: 0.0, z: +0.2)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 2.5, stBase.z + 0.4);
+                targetPos.set(stBase.x, stBase.y + 1.65, stBase.z + 0.2);
                 currentPos.copy(targetPos);
+
+                // Tạo nhãn nổi bật trực quan để người học nhận biết ngay lập tức
+                const lbTex = createTextTexture('🇻🇳 Nhân dân làm chủ', {
+                    bg: 'rgba(22, 101, 52, 0.92)',
+                    border: '#4ade80',
+                    borderWidth: 4,
+                    color: '#ffffff',
+                    font: 'bold 26px sans-serif',
+                    radius: 12,
+                    width: 380,
+                    height: 90
+                });
+                const lbGeo = new THREE.PlaneGeometry(1.1, 0.26);
+                const lbMat = new THREE.MeshBasicMaterial({ map: lbTex, transparent: true, depthTest: false });
+                const lbMesh = new THREE.Mesh(lbGeo, lbMat);
+                lbMesh.position.set(stBase.x, stBase.y + 1.95, stBase.z + 0.2);
+                dynamicPropsGroup.add(lbMesh);
+                activeProps.push(lbMesh);
+
+                // Cờ đỏ sao vàng tung bay rực rỡ phía trên
+                const flagTex = createVietnamFlagTexture(false);
+                createWavingFlagProp(flagTex, new THREE.Vector3(stBase.x, stBase.y, stBase.z + 0.5), false);
             } else if (stepIdx === 2) {
-                // Phần 3: Model người dân làm đồng (kinh_te_lac_hau.glb tại x: +0.75)
+                // Phần 3: Model người dân làm đồng (kinh_te_lac_hau.glb tại x: +1.0)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.75, stBase.y + 1.5, stBase.z);
+                targetPos.set(stBase.x + 1.0, stBase.y + 1.5, stBase.z - 0.1);
                 currentPos.copy(targetPos);
             } else if (stepIdx === 3) {
                 // Phần 4: Cờ Việt Nam với sắc thái âm u ("ngàn cân treo sợi tóc")
@@ -793,22 +813,37 @@
         // ==========================================
         else if (stationOrder === 2) {
             if (stepIdx === 0) {
-                // Phần 1: Model Pháp xả súng mít tinh Sài Gòn (bên trái x: -0.90)
+                // Phần 1: Model Pháp xả súng mít tinh Sài Gòn (bên trái x: -1.0)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x - 0.90, stBase.y + 1.6, stBase.z);
+                targetPos.set(stBase.x - 1.0, stBase.y + 1.6, stBase.z);
                 currentPos.copy(targetPos);
             } else if (stepIdx === 1) {
-                // Phần 2: Model nhân dân Nam Bộ chiến đấu (bên phải x: +0.90)
+                // Phần 2: Model nhân dân Nam Bộ chiến đấu (ở giữa x: 0.0)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.90, stBase.y + 1.6, stBase.z);
+                targetPos.set(stBase.x, stBase.y + 1.6, stBase.z);
                 currentPos.copy(targetPos);
             } else if (stepIdx === 2) {
-                // Phần 3: Cờ Đảng búa liềm (Đảng & Chính phủ lãnh đạo cả nước chi viện)
-                const partyTex = createPartyFlagTexture();
-                createWavingFlagProp(partyTex, new THREE.Vector3(stBase.x, stBase.y, stBase.z + 0.35), false);
+                // Phần 3: CHỈ TRỰC TIẾP VÀO MODEL "Chi viện cho miền Nam.glb" (bên phải x: +1.0)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 2.5, stBase.z + 0.35);
+                targetPos.set(stBase.x + 1.0, stBase.y + 1.65, stBase.z);
                 currentPos.copy(targetPos);
+
+                const lbTex = createTextTexture('🚩 Chi viện cho miền Nam — Nam tiến', {
+                    bg: 'rgba(185, 28, 28, 0.92)',
+                    border: '#f87171',
+                    borderWidth: 4,
+                    color: '#ffffff',
+                    font: 'bold 24px sans-serif',
+                    radius: 12,
+                    width: 440,
+                    height: 90
+                });
+                const lbGeo = new THREE.PlaneGeometry(1.25, 0.26);
+                const lbMat = new THREE.MeshBasicMaterial({ map: lbTex, transparent: true, depthTest: false });
+                const lbMesh = new THREE.Mesh(lbGeo, lbMat);
+                lbMesh.position.set(stBase.x + 1.0, stBase.y + 1.95, stBase.z);
+                dynamicPropsGroup.add(lbMesh);
+                activeProps.push(lbMesh);
             } else if (stepIdx === 3) {
                 // Phần 4: Hiện chữ "Đánh nhanh thắng nhanh", sau đó là cờ Pháp rồi animation tan vỡ
                 createMoc2ShatterAnimation(stBase);
@@ -823,22 +858,39 @@
         // ==========================================
         else if (stationOrder === 3) {
             if (stepIdx === 0) {
-                // Phần 1: Chỉ vào Bác Hồ ký cam kết hòa hoãn (x: 0)
+                // Phần 1: Chỉ vào Bác Hồ ký cam kết hòa hoãn (x: -0.85)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 1.7, stBase.z);
+                targetPos.set(stBase.x - 0.85, stBase.y + 1.7, stBase.z);
                 currentPos.copy(targetPos);
             } else if (stepIdx === 1) {
                 // Phần 2: Cờ Pháp + Tờ giấy + Animation chém chém
                 createMoc3SlashingTreaty(stBase);
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 1.9, stBase.z + 0.2);
+                targetPos.set(stBase.x - 0.3, stBase.y + 1.9, stBase.z + 0.2);
                 currentPos.copy(targetPos);
             } else if (stepIdx === 2 || stepIdx === 3) {
-                // Phần 3 & 4: Model Bác Hồ tỏa sáng hào quang + Gậy gộc bao quanh
+                // Phần 3 & 4: CHỈ VÀO MODEL "Bác Hồ kêu gọi toàn quốc kháng chiến.glb" (x: +0.85)
                 createMoc3BacHoRadianceAndStaves(stBase);
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 2.2, stBase.z);
+                targetPos.set(stBase.x + 0.85, stBase.y + 1.75, stBase.z);
                 currentPos.copy(targetPos);
+
+                const lbTex = createTextTexture('📜 Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)', {
+                    bg: 'rgba(30, 58, 138, 0.92)',
+                    border: '#60a5fa',
+                    borderWidth: 4,
+                    color: '#ffffff',
+                    font: 'bold 24px sans-serif',
+                    radius: 12,
+                    width: 500,
+                    height: 90
+                });
+                const lbGeo = new THREE.PlaneGeometry(1.4, 0.26);
+                const lbMat = new THREE.MeshBasicMaterial({ map: lbTex, transparent: true, depthTest: false });
+                const lbMesh = new THREE.Mesh(lbGeo, lbMat);
+                lbMesh.position.set(stBase.x + 0.85, stBase.y + 2.1, stBase.z);
+                dynamicPropsGroup.add(lbMesh);
+                activeProps.push(lbMesh);
             }
         }
 
@@ -846,17 +898,56 @@
         // MỐC 4: CHIẾN ĐẤU CÁC ĐÔ THỊ
         // ==========================================
         else if (stationOrder === 4) {
-            if (stepIdx === 0 || stepIdx === 1 || stepIdx === 2) {
-                // Phần 1, 2, 3: Chỉ vào Quyết tử quân ôm bom ba càng (x: -0.90) + Chữ 3D bay quyết liệt
+            if (stepIdx === 0 || stepIdx === 1) {
+                // Phần 1 & 2: Chỉ vào Quyết tử quân ôm bom ba càng (x: -1.0) + Chữ 3D bay quyết liệt
                 createMoc4FlyingCombatLabels(stBase);
                 focusArrow.visible = true;
-                targetPos.set(stBase.x - 0.90, stBase.y + 1.65, stBase.z);
+                targetPos.set(stBase.x - 1.0, stBase.y + 1.65, stBase.z);
                 currentPos.copy(targetPos);
-            } else if (stepIdx === 3) {
-                // Phần 4: Chỉ vào model còn lại (Trung đoàn Thủ đô vượt sông Hồng an toàn tại x: +0.90)
+            } else if (stepIdx === 2) {
+                // Phần 3: CHỈ VÀO MODEL "Giam chân quân Pháp.glb" (ở giữa x: 0.0)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.90, stBase.y + 1.65, stBase.z);
+                targetPos.set(stBase.x, stBase.y + 1.65, stBase.z);
                 currentPos.copy(targetPos);
+
+                const lbTex = createTextTexture('🛡️ Giam chân quân Pháp trong thành phố', {
+                    bg: 'rgba(15, 23, 42, 0.90)',
+                    border: '#facc15',
+                    borderWidth: 4,
+                    color: '#ffffff',
+                    font: 'bold 24px sans-serif',
+                    radius: 12,
+                    width: 440,
+                    height: 90
+                });
+                const lbGeo = new THREE.PlaneGeometry(1.25, 0.26);
+                const lbMat = new THREE.MeshBasicMaterial({ map: lbTex, transparent: true, depthTest: false });
+                const lbMesh = new THREE.Mesh(lbGeo, lbMat);
+                lbMesh.position.set(stBase.x, stBase.y + 1.95, stBase.z);
+                dynamicPropsGroup.add(lbMesh);
+                activeProps.push(lbMesh);
+            } else if (stepIdx === 3) {
+                // Phần 4: CHỈ VÀO MODEL CÒN LẠI KIA (Trung đoàn Thủ Đô vượt sông Hồng an toàn tại x: +1.0)
+                focusArrow.visible = true;
+                targetPos.set(stBase.x + 1.0, stBase.y + 1.65, stBase.z);
+                currentPos.copy(targetPos);
+
+                const lbTex = createTextTexture('🌊 Trung đoàn Thủ Đô vượt sông Hồng an toàn', {
+                    bg: 'rgba(12, 74, 110, 0.92)',
+                    border: '#38bdf8',
+                    borderWidth: 4,
+                    color: '#ffffff',
+                    font: 'bold 24px sans-serif',
+                    radius: 12,
+                    width: 460,
+                    height: 90
+                });
+                const lbGeo = new THREE.PlaneGeometry(1.3, 0.26);
+                const lbMat = new THREE.MeshBasicMaterial({ map: lbTex, transparent: true, depthTest: false });
+                const lbMesh = new THREE.Mesh(lbGeo, lbMat);
+                lbMesh.position.set(stBase.x + 1.0, stBase.y + 1.95, stBase.z);
+                dynamicPropsGroup.add(lbMesh);
+                activeProps.push(lbMesh);
             }
         }
 
@@ -864,16 +955,60 @@
         // MỐC 5: CHIẾN DỊCH VIỆT BẮC THU - ĐÔNG 1947
         // ==========================================
         else if (stationOrder === 5) {
-            if (stepIdx === 0 || stepIdx === 1) {
-                // Phần 1 & 2: Tập luyện bắn súng (x: -0.90)
+            if (stepIdx === 0) {
+                // Phần 1: Lực lượng ta sẵn sàng tác chiến (x: -0.90)
                 focusArrow.visible = true;
                 targetPos.set(stBase.x - 0.90, stBase.y + 1.65, stBase.z);
                 currentPos.copy(targetPos);
-            } else if (stepIdx === 2) {
-                // Phần 3: Model còn lại (Bẻ gãy gọng kìm sông Lô & đường 4 tại x: +0.90)
+            } else if (stepIdx === 1) {
+                // Phần 2: CHỈ VÀO MODEL CÒN LẠI (Quân dân bẻ gãy gọng kìm tiến công Việt Bắc tại x: +0.90)
                 focusArrow.visible = true;
                 targetPos.set(stBase.x + 0.90, stBase.y + 1.65, stBase.z);
                 currentPos.copy(targetPos);
+
+                const lbTex = createTextTexture('💥 Bẻ gãy gọng kìm Sông Lô & Đường 4', {
+                    bg: 'rgba(120, 53, 15, 0.92)',
+                    border: '#f59e0b',
+                    borderWidth: 4,
+                    color: '#ffffff',
+                    font: 'bold 24px sans-serif',
+                    radius: 12,
+                    width: 440,
+                    height: 90
+                });
+                const lbGeo = new THREE.PlaneGeometry(1.25, 0.26);
+                const lbMat = new THREE.MeshBasicMaterial({ map: lbTex, transparent: true, depthTest: false });
+                const lbMesh = new THREE.Mesh(lbGeo, lbMat);
+                lbMesh.position.set(stBase.x + 0.90, stBase.y + 1.95, stBase.z);
+                dynamicPropsGroup.add(lbMesh);
+                activeProps.push(lbMesh);
+            } else if (stepIdx === 2) {
+                // Phần 3: CHỈ ĐỒNG THỜI VÀO CẢ 2 MODEL (Phá sản kế hoạch đánh nhanh thắng nhanh)
+                hasDualArrows = true;
+                focusArrow.visible = true;
+                targetPos.set(stBase.x - 0.90, stBase.y + 1.65, stBase.z);
+                currentPos.copy(targetPos);
+
+                focusArrow2.visible = true;
+                targetPos2.set(stBase.x + 0.90, stBase.y + 1.65, stBase.z);
+                currentPos2.copy(targetPos2);
+
+                const lbTex = createTextTexture('🏆 Phá sản hoàn toàn "Đánh nhanh thắng nhanh"', {
+                    bg: 'rgba(15, 23, 42, 0.92)',
+                    border: '#22c55e',
+                    borderWidth: 5,
+                    color: '#facc15',
+                    font: 'bold 26px sans-serif',
+                    radius: 14,
+                    width: 500,
+                    height: 90
+                });
+                const lbGeo = new THREE.PlaneGeometry(1.4, 0.26);
+                const lbMat = new THREE.MeshBasicMaterial({ map: lbTex, transparent: true, depthTest: false });
+                const lbMesh = new THREE.Mesh(lbGeo, lbMat);
+                lbMesh.position.set(stBase.x, stBase.y + 2.2, stBase.z);
+                dynamicPropsGroup.add(lbMesh);
+                activeProps.push(lbMesh);
             }
         }
 

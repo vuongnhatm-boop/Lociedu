@@ -732,58 +732,58 @@
     bai_7: [
       {
         order: 1,
-        modelName: "Quân Đồng minh & Tình thế 'Ngàn cân treo sợi tóc'",
-        modelUrl: "assets/models/bai7/tram1/dong_minh_ngoai_xam.glb",
-        prompt: "Mô hình 3D Quân Đồng minh: Gõ cụm từ lịch sử mô tả tình thế hiểm nghèo của nước Việt Nam non trẻ ngay sau Cách mạng Tháng Tám 1945:",
-        target: "Ngàn cân treo sợi tóc",
-        accepted: ["Ngàn cân treo sợi tóc", "Ngan can treo soi toc", "ngan can treo soi toc", "ngàn cân treo sợi tóc"],
-        hint: "Thành ngữ 5 chữ bắt đầu bằng 'Ngàn cân...'",
-        explanation: "Sau 1945, nước ta rơi vào tình thế 'ngàn cân treo sợi tóc' do cùng lúc đối đầu với giặc đói, giặc dốt và quân thù ngoại xâm bao vây.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        modelName: "Nhân dân làm chủ & Tình thế cách mạng non trẻ",
+        modelUrl: "assets/models/bai7/tram1/nhan_dan_lam_chu.glb",
+        prompt: "Mô hình 3D Nhân dân làm chủ: Sau Cách mạng Tháng Tám 1945, nhân dân ta đồng lòng ủng hộ chế độ mới vì lần đầu tiên được quyền gì?",
+        target: "Quyền làm chủ",
+        accepted: ["Quyền làm chủ", "quyền làm chủ", "quyen lam chu", "Quyen lam chu", "làm chủ", "lam chu"],
+        hint: "Quyền tự quyết định vận mệnh đất nước: 'Quyền làm...'",
+        explanation: "Sau Cách mạng Tháng Tám năm 1945, nhân dân ta đã giành được quyền làm chủ đất nước, bước đầu được hưởng những quyền lợi thiết thực do chế độ mới mang lại nên đồng lòng ủng hộ, bảo vệ chính quyền cách mạng.",
+        offset: { x: 0, y: 0.65, z: 0.2 }
       },
       {
         order: 2,
-        modelName: "Nhân dân Nam Bộ anh dũng đứng lên kháng chiến",
-        modelUrl: "assets/models/bai7/tram2/nhan_dan_nambo_chien_dau.glb",
-        prompt: "Mô hình 3D Nhân dân Nam Bộ chiến đấu: Gõ ngày thực dân Pháp nổ súng đánh úp Sài Gòn, mở đầu cuộc chiến tranh xâm lược nước ta lần thứ hai:",
-        target: "23/9/1945",
-        accepted: ["23/9/1945", "23-9-1945", "23/9", "23 tháng 9 năm 1945", "23/09/1945"],
-        hint: "Ngày 23 tháng 9 năm 1945 (Ngày Nam Bộ kháng chiến)",
-        explanation: "Đêm 22 rạng sáng 23/9/1945, thực dân Pháp nổ súng đánh chiếm Sài Gòn, quân dân Nam Bộ anh dũng đứng lên mở màn cuộc kháng chiến cứu nước.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        modelName: "Chi viện cho miền Nam & Đoàn quân Nam tiến",
+        modelUrl: "assets/models/bai7/tram2/chi_vien_cho_mien_nam.glb",
+        prompt: "Mô hình 3D Chi viện miền Nam: Gõ tên phong trào mà thanh niên miền Bắc, miền Trung hăng hái xung phong lên đường chi viện cho chiến trường Nam Bộ năm 1945:",
+        target: "Nam tiến",
+        accepted: ["Nam tiến", "Nam tien", "nam tien", "nam tiến", "Đoàn quân Nam tiến", "Phong trào Nam tiến"],
+        hint: "Đoàn quân tình nguyện tiến về phương Nam: 'Nam...'",
+        explanation: "Hưởng ứng lời kêu gọi của Đảng, Chính phủ và Chủ tịch Hồ Chí Minh ủng hộ Nam Bộ kháng chiến, hàng vạn thanh niên đã gia nhập các đoàn quân 'Nam tiến' chi viện kịp thời sức người, sức của cho đồng bào miền Nam đánh giặc.",
+        offset: { x: 1.0, y: 0.65, z: 0 }
       },
       {
         order: 3,
-        modelName: "Bác Hồ & Lời kêu gọi Toàn quốc kháng chiến",
-        modelUrl: "assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb",
-        prompt: "Mô hình 3D Bác Hồ kêu gọi kháng chiến: Gõ ngày Bác Hồ phát động 'Lời kêu gọi Toàn quốc kháng chiến' khi Pháp ngang ngược gửi tối hậu thư:",
+        modelName: "Bác Hồ ra Lời kêu gọi Toàn quốc kháng chiến",
+        modelUrl: "assets/models/bai7/tram3/bac_ho_keu_goi_toan_quoc_khang_chien.glb",
+        prompt: "Mô hình 3D Bác Hồ kêu gọi toàn quốc kháng chiến: Gõ ngày Chủ tịch Hồ Chí Minh ra 'Lời kêu gọi Toàn quốc kháng chiến' lịch sử:",
         target: "19/12/1946",
         accepted: ["19/12/1946", "19-12-1946", "19/12", "19 tháng 12 năm 1946", "19/12/46"],
-        hint: "Tối ngày 19 tháng 12 năm 1946 (Pháo đài Láng nổ súng)",
-        explanation: "Đêm 19/12/1946, Chủ tịch Hồ Chí Minh ra Lời kêu gọi Toàn quốc kháng chiến: 'Chúng ta thà hi sinh tất cả, chứ nhất định không chịu mất nước...'",
-        offset: { x: 0, y: 0.6, z: 0 }
+        hint: "Tối ngày 19 tháng 12 năm 1946 ('Chúng ta thà hi sinh tất cả...')",
+        explanation: "Đêm 19/12/1946, Chủ tịch Hồ Chí Minh ra Lời kêu gọi Toàn quốc kháng chiến: 'Chúng ta thà hi sinh tất cả, chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ... Hỡi đồng bào! Chúng ta phải đứng lên!'.",
+        offset: { x: 0.85, y: 0.75, z: 0 }
       },
       {
         order: 4,
-        modelName: "Chiến sĩ Quyết tử quân Thủ đô giam chân địch 60 ngày đêm",
-        modelUrl: "assets/models/bai7/tram4/chien_si_chien_dau.glb",
-        prompt: "Mô hình 3D Quyết tử quân: Gõ số ngày đêm quân dân Hà Nội kiên cường giam chân địch trong thành phố để Trung ương rút lên căn cứ an toàn:",
+        modelName: "Giam chân quân Pháp & Chiến sĩ Quyết tử quân",
+        modelUrl: "assets/models/bai7/tram4/giam_chan_quan_phap.glb",
+        prompt: "Mô hình 3D Giam chân quân Pháp: Gõ số ngày đêm quân dân Hà Nội kiên cường chiến đấu giam chân địch trong thành phố để Trung ương rút lên căn cứ an toàn:",
         target: "60 ngày đêm",
-        accepted: ["60 ngày đêm", "60 ngay dem", "60 ngày", "60 ngay", "60"],
-        hint: "Tròn 2 tháng (chính xác là 60 ngày đêm từ 19/12/1946 đến 17/2/1947)",
-        explanation: "60 ngày đêm chiến đấu ngoan cường tại Hà Nội đã hoàn thành xuất sắc nhiệm vụ giam chân địch, tiêu hao sinh lực đối phương, bảo vệ an toàn cho Trung ương.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        accepted: ["60 ngày đêm", "60 ngay dem", "60 ngày", "60 ngay", "60", "60 ngày và đêm"],
+        hint: "Tròn 2 tháng (chính xác 60 ngày đêm từ 19/12/1946 đến 17/2/1947)",
+        explanation: "Trong 60 ngày đêm chiến đấu ngoan cường, quân dân Thủ đô đã hoàn thành xuất sắc nhiệm vụ giam chân địch trong thành phố, tiêu hao sinh lực địch, bảo vệ an toàn cho cơ quan đầu não kháng chiến di chuyển lên chiến khu.",
+        offset: { x: 0, y: 0.65, z: 0 }
       },
       {
         order: 5,
         modelName: "Quân dân ta bẻ gãy gọng kìm tiến công Việt Bắc (1947)",
         modelUrl: "assets/models/bai7/tram5/tap_luyen_viet_bac_thu_dong.glb",
-        prompt: "Mô hình 3D Chiến dịch Việt Bắc: Gõ tên dòng sông lịch sử nơi quân dân ta phục kích bắn chìm nhiều tàu chiến và ca-nô Pháp thu - đông 1947:",
-        target: "Sông Lô",
-        accepted: ["Sông Lô", "Song Lo", "song lo", "sông Lô"],
-        hint: "Dòng sông gắn liền với ca khúc bất hủ 'Trường ca Sông Lô' của Văn Cao",
-        explanation: "Chiến thắng Đoan Hùng - Sông Lô bẻ gãy gọng kìm đường thủy của Pháp, đập tan âm mưu 'đánh nhanh thắng nhanh' của địch trong chiến dịch Việt Bắc 1947.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        prompt: "Mô hình 3D Chiến dịch Việt Bắc: Gõ tên kế hoạch quân sự chớp nhoáng của thực dân Pháp bị quân dân ta bẻ gãy và làm phá sản hoàn toàn trong chiến dịch Việt Bắc thu - đông 1947:",
+        target: "Đánh nhanh thắng nhanh",
+        accepted: ["Đánh nhanh thắng nhanh", "Danh nhanh thang nhanh", "đánh nhanh thắng nhanh", "danh nhanh thang nhanh", "Đánh nhanh, thắng nhanh", "đánh nhanh, thắng nhanh", "kế hoạch đánh nhanh thắng nhanh"],
+        hint: "Âm mưu giải quyết chiến tranh chớp nhoáng: 'Đánh nhanh...'",
+        explanation: "Chiến dịch Việt Bắc thu - đông 1947 là chiến dịch phản công lớn đầu tiên của ta, đã làm phá sản hoàn toàn kế hoạch 'đánh nhanh, thắng nhanh' của Pháp, buộc địch phải chuyển sang đánh lâu dài với ta.",
+        offset: { x: 0.9, y: 0.65, z: 0 }
       },
       {
         order: 6,

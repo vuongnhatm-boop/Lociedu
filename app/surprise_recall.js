@@ -84,22 +84,22 @@
     try {
       const path = (window.location.pathname || '').toLowerCase();
       const href = (window.location.href || '').toLowerCase();
-      
+
       // 1. URL chứa từ khóa đề thi / giấy thi / kiểm tra
       if (path.includes('de_thi') || href.includes('de_thi') || path.includes('giay-thi') || href.includes('giay-thi') || path.includes('kiem_tra') || href.includes('kiem_tra')) {
         return true;
       }
-      
+
       // 2. Biến cờ toàn cục báo đang thi
       if (window.isExamActive === true || window.__LOCI_EXAM_ACTIVE === true) {
         return true;
       }
-      
+
       // 3. Cờ trong localStorage
       if (localStorage.getItem('loci_exam_in_progress') === 'true') {
         return true;
       }
-      
+
       // 4. Tab đang mở là tab Đề thi THPT
       if (typeof window.activePortalTab !== 'undefined' && window.activePortalTab === 'exam') {
         return true;
@@ -108,14 +108,14 @@
       if (examNavActive) {
         return true;
       }
-      
+
       // 5. Iframe app-frame đang nạp đề thi
       const appFrame = document.getElementById('app-frame');
       if (appFrame && appFrame.src) {
         const fsrc = appFrame.src.toLowerCase();
         if (fsrc.includes('de_thi') || fsrc.includes('giay-thi') || fsrc.includes('kiem_tra')) return true;
       }
-      
+
       // 6. Kiểm tra từ cửa sổ cha (window.top) nếu đang nằm trong iframe
       if (window.top && window.top !== window.self) {
         const topHref = (window.top.location.href || '').toLowerCase();
@@ -136,6 +136,9 @@
 
   // 3. THUẬT TOÁN SO KHỚP VĂN BẢN THÔNG MINH CHO CÂU HỎI GÕ ĐIỀN
   function evaluateTypeInText(typed, target, acceptedList = [], hint = '') {
+    if (window.LociSemanticEvaluator && typeof window.LociSemanticEvaluator.checkTypeInAnswer === 'function') {
+      return window.LociSemanticEvaluator.checkTypeInAnswer(typed, target, acceptedList, hint);
+    }
     if (window.LociFlashcardFormats && typeof window.LociFlashcardFormats.checkTypeInAnswer === 'function') {
       return window.LociFlashcardFormats.checkTypeInAnswer(typed, target, acceptedList, hint);
     }
@@ -158,16 +161,34 @@
       return { score: 100, status: 'exact', title: 'Chính xác 100%!', target: target, recommendedGrade: 5 };
     }
 
-    // 2. Chứa chuỗi con (nếu dài >= 3 ký tự)
-    if (allCleanAccepted.some(acc => acc.length >= 3 && (cleanTyped.includes(acc) || acc.includes(cleanTyped)))) {
-      return { score: 92, status: 'exact', title: 'Rất chính xác!', target: target, recommendedGrade: 5 };
+    // 2. Chứa toàn bộ câu trả lời chấp nhận được (người dùng viết trọn vẹn cụm từ trong câu)
+    const containsAcc = allCleanAccepted.some(acc => {
+      if (!acc || acc.length < 3) return false;
+      const regex = new RegExp('(?:^|\\s)' + acc.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:$|\\s)');
+      return regex.test(cleanTyped) || cleanTyped.includes(acc);
+    });
+    if (containsAcc) {
+      return { score: 95, status: 'exact', title: 'Rất chính xác!', target: target, recommendedGrade: 5 };
     }
 
-    // 3. So khớp từ khóa cốt lõi
+    // 3. Chuỗi người dùng là chuỗi con của đáp án (Chỉ chấp nhận khi gõ được >= 65% độ dài)
+    for (const acc of allCleanAccepted) {
+      if (acc && acc.includes(cleanTyped)) {
+        if (cleanTyped.length / acc.length >= 0.65 && cleanTyped.length >= 5) {
+          return { score: 85, status: 'close', title: 'Nắm rất vững ý chính!', target: target, recommendedGrade: 5 };
+        }
+      }
+    }
+
+    // 4. So khớp từ khóa cốt lõi
     const stopwords = new Set(['va', 'cac', 'nhung', 'o', 'tai', 'trong', 'cua', 'duoc', 'la', 'vao', 've', 'cho', 'mot', 'nay', 'do', 'ngay', 'thang', 'nam']);
     const getTokens = (s) => s.split(' ').filter(w => w.length > 1 && !stopwords.has(w));
     const targetTokens = getTokens(cleanTarget);
     const typedTokens = getTokens(cleanTyped);
+
+    if (typedTokens.length <= 1 && cleanTyped.length <= 4) {
+      return { score: 0, status: 'wrong', title: 'Chưa chính xác', target: target, recommendedGrade: 1 };
+    }
 
     let matchCount = 0;
     typedTokens.forEach(t => {
@@ -175,15 +196,17 @@
     });
 
     const ratio = targetTokens.length > 0 ? (matchCount / targetTokens.length) : 0;
+    if (ratio >= 0.7 && matchCount >= 2) {
+      return { score: 90, status: 'close', title: 'Nắm rất vững ý chính!', target: target, recommendedGrade: 5 };
+    }
     if (ratio >= 0.35 || matchCount >= 2) {
-      return { score: Math.round(Math.max(ratio * 100, 85)), status: 'close', title: 'Nắm rất vững ý chính!', target: target, recommendedGrade: 5 };
+      return { score: 75, status: 'close', title: 'Nắm được ý chính cốt lõi!', target: target, recommendedGrade: 4 };
+    }
+    if (ratio >= 0.2 || matchCount >= 1) {
+      return { score: 55, status: 'vague', title: 'Có ý đúng nhưng chưa trọn vẹn', target: target, recommendedGrade: 3 };
     }
 
-    if (ratio >= 0.18 || matchCount >= 1) {
-      return { score: 60, status: 'vague', title: 'Có ý đúng nhưng chưa trọn vẹn', target: target, recommendedGrade: 3 };
-    }
-
-    return { score: Math.round(ratio * 100), status: 'wrong', title: 'Chưa chính xác', target: target, recommendedGrade: 1 };
+    return { score: Math.min(25, Math.round(ratio * 100)), status: 'wrong', title: 'Chưa chính xác', target: target, recommendedGrade: 1 };
   }
 
   // 4. INJECT CSS GIAO DIỆN GLASSMORPHISM SANG TRỌNG
@@ -574,7 +597,7 @@
     document.head.appendChild(styleTag);
   }
 
-  
+
   // Đảm bảo model-viewer được nạp động an toàn trên mọi trang web
   function ensureModelViewerLoaded() {
     if (typeof window === 'undefined') return Promise.resolve();
@@ -709,58 +732,58 @@
     bai_7: [
       {
         order: 1,
-        modelName: "Quân Đồng minh & Tình thế 'Ngàn cân treo sợi tóc'",
-        modelUrl: "assets/models/bai7/tram1/dong_minh_ngoai_xam.glb",
-        prompt: "Mô hình 3D Quân Đồng minh: Gõ cụm từ lịch sử mô tả tình thế hiểm nghèo của nước Việt Nam non trẻ ngay sau Cách mạng Tháng Tám 1945:",
-        target: "Ngàn cân treo sợi tóc",
-        accepted: ["Ngàn cân treo sợi tóc", "Ngan can treo soi toc", "ngan can treo soi toc", "ngàn cân treo sợi tóc"],
-        hint: "Thành ngữ 5 chữ bắt đầu bằng 'Ngàn cân...'",
-        explanation: "Sau 1945, nước ta rơi vào tình thế 'ngàn cân treo sợi tóc' do cùng lúc đối đầu với giặc đói, giặc dốt và quân thù ngoại xâm bao vây.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        modelName: "Nhân dân làm chủ & Tình thế cách mạng non trẻ",
+        modelUrl: "assets/models/bai7/tram1/nhan_dan_lam_chu.glb",
+        prompt: "Mô hình 3D Nhân dân làm chủ: Sau Cách mạng Tháng Tám 1945, nhân dân ta đồng lòng ủng hộ chế độ mới vì lần đầu tiên được quyền gì?",
+        target: "Quyền làm chủ",
+        accepted: ["Quyền làm chủ", "quyền làm chủ", "quyen lam chu", "Quyen lam chu", "làm chủ", "lam chu"],
+        hint: "Quyền tự quyết định vận mệnh đất nước: 'Quyền làm...'",
+        explanation: "Sau Cách mạng Tháng Tám năm 1945, nhân dân ta đã giành được quyền làm chủ đất nước, bước đầu được hưởng những quyền lợi thiết thực do chế độ mới mang lại nên đồng lòng ủng hộ, bảo vệ chính quyền cách mạng.",
+        offset: { x: 0, y: 0.65, z: 0.2 }
       },
       {
         order: 2,
-        modelName: "Nhân dân Nam Bộ anh dũng đứng lên kháng chiến",
-        modelUrl: "assets/models/bai7/tram2/nhan_dan_nambo_chien_dau.glb",
-        prompt: "Mô hình 3D Nhân dân Nam Bộ chiến đấu: Gõ ngày thực dân Pháp nổ súng đánh úp Sài Gòn, mở đầu cuộc chiến tranh xâm lược nước ta lần thứ hai:",
-        target: "23/9/1945",
-        accepted: ["23/9/1945", "23-9-1945", "23/9", "23 tháng 9 năm 1945", "23/09/1945"],
-        hint: "Ngày 23 tháng 9 năm 1945 (Ngày Nam Bộ kháng chiến)",
-        explanation: "Đêm 22 rạng sáng 23/9/1945, thực dân Pháp nổ súng đánh chiếm Sài Gòn, quân dân Nam Bộ anh dũng đứng lên mở màn cuộc kháng chiến cứu nước.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        modelName: "Chi viện cho miền Nam & Đoàn quân Nam tiến",
+        modelUrl: "assets/models/bai7/tram2/chi_vien_cho_mien_nam.glb",
+        prompt: "Mô hình 3D Chi viện miền Nam: Gõ tên phong trào mà thanh niên miền Bắc, miền Trung hăng hái xung phong lên đường chi viện cho chiến trường Nam Bộ năm 1945:",
+        target: "Nam tiến",
+        accepted: ["Nam tiến", "Nam tien", "nam tien", "nam tiến", "Đoàn quân Nam tiến", "Phong trào Nam tiến"],
+        hint: "Đoàn quân tình nguyện tiến về phương Nam: 'Nam...'",
+        explanation: "Hưởng ứng lời kêu gọi của Đảng, Chính phủ và Chủ tịch Hồ Chí Minh ủng hộ Nam Bộ kháng chiến, hàng vạn thanh niên đã gia nhập các đoàn quân 'Nam tiến' chi viện kịp thời sức người, sức của cho đồng bào miền Nam đánh giặc.",
+        offset: { x: 1.0, y: 0.65, z: 0 }
       },
       {
         order: 3,
-        modelName: "Bác Hồ & Lời kêu gọi Toàn quốc kháng chiến",
-        modelUrl: "assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb",
-        prompt: "Mô hình 3D Bác Hồ kêu gọi kháng chiến: Gõ ngày Bác Hồ phát động 'Lời kêu gọi Toàn quốc kháng chiến' khi Pháp ngang ngược gửi tối hậu thư:",
+        modelName: "Bác Hồ ra Lời kêu gọi Toàn quốc kháng chiến",
+        modelUrl: "assets/models/bai7/tram3/bac_ho_keu_goi_toan_quoc_khang_chien.glb",
+        prompt: "Mô hình 3D Bác Hồ kêu gọi toàn quốc kháng chiến: Gõ ngày Chủ tịch Hồ Chí Minh ra 'Lời kêu gọi Toàn quốc kháng chiến' lịch sử:",
         target: "19/12/1946",
         accepted: ["19/12/1946", "19-12-1946", "19/12", "19 tháng 12 năm 1946", "19/12/46"],
-        hint: "Tối ngày 19 tháng 12 năm 1946 (Pháo đài Láng nổ súng)",
-        explanation: "Đêm 19/12/1946, Chủ tịch Hồ Chí Minh ra Lời kêu gọi Toàn quốc kháng chiến: 'Chúng ta thà hi sinh tất cả, chứ nhất định không chịu mất nước...'",
-        offset: { x: 0, y: 0.6, z: 0 }
+        hint: "Tối ngày 19 tháng 12 năm 1946 ('Chúng ta thà hi sinh tất cả...')",
+        explanation: "Đêm 19/12/1946, Chủ tịch Hồ Chí Minh ra Lời kêu gọi Toàn quốc kháng chiến: 'Chúng ta thà hi sinh tất cả, chứ nhất định không chịu mất nước, nhất định không chịu làm nô lệ... Hỡi đồng bào! Chúng ta phải đứng lên!'.",
+        offset: { x: 0.85, y: 0.75, z: 0 }
       },
       {
         order: 4,
-        modelName: "Chiến sĩ Quyết tử quân Thủ đô giam chân địch 60 ngày đêm",
-        modelUrl: "assets/models/bai7/tram4/chien_si_chien_dau.glb",
-        prompt: "Mô hình 3D Quyết tử quân: Gõ số ngày đêm quân dân Hà Nội kiên cường giam chân địch trong thành phố để Trung ương rút lên căn cứ an toàn:",
+        modelName: "Giam chân quân Pháp & Chiến sĩ Quyết tử quân",
+        modelUrl: "assets/models/bai7/tram4/giam_chan_quan_phap.glb",
+        prompt: "Mô hình 3D Giam chân quân Pháp: Gõ số ngày đêm quân dân Hà Nội kiên cường chiến đấu giam chân địch trong thành phố để Trung ương rút lên căn cứ an toàn:",
         target: "60 ngày đêm",
-        accepted: ["60 ngày đêm", "60 ngay dem", "60 ngày", "60 ngay", "60"],
-        hint: "Tròn 2 tháng (chính xác là 60 ngày đêm từ 19/12/1946 đến 17/2/1947)",
-        explanation: "60 ngày đêm chiến đấu ngoan cường tại Hà Nội đã hoàn thành xuất sắc nhiệm vụ giam chân địch, tiêu hao sinh lực đối phương, bảo vệ an toàn cho Trung ương.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        accepted: ["60 ngày đêm", "60 ngay dem", "60 ngày", "60 ngay", "60", "60 ngày và đêm"],
+        hint: "Tròn 2 tháng (chính xác 60 ngày đêm từ 19/12/1946 đến 17/2/1947)",
+        explanation: "Trong 60 ngày đêm chiến đấu ngoan cường, quân dân Thủ đô đã hoàn thành xuất sắc nhiệm vụ giam chân địch trong thành phố, tiêu hao sinh lực địch, bảo vệ an toàn cho cơ quan đầu não kháng chiến di chuyển lên chiến khu.",
+        offset: { x: 0, y: 0.65, z: 0 }
       },
       {
         order: 5,
         modelName: "Quân dân ta bẻ gãy gọng kìm tiến công Việt Bắc (1947)",
         modelUrl: "assets/models/bai7/tram5/tap_luyen_viet_bac_thu_dong.glb",
-        prompt: "Mô hình 3D Chiến dịch Việt Bắc: Gõ tên dòng sông lịch sử nơi quân dân ta phục kích bắn chìm nhiều tàu chiến và ca-nô Pháp thu - đông 1947:",
-        target: "Sông Lô",
-        accepted: ["Sông Lô", "Song Lo", "song lo", "sông Lô"],
-        hint: "Dòng sông gắn liền với ca khúc bất hủ 'Trường ca Sông Lô' của Văn Cao",
-        explanation: "Chiến thắng Đoan Hùng - Sông Lô bẻ gãy gọng kìm đường thủy của Pháp, đập tan âm mưu 'đánh nhanh thắng nhanh' của địch trong chiến dịch Việt Bắc 1947.",
-        offset: { x: 0, y: 0.6, z: 0 }
+        prompt: "Mô hình 3D Chiến dịch Việt Bắc: Gõ tên kế hoạch quân sự chớp nhoáng của thực dân Pháp bị quân dân ta bẻ gãy và làm phá sản hoàn toàn trong chiến dịch Việt Bắc thu - đông 1947:",
+        target: "Đánh nhanh thắng nhanh",
+        accepted: ["Đánh nhanh thắng nhanh", "Danh nhanh thang nhanh", "đánh nhanh thắng nhanh", "danh nhanh thang nhanh", "Đánh nhanh, thắng nhanh", "đánh nhanh, thắng nhanh", "kế hoạch đánh nhanh thắng nhanh"],
+        hint: "Âm mưu giải quyết chiến tranh chớp nhoáng: 'Đánh nhanh...'",
+        explanation: "Chiến dịch Việt Bắc thu - đông 1947 là chiến dịch phản công lớn đầu tiên của ta, đã làm phá sản hoàn toàn kế hoạch 'đánh nhanh, thắng nhanh' của Pháp, buộc địch phải chuyển sang đánh lâu dài với ta.",
+        offset: { x: 0.9, y: 0.65, z: 0 }
       },
       {
         order: 6,
@@ -810,91 +833,91 @@
     bai_8: [
       {
         order: 1,
-        modelName: "Xây dựng CNXH ở miền Bắc & Đấu tranh chính trị miền Nam",
-        modelUrl: "assets/models/bai8/tram1/xay_dung_xa_hoi_chu_nghia.glb",
-        prompt: "Mô hình 3D Xây dựng CNXH: Gõ tên dòng sông lịch sử là giới tuyến quân sự tạm thời chia cắt hai miền Nam - Bắc theo Hiệp định Giơ-ne-vơ 1954:",
+        modelName: "Mỹ bắt tay lập chính quyền Ngô Đình Diệm & Vĩ tuyến 17",
+        modelUrl: "assets/models/bai8/tram1/my_bat_tay.glb",
+        prompt: "Mô hình 3D Bối cảnh 1954: Gõ tên dòng sông lịch sử là giới tuyến quân sự tạm thời chia cắt hai miền Nam - Bắc theo Hiệp định Giơ-ne-vơ 1954:",
         target: "Sông Bến Hải",
         accepted: ["Sông Bến Hải", "Song Ben Hai", "Bến Hải", "Ben Hai", "sông Bến Hải", "vĩ tuyến 17"],
         hint: "Dòng sông thuộc tỉnh Quảng Trị nằm trên vĩ tuyến 17",
         explanation: "Theo Hiệp định Giơ-ne-vơ 1954, sông Bến Hải (vĩ tuyến 17) là giới tuyến quân sự tạm thời phân chia vùng tập kết của quân đội hai bên.",
-        offset: { x: 0, y: 0.45, z: 0 }
+        offset: { x: -1.25, y: 0.45, z: 0.40 }
       },
       {
         order: 2,
-        modelName: "Đội quân tóc dài & Ngọn cờ Phong trào 'Đồng khởi' Bến Tre",
-        modelUrl: "assets/models/bai8/tram2/doi_quan_toc_dai_ben_tre.glb",
-        prompt: "Mô hình 3D Đội quân tóc dài: Gõ tên tỉnh nơi ngọn lửa Phong trào 'Đồng khởi' bùng nổ đầu tiên ngày 17/1/1960:",
+        modelName: "Miền Nam đấu tranh & Phong trào 'Đồng khởi' Bến Tre",
+        modelUrl: "assets/models/bai8/tram2/mien_nam_dau_tranh.glb",
+        prompt: "Mô hình 3D Đồng khởi: Gõ tên tỉnh nơi ngọn lửa Phong trào 'Đồng khởi' bùng nổ đầu tiên ngày 17/1/1960:",
         target: "Bến Tre",
         accepted: ["Bến Tre", "Ben Tre", "Mỏ Cày Bến Tre", "Mo Cay Ben Tre", "huyện Mỏ Cày, tỉnh Bến Tre"],
         hint: "Tỉnh thuộc đồng bằng sông Cửu Long, xứ sở dừa ngút ngàn",
         explanation: "Phong trào Đồng khởi (17/1/1960) tại Mỏ Cày (Bến Tre) đã chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công mạnh mẽ.",
-        offset: { x: 0, y: 0.45, z: 0 }
+        offset: { x: -1.15, y: 0.45, z: 0.40 }
       },
       {
         order: 3,
-        modelName: "Chiến thuật Trực thăng vận & Chiến thắng Ấp Bắc lịch sử",
-        modelUrl: "assets/models/bai8/tram3/my_dung_truc_thang_van.glb",
-        prompt: "Mô hình 3D Trực thăng vận: Gõ tên trận đánh vang dội (2/1/1963 tại Mỹ Tho) mở đầu cao trào 'Thi đua Ấp Bắc, giết giặc lập công':",
+        modelName: "Chiến thắng Ấp Bắc bẻ gãy chiến thuật trực thăng vận của Mỹ",
+        modelUrl: "assets/models/bai8/tram3/chien_thang_ap_bac.glb",
+        prompt: "Mô hình 3D Trận Ấp Bắc: Gõ tên trận đánh vang dội (2/1/1963 tại Mỹ Tho) mở đầu cao trào 'Thi đua Ấp Bắc, giết giặc lập công':",
         target: "Ấp Bắc",
         accepted: ["Ấp Bắc", "Ap Bac", "Trận Ấp Bắc", "Chiến thắng Ấp Bắc", "ap bac"],
         hint: "Địa danh thuộc tỉnh Mỹ Tho (nay thuộc tỉnh Tiền Giang)",
         explanation: "Chiến thắng Ấp Bắc (2/1/1963) khẳng định quân dân miền Nam hoàn toàn có khả năng đánh bại chiến thuật 'trực thăng vận' và 'thiết xa vận' của Mỹ.",
-        offset: { x: 0, y: 0.45, z: 0 }
+        offset: { x: 1.05, y: 0.45, z: 0.20 }
       },
       {
         order: 4,
-        modelName: "Xe đạp thồ chi viện tiền tuyến & Trận đầu thắng Mỹ tại Vạn Tường",
-        modelUrl: "assets/models/bai8/tram4/xe_dap_tho.glb",
-        prompt: "Mô hình 3D Xe đạp thồ & Vạn Tường: Gõ tên trận thắng đầu tiên (8/1965 tại Quảng Ngãi) mở đầu cao trào 'Tìm Mỹ mà đánh, lùng ngụy mà diệt':",
+        modelName: "Chiến thắng Vạn Tường mở đầu cao trào 'Tìm Mỹ mà đánh'",
+        modelUrl: "assets/models/bai8/tram4/chien_thang_van_tuong.glb",
+        prompt: "Mô hình 3D Chiến thắng Vạn Tường: Gõ tên trận thắng đầu tiên (18/8/1965 tại Quảng Ngãi) mở đầu cao trào 'Tìm Mỹ mà đánh, lùng ngụy mà diệt':",
         target: "Vạn Tường",
         accepted: ["Vạn Tường", "Van Tuong", "Chiến thắng Vạn Tường", "Trận Vạn Tường"],
         hint: "Thôn Vạn Tường thuộc xã Bình Hải, huyện Bình Sơn, tỉnh Quảng Ngãi",
         explanation: "Chiến thắng Vạn Tường (18/8/1965) được coi là 'trận Ấp Bắc đối với quân Mỹ', chứng minh quân dân ta hoàn toàn có thể đánh bại quân viễn chinh Mỹ.",
-        offset: { x: 0, y: 0.45, z: -0.65 }
+        offset: { x: 1.05, y: 0.85, z: 0.40 }
       },
       {
         order: 5,
-        modelName: "Đặc công đánh chiếm Đại sứ quán Mỹ trong Tết Mậu Thân 1968",
+        modelName: "Tổng tiến công và nổi dậy Xuân Mậu Thân 1968",
         modelUrl: "assets/models/bai8/tram5/tong_tien_cong_mau_than.glb",
         prompt: "Mô hình 3D Tổng tiến công Mậu Thân: Gõ tên cơ quan ngoại giao đầu não của Mỹ tại Sài Gòn bị đặc công ta đánh chiếm rung chuyển Nhà Trắng:",
         target: "Đại sứ quán Mỹ",
         accepted: ["Đại sứ quán Mỹ", "Dai su quan My", "Tòa Đại sứ Mỹ", "Toa dai su My", "Đại sứ quán", "Tòa Đại sứ"],
         hint: "Cơ quan ngoại giao đại diện chính phủ Mỹ ở trung tâm Sài Gòn",
         explanation: "Đòn đánh táo bạo vào Tòa Đại sứ Mỹ Tết Mậu Thân 1968 làm rung chuyển dư luận nước Mỹ, buộc Mỹ tuyên bố ngừng ném bom miền Bắc và chấp nhận đàm phán tại Paris.",
-        offset: { x: -1.05, y: 0.45, z: 0.40 }
+        offset: { x: 0, y: 0.45, z: -0.65 }
       },
       {
         order: 6,
-        modelName: "Thành cổ Quảng Trị kiên cường 81 ngày đêm mùa hè đỏ lửa 1972",
-        modelUrl: "assets/models/bai8/tram6/mat_tran_quang_tri.glb",
-        prompt: "Mô hình 3D Thành cổ Quảng Trị: Gõ số ngày đêm quân dân ta anh dũng giữ chốt dưới mưa bom bão đạn bảo vệ Thành cổ Quảng Trị năm 1972:",
-        target: "81 ngày đêm",
-        accepted: ["81 ngày đêm", "81 ngay dem", "81 ngày", "81 ngay", "81", "tam muoi mot ngay dem"],
-        hint: "Hơn 2 tháng rưỡi (chính xác là 81 ngày đêm năm 1972)",
-        explanation: "81 ngày đêm Thành cổ Quảng Trị kiên cường tạo thế áp đảo trên bàn đàm phán Paris, giáng đòn nặng nề vào chiến lược 'Việt Nam hóa chiến tranh'.",
-        offset: { x: -1.05, y: 0.45, z: 0.40 }
+        modelName: "Đoàn kết 3 nước Đông Dương (Việt Nam - Lào - Campuchia)",
+        modelUrl: "assets/models/bai8/tram6/lao_vn_campuchia.glb",
+        prompt: "Mô hình 3D Liên minh 3 nước Đông Dương: Gõ tên 3 nước anh em kề vai sát cánh chống kẻ thù chung đế quốc Mỹ:",
+        target: "Việt Nam - Lào - Campuchia",
+        accepted: ["Việt Nam - Lào - Campuchia", "Việt Nam Lào Campuchia", "VN - Lào - Campuchia", "3 nước Đông Dương"],
+        hint: "3 nước bán đảo Đông Dương",
+        explanation: "Hội nghị cấp cao ba nước Đông Dương (4/1970) biểu thị quyết tâm đoàn kết chiến đấu đánh bại đế quốc Mỹ của nhân dân Việt Nam, Lào và Campuchia.",
+        offset: { x: 0.95, y: 0.45, z: 0.20 }
       },
       {
         order: 7,
-        modelName: "Tên lửa SAM-2 hạ pháo đài bay B-52 & Hiệp định Paris 1973",
-        modelUrl: "assets/models/bai8/tram7/ban_pha_phao_dai_bay_b52.glb",
-        prompt: "Mô hình 3D Điện Biên Phủ trên không: Gõ tên loại tên lửa phòng không của ta đã bắn rụng hàng loạt pháo đài bay B-52 trên bầu trời Hà Nội:",
-        target: "SAM-2",
-        accepted: ["SAM-2", "SAM 2", "Sam 2", "sam-2", "Tên lửa SAM-2", "S-75", "sam 2"],
-        hint: "Tên lửa do Liên Xô viện trợ, bắt đầu bằng chữ 'SAM-...'",
-        explanation: "Tên lửa SAM-2 lập công xuất sắc trong 12 ngày đêm Điện Biên Phủ trên không, hạ gục uy danh pháo đài bay B-52, buộc Mỹ phải ký Hiệp định Paris 1973.",
+        modelName: "Ký kết Hiệp định Paris (27/1/1973) lập lại hòa bình",
+        modelUrl: "assets/models/bai8/tram7/hiep_dinh.glb",
+        prompt: "Mô hình 3D Ký Hiệp định Paris: Gõ tên hiệp định quốc tế ký ngày 27/1/1973 buộc Mỹ phải rút hết quân viễn chinh về nước:",
+        target: "Hiệp định Paris",
+        accepted: ["Hiệp định Paris", "Hiep dinh Paris", "Hiệp định Pa-ri", "Hiep dinh Pa-ri", "Paris"],
+        hint: "Hiệp định mang tên thủ đô nước Pháp",
+        explanation: "Hiệp định Paris 1973 đánh dấu thắng lợi to lớn 'Đánh cho Mỹ cút', tạo thời cơ quyết định để tiến lên giải phóng hoàn toàn miền Nam.",
         offset: { x: -1.05, y: 0.45, z: 0.40 }
       },
       {
         order: 8,
-        modelName: "Hội nghị Trung ương 21 & Đòn trinh sát chiến lược Phước Long",
-        modelUrl: "assets/models/bai8/tram8/chien_thang_phuoc_long.glb",
-        prompt: "Mô hình 3D Chiến thắng Phước Long: Gõ tên tỉnh đầu tiên ở miền Nam được giải phóng hoàn toàn (1/1975) được coi là 'đòn trinh sát chiến lược':",
-        target: "Phước Long",
-        accepted: ["Phước Long", "Phuoc Long", "Đường 14 Phước Long", "Đường 14 - Phước Long", "tỉnh Phước Long"],
-        hint: "Tỉnh thuộc miền Đông Nam Bộ (nay là một phần tỉnh Bình Phước)",
-        explanation: "Chiến thắng Phước Long (6/1/1975) chứng minh ngụy quân bất lực và Mỹ không thể can thiệp trở lại, củng cố quyết tâm giải phóng miền Nam trong năm 1975.",
-        offset: { x: -0.90, y: 0.45, z: 0 }
+        modelName: "2 Cố vấn quân sự Mỹ & Âm mưu phá hoại Hiệp định Paris",
+        modelUrl: "assets/models/bai8/tram8/hai_co_van_my.glb",
+        prompt: "Mô hình 3D Cố vấn quân sự Mỹ: Sau Hiệp định Paris 1973, Mỹ đã lén giữ lại hơn bao nhiêu vạn 'cố vấn' quân sự mặc thường phục?",
+        target: "2 vạn",
+        accepted: ["2 vạn", "hơn 2 vạn", "2 van", "hon 2 van", "20000", "20.000"],
+        hint: "Hơn 20.000 người (hơn 2 vạn)",
+        explanation: "Đế quốc Mỹ chưa chịu từ bỏ dã tâm, để lại hơn 2 vạn cố vấn quân sự mặc thường phục và viện trợ quân sự, kinh tế để chính quyền Sài Gòn ngang nhiên phá hoại Hiệp định Paris.",
+        offset: { x: -1.05, y: 0.45, z: 0.35 }
       },
       {
         order: 9,
@@ -1645,8 +1668,8 @@
   window.LociSurpriseRecall = new SurpriseRecallService();
 
 
-// KÍCH HOẠT THỬ THÁCH MÔ HÌNH 3D BẤT CHỢT TOÀN CỤC (PHÍM TẮT T HOẶC GỌI TỪ NÚT HUD)
-  window.trigger3DModelSurpriseRecall = function(forceItem = null) {
+  // KÍCH HOẠT THỬ THÁCH MÔ HÌNH 3D BẤT CHỢT TOÀN CỤC (PHÍM TẮT T HOẶC GỌI TỪ NÚT HUD)
+  window.trigger3DModelSurpriseRecall = function (forceItem = null) {
     if (window.LociSurpriseRecall) {
       window.LociSurpriseRecall.attemptSurprisePop(true, forceItem);
     }
