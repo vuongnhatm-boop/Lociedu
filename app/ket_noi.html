@@ -2135,12 +2135,20 @@
         function getStoredPosts() {
             try {
                 const stored = JSON.parse(localStorage.getItem(FEED_STORAGE_KEY) || '[]');
-                // Tự động nạp danh sách 6 bài đăng của các học sinh nếu chưa có hoặc dữ liệu cũ
-                if (!stored || stored.length < 5 || !stored[0].authorName) {
-                    localStorage.setItem(FEED_STORAGE_KEY, JSON.stringify(DEFAULT_COMMUNITY_POSTS));
-                    return DEFAULT_COMMUNITY_POSTS;
+                const mergedMap = new Map();
+                if (Array.isArray(stored) && stored.length > 0) {
+                    stored.forEach(p => { if (p && p.id) mergedMap.set(p.id, p); });
                 }
-                return stored;
+                DEFAULT_COMMUNITY_POSTS.forEach(p => {
+                    if (!mergedMap.has(p.id)) mergedMap.set(p.id, p);
+                });
+                const result = Array.from(mergedMap.values());
+                result.sort((a,b) => {
+                    const tA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (Number(a.createdAt) || 0);
+                    const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (Number(b.createdAt) || 0);
+                    return tB - tA;
+                });
+                return result;
             } catch {
                 return DEFAULT_COMMUNITY_POSTS;
             }
@@ -2315,12 +2323,45 @@
             });
         }
 
+        function mergeAndPersistPosts(cloudList) {
+            const mergedMap = new Map();
+            // 1. Đưa các bài đăng từ Cloud vào trước
+            (cloudList || []).forEach(p => {
+                if (p && p.id) mergedMap.set(p.id, p);
+            });
+            // 2. Đưa các bài viết người dùng đăng cục bộ nếu chưa có
+            try {
+                const local = JSON.parse(localStorage.getItem(FEED_STORAGE_KEY) || '[]');
+                if (Array.isArray(local)) {
+                    local.forEach(p => {
+                        if (p && p.id && !mergedMap.has(p.id)) {
+                            mergedMap.set(p.id, p);
+                        }
+                    });
+                }
+            } catch (_) {}
+            // 3. Đảm bảo toàn bộ 6 bài đăng mẫu cộng đồng luôn luôn hiện diện đầy đủ
+            DEFAULT_COMMUNITY_POSTS.forEach(p => {
+                if (!mergedMap.has(p.id)) {
+                    mergedMap.set(p.id, p);
+                }
+            });
+            const allPosts = Array.from(mergedMap.values());
+            allPosts.sort((a,b) => {
+                const tA = a.createdAt?.toMillis ? a.createdAt.toMillis() : (Number(a.createdAt) || 0);
+                const tB = b.createdAt?.toMillis ? b.createdAt.toMillis() : (Number(b.createdAt) || 0);
+                return tB - tA;
+            });
+            saveStoredPosts(allPosts);
+            renderPosts(allPosts);
+        }
+
         window.loadPosts = function() {
             // 1. Tải ngay lập tức bài viết từ bộ nhớ máy tính để F5 không bao giờ bị mất
             const localPosts = getStoredPosts();
             renderPosts(localPosts);
 
-            // 2. Kết nối tới Cloud Firestore
+            // 2. Kết nối tới Cloud Firestore (hợp nhất với dữ liệu cộng đồng, không làm mất bài)
             try {
                 const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
                 
@@ -2333,8 +2374,7 @@
                         });
                     });
                     
-                    saveStoredPosts(cloudPosts);
-                    renderPosts(cloudPosts);
+                    mergeAndPersistPosts(cloudPosts);
                     removeCloudWarning();
                 }, (error) => {
                     console.warn('[Firestore] Query orderBy error, thử query đơn giản:', error.message);
@@ -2342,9 +2382,7 @@
                         onSnapshot(collection(db, "posts"), (snap) => {
                             const cloudPosts = [];
                             snap.forEach(d => cloudPosts.push({ id: d.id, ...d.data() }));
-                            cloudPosts.sort((a,b) => (b.createdAt?.toMillis?.() || b.createdAt || 0) - (a.createdAt?.toMillis?.() || a.createdAt || 0));
-                            saveStoredPosts(cloudPosts);
-                            renderPosts(cloudPosts);
+                            mergeAndPersistPosts(cloudPosts);
                             removeCloudWarning();
                         }, (e2) => {
                             console.warn('[Firestore] Lỗi kết nối máy chủ Firestore:', e2.message);

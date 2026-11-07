@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════════════
-// LOCI ANCHORS DATA — DỮ LIỆU MỐC NEO CUNG ĐIỆN KÍ ỨC
+// LOCI ANCHORS DATA — DỮ LIỆU MỐC NEO CUNG ĐIỆN KÍ ỨC (CHUẨN KHOA HỌC & GẠCH ĐẦU DÒNG)
 // DỰ ÁN: CUNG ĐIỆN KÍ ỨC — PHƯƠNG PHÁP LOCI VR
 // CHUYÊN BIỆT 100% CHỦ ĐỀ 3 (TÀI LIỆU CHỦ ĐỀ 3.DOCX)
 // GỒM 4 BÀI: BÀI 6, BÀI 7, BÀI 8, BÀI 9
@@ -277,9 +277,9 @@ window.LOCI_ANCHORS = {
         "color": "#d97706",
         "summary": "Hội nghị toàn quốc của Đảng (14-15/8) và Đại hội Quốc dân (16-17/8/1945) tại Đình Tân Trào quyết định kế hoạch Tổng khởi nghĩa, chuẩn y 10 chính sách Việt Minh, cử Bác Hồ làm Chủ tịch.",
         "keyPoints": [
-          "Từ ngày 14 đến 15/8/1945: Hội nghị toàn quốc của Đảng họp tại Tân Trào (Tuyên Quang), thông qua kế hoạch lãnh đạo toàn dân Tổng khởi nghĩa và quyết định chính sách đối nội, đối ngoại sau khi giành được chính quyền.",
-          "Từ ngày 16 đến 17/8/1945: Đại hội Quốc dân họp tại Đình Tân Trào (tiền thân của Quốc hội Việt Nam), nhiệt liệt tán thành chủ trương Tổng khởi nghĩa và thông qua 10 chính sách lớn của Mặt trận Việt Minh.",
-          "Đại hội Quốc dân Tân Trào cử ra Ủy ban Dân tộc giải phóng Việt Nam do đồng chí HỒ CHÍ MINH làm Chủ tịch (tiền thân Chính phủ lâm thời), phát động toàn dân đứng lên làm chủ vận mệnh non sông."
+          "Từ 14 – 15/8/1945: Hội nghị toàn quốc của Đảng họp tại Tân Trào (Tuyên Quang):\n• Thông qua kế hoạch lãnh đạo toàn dân Tổng khởi nghĩa.\n• Quyết định các chính sách đối nội, đối ngoại sau khi giành chính quyền.",
+          "Từ 16 – 17/8/1945: Đại hội Quốc dân họp tại Đình Tân Trào:\n• Nhiệt liệt tán thành chủ trương Tổng khởi nghĩa của Đảng.\n• Thông qua 10 chính sách lớn của Mặt trận Việt Minh.",
+          "Đại hội Quốc dân cử ra Ủy ban Dân tộc giải phóng Việt Nam do đồng chí HỒ CHÍ MINH làm Chủ tịch:\n• Đây là tiền thân của Chính phủ lâm thời.\n• Phát động toàn thể đồng bào đứng lên tự giải phóng."
         ],
         "detailContent": "<h3>🏛️ Đình Tân Trào — Nơi định đoạt vận mệnh non sông</h3><p>Trong những ngày sục sôi tháng 8/1945, Đình Tân Trào (Sơn Dương, Tuyên Quang) trở thành trung tâm đầu não của cách mạng Việt Nam. Tại đây, hai hội nghị lịch sử liên tiếp diễn ra:</p><ul><li><strong>Hội nghị toàn quốc của Đảng (14-15/8/1945):</strong> Kịp thời nhận định thời cơ đã đến, Đảng quyết định phát động toàn dân Tổng khởi nghĩa, vạch rõ phương châm đánh chiếm các vị trí xung yếu và định hướng sách lược đối nội, đối ngoại hòa bình.</li><li><strong>Đại hội Quốc dân Tân Trào (16-17/8/1945):</strong> Với sự tham dự của hơn 60 đại biểu ba miền Bắc - Trung - Nam, các đảng phái và tôn giáo, Đại hội nhiệt liệt tán thành chủ trương Tổng khởi nghĩa, chuẩn y <strong>10 chính sách của Việt Minh</strong>, quy định Quốc kỳ (cờ đỏ sao vàng), Quốc ca (bài Tiến quân ca) và cử ra <strong>Ủy ban Dân tộc giải phóng Việt Nam</strong> do lãnh tụ Hồ Chí Minh làm Chủ tịch.</li></ul>",
         "mnemonic": "💡 Mẹo nhớ Loci: Đứng trong Đình Tân Trào linh thiêng, trước bàn hội nghị trải dài tờ '10 CHÍNH SÁCH VIỆT MINH'. Nhớ chuỗi ngày liên tiếp: 13/8 (Quân lệnh 1) -> 14-15/8 (Hội nghị toàn quốc Đảng) -> 16-17/8 (Đại hội Quốc dân bầu Bác Hồ Chủ tịch)!",
@@ -399,8 +399,8 @@ window.LOCI_ANCHORS = {
         "summary": "Chiều 16/8, Võ Nguyên Giáp chỉ huy Giải phóng quân tiến về giải phóng thị xã Thái Nguyên. Ngày 18/8, 4 tỉnh đầu tiên giành chính quyền: Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam.",
         "keyPoints": [
           "Chiều 16/8/1945: Dưới bóng cây đa Tân Trào, đồng chí Võ Nguyên Giáp chỉ huy một đơn vị Giải phóng quân tiến về giải phóng thị xã Thái Nguyên, mở đường tiến về Hà Nội.",
-          "Ngày 18/8/1945: Bốn tỉnh giành chính quyền ở tỉnh lị SỚM NHẤT trong cả nước gồm: BẮC GIANG, HẢI DƯƠNG, HÀ TĨNH, QUẢNG NAM.",
-          "Từ ngày 14/8/1945: Nhiều cấp bộ Đảng và Việt Minh căn cứ tình hình địa phương đã chủ động phát động nhân dân đứng lên khởi nghĩa, thể hiện tính chủ động sáng tạo chớp thời cơ."
+          "Ngày 18/8/1945: Bốn tỉnh giành chính quyền ở tỉnh lị SỚM NHẤT trong cả nước:\n• Bắc Giang\n• Hải Dương\n• Hà Tĩnh\n• Quảng Nam",
+          "Tính chủ động sáng tạo: Từ 14/8/1945, nhiều cấp bộ Đảng và Việt Minh căn cứ tình hình địa phương đã chủ động phát động nhân dân đứng lên khởi nghĩa chớp thời cơ."
         ],
         "detailContent": "<h3>⚔️ Bão táp khởi nghĩa — Phát pháo hiệu Thái Nguyên & 4 ngọn đuốc tiên phong</h3><p>Chiều ngày <strong>16/8/1945</strong>, lễ xuất quân trang nghiêm của Việt Nam Giải phóng quân diễn ra dưới bóng cây đa Tân Trào. Đồng chí Võ Nguyên Giáp đọc bản quân lệnh số 1 rồi trực tiếp chỉ huy đội quân cách mạng vượt đèo tiến về bao vây, tiêu diệt phát xít Nhật, giải phóng thị xã Thái Nguyên, tạo bàn đạp vững chắc tiến về giải phóng Thủ đô Hà Nội.</p><p>Đặc biệt, không thụ động chờ mệnh lệnh cấp trên, ngay từ ngày 14/8 nhiều tổ chức Đảng cơ sở đã chủ động chớp lấy thời cơ. Ngày <strong>18/8/1945</strong>, tin vui chiến thắng vang dội từ 4 tỉnh trải dài từ Bắc chí Nam: <strong>Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam</strong> đã đồng loạt đánh chiếm dinh tỉnh trưởng, trở thành 4 tỉnh giành chính quyền ở tỉnh lị sớm nhất cả nước!</p>",
         "mnemonic": "💡 Mẹo nhớ Loci: Tưởng tượng con đường hành quân từ Tân Trào xuống Thái Nguyên. Đại tướng Võ Nguyên Giáp đi đầu phất cao cờ đỏ sao vàng. Ven đường dựng 4 cột mốc đỏ rực ghi câu thần chú nhịp 2+2: 'BẮC - HẢI - HÀ - QUẢNG' (Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam)!",
@@ -518,8 +518,8 @@ window.LOCI_ANCHORS = {
         "summary": "19/8/1945, hàng vạn người mít tinh tại Nhà hát Lớn chuyển thành khởi nghĩa vũ trang, chiếm Bắc Bộ Phủ, Sở Mật thám, giành thắng lợi quyết định tại Hà Nội.",
         "keyPoints": [
           "Sáng 19/8/1945: Hàng vạn quần chúng nhân dân rầm rộ mít tinh tại Quảng trường Nhà hát Lớn Hà Nội, nhanh chóng chuyển hóa thành cuộc KHỞI NGHĨA VŨ TRANG giành chính quyền.",
-          "Quần chúng cách mạng chia thành các cánh quân đánh chiếm các cơ quan đầu não: Bắc Bộ Phủ (Phủ Khâm sai), Sở Mật thám, Trại lính bảo an, Kho bạc, Nhà bưu điện...",
-          "Đến tối 19/8/1945: Khởi nghĩa hoàn toàn thắng lợi rực rỡ tại Hà Nội, giáng đòn quyết định làm tê liệt toàn bộ hệ thống tay sai địch, cổ vũ mạnh mẽ phong trào cả nước."
+          "Đánh chiếm các cơ quan đầu não:\n• Bắc Bộ Phủ (Phủ Khâm sai)\n• Sở Mật thám & Trại lính bảo an\n• Kho bạc & Nhà bưu điện thành phố",
+          "Đến tối 19/8/1945: Khởi nghĩa thắng lợi rực rỡ tại Hà Nội, giáng đòn quyết định làm tê liệt toàn bộ hệ thống tay sai địch, cổ vũ mạnh mẽ phong trào cả nước."
         ],
         "detailContent": "<h3>🎭 19 tháng Tám — Ánh sao vàng rực sáng Thủ đô</h3><p>Sáng ngày <strong>19/8/1945</strong>, Hà Nội ngập tràn trong biển cờ đỏ sao vàng. Hàng chục vạn đồng bào từ nội thành và ngoại thành rầm rộ kéo về Quảng trường Nhà hát Lớn mít tinh. Sau khi bài hát <i>Tiến quân ca</i> hùng tráng cất lên và đại diện Việt Minh đọc lời hiệu triệu, cuộc mít tinh đã biến thành cuộc biểu tình thị uy vũ trang dâng trào như bão táp.</p><p>Dưới sự chỉ đạo của Thành ủy Hà Nội, các đoàn tự vệ chiến đấu và quần chúng nhanh chóng chia thành nhiều mũi giáp công đánh chiếm các cơ quan đầu não của chính quyền bù nhìn: <strong>Bắc Bộ Phủ</strong>, <strong>Sở Mật thám</strong>, Trại Bảo an binh, Sở Bưu điện, Kho bạc... Binh lính Nhật tại Hà Nội hoàn toàn tê liệt, không dám can thiệp. Đến tối 19/8, chính quyền hoàn toàn về tay nhân dân. Thắng lợi ở Hà Nội mang ý nghĩa quyết định, tạo phản ứng dây chuyền thúc đẩy Tổng khởi nghĩa cả nước thắng lợi!</p>",
         "mnemonic": "💡 Mẹo nhớ Loci: Đứng trước mặt tiền Nhà hát Lớn Hà Nội rực đỏ cờ sao. Hàng vạn người ào ạt xông vào đánh chiếm cặp cơ quan đầu não then chốt: 'BẮC - MẬT' (Bắc Bộ Phủ + Sở Mật thám) vào ngày lịch sử 19/8!",
@@ -986,9 +986,9 @@ window.LOCI_ANCHORS = {
         "color": "#6d28d9",
         "summary": "Tổng kết Bài 6: Phân tích 3 nguyên nhân chủ quan & 1 khách quan; Ý nghĩa xóa bỏ 80 năm ách Pháp, 5 năm Nhật, 1000 năm phong kiến; Đúc kết 3 bài học kinh nghiệm.",
         "keyPoints": [
-          "Nguyên nhân thắng lợi: Khách quan (thắng lợi của Đồng minh tiêu diệt phát xít) & 3 Chủ quan (Đảng lãnh đạo đúng đắn; nhân dân đoàn kết yêu nước; chuẩn bị chu đáo 15 năm qua 3 cao trào).",
-          "Ý nghĩa lịch sử vĩ đại: Đập tan 3 tầng xiềng xích (Pháp hơn 80 năm, Nhật gần 5 năm, phong kiến hơn 1.000 năm); khai sinh nước VNDCCH, đưa nhân dân từ nô lệ lên làm chủ đất nước.",
-          "Ba bài học kinh nghiệm muôn đời: (1) Sự lãnh đạo đúng đắn của Đảng là nhân tố quyết định nhất; (2) Xây dựng và phát huy sức mạnh khối đại đoàn kết toàn dân tộc; (3) Nghệ thuật nhận định đúng và chớp thời cơ mau lẹ."
+          "Nguyên nhân thắng lợi:\n• Khách quan: Thắng lợi của phe Đồng minh tiêu diệt phát xít Nhật.\n• Chủ quan: Sự lãnh đạo đúng đắn của Đảng & Bác Hồ; khối đại đoàn kết toàn dân tộc; chuẩn bị chu đáo 15 năm qua 3 cao trào.",
+          "Ý nghĩa lịch sử vĩ đại:\n• Đập tan 3 tầng xiềng xích: Pháp hơn 80 năm, Nhật gần 5 năm, phong kiến hơn 1.000 năm.\n• Khai sinh nước VNDCCH, đưa nhân dân từ nô lệ lên làm chủ đất nước.",
+          "Ba bài học kinh nghiệm muôn đời:\n• Sự lãnh đạo đúng đắn của Đảng là nhân tố quyết định nhất.\n• Xây dựng và phát huy sức mạnh khối đại đoàn kết toàn dân tộc.\n• Nghệ thuật dự báo đúng tình hình và chớp thời cơ mau lẹ."
         ],
         "detailContent": "<h3>🏆 Phòng Vàng Son — Tầm vóc thời đại & Bài học lịch sử muôn đời</h3><p>Cách mạng tháng Tám năm 1945 là một cuộc địa chấn chính trị vĩ đại, làm rung chuyển cả hệ thống thuộc địa thế giới. Chỉ trong vòng 15 ngày, nhân dân Việt Nam dưới sự dẫn dắt tài tình của Đảng Cộng sản Đông Dương đã lập nên kỳ tích vô tiền khoáng hậu:</p><ul><li><strong>Xóa sạch 3 tầng xiềng xích:</strong> Quét sạch ách đô hộ của thực dân Pháp kéo dài <strong>hơn 80 năm</strong> (1858 - 1945); lật nhào sự chiếm đóng của phát xít Nhật trong <strong>gần 5 năm</strong> (1940 - 1945); và chôn vùi vĩnh viễn ngai vàng phong kiến ngự trị <strong>hơn 1.000 năm</strong>.</li><li><strong>Đổi đời dân tộc:</strong> Đưa nhân dân ta từ thân phận nô lệ lầm than một bước bước lên vũ đài chính trị làm chủ vận mệnh non sông đất nước; đưa Đảng ta từ một tổ chức hoạt động bí mật trở thành Đảng lãnh đạo chính quyền.</li><li><strong>3 Bài học kinh nghiệm trường tồn:</strong><ol><li><em>Bài học về vai trò lãnh đạo của Đảng:</em> Giữ vững ngọn cờ lãnh đạo với đường lối độc lập tự chủ, vận dụng sáng tạo chủ nghĩa Mác - Lênin.</li><li><em>Bài học về khối đại đoàn kết toàn dân:</em> Tập hợp mọi giai tầng trong Mặt trận Việt Minh, lấy liên minh công nông làm gốc rễ.</li><li><em>Bài học về nghệ thuật chớp thời cơ:</em> Dự báo chính xác, chủ động tạo thời cơ và ra đòn quyết định mau lẹ khi thời cơ xuất hiện.</li></ol></li></ul>",
         "mnemonic": "💡 Mẹo nhớ Loci: Bước vào Phòng Trưng Bày Vàng Son lộng lẫy cuối hành trình Cung điện. Nhìn lên 3 bức tường mạ vàng: Tường 1 (ĐẢNG CẦM ĐUỐC) - Tường 2 (TAY NẮM CHẶT ĐOÀN KẾT) - Tường 3 (ĐỒNG HỒ THỜI CƠ BẤM GIÂY). Dưới sàn khắc bộ 3 con số vàng: '80 NĂM PHÁP - 5 NĂM NHẬT - 1.000 NĂM PHONG KIẾN'!",
@@ -2798,8 +2798,10 @@ window.LOCI_ANCHORS = {
         "wallName": "Tâm điểm Vách Nam",
         "summary": "Năm 1968 (Xuân Mậu Thân), ta mở cuộc Tổng tiến công và nổi dậy trên toàn miền Nam, trọng tâm ở các đô thị, buộc Mỹ tuyên bố 'phi Mỹ hoá' chiến tranh.",
         "keyPoints": [
-          "Diễn biến: Năm 1968 (Xuân Mậu Thân), quân dân ta mở cuộc Tổng tiến công và nổi dậy trên toàn miền Nam, trọng tâm là ở các đô thị.",
-          "Ý nghĩa bước ngoặt: Mở ra bước ngoặt của cuộc kháng chiến chống Mỹ, cứu nước: làm lung lay ý chí xâm lược của Mỹ, buộc Mỹ phải “phi Mỹ hoá” chiến tranh xâm lược (thừa nhận thất bại của “Chiến tranh cục bộ”), chấm dứt không điều kiện chiến tranh phá hoại miền Bắc, chấp nhận đàm phán ở Pa-ri để bàn về chấm dứt chiến tranh."
+          "Đột kích đồng loạt các đô thị: Đêm 30 rạng sáng 31/1/1968 (Tết Mậu Thân), quân dân ta bất ngờ mở cuộc Tổng tiến công và nổi dậy trên toàn miền Nam, trọng tâm là ở các đô thị lớn.",
+          "Đánh trúng cơ quan đầu não đối phương: Các lực lượng đặc công và quân giải phóng táo bạo tập kích vào các mục tiêu xung yếu: Tòa Đại sứ Mỹ, Dinh Độc Lập, Đài phát thanh Sài Gòn, Bộ Tổng tham mưu quân đội Sài Gòn.",
+          "Bước ngoặt chiến lược lịch sử: Làm đảo lộn thế bố trí chiến lược của Mỹ, làm lung lay ý chí xâm lược của đế quốc Mỹ, buộc Mỹ phải tuyên bố 'phi Mỹ hoá' chiến tranh xâm lược (thừa nhận thất bại của 'Chiến tranh cục bộ').",
+          "Mặt trận ngoại giao mở ra: Buộc chính quyền Mỹ phải chấm dứt không điều kiện chiến tranh phá hoại miền Bắc và chấp nhận ngồi vào bàn đàm phán tại Paris để bàn về chấm dứt chiến tranh."
         ],
         "typeins": [
           {
@@ -3309,8 +3311,8 @@ window.LOCI_ANCHORS = {
         "keyPoints": [
           "Cuộc Tổng tiến công và nổi dậy Xuân 1975: Tháng 3/1975 mở cuộc tổng tiến công trải qua ba chiến dịch lớn: (1) Chiến dịch Tây Nguyên, (2) Chiến dịch Huế – Đà Nẵng, (3) Chiến dịch giải phóng Sài Gòn – Gia Định (Chiến dịch Hồ Chí Minh).",
           "Thời khắc lịch sử: 11 giờ 30 phút ngày 30 – 4, lá cờ cách mạng tung bay trên nóc Dinh Độc Lập, báo hiệu sự toàn thắng của Chiến dịch Hồ Chí Minh lịch sử.",
-          "Nguyên nhân thắng lợi: Chủ quan (Lãnh đạo sáng suốt của Đảng, Hồ Chí Minh; nhân dân yêu nước, đoàn kết, cần cù, dũng cảm; hậu phương miền Bắc lớn mạnh); Khách quan (Phối hợp 3 nước Đông Dương; sự đồng tình ủng hộ to lớn của các lực lượng hòa bình, dân chủ và các nước XHCN, nhất là Liên Xô và Trung Quốc; phong trào phản chiến của nhân dân Mỹ và thế giới).",
-          "Ý nghĩa lịch sử: Với VN (Kết thúc 21 năm chống Mỹ, 30 năm chiến tranh cách mạng; chấm dứt ách thống trị của chủ nghĩa đế quốc; kết thúc thắng lợi CM DTDCND cả nước; mở ra kỉ nguyên hoà bình, độc lập, thống nhất, đi lên CNXH); Với thế giới (Góp phần làm sụp đổ chủ nghĩa thực dân mới, cổ vũ phong trào giải phóng dân tộc và hòa bình thế giới)."
+          "Nguyên nhân thắng lợi:\n• Về chủ quan:\n  - Sự lãnh đạo sáng suốt của Đảng, đứng đầu là Chủ tịch Hồ Chí Minh với đường lối độc lập, tự chủ, sáng tạo.\n  - Nhân dân yêu nước nồng nàn, đoàn kết, lao động cần cù và chiến đấu dũng cảm.\n  - Hậu phương miền Bắc không ngừng lớn mạnh, chi viện kịp thời cho tiền tuyến.\n• Về khách quan:\n  - Tình đoàn kết chiến đấu của 3 nước Việt Nam – Lào – Campuchia.\n  - Sự ủng hộ to lớn của Liên Xô, Trung Quốc và các nước XHCN anh em.\n  - Phong trào phản chiến mạnh mẽ của nhân dân Mỹ và thế giới.",
+          "Ý nghĩa lịch sử:\n• Đối với Việt Nam:\n  - Kết thúc 21 năm kháng chiến chống Mỹ và 30 năm chiến tranh giải phóng dân tộc.\n  - Chấm dứt ách thống trị của chủ nghĩa thực dân, hoàn thành cách mạng DTDCND cả nước.\n  - Mở ra kỷ nguyên mới: Đất nước hòa bình, độc lập, thống nhất, đi lên CNXH.\n• Đối với thế giới:\n  - Góp phần làm sụp đổ chủ nghĩa thực dân mới, làm đảo lộn chiến lược toàn cầu của Mỹ.\n  - Cổ vũ mạnh mẽ phong trào giải phóng dân tộc và hòa bình thế giới."
         ],
         "typeins": [
           {

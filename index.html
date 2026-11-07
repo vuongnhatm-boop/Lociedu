@@ -4284,9 +4284,6 @@
     .hud-back-btn,
     .hud-chip,
     #progress-container,
-    #bdt-step-card,
-    #bdt-keyword-box,
-    #bdt-action-bar,
     #ai-orb-trigger {
       background: rgba(15, 23, 42, 0.76) !important;
       backdrop-filter: none;
@@ -4316,13 +4313,7 @@
     .hud-back-btn,
     .hud-chip,
     #progress-container,
-    #bdt-step-card,
-    #bdt-keyword-box,
-    #bdt-action-bar,
-    #ai-orb-trigger,
-    #bdt-stage-wrap,
-    .bdt-step-pill,
-    .bdt-kw-box {
+    #ai-orb-trigger {
       background: rgba(15, 23, 42, 0.94) !important;
       backdrop-filter: none !important;
       -webkit-backdrop-filter: none !important;
@@ -4332,7 +4323,7 @@
   </style>
 <style>
   /* ── FROSTED GLASS TABS & UI ── */
-  .lesson-tab-btn, .hud-back-btn, #progress-container, #ai-orb-trigger, #bdt-step-card, #bdt-action-bar {
+  .lesson-tab-btn, .hud-back-btn, #progress-container, #ai-orb-trigger {
     background: rgba(15, 23, 42, 0.94) !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
@@ -14245,23 +14236,23 @@ window.addEventListener('pointermove', (e) => {
           pointer-events: auto;
         }
 
-        /* 0. THANH TIÊU ĐỀ TRẠM/MỐC (NẰM NGAY TRÊN NÓC THẺ NỘI DUNG) */
+        /* 0. THANH TIÊU ĐỀ TRẠM/MỐC (KHUNG GLASS TRONG SUỐT CHỮ ĐEN) */
         .bdt-title-pill {
           position: absolute;
           bottom: calc(100% + 14px);
           left: 0;
-          width: 380px;
-          max-width: 38vw;
-          background: rgba(14, 20, 32, 0.94);
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
-          border: 1.5px solid rgba(56, 189, 248, 0.65);
-          border-radius: 14px;
+          width: 400px;
+          max-width: 42vw;
+          background: rgba(255, 255, 255, 0.88) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 16px;
           padding: 10px 16px;
           display: flex;
           align-items: center;
           gap: 10px;
-          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(2, 132, 199, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+          box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
           pointer-events: auto;
           box-sizing: border-box;
           animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -14273,40 +14264,40 @@ window.addEventListener('pointermove', (e) => {
         }
 
         .bdt-title-text {
-          font-size: 13.5px;
+          font-size: 14.5px;
           font-weight: 800;
-          color: #ffffff;
-          letter-spacing: 0.3px;
+          color: #0f172a !important;
+          letter-spacing: -0.2px;
           line-height: 1.35;
-          text-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+          text-shadow: none !important;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
 
-        /* 1. THẺ SỰ KIỆN (CHUẨN FORM 100% THEO ẢNH MẪU CỦA USER) */
+        /* 1. THẺ SỰ KIỆN (KHUNG GLASS TRONG SUỐT CHỮ ĐEN CHUẨN EDTECH) */
         .bdt-step-pill {
-          width: 380px;
-          max-width: 38vw;
-          background: rgba(14, 20, 32, 0.92);
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
-          border: 1.5px solid rgba(56, 189, 248, 0.55);
-          border-radius: 18px;
-          padding: 14px 18px;
+          width: 400px;
+          max-width: 42vw;
+          background: rgba(255, 255, 255, 0.90) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 20px;
+          padding: 16px 20px;
           display: flex;
           align-items: center;
           gap: 14px;
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 25px rgba(2, 132, 199, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+          box-shadow: 0 20px 48px rgba(15, 23, 42, 0.16), 0 4px 12px rgba(2, 132, 199, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
           cursor: pointer;
           user-select: none;
           transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s, box-shadow 0.22s;
           animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
         }
         .bdt-step-pill:hover {
-          transform: translateY(-2px) scale(1.02);
-          border-color: #38bdf8;
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 32px rgba(56, 189, 248, 0.4);
+          transform: translateY(-2px) scale(1.015);
+          border-color: rgba(2, 132, 199, 0.45) !important;
+          box-shadow: 0 24px 56px rgba(15, 23, 42, 0.2), 0 6px 16px rgba(2, 132, 199, 0.14) !important;
         }
         @keyframes bdtZoomIn {
           from { opacity: 0; transform: scale(0.94) translateY(10px); }
@@ -14315,50 +14306,55 @@ window.addEventListener('pointermove', (e) => {
 
         .bdt-step-badge {
           flex-shrink: 0;
-          width: 28px;
-          height: 28px;
+          width: 32px;
+          height: 32px;
           border-radius: 50%;
-          background: #10b981;
-          color: #ffffff;
+          background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+          color: #ffffff !important;
           font-weight: 800;
-          font-size: 13.5px;
+          font-size: 14px;
           display: flex;
           align-items: center;
           justify-content: center;
-          box-shadow: 0 2px 8px rgba(16, 185, 129, 0.45);
+          box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
         }
 
         .bdt-step-text {
           flex: 1;
           font-size: 13.5px;
-          line-height: 1.52;
-          color: #f1f5f9;
+          line-height: 1.58;
+          color: #0f172a !important;
           font-weight: 500;
         }
 
         .bdt-step-icon {
           flex-shrink: 0;
-          font-size: 19px;
-          opacity: 0.9;
+          font-size: 11px;
+          font-weight: 800;
+          color: #0284c7 !important;
+          background: rgba(2, 132, 199, 0.1);
+          border: 1px solid rgba(2, 132, 199, 0.25);
+          border-radius: 6px;
+          padding: 3px 8px;
         }
 
-        /* 2. KHUNG ẢNH THUẦN TÚY (MỖI ẢNH THÔI, KHÔNG NÚT GÌ) */
+        /* 2. KHUNG ẢNH THUẦN TÚY */
         .bdt-pure-photo-wrap {
-          width: 270px;
-          height: 185px;
-          border-radius: 18px;
+          width: 280px;
+          height: 195px;
+          border-radius: 20px;
           overflow: hidden;
           background: #0f172a;
-          border: 1.5px solid rgba(56, 189, 248, 0.55);
-          box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 25px rgba(2, 132, 199, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
           pointer-events: auto;
           cursor: pointer;
           animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
           position: relative;
         }
         .bdt-pure-photo-wrap:hover {
-          border-color: #38bdf8;
-          box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75), 0 0 32px rgba(56, 189, 248, 0.4);
+          border-color: #38bdf8 !important;
+          box-shadow: 0 24px 60px rgba(15, 23, 42, 0.25) !important;
         }
 
         .bdt-pure-photo-img {
@@ -14377,38 +14373,46 @@ window.addEventListener('pointermove', (e) => {
           position: absolute;
           top: -38px;
           right: 0;
-          width: 28px;
-          height: 28px;
+          width: 30px;
+          height: 30px;
           border-radius: 50%;
-          background: rgba(14, 20, 32, 0.85);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          color: #cbd5e1;
+          background: rgba(255, 255, 255, 0.92) !important;
+          backdrop-filter: blur(16px) !important;
+          -webkit-backdrop-filter: blur(16px) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          color: #475569 !important;
           cursor: pointer;
           display: grid;
           place-items: center;
           font-size: 13px;
           pointer-events: auto;
           transition: 0.2s;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.12) !important;
         }
-        .bdt-close-pill:hover { background: #ef4444; color: #fff; border-color: #ef4444; }
+        .bdt-close-pill:hover {
+          background: #ef4444 !important;
+          color: #ffffff !important;
+          border-color: #ef4444 !important;
+          transform: scale(1.08);
+        }
 
-        /* 1.5. THỬ THÁCH TỪ KHÓA MỞ KHÓA BƯỚC TIẾP THEO (ACTIVE RECALL) */
+        /* 1.5. THỬ THÁCH TỪ KHÓA MỞ KHÓA BƯỚC TIẾP THEO (KHUNG GLASS TRONG SUỐT CHỮ ĐEN) */
         .bdt-kw-box {
           position: absolute;
           top: calc(100% + 14px);
           left: 0;
-          width: 380px;
-          max-width: 38vw;
-          background: rgba(14, 20, 32, 0.94);
-          backdrop-filter: none;
-          -webkit-backdrop-filter: none;
-          border: 1.5px solid rgba(56, 189, 248, 0.45);
-          border-radius: 14px;
-          padding: 8px 12px;
+          width: 400px;
+          max-width: 42vw;
+          background: rgba(255, 255, 255, 0.92) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 16px;
+          padding: 10px 14px;
           display: flex;
           flex-direction: column;
           gap: 6px;
-          box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(2, 132, 199, 0.2);
+          box-shadow: 0 16px 36px rgba(15, 23, 42, 0.14) !important;
           pointer-events: auto;
           box-sizing: border-box;
           animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
@@ -14428,52 +14432,55 @@ window.addEventListener('pointermove', (e) => {
 
         .bdt-kw-input {
           flex: 1;
-          background: rgba(255, 255, 255, 0.06);
-          border: 1px solid rgba(255, 255, 255, 0.18);
-          border-radius: 8px;
-          padding: 6px 10px;
-          font-size: 12.5px;
-          color: #ffffff;
+          background: rgba(241, 245, 249, 0.95) !important;
+          border: 1px solid rgba(203, 213, 225, 0.9) !important;
+          border-radius: 10px;
+          padding: 7px 12px;
+          font-size: 13px;
+          color: #0f172a !important;
+          font-weight: 600;
           font-family: inherit;
           outline: none;
           transition: border-color 0.2s, background 0.2s;
         }
         .bdt-kw-input:focus {
-          border-color: #38bdf8;
-          background: rgba(255, 255, 255, 0.1);
+          border-color: #0284c7 !important;
+          background: #ffffff !important;
+          box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
         }
         .bdt-kw-input::placeholder {
-          color: #94a3b8;
-          font-size: 11.5px;
+          color: #64748b !important;
+          font-size: 12px;
         }
 
         .bdt-kw-btn-hint {
-          background: rgba(255, 255, 255, 0.08);
-          border: 1px solid rgba(255, 255, 255, 0.2);
-          border-radius: 8px;
-          padding: 5px 8px;
+          background: rgba(245, 158, 11, 0.12) !important;
+          border: 1px solid rgba(245, 158, 11, 0.35) !important;
+          border-radius: 10px;
+          padding: 6px 12px;
           cursor: pointer;
-          font-size: 13px;
-          color: #cbd5e1;
+          font-size: 12px;
+          font-weight: 700;
+          color: #b45309 !important;
           transition: 0.2s;
           display: flex;
           align-items: center;
           justify-content: center;
         }
         .bdt-kw-btn-hint:hover {
-          background: rgba(245, 158, 11, 0.25);
-          border-color: #f59e0b;
-          color: #fde68a;
+          background: rgba(245, 158, 11, 0.25) !important;
+          border-color: #f59e0b !important;
+          color: #92400e !important;
         }
 
         .bdt-kw-btn-submit {
-          background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%);
+          background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important;
           border: none;
-          border-radius: 8px;
-          padding: 6px 12px;
-          font-weight: 700;
+          border-radius: 10px;
+          padding: 7px 14px;
+          font-weight: 800;
           font-size: 12px;
-          color: #ffffff;
+          color: #ffffff !important;
           cursor: pointer;
           transition: 0.2s;
           display: flex;
@@ -14488,15 +14495,15 @@ window.addEventListener('pointermove', (e) => {
         }
 
         .bdt-kw-msg {
-          font-size: 11px;
-          line-height: 1.3;
-          color: #94a3b8;
+          font-size: 11.5px;
+          line-height: 1.35;
+          color: #475569 !important;
           min-height: 14px;
           transition: color 0.2s;
         }
-        .bdt-kw-msg.success { color: #34d399; font-weight: 600; }
-        .bdt-kw-msg.error { color: #f87171; font-weight: 600; }
-        .bdt-kw-msg.hint { color: #fde68a; font-weight: 600; }
+        .bdt-kw-msg.success { color: #059669 !important; font-weight: 700; }
+        .bdt-kw-msg.error { color: #dc2626 !important; font-weight: 700; }
+        .bdt-kw-msg.hint { color: #d97706 !important; font-weight: 700; }
 
         @keyframes bdtShake {
           0%, 100% { transform: translateX(0); }
@@ -14505,77 +14512,273 @@ window.addEventListener('pointermove', (e) => {
         }
         .bdt-shake { animation: bdtShake 0.4s ease-in-out; }
 
-        /* THANH ĐIỀU HƯỚNG VÀ HÀNH ĐỘNG DƯỚI ĐÁY */
+        /* THANH ĐIỀU HƯỚNG VÀ HÀNH ĐỘNG DƯỚI ĐÁY (KHUNG GLASS TRONG SUỐT CHỮ ĐEN) */
         #bdt-action-bar {
           position: absolute;
           left: 45%;
           top: calc(50% + 185px);
           display: flex;
           align-items: center;
-          gap: 16px;
+          gap: 12px;
           pointer-events: auto;
+          background: rgba(255, 255, 255, 0.92) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 20px;
+          padding: 8px 14px;
+          box-shadow: 0 16px 40px rgba(15, 23, 42, 0.16), 0 2px 6px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
+          z-index: 9200;
         }
 
+        /* CỤM NÚT ĐIỀU HƯỚNG LIÊN TRẠM (TRẠM TRƯỚC - TAB CHỌN TRẠM - TRẠM SAU) */
+        .bdt-nav-cluster {
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .bdt-glass-nav-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 12px;
+          border-radius: 12px;
+          border: 1px solid rgba(203, 213, 225, 0.85);
+          background: rgba(248, 250, 252, 0.95);
+          color: #0f172a;
+          font-weight: 700;
+          font-size: 12px;
+          cursor: pointer;
+          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+          user-select: none;
+          white-space: nowrap;
+        }
+        .bdt-glass-nav-btn:hover {
+          background: #ffffff;
+          border-color: #0284c7;
+          color: #0284c7;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(2, 132, 199, 0.18);
+        }
+        .bdt-glass-nav-btn.next {
+          background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+          color: #ffffff;
+          border: 1px solid rgba(2, 132, 199, 0.8);
+          box-shadow: 0 2px 8px rgba(2, 132, 199, 0.35);
+        }
+        .bdt-glass-nav-btn.next:hover {
+          background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+          color: #ffffff;
+          transform: translateY(-1px);
+          box-shadow: 0 4px 14px rgba(2, 132, 199, 0.45);
+        }
+
+        /* TAB NHỎ ĐI TỚI TRẠM TÙY CHỌN (DROPDOWN / POPOVER) */
+        .bdt-picker-wrap {
+          position: relative;
+        }
+        .bdt-picker-trigger {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 7px 11px;
+          border-radius: 12px;
+          border: 1px solid rgba(2, 132, 199, 0.3);
+          background: rgba(2, 132, 199, 0.08);
+          color: #0369a1;
+          font-weight: 800;
+          font-size: 12px;
+          cursor: pointer;
+          transition: all 0.2s;
+          white-space: nowrap;
+        }
+        .bdt-picker-trigger:hover {
+          background: rgba(2, 132, 199, 0.16);
+          border-color: #0284c7;
+          color: #0284c7;
+        }
+        .bdt-picker-chevron {
+          font-size: 10px;
+          transition: transform 0.2s;
+        }
+        .bdt-picker-wrap.open .bdt-picker-chevron {
+          transform: rotate(180deg);
+        }
+
+        /* POPOVER MENU CHỌN TRẠM */
+        .bdt-picker-popover {
+          position: absolute;
+          bottom: calc(100% + 12px);
+          left: 50%;
+          transform: translateX(-50%) scale(0.95);
+          width: 290px;
+          max-height: 380px;
+          overflow-y: auto;
+          background: rgba(255, 255, 255, 0.96);
+          backdrop-filter: blur(28px) saturate(180%);
+          -webkit-backdrop-filter: blur(28px) saturate(180%);
+          border: 1.5px solid rgba(255, 255, 255, 0.95);
+          border-radius: 18px;
+          padding: 10px;
+          box-shadow: 0 20px 48px rgba(15, 23, 42, 0.22), 0 4px 16px rgba(2, 132, 199, 0.12);
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 9300;
+        }
+        .bdt-picker-wrap.open .bdt-picker-popover {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: translateX(-50%) scale(1);
+        }
+        .bdt-picker-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 4px 8px 8px 8px;
+          border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+          font-size: 11.5px;
+          font-weight: 800;
+          color: #475569;
+          text-transform: uppercase;
+          letter-spacing: 0.5px;
+        }
+        .bdt-picker-close-btn {
+          background: none;
+          border: none;
+          color: #94a3b8;
+          cursor: pointer;
+          font-size: 12px;
+          padding: 2px 6px;
+          border-radius: 6px;
+        }
+        .bdt-picker-close-btn:hover { background: #f1f5f9; color: #0f172a; }
+        .bdt-picker-grid {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+          margin-top: 6px;
+        }
+        .bdt-picker-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 10px;
+          border-radius: 10px;
+          border: 1px solid transparent;
+          background: transparent;
+          color: #0f172a;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          text-align: left;
+          transition: all 0.18s;
+          width: 100%;
+          box-sizing: border-box;
+        }
+        .bdt-picker-item:hover {
+          background: rgba(2, 132, 199, 0.08);
+          border-color: rgba(2, 132, 199, 0.2);
+          color: #0284c7;
+        }
+        .bdt-picker-item.active {
+          background: rgba(2, 132, 199, 0.15);
+          border-color: #0284c7;
+          color: #0284c7;
+          font-weight: 800;
+        }
+        .bdt-picker-item-num {
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          background: #e2e8f0;
+          color: #0f172a;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          font-weight: 800;
+          flex-shrink: 0;
+        }
+        .bdt-picker-item.active .bdt-picker-item-num {
+          background: #0284c7;
+          color: #ffffff;
+        }
+        .bdt-picker-item-text {
+          flex: 1;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        /* ĐƯỜNG PHÂN CÁCH TRONG ACTION BAR */
+        .bdt-action-divider {
+          width: 1px;
+          height: 20px;
+          background: rgba(203, 213, 225, 0.8);
+        }
+
+        /* TIẾN ĐỘ Ý TRONG TRẠM (DOTS) */
+        .bdt-step-dots-wrap {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
         .bdt-step-dots {
           display: flex;
           align-items: center;
-          gap: 7px;
+          gap: 6px;
         }
         .bdt-step-dot {
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background: rgba(255, 255, 255, 0.25);
+          background: rgba(148, 163, 184, 0.5);
           cursor: pointer;
           transition: all 0.22s;
         }
         .bdt-step-dot.active {
-          width: 22px;
+          width: 20px;
           border-radius: 99px;
-          background: #38bdf8;
-          box-shadow: 0 0 10px rgba(56, 189, 248, 0.65);
+          background: #0284c7;
+          box-shadow: 0 0 8px rgba(2, 132, 199, 0.45);
         }
-
-        .bdt-step-hint {
-          font-size: 11px;
-          font-weight: 700;
-          color: #94a3b8;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-        }
-
-        .bdt-act-btn {
-          padding: 8px 16px;
-          border-radius: 99px;
+        .bdt-step-counter {
+          font-size: 11.5px;
           font-weight: 800;
-          font-size: 12.5px;
+          color: #475569;
+          font-variant-numeric: tabular-nums;
+        }
+
+        /* NÚT ÔN TẬP */
+        .bdt-act-btn.review {
+          background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+          color: #ffffff !important;
+          padding: 7px 14px;
+          border-radius: 12px;
+          font-weight: 800;
+          font-size: 12px;
           border: none;
           cursor: pointer;
+          box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
           transition: 0.2s;
-          display: inline-flex;
-          align-items: center;
-          gap: 6px;
+          white-space: nowrap;
         }
-        .bdt-act-btn.review {
-          background: linear-gradient(135deg, #0284c7, #10b981);
-          color: #ffffff;
-          box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+        .bdt-act-btn.review:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(16, 185, 129, 0.5);
         }
-        .bdt-act-btn.next {
-          background: linear-gradient(135deg, #f59e0b, #ea580c);
-          color: #ffffff;
-          box-shadow: 0 4px 16px rgba(245, 158, 11, 0.4);
-        }
-        .bdt-act-btn:hover { transform: translateY(-1px); }
 
         @media (max-width: 1200px) {
           #bdt-stage-wrap { left: 38%; gap: 16px; }
-          .bdt-step-pill { width: 330px; }
-          .bdt-title-pill { width: 330px; }
-          .bdt-kw-box { width: 330px; }
-          .bdt-pure-photo-wrap { width: 230px; height: 165px; }
-          #bdt-action-bar { left: 38%; top: calc(50% + 145px); }
+          .bdt-step-pill { width: 340px; }
+          .bdt-title-pill { width: 340px; }
+          .bdt-kw-box { width: 340px; }
+          .bdt-pure-photo-wrap { width: 240px; height: 170px; }
+          #bdt-action-bar { left: 38%; top: calc(50% + 155px); }
         }
         @media (max-width: 900px) {
           #bdt-stage-wrap {
@@ -14586,7 +14789,10 @@ window.addEventListener('pointermove', (e) => {
           .bdt-step-pill { width: 100%; max-width: 100%; order: 3; }
           .bdt-kw-box { position: relative; top: auto; left: auto; width: 100%; max-width: 100%; order: 2; }
           .bdt-pure-photo-wrap { width: 100%; height: 180px; order: 1; }
-          #bdt-action-bar { left: 4%; top: auto; bottom: 300px; }
+          #bdt-action-bar {
+            left: 50%; transform: translateX(-50%); width: 94%; max-width: 440px;
+            top: auto; bottom: 15px; justify-content: space-between; padding: 6px 10px;
+          }
           .bdt-close-pill { top: -38px; right: 0; }
         }
       `;
@@ -14595,13 +14801,13 @@ window.addEventListener('pointermove', (e) => {
       const root = document.createElement('div');
       root.id = 'brown-dual-tabs-container';
       root.innerHTML = `
-        <!-- SVG LEADER LINES CHỈ DẪN KẾT NỐI TỪ BÀN ĐÁ SANG THẺ CHỮ VÀ ẢNH -->
+        <!-- SVG LEADER LINES CHỈ DẪN KẾT NỐI -->
         <svg id="brown-spatial-svg" style="position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:9150; overflow:visible;">
           <defs>
             <linearGradient id="bdt-glow-grad" x1="0%" y1="100%" x2="100%" y2="0%">
-              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.95" />
-              <stop offset="50%" stop-color="#0284c7" stop-opacity="0.85" />
-              <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.95" />
+              <stop offset="0%" stop-color="#0284c7" stop-opacity="0.95" />
+              <stop offset="50%" stop-color="#38bdf8" stop-opacity="0.85" />
+              <stop offset="100%" stop-color="#0284c7" stop-opacity="0.95" />
             </linearGradient>
             <filter id="bdt-glow-filter" x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="3.5" result="blur" />
@@ -14613,9 +14819,9 @@ window.addEventListener('pointermove', (e) => {
           </defs>
           <path id="bdt-path-locus" d="" stroke="url(#bdt-glow-grad)" stroke-width="2.4" fill="none" stroke-linecap="round" filter="url(#bdt-glow-filter)" />
           <path id="bdt-path-tabs" d="" stroke="url(#bdt-glow-grad)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="5 3" filter="url(#bdt-glow-filter)" />
-          <circle id="bdt-dot-locus" cx="-200" cy="-200" r="6" fill="#38bdf8" filter="url(#bdt-glow-filter)" />
-          <circle id="bdt-dot-big" cx="-200" cy="-200" r="4.5" fill="#38bdf8" />
-          <circle id="bdt-dot-small" cx="-200" cy="-200" r="4.5" fill="#38bdf8" />
+          <circle id="bdt-dot-locus" cx="-200" cy="-200" r="6" fill="#0284c7" filter="url(#bdt-glow-filter)" />
+          <circle id="bdt-dot-big" cx="-200" cy="-200" r="4.5" fill="#0284c7" />
+          <circle id="bdt-dot-small" cx="-200" cy="-200" r="4.5" fill="#0284c7" />
         </svg>
 
         <!-- BỐ CỤC CHÍNH BÊN PHẢI MÀN HÌNH -->
@@ -14626,28 +14832,28 @@ window.addEventListener('pointermove', (e) => {
             <span id="bdt-title-text" class="bdt-title-text">Tiêu đề Trạm</span>
           </div>
 
-          <!-- 1. THẺ SỰ KIỆN (CHUẨN FORM NHƯ ẢNH MẪU CỦA BẠN) -->
+          <!-- 1. THẺ SỰ KIỆN (KHUNG GLASS TRONG SUỐT CHỮ ĐEN) -->
           <div id="bdt-step-card" class="bdt-step-pill" title="Nhấp chuột vào thẻ để xem ý tiếp theo ➔">
             <div class="bdt-step-badge" id="bdt-step-num">1</div>
             <div class="bdt-step-text" id="bdt-step-text"></div>
-            <div class="bdt-step-icon" title="Ảnh tư liệu bên cạnh" style="font-size:11px; font-weight:700; color:#38bdf8;">TƯ LIỆU</div>
+            <div class="bdt-step-icon" title="Ảnh tư liệu bên cạnh">TƯ LIỆU</div>
           </div>
 
           <!-- 1.5. THỬ THÁCH TỪ KHÓA MỞ KHÓA BƯỚC TIẾP THEO -->
           <div id="bdt-keyword-box" class="bdt-kw-box">
             <div class="bdt-kw-row">
-              <span class="bdt-kw-icon" style="font-size:11.5px; font-weight:800; color:#f59e0b;">Từ khóa:</span>
+              <span class="bdt-kw-icon" style="font-size:12px; font-weight:800; color:#d97706;">Từ khóa:</span>
               <input type="text" id="bdt-kw-input" class="bdt-kw-input" placeholder="Gõ 1 từ khóa của ý trên để tiếp tục..." autocomplete="off" spellcheck="false" />
-              <button id="bdt-kw-hint-btn" class="bdt-kw-btn-hint" title="Xem gợi ý nội dung sự kiện" style="font-size:11.5px; font-weight:700; padding:6px 12px; border-radius:10px; border:1px solid rgba(245,158,11,0.4); background:rgba(245,158,11,0.15); color:#fde68a;">Gợi ý</button>
-              <button id="bdt-kw-submit-btn" class="bdt-kw-btn-submit" title="Xác nhận từ khóa và tự chuyển tiếp" style="font-size:12px; font-weight:800; padding:6px 14px; border-radius:10px;">Tiếp tục ➔</button>
+              <button id="bdt-kw-hint-btn" class="bdt-kw-btn-hint" title="Xem gợi ý nội dung sự kiện">Gợi ý</button>
+              <button id="bdt-kw-submit-btn" class="bdt-kw-btn-submit" title="Xác nhận từ khóa và tự chuyển tiếp">Tiếp tục ➔</button>
             </div>
             <div id="bdt-kw-msg" class="bdt-kw-msg">🔑 Nhập từ khóa in đậm màu xanh để mở khóa ý tiếp theo.</div>
           </div>
 
-          <!-- 2. ẢNH BÊN CẠNH (CHỈ MỖI ẢNH THÔI, KHÔNG NÚT GÌ) -->
+          <!-- 2. ẢNH BÊN CẠNH -->
           <div id="bdt-pure-photo-wrap" class="bdt-pure-photo-wrap" title="Bấm để xem ảnh phóng to">
             <div id="bdt-pure-photo-img" class="bdt-pure-photo-img"></div>
-            <div id="bdt-pure-photo-caption" style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.45) 75%, transparent 100%); padding:8px 12px; font-size:11px; color:#f8fafc; font-weight:600; line-height:1.35; pointer-events:none; border-bottom-left-radius:12px; border-bottom-right-radius:12px; text-shadow:0 1px 2px rgba(0,0,0,0.8);"></div>
+            <div id="bdt-pure-photo-caption" style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.55) 75%, transparent 100%); padding:8px 12px; font-size:11px; color:#f8fafc; font-weight:600; line-height:1.35; pointer-events:none; border-bottom-left-radius:18px; border-bottom-right-radius:18px; text-shadow:0 1px 2px rgba(0,0,0,0.8);"></div>
           </div>
 
           <!-- Nút Đóng nhỏ gọn -->
@@ -14656,13 +14862,46 @@ window.addEventListener('pointermove', (e) => {
 
         <!-- THANH ĐIỀU HƯỚNG VÀ HÀNH ĐỘNG DƯỚI ĐÁY -->
         <div id="bdt-action-bar">
-          <div style="display:flex; align-items:center; gap:12px;">
-            <div id="bdt-step-dots" class="bdt-step-dots"></div>
-            <span class="bdt-step-hint" id="bdt-step-hint">Gõ từ khóa then chốt hoặc bấm [Gợi ý] để mở khóa và tự chuyển tiếp</span>
+          <!-- CỤM ĐIỀU HƯỚNG TRẠM: TRẠM TRƯỚC - TAB CHỌN TRẠM - TRẠM SAU -->
+          <div class="bdt-nav-cluster">
+            <button id="bdt-nav-prev-btn" class="bdt-glass-nav-btn prev" type="button" title="Về trạm trước">
+              <span class="bdt-nav-arrow">❮</span> <span class="bdt-nav-label">Trạm trước</span>
+            </button>
+
+            <!-- Tab nhỏ đi tới trạm tùy chọn (Dropdown / Popover) -->
+            <div id="bdt-picker-wrap" class="bdt-picker-wrap">
+              <button id="bdt-picker-btn" class="bdt-picker-trigger" type="button" title="Chọn trạm bất kỳ để đi tới">
+                <span>📍</span>
+                <span id="bdt-picker-label">Trạm 1</span>
+                <span class="bdt-picker-chevron">▾</span>
+              </button>
+              <div id="bdt-picker-popover" class="bdt-picker-popover">
+                <div class="bdt-picker-header">
+                  <span>CHỌN TRẠM ĐI TỚI</span>
+                  <button id="bdt-picker-close" class="bdt-picker-close-btn" type="button">✕</button>
+                </div>
+                <div id="bdt-picker-grid" class="bdt-picker-grid"></div>
+              </div>
+            </div>
+
+            <button id="bdt-nav-next-btn" class="bdt-glass-nav-btn next" type="button" title="Sang trạm tiếp theo">
+              <span class="bdt-nav-label">Trạm sau</span> <span class="bdt-nav-arrow">❯</span>
+            </button>
           </div>
-          <div id="bdt-final-actions" style="display:none; gap:10px; margin-top:2px;">
-            <button id="bdt-ai-review-btn" class="bdt-act-btn review"><span>Ôn Tập Ký Ức</span></button>
-            <button id="bdt-next-locus-btn" class="bdt-act-btn next"><span id="bdt-next-text">Trạm tiếp theo</span> <span style="font-size:14px;">➔</span></button>
+
+          <div class="bdt-action-divider"></div>
+
+          <!-- TIẾN ĐỘ Ý TRONG TRẠM (Intra-station dots) -->
+          <div class="bdt-step-dots-wrap">
+            <div id="bdt-step-dots" class="bdt-step-dots"></div>
+            <span class="bdt-step-counter" id="bdt-step-counter">1/3</span>
+          </div>
+
+          <!-- NÚT ÔN TẬP KÝ ỨC -->
+          <div id="bdt-final-actions" style="display:flex; align-items:center; gap:8px;">
+            <button id="bdt-ai-review-btn" class="bdt-act-btn review" type="button" title="Ôn tập nhanh mốc này">
+              <span>⚡ Ôn Tập</span>
+            </button>
           </div>
         </div>
       `;
@@ -14679,32 +14918,16 @@ window.addEventListener('pointermove', (e) => {
         }
       });
 
-      // Click vào thẻ sự kiện -> chuyển sang ý tiếp theo (Chỉ khi đã mở khóa ý này)
+      // Click vào thẻ sự kiện -> chuyển sang ý tiếp theo
       document.getElementById('bdt-step-card').addEventListener('click', (e) => {
         if (window.isSpatialRecallMode || (window.SpatialRecallMode && window.SpatialRecallMode.isActive())) return;
         e.stopPropagation();
         if (bdtCurrentPoints.length <= 1) return;
-        if (!bdtPassedSteps.has(bdtCurrentStep)) {
-          // Chưa qua ý này -> rung ô input và nhắc nhở
-          const kwBox = document.getElementById('bdt-keyword-box');
-          const inp = document.getElementById('bdt-kw-input');
-          const msg = document.getElementById('bdt-kw-msg');
-          if (kwBox) {
-            kwBox.classList.add('bdt-shake');
-            setTimeout(() => kwBox.classList.remove('bdt-shake'), 420);
-          }
-          if (inp) inp.focus();
-          if (msg) {
-            msg.className = 'bdt-kw-msg error';
-            msg.textContent = '👉 Hãy gõ 1 từ khóa của ý trên trước khi chuyển tiếp nhé!';
-          }
-          return;
-        }
         bdtCurrentStep = (bdtCurrentStep + 1) % bdtCurrentPoints.length;
         renderBrownStep(bdtCurrentStep);
       });
 
-      // Khi người dùng ấn vào ô gõ -> Ẩn nội dung thẻ để rèn luyện trí nhớ không gian
+      // Ẩn/Hiện nội dung khi gõ từ khóa
       const kwInputEl = document.getElementById('bdt-kw-input');
       if (kwInputEl) {
         ['focus', 'input'].forEach(evt => {
@@ -14714,29 +14937,26 @@ window.addEventListener('pointermove', (e) => {
         });
       }
 
-      // Nút Gợi ý từ khóa -> Bật gợi ý hiện nội dung lại
+      // Nút Gợi ý từ khóa
       document.getElementById('bdt-kw-hint-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         window.showBrownStepContent();
         const currentText = bdtCurrentPoints[bdtCurrentStep] || '';
-        const kws = extractStepKeywords(currentText);
         const msg = document.getElementById('bdt-kw-msg');
         if (msg) {
           msg.className = 'bdt-kw-msg hint';
-          // Show actual content excerpt as hint
           const cleanText = currentText.replace(/\*\*|__/g, '').trim();
           const excerpt = cleanText.length > 80 ? cleanText.substring(0, 80) + '...' : cleanText;
-          msg.textContent = 'Gợi ý nội dung: ' + excerpt;
+          msg.textContent = 'Gợi ý: ' + excerpt;
         }
       });
 
-      // Nút Tiếp của thanh từ khóa
+      // Nút Xác nhận từ khóa
       document.getElementById('bdt-kw-submit-btn').addEventListener('click', (e) => {
         e.stopPropagation();
         submitBdtKeyword();
       });
 
-      // Nhấn Enter trong ô input từ khóa
       document.getElementById('bdt-kw-input').addEventListener('keydown', (e) => {
         if (e.key === 'Enter') {
           e.preventDefault();
@@ -14758,7 +14978,7 @@ window.addEventListener('pointermove', (e) => {
         if (!l) return;
         const btn = e.currentTarget;
         const oldHtml = btn.innerHTML;
-        btn.innerHTML = '<span>⏳</span> <span>Đang mở...</span>';
+        btn.innerHTML = '<span>⏳ Đang mở...</span>';
         try {
           const src = findAnchorSource(l);
           const locusData = src ? src.anchor : l;
@@ -14775,26 +14995,43 @@ window.addEventListener('pointermove', (e) => {
         }
       });
 
-      // Nút Tiếp sang trạm kế tiếp (Phải hoàn tất từ khóa của ý cuối cùng)
-      document.getElementById('bdt-next-locus-btn').addEventListener('click', (e) => {
-        e.stopPropagation();
-        const lastIdx = bdtCurrentPoints.length - 1;
-        if (!bdtPassedSteps.has(lastIdx)) {
-          const kwBox = document.getElementById('bdt-keyword-box');
-          const inp = document.getElementById('bdt-kw-input');
-          const msg = document.getElementById('bdt-kw-msg');
-          if (kwBox) {
-            kwBox.classList.add('bdt-shake');
-            setTimeout(() => kwBox.classList.remove('bdt-shake'), 420);
-          }
-          if (inp) inp.focus();
-          if (msg) {
-            msg.className = 'bdt-kw-msg error';
-            msg.textContent = '👉 Hãy gõ từ khóa của ý cuối cùng để hoàn tất trạm trước khi sang Trạm tiếp theo!';
-          }
-          return;
+      // CÁC NÚT ĐIỀU HƯỚNG TRẠM TRƯỚC / TRẠM SAU / TAB CHỌN TRẠM
+      const prevBtn = document.getElementById('bdt-nav-prev-btn');
+      if (prevBtn) {
+        prevBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          triggerPrevStationAction();
+        });
+      }
+
+      const nextBtn = document.getElementById('bdt-nav-next-btn');
+      if (nextBtn) {
+        nextBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          triggerNextStationActionDirect();
+        });
+      }
+
+      const pickerWrap = document.getElementById('bdt-picker-wrap');
+      const pickerBtn = document.getElementById('bdt-picker-btn');
+      const pickerClose = document.getElementById('bdt-picker-close');
+      if (pickerBtn && pickerWrap) {
+        pickerBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const isOpen = pickerWrap.classList.toggle('open');
+          if (isOpen) renderStationPickerGrid();
+        });
+      }
+      if (pickerClose && pickerWrap) {
+        pickerClose.addEventListener('click', (e) => {
+          e.stopPropagation();
+          pickerWrap.classList.remove('open');
+        });
+      }
+      document.addEventListener('click', (e) => {
+        if (pickerWrap && !pickerWrap.contains(e.target)) {
+          pickerWrap.classList.remove('open');
         }
-        triggerNextStationAction();
       });
 
       // Click vào ảnh để phóng to lightbox
@@ -14808,6 +15045,72 @@ window.addEventListener('pointermove', (e) => {
         }
       });
     })();
+
+
+
+    // HÀM RENDER GRID CHỌN TRẠM & ĐIỀU HƯỚNG TRỰC TIẾP
+    function renderStationPickerGrid() {
+      const grid = document.getElementById('bdt-picker-grid');
+      if (!grid) return;
+      const curOrder = (window.currentActiveLocus && window.currentActiveLocus.order) ? window.currentActiveLocus.order : 1;
+      const list = Array.isArray(window.lociList) && window.lociList.length > 0 ? window.lociList : (typeof lociList !== 'undefined' ? lociList : []);
+      if (!list || list.length === 0) return;
+      grid.innerHTML = list.map((loc, i) => {
+        const order = loc.order || (i + 1);
+        const name = (loc.name || `Trạm ${order}`).replace(/^\d+\.\s*/, '');
+        const isActive = order === curOrder;
+        return `<button type="button" class="bdt-picker-item ${isActive ? 'active' : ''}" data-order="${order}" title="${name}">
+          <span class="bdt-picker-item-num">${order}</span>
+          <span class="bdt-picker-item-text">${name}</span>
+        </button>`;
+      }).join('');
+      grid.querySelectorAll('.bdt-picker-item').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          const order = parseInt(btn.dataset.order, 10);
+          if (!isNaN(order)) window.jumpToStationOrder(order);
+        });
+      });
+    }
+
+    window.jumpToStationOrder = function(targetOrder) {
+      const pickerWrap = document.getElementById('bdt-picker-wrap');
+      if (pickerWrap) pickerWrap.classList.remove('open');
+      const list = Array.isArray(window.lociList) && window.lociList.length > 0 ? window.lociList : (typeof lociList !== 'undefined' ? lociList : []);
+      if (!list || list.length === 0) return;
+      let targetLoc = list.find(l => l.order === targetOrder);
+      if (!targetLoc) {
+        const idx = targetOrder - 1;
+        if (idx >= 0 && idx < list.length) targetLoc = list[idx];
+      }
+      if (!targetLoc) targetLoc = list[0];
+      if (targetLoc) {
+        closeBrownSpatialDualTabs();
+        if (typeof smoothGlideToLocus === 'function') {
+          const name = (targetLoc.name || `Trạm ${targetOrder}`).replace(/^\d+\.\s*/, '');
+          showToast(`🚀 Đang chuyển đến Trạm ${targetOrder}: ${name}...`, 'info', 2000);
+          smoothGlideToLocus(targetLoc);
+        }
+      }
+    };
+
+    function triggerPrevStationAction() {
+      const curOrder = (window.currentActiveLocus && window.currentActiveLocus.order) ? window.currentActiveLocus.order : 1;
+      const list = Array.isArray(window.lociList) && window.lociList.length > 0 ? window.lociList : (typeof lociList !== 'undefined' ? lociList : []);
+      const maxOrder = list.length > 0 ? Math.max(...list.map(l => l.order || 0), list.length) : 9;
+      let prevOrder = curOrder - 1;
+      if (prevOrder < 1) prevOrder = maxOrder;
+      window.jumpToStationOrder(prevOrder);
+    }
+
+    function triggerNextStationActionDirect() {
+      const curOrder = (window.currentActiveLocus && window.currentActiveLocus.order) ? window.currentActiveLocus.order : 1;
+      const list = Array.isArray(window.lociList) && window.lociList.length > 0 ? window.lociList : (typeof lociList !== 'undefined' ? lociList : []);
+      const maxOrder = list.length > 0 ? Math.max(...list.map(l => l.order || 0), list.length) : 9;
+      let nextOrder = curOrder + 1;
+      if (nextOrder > maxOrder) nextOrder = 1;
+      window.jumpToStationOrder(nextOrder);
+    }
 
     // Biến lưu trữ tiến trình thử thách từ khóa (Active Recall)
     bdtPassedSteps = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]); // Mo khoa san toan bo de thuyet trinh
@@ -14989,15 +15292,29 @@ window.addEventListener('pointermove', (e) => {
 
     function highlightBrownKeywords(str) {
       if (!str) return '';
-      let formatted = str
-        .replace(/\n/g, '<br>')
-        .replace(/(\b\d{1,2}(?:[-–]\d{1,2})?\/\d{1,2}(?:\/\d{4})?|\btháng \d+\/\d{4}\b|\b\d{4}\b|\bhơn 80 năm\b|\bgần 5 năm\b|\bhơn 1\.?000 năm\b|\b15 ngày\b|\b10 chính sách\b|\b1776\b|\b1789\b)/gi, '<strong style="color:#38bdf8; font-weight:800;">$1</strong>')
-        .replace(/(Quân lệnh số 1|Quân lệnh 1|Tuyên ngôn Độc lập|Đại hội Quốc dân|Quốc dân Đại hội|Hội nghị toàn quốc|Ủy ban Khởi nghĩa Toàn quốc|Ủy ban Khởi nghĩa|Ủy ban Dân tộc giải phóng|Chính phủ lâm thời|Hi-rô-si-ma|Hiroshima|Na-ga-xa-ki|Na-ga-sa-ki|Nagasaki|Hà Nội|Huế|Sài Gòn|Ba Đình|Quảng trường Ba Đình|Tân Trào|Đình Tân Trào|Lán Nà Nưa|Nà Nưa|Bảo Đại|Vua Bảo Đại|Việt Minh|Mặt trận Việt Minh|Giải phóng quân|Võ Nguyên Giáp|Hồ Chí Minh|HỒ CHÍ MINH|Đồng minh|Liên Xô|Phát xít Nhật|Phát xít|Chiếu thoái vị|Quốc ấn|Bảo kiếm|Trần Huy Liệu|Cù Huy Cận|Bắc Giang|Hải Dương|Hà Tĩnh|Quảng Nam|Đồng Nai Thượng|Hà Tiên|Nhà hát Lớn|Bắc Bộ Phủ|Trại lính bảo an|Ba Tơ|Trường Sơn|KHÔNG ĐIỀU KIỆN|ngàn năm có một|chớp thời cơ|đại đoàn kết|Đảng|Kỳ đài|Mỹ|Pháp|quyền tự quyết|Vạn Tường|Ấp Bắc|Phước Long|Hiệp định Pa-ri|Hiệp định Paris|Mậu Thân)/gi, '<strong style="color:#38bdf8; text-decoration:underline dotted #38bdf8; font-weight:800;">$1</strong>');
-      return formatted;
+      const rawLines = str.split('\n');
+      const formattedLines = rawLines.map(line => {
+        const trimmed = line.trim();
+        if (!trimmed) return '';
+        let isBullet = false;
+        let lineContent = trimmed;
+        if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {
+          isBullet = true;
+          lineContent = trimmed.replace(/^[•\-*]\s*/, '');
+        }
+        // Tô đậm các mốc thời gian, niên biểu và từ khóa lịch sử (Cobalt #0284c7 trên nền kính trong suốt chữ đen)
+        lineContent = lineContent
+          .replace(/(\b\d{1,2}(?:[-–]\d{1,2})?\/\d{1,2}(?:\/\d{4})?|\btháng \d+\/\d{4}\b|\b\d{4}\b|\bhơn 80 năm\b|\bgần 5 năm\b|\bhơn 1\.?000 năm\b|\b15 ngày\b|\b10 chính sách\b|\b1776\b|\b1789\b)/gi, '<strong style="color:#0284c7; font-weight:800;">$1</strong>')
+          .replace(/(Quân lệnh số 1|Quân lệnh 1|Tuyên ngôn Độc lập|Đại hội Quốc dân|Quốc dân Đại hội|Hội nghị toàn quốc|Ủy ban Khởi nghĩa Toàn quốc|Ủy ban Khởi nghĩa|Ủy ban Dân tộc giải phóng|Chính phủ lâm thời|Hi-rô-si-ma|Hiroshima|Na-ga-xa-ki|Na-ga-sa-ki|Nagasaki|Hà Nội|Huế|Sài Gòn|Ba Đình|Quảng trường Ba Đình|Tân Trào|Đình Tân Trào|Lán Nà Nưa|Nà Nưa|Bảo Đại|Vua Bảo Đại|Việt Minh|Mặt trận Việt Minh|Giải phóng quân|Võ Nguyên Giáp|Hồ Chí Minh|HỒ CHÍ MINH|Đồng minh|Liên Xô|Phát xít Nhật|Phát xít|Chiếu thoái vị|Quốc ấn|Bảo kiếm|Trần Huy Liệu|Cù Huy Cận|Bắc Giang|Hải Dương|Hà Tĩnh|Quảng Nam|Đồng Nai Thượng|Hà Tiên|Nhà hát Lớn|Bắc Bộ Phủ|Trại lính bảo an|Ba Tơ|Trường Sơn|KHÔNG ĐIỀU KIỆN|ngàn năm có một|chớp thời cơ|đại đoàn kết|Đảng|Kỳ đài|Mỹ|Pháp|quyền tự quyết|Vạn Tường|Ấp Bắc|Phước Long|Hiệp định Pa-ri|Hiệp định Paris|Mậu Thân|Điện Biên Phủ)/gi, '<strong style="color:#0369a1; font-weight:800; text-decoration:underline dotted rgba(2,132,199,0.35);">$1</strong>');
+
+        if (isBullet) {
+          return `<div class="bdt-bullet-line" style="display:flex; align-items:flex-start; gap:8px; margin:4px 0 5px 4px; line-height:1.55;"><span style="color:#0284c7; font-size:14px; font-weight:800; line-height:1.4; flex-shrink:0;">•</span><span style="flex:1; color:#0f172a;">${lineContent}</span></div>`;
+        }
+        return `<div style="margin-bottom:5px; font-weight:700; color:#0f172a; line-height:1.5;">${lineContent}</div>`;
+      });
+      return formattedLines.filter(Boolean).join('');
     }
 
-    
-    // ──────────────────────────────────────────────────────────────────────────
     // [CHẾ ĐỘ ÔN TẬP KHÔNG GIAN]: ẨN TOÀN BỘ NỘI DUNG TÓM TẮT SẴN, HIỆN Ô GÕ TỰ LUẬN
     // ──────────────────────────────────────────────────────────────────────────
     // ──────────────────────────────────────────────────────────────────────────
@@ -15514,6 +15831,10 @@ window.addEventListener('pointermove', (e) => {
       const numEl = document.getElementById('bdt-step-num');
       const textEl = document.getElementById('bdt-step-text');
       if (numEl) numEl.textContent = bdtCurrentStep + 1;
+      const counterEl = document.getElementById('bdt-step-counter');
+      if (counterEl && bdtCurrentPoints) {
+        counterEl.textContent = `${bdtCurrentStep + 1}/${bdtCurrentPoints.length}`;
+      }
       if (textEl) {
         textEl.dataset.rawHtml = highlightBrownKeywords(pText);
         textEl.dataset.isHidden = '0';
@@ -16177,6 +16498,8 @@ window.addEventListener('pointermove', (e) => {
         ? src.anchor.icon
         : (locus.icon || '📍');
       if (titleEl) titleEl.textContent = stationTitle;
+      const pickerLabel = document.getElementById('bdt-picker-label');
+      if (pickerLabel) pickerLabel.textContent = `Trạm ${order}`;
       if (iconEl) iconEl.textContent = stationIcon;
 
       if (isSpatialRecallActive()) {
