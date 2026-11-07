@@ -515,6 +515,37 @@
         return mesh;
     }
 
+    // TẠO NHÃN CHỮ 3D BAY LÊN CÙNG MÔ HÌNH (RISING 3D BADGE)
+    function createRisingTextBadge(text, startPos, targetY, opts = {}) {
+        const tex = createTextTexture(text, {
+            bg: opts.bg || 'linear-gradient(135deg, rgba(180, 83, 9, 0.95), rgba(30, 41, 59, 0.95))',
+            border: opts.border || '#fbbf24',
+            borderWidth: opts.borderWidth || 5,
+            color: opts.color || '#fef08a',
+            font: opts.font || 'bold 28px "Outfit", sans-serif',
+            radius: opts.radius || 14,
+            width: opts.width || 560,
+            height: opts.height || 100
+        });
+
+        const w = opts.planeW || 1.85;
+        const h = opts.planeH || 0.40;
+        const geo = new THREE.PlaneGeometry(w, h);
+        const mat = new THREE.MeshBasicMaterial({ map: tex, transparent: true, side: THREE.DoubleSide, depthTest: false, depthWrite: false });
+        const mesh = new THREE.Mesh(geo, mat);
+        mesh.position.copy(startPos);
+        mesh.renderOrder = 99999;
+
+        activeProps.push({
+            type: 'rising_badge',
+            mesh,
+            targetY
+        });
+
+        dynamicPropsGroup.add(mesh);
+        return mesh;
+    }
+
     // 3. MỐC 3 PHẦN 3: ẢNH BÁC HỒ LỊCH SỬ XUẤT HIỆN TRANG NGHIÊM PHÍA SAU
     function createBacHoHistoricPortrait(stBasePos) {
         const group = new THREE.Group();
@@ -787,8 +818,8 @@
                     🔊
                 </button>
             </div>
-            <div style="font-size:10px; color:#10b981; margin-top:6px; text-align:center; display:flex; align-items:center; justify-content:center; gap:4px;">
-                <span></span> Đã cắt bỏ 23s đầu theo đúng lời Bác: "Hỡi đồng bào cả nước..."
+            <div style="font-size:10px; color:#94a3b8; margin-top:6px; text-align:center; display:flex; align-items:center; justify-content:center; gap:4px;">
+                <span>🎙️</span> Bản ghi âm gốc Tuyên ngôn Độc lập (02/9/1945)
             </div>
         `;
 
@@ -1029,33 +1060,33 @@
         // ==========================================
         else if (stationOrder === 2) {
             if (stepIdx === 0) {
-                // Phần 1: Chỉ vào model NHỮNG NGƯỜI DÂN KHỞI NGHĨA (phong_trao_khang_nhat_opt.glb tại x: -1.25)
+                // Phần 1: Chỉ thẳng vào mô hình NHỮNG NGƯỜI DÂN KHỞI NGHĨA (x: -1.25, z: 0.32)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x - 1.25, stBase.y + 1.45, stBase.z + 0.32);
+                targetPos.set(stBase.x - 1.25, stBase.y + 0.85, stBase.z + 0.32);
                 currentPos.copy(targetPos);
 
                 createFloatingBadge('Cao trào Kháng Nhật cứu nước & Phá kho thóc Nhật cứu đói',
-                    new THREE.Vector3(stBase.x - 1.25, stBase.y + 2.0, stBase.z + 0.32),
+                    new THREE.Vector3(stBase.x - 1.25, stBase.y + 1.55, stBase.z + 0.32),
                     { border: '#10b981' }
                 );
             } else if (stepIdx === 1) {
-                // Phần 2: Chỉ vào NHÓM NGƯỜI ÁO TRẮNG (uy_ban_quan_lenh_1_opt.glb tại x: +1.25)
+                // Phần 2: Chỉ thẳng vào NHÓM NGƯỜI ÁO TRẮNG (uy_ban_quan_lenh_1_opt.glb tại x: +1.25, z: 0.32)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 1.25, stBase.y + 1.45, stBase.z + 0.32);
+                targetPos.set(stBase.x + 1.25, stBase.y + 0.85, stBase.z + 0.32);
                 currentPos.copy(targetPos);
 
                 createFloatingBadge('Ủy ban Khởi nghĩa Toàn quốc & Quân lệnh số 1 (Đêm 13/8)',
-                    new THREE.Vector3(stBase.x + 1.25, stBase.y + 2.0, stBase.z + 0.32),
+                    new THREE.Vector3(stBase.x + 1.25, stBase.y + 1.55, stBase.z + 0.32),
                     { border: '#f59e0b' }
                 );
             } else if (stepIdx === 2) {
-                // Phần 3: Chỉ vào CÁI CÒN LẠI (Lán Nà Nưa tại x: 0, z: -0.45)
+                // Phần 3: Chỉ thẳng vào Lán Nà Nưa (x: 0, z: -0.45)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 1.45, stBase.z - 0.45);
+                targetPos.set(stBase.x, stBase.y + 0.75, stBase.z - 0.45);
                 currentPos.copy(targetPos);
 
                 createFloatingBadge('Lán Nà Nưa: "Dù phải đốt cháy cả dãy Trường Sơn cũng phải giành độc lập!"',
-                    new THREE.Vector3(stBase.x, stBase.y + 2.05, stBase.z - 0.45),
+                    new THREE.Vector3(stBase.x, stBase.y + 1.55, stBase.z - 0.45),
                     { border: '#ef4444', font: 'bold 24px sans-serif' }
                 );
             }
@@ -1066,32 +1097,33 @@
         // ==========================================
         else if (stationOrder === 3) {
             if (stepIdx === 0) {
-                // Phần 1: Chỉ vào BÁC ĐANG TRÒ CHUYỆN VỚI NGƯỜI DÂN (tại vị trí Bác Hồ & người dân: x: 0.20, z: 0.15)
+                // Phần 1: Bác Hồ trò chuyện thân mật cùng các đại biểu & nhân dân
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.20, stBase.y + 1.45, stBase.z + 0.15);
+                targetPos.set(stBase.x - 0.15, stBase.y + 0.85, stBase.z - 0.05);
                 currentPos.copy(targetPos);
 
                 createFloatingBadge('Bác Hồ trò chuyện thân mật cùng các đại biểu & nhân dân',
-                    new THREE.Vector3(stBase.x + 0.20, stBase.y + 2.05, stBase.z + 0.15),
+                    new THREE.Vector3(stBase.x - 0.15, stBase.y + 1.55, stBase.z - 0.05),
                     { border: '#f59e0b' }
                 );
             } else if (stepIdx === 1) {
-                // Phần 2: Chỉ vào NHÓM NGƯỜI ĐANG ĐỨNG (nguoi_dan.glb tại x: 0.55, z: 0.40)
+                // Phần 2: Chỉ vào model các nhà lãnh đạo/đại biểu đứng + Chữ "10 chính sách lớn - Mặt trận Việt Minh" bay lên cùng
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.55, stBase.y + 1.45, stBase.z + 0.40);
+                targetPos.set(stBase.x + 0.55, stBase.y + 0.90, stBase.z + 0.40);
                 currentPos.copy(targetPos);
 
-                createFloatingBadge('Các đại biểu Quốc dân Đại hội Tân Trào thông qua 10 Chính sách Việt Minh',
-                    new THREE.Vector3(stBase.x + 0.55, stBase.y + 2.05, stBase.z + 0.40),
-                    { border: '#10b981', font: 'bold 25px sans-serif' }
+                // Chữ 10 chính sách lớn - Mặt trận Việt Minh bay lên cùng mô hình
+                createRisingTextBadge('10 CHÍNH SÁCH LỚN — MẶT TRẬN VIỆT MINH',
+                    new THREE.Vector3(stBase.x + 0.55, stBase.y + 1.0, stBase.z + 0.40),
+                    stBase.y + 2.05,
+                    { border: '#fbbf24', color: '#fef08a', bg: 'linear-gradient(135deg, rgba(180, 83, 9, 0.95), rgba(15, 23, 42, 0.95))' }
                 );
             } else if (stepIdx === 2) {
-                // Phần 3: Chỉ ra BÁC HỒ + ẢNH BÁC XUẤT HIỆN PHÍA SAU
+                // Phần 3: Bác Hồ + Ảnh Bác lịch sử xuất hiện phía sau
                 focusArrow.visible = true;
-                targetPos.set(stBase.x - 0.15, stBase.y + 1.45, stBase.z - 0.05);
+                targetPos.set(stBase.x - 0.15, stBase.y + 0.85, stBase.z - 0.05);
                 currentPos.copy(targetPos);
 
-                // Hiện chân dung Bác Hồ lịch sử trang nghiêm phía sau
                 createBacHoHistoricPortrait(stBase);
 
                 createFloatingBadge('Cử ra Ủy ban Dân tộc Giải phóng — CHỦ TỊCH HỒ CHÍ MINH',
@@ -1106,33 +1138,39 @@
         // ==========================================
         else if (stationOrder === 4) {
             if (stepIdx === 0) {
-                // Phần 1: Chuyển cây đa Tân Trào từ mốc 3 sang để chỉ nó ở phần 1
+                // Phần 1: Gốc cây đa Tân Trào lộ rõ, chỉ thẳng vào gốc cây đa làm lễ xuất quân
                 focusArrow.visible = true;
-                targetPos.set(stBase.x - 0.70, stBase.y + 1.75, stBase.z - 0.25);
+                targetPos.set(stBase.x - 0.55, stBase.y + 0.75, stBase.z + 0.05);
                 currentPos.copy(targetPos);
 
-                createFloatingBadge('Dưới bóng Cây Đa Tân Trào: Đ/c Võ Nguyên Giáp đọc Quân lệnh số 1 xuất quân',
-                    new THREE.Vector3(stBase.x - 0.70, stBase.y + 2.45, stBase.z - 0.25),
+                createFloatingBadge('Dưới gốc Cây Đa Tân Trào: Đ/c Võ Nguyên Giáp làm lễ xuất quân (16/8)',
+                    new THREE.Vector3(stBase.x - 0.55, stBase.y + 1.75, stBase.z + 0.05),
                     { border: '#10b981', font: 'bold 24px sans-serif' }
                 );
             } else if (stepIdx === 1) {
-                // Phần 2: Chỉ vào model kia (đoàn quân khởi nghĩa nguoi_dan_khoi_nghia.glb tại x: +0.35)
+                // Phần 2: Hiện 4 góc là chữ Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.35, stBase.y + 1.55, stBase.z + 0.10);
+                targetPos.set(stBase.x + 0.40, stBase.y + 0.85, stBase.z - 0.30);
                 currentPos.copy(targetPos);
 
-                createFloatingBadge('4 Tỉnh giành chính quyền sớm nhất (18/8): Bắc Giang • Hải Dương • Hà Tĩnh • Quảng Nam',
-                    new THREE.Vector3(stBase.x + 0.35, stBase.y + 2.15, stBase.z + 0.10),
-                    { border: '#ef4444', font: 'bold 24px sans-serif' }
+                // 4 góc 4 tỉnh giành chính quyền sớm nhất
+                createFloatingBadge('⭐ BẮC GIANG (18/8)', new THREE.Vector3(stBase.x - 1.10, stBase.y + 1.65, stBase.z - 0.65), { border: '#ef4444', planeW: 1.1, planeH: 0.32, color: '#fef08a' });
+                createFloatingBadge('⭐ HẢI DƯƠNG (18/8)', new THREE.Vector3(stBase.x + 1.10, stBase.y + 1.65, stBase.z - 0.65), { border: '#ef4444', planeW: 1.1, planeH: 0.32, color: '#fef08a' });
+                createFloatingBadge('⭐ HÀ TĨNH (18/8)', new THREE.Vector3(stBase.x - 1.10, stBase.y + 1.65, stBase.z + 0.65), { border: '#ef4444', planeW: 1.1, planeH: 0.32, color: '#fef08a' });
+                createFloatingBadge('⭐ QUẢNG NAM (18/8)', new THREE.Vector3(stBase.x + 1.10, stBase.y + 1.65, stBase.z + 0.65), { border: '#ef4444', planeW: 1.1, planeH: 0.32, color: '#fef08a' });
+
+                createFloatingBadge('4 Tỉnh giành chính quyền sớm nhất cả nước (18/8/1945)',
+                    new THREE.Vector3(stBase.x, stBase.y + 2.35, stBase.z),
+                    { border: '#ffd700', bg: 'rgba(185, 28, 28, 0.95)', font: 'bold 24px sans-serif' }
                 );
             } else if (stepIdx === 2) {
-                // Phần 3: Tiếp tục chỉ vào model đoàn quân khởi nghĩa tiến về Thái Nguyên & Hà Nội
+                // Phần 3: Dùng model Đứng dậy khởi nghĩa (dung_day_khoi_nghia.glb tại x: 0.50, z: 0.35)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.35, stBase.y + 1.55, stBase.z + 0.10);
+                targetPos.set(stBase.x + 0.50, stBase.y + 0.85, stBase.z + 0.35);
                 currentPos.copy(targetPos);
 
-                createFloatingBadge('Đội Giải phóng quân tiến về giải phóng thị xã Thái Nguyên — Mở đường về Hà Nội!',
-                    new THREE.Vector3(stBase.x + 0.35, stBase.y + 2.15, stBase.z + 0.10),
+                createFloatingBadge('Quần chúng nhân dân đứng dậy khởi nghĩa giải phóng thị xã Thái Nguyên (16/8)!',
+                    new THREE.Vector3(stBase.x + 0.50, stBase.y + 1.65, stBase.z + 0.35),
                     { border: '#f59e0b', font: 'bold 24px sans-serif' }
                 );
             }
@@ -1143,35 +1181,39 @@
         // ==========================================
         else if (stationOrder === 5) {
             if (stepIdx === 0) {
-                // Phần 1: Chỉ vào model NHÀ HÁT LỚN HÀ NỘI
+                // Phần 1: Chỉ vào model NHÀ HÁT LỚN HÀ NỘI (cánh trái x: -0.55)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 1.65, stBase.z + 0.15);
+                targetPos.set(stBase.x - 0.55, stBase.y + 0.95, stBase.z + 0.15);
                 currentPos.copy(targetPos);
 
                 createFloatingBadge('Quảng trường Nhà hát Lớn: Biển người mít tinh rầm rộ sáng 19/8/1945',
-                    new THREE.Vector3(stBase.x, stBase.y + 2.3, stBase.z + 0.15),
+                    new THREE.Vector3(stBase.x - 0.55, stBase.y + 1.75, stBase.z + 0.15),
                     { border: '#ef4444' }
                 );
             } else if (stepIdx === 1) {
-                // Phần 2: CÁC MŨI TÊN CHỈA RA NHIỀU HƯỚNG VÀ CHỈ VÀO 5 CƠ QUAN ĐẦU NÃO:
-                // Bắc Bộ Phủ, Sở Mật Thám, Trại Lính Bảo An, Kho Bạc, Nhà Bưu Điện
+                // Phần 2: Chỉ vào model THẮNG LỢI TOÀN QUỐC (thang_loi_toan_quoc.glb tại x: +0.55) + 5 mũi tên tiến công
                 createMoc5FiveAttackArrows(stBase);
 
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 1.85, stBase.z + 0.15);
+                targetPos.set(stBase.x + 0.55, stBase.y + 0.95, stBase.z + 0.15);
                 currentPos.copy(targetPos);
 
-                createFloatingBadge('Quần chúng chia thành các cánh quân đánh chiếm 5 cơ quan đầu não phát xít',
-                    new THREE.Vector3(stBase.x, stBase.y + 2.5, stBase.z + 0.15),
+                createFloatingBadge('Quần chúng đánh chiếm 5 cơ quan đầu não — Thắng lợi toàn quốc!',
+                    new THREE.Vector3(stBase.x + 0.55, stBase.y + 1.75, stBase.z + 0.15),
                     { border: '#f59e0b', font: 'bold 24px sans-serif' }
                 );
             } else if (stepIdx === 2) {
-                // Phần 3: Chữ "HÀ NỘI" + PHÁO HOA CHÚC MỪNG + NGÀY THÁNG BÊN CẠNH
-                createMoc5HanoiVictoryCelebration(stBase);
-
+                // Phần 3: Chỉ vào model THẮNG LỢI TOÀN QUỐC và hiện chữ "THẮNG LỢI TOÀN QUỐC"
                 focusArrow.visible = true;
-                targetPos.set(stBase.x, stBase.y + 1.85, stBase.z + 0.15);
+                targetPos.set(stBase.x + 0.55, stBase.y + 0.95, stBase.z + 0.15);
                 currentPos.copy(targetPos);
+
+                createFloatingBadge('THẮNG LỢI TOÀN QUỐC',
+                    new THREE.Vector3(stBase.x + 0.55, stBase.y + 1.85, stBase.z + 0.15),
+                    { border: '#ffd700', bg: 'linear-gradient(135deg, rgba(220, 38, 38, 0.95), rgba(180, 83, 9, 0.95))', color: '#fef08a', font: 'bold 32px "Outfit", sans-serif', planeW: 1.8, planeH: 0.42 }
+                );
+
+                createMoc5HanoiVictoryCelebration(stBase);
             }
         }
 
@@ -1180,37 +1222,35 @@
         // ==========================================
         else if (stationOrder === 6) {
             if (stepIdx === 0) {
-                // Phần 1: Khởi nghĩa ở HUẾ (23/8) -> Chỉ vào mô hình Cố đô Huế (co_do_hue.glb tại x: -0.70)
+                // Phần 1: Khởi nghĩa ở HUẾ (23/8) -> Chỉ vào mô hình Cố đô Huế (co_do_hue.glb tại x: -0.65)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x - 0.70, stBase.y + 1.45, stBase.z);
+                targetPos.set(stBase.x - 0.65, stBase.y + 0.85, stBase.z);
                 currentPos.copy(targetPos);
 
                 createFloatingBadge('23/8/1945: Quần chúng đánh chiếm các công sở, khởi nghĩa thắng lợi ở HUẾ',
-                    new THREE.Vector3(stBase.x - 0.70, stBase.y + 2.1, stBase.z),
+                    new THREE.Vector3(stBase.x - 0.65, stBase.y + 1.65, stBase.z),
                     { border: '#f59e0b' }
                 );
             } else if (stepIdx === 1) {
-                // Phần 2: Khởi nghĩa ở SÀI GÒN (25/8) -> Chỉ vào mô hình Dành khởi nghĩa cuối cùng (x: +0.70)
+                // Phần 2: Khởi nghĩa ở SÀI GÒN (25/8) -> Chỉ vào mô hình Sài Gòn (gianh_khoi_nghia_cuoi_cung.glb tại x: +0.65)
                 focusArrow.visible = true;
-                targetPos.set(stBase.x + 0.70, stBase.y + 1.45, stBase.z);
+                targetPos.set(stBase.x + 0.65, stBase.y + 0.85, stBase.z);
                 currentPos.copy(targetPos);
 
                 createFloatingBadge('25/8/1945: Hơn 1 triệu đồng bào biểu tình thị uy, thắng lợi rực rỡ ở SÀI GÒN',
-                    new THREE.Vector3(stBase.x + 0.70, stBase.y + 2.1, stBase.z),
+                    new THREE.Vector3(stBase.x + 0.65, stBase.y + 1.65, stBase.z),
                     { border: '#10b981' }
                 );
             } else if (stepIdx === 2) {
-                // Phần 3: Đồng Nai Thượng & Hà Tiên (28/8) -> Tổng khởi nghĩa thắng lợi hoàn toàn
-                hasDualArrows = true;
+                // Phần 3: Xóa mũi tên kép thừa, chỉ thẳng vào mô hình của phần 2 (Sài Gòn / Nam Bộ quật khởi)
+                hasDualArrows = false;
+                focusArrow2.visible = false;
                 focusArrow.visible = true;
-                focusArrow2.visible = true;
-                targetPos.set(stBase.x - 0.70, stBase.y + 1.45, stBase.z);
-                targetPos2.set(stBase.x + 0.70, stBase.y + 1.45, stBase.z);
+                targetPos.set(stBase.x + 0.65, stBase.y + 0.85, stBase.z);
                 currentPos.copy(targetPos);
-                currentPos2.copy(targetPos2);
 
                 createFloatingBadge('28/8/1945: ĐỒNG NAI THƯỢNG & HÀ TIÊN giành chính quyền — Toàn quốc toàn thắng!',
-                    new THREE.Vector3(stBase.x, stBase.y + 2.25, stBase.z),
+                    new THREE.Vector3(stBase.x + 0.65, stBase.y + 1.65, stBase.z),
                     { border: '#ffd700', bg: 'rgba(217, 119, 6, 0.95)' }
                 );
             }
@@ -1266,43 +1306,51 @@
         else if (stationOrder === 8) {
             // Mũi tên chỉ vào Bác Hồ đọc Tuyên ngôn Độc lập
             focusArrow.visible = true;
-            targetPos.set(stBase.x, stBase.y + 1.65, stBase.z - 0.15);
+            targetPos.set(stBase.x, stBase.y + 1.15, stBase.z - 0.15);
             currentPos.copy(targetPos);
 
-            // Bật bộ phát âm thanh đã cắt 23s đầu
+            // Bật bộ phát âm thanh nguyên bản Tuyên ngôn Độc lập
             startStation8Audio();
 
             createFloatingBadge('2/9/1945: Bác Hồ đọc "TUYÊN NGÔN ĐỘC LẬP" tại Quảng trường Ba Đình',
-                new THREE.Vector3(stBase.x, stBase.y + 2.35, stBase.z - 0.15),
+                new THREE.Vector3(stBase.x, stBase.y + 1.85, stBase.z - 0.15),
                 { border: '#ffd700', bg: 'rgba(217, 119, 6, 0.95)' }
             );
         }
 
         // ==========================================
-        // MỐC 9: BỤC TỔNG KẾT — KHÚC KHẢI HOÀN TOÀN THẮNG & Ý NGHĨA
+        // MỐC 9: BỤC TỔNG KẾT — 3 MÔ HÌNH LỊCH SỬ KHÚC KHẢI HOÀN TOÀN THẮNG
         // ==========================================
         else if (stationOrder === 9) {
-            // Sa bàn chiến thắng vĩ đại: Đài sen vàng, Cờ Tổ quốc tung bay, Pháo hoa đại thắng
             createMoc9VictoryMonument(stBase);
 
             focusArrow.visible = true;
-            targetPos.set(stBase.x, stBase.y + 1.75, stBase.z);
-            currentPos.copy(targetPos);
-
             if (stepIdx === 0) {
-                createFloatingBadge('NGUYÊN NHÂN THẮNG LỢI: Sự lãnh đạo của Đảng & Truyền thống yêu nước vĩ đại',
-                    new THREE.Vector3(stBase.x, stBase.y + 1.9, stBase.z + 0.65),
-                    { border: '#f59e0b', font: 'bold 24px sans-serif' }
-                );
-            } else if (stepIdx === 1) {
-                createFloatingBadge('Ý NGHĨA LỊCH SỬ: Đập tan xiềng xích thực dân & phong kiến — Khai sinh Nước VNDCCH!',
-                    new THREE.Vector3(stBase.x, stBase.y + 1.9, stBase.z + 0.65),
+                // Phần 1: Chỉ vào Liên Xô chiến thắng (lien_xo_chien_thang.glb tại x: -0.85)
+                targetPos.set(stBase.x - 0.85, stBase.y + 0.85, stBase.z + 0.05);
+                currentPos.copy(targetPos);
+
+                createFloatingBadge('THỜI CƠ QUỐC TẾ: Hồng quân Liên Xô đánh tan phát xít (Khách quan vô cùng thuận lợi)',
+                    new THREE.Vector3(stBase.x - 0.85, stBase.y + 1.65, stBase.z + 0.05),
                     { border: '#ef4444', font: 'bold 24px sans-serif' }
                 );
+            } else if (stepIdx === 1) {
+                // Phần 2: Chỉ vào Giải phóng sau 1000 năm (giai_phong_sau_1000_nam.glb tại x: 0.0, z: 0.35)
+                targetPos.set(stBase.x, stBase.y + 0.85, stBase.z + 0.35);
+                currentPos.copy(targetPos);
+
+                createFloatingBadge('Ý NGHĨA LỊCH SỬ: Đập tan xiềng xích thực dân & lật đổ chế độ phong kiến hơn 1.000 năm!',
+                    new THREE.Vector3(stBase.x, stBase.y + 1.65, stBase.z + 0.35),
+                    { border: '#ffd700', bg: 'rgba(185, 28, 28, 0.95)', font: 'bold 24px sans-serif' }
+                );
             } else if (stepIdx === 2) {
-                createFloatingBadge('3 BÀI HỌC KINH NGHIỆM: Sự lãnh đạo của Đảng • Liên minh công nông • Nắm chắc thời cơ',
-                    new THREE.Vector3(stBase.x, stBase.y + 1.9, stBase.z + 0.65),
-                    { border: '#10b981', font: 'bold 24px sans-serif' }
+                // Phần 3: Chỉ vào Lãnh đạo của Đảng (lanh_dao_cua_dang.glb tại x: +0.85)
+                targetPos.set(stBase.x + 0.85, stBase.y + 0.85, stBase.z + 0.05);
+                currentPos.copy(targetPos);
+
+                createFloatingBadge('NGUYÊN NHÂN & BÀI HỌC: Sự lãnh đạo đúng đắn, sáng tạo của Đảng Cộng sản & Bác Hồ',
+                    new THREE.Vector3(stBase.x + 0.85, stBase.y + 1.65, stBase.z + 0.05),
+                    { border: '#f59e0b', font: 'bold 24px sans-serif' }
                 );
             }
         }
@@ -1441,6 +1489,18 @@
                 if (window.camera) {
                     p.mesh.quaternion.copy(window.camera.quaternion);
                     p.mesh.position.y = p.baseY + Math.sin(time * 2.8) * 0.035;
+                }
+            }
+
+            // Nhãn chữ bay lên dần cùng mô hình (Rising Text Badge)
+            else if (p.type === 'rising_badge') {
+                if (window.camera) {
+                    p.mesh.quaternion.copy(window.camera.quaternion);
+                }
+                if (p.mesh.position.y < p.targetY) {
+                    p.mesh.position.y += (p.targetY - p.mesh.position.y) * Math.min(delta * 2.5, 1.0);
+                } else {
+                    p.mesh.position.y = p.targetY + Math.sin(time * 3.0) * 0.035;
                 }
             }
         }

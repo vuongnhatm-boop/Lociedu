@@ -72,15 +72,19 @@
   </script>
 
   <script>
-    // BẮT MỌI LỖI RUNTIME ĐỂ HIỂN THỊ LÊN MÀN HÌNH (DEBUG TRỰC DIỆN)
+    // BẮT MỌI LỖI RUNTIME ĐỂ HIỂN THỊ LÊN MÀN HÌNH CHỈ KHI DEBUG (?debug=1)
     window.addEventListener('error', function(e) {
       console.error('[GLOBAL ERROR]', e.message, e.filename, e.lineno);
-      const errBox = document.getElementById('debug-err-box') || document.createElement('div');
-      errBox.id = 'debug-err-box';
-      errBox.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#dc2626;color:#fff;padding:10px 18px;border-radius:10px;z-index:999999;font-size:12px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,0.6);';
-      errBox.innerHTML = '⚠️ Lỗi JS: ' + (e.message || 'Unknown') + ' (Dòng ' + (e.lineno || '?') + ')';
-      document.body.appendChild(errBox);
+      if (typeof window !== 'undefined' && window.location && window.location.search && window.location.search.includes('debug=1')) {
+        const errBox = document.getElementById('debug-err-box') || document.createElement('div');
+        errBox.id = 'debug-err-box';
+        errBox.style.cssText = 'position:fixed;top:60px;left:50%;transform:translateX(-50%);background:#dc2626;color:#fff;padding:10px 18px;border-radius:10px;z-index:999999;font-size:12px;font-weight:700;box-shadow:0 10px 30px rgba(0,0,0,0.6);';
+        errBox.innerHTML = '⚠️ Lỗi JS: ' + (e.message || 'Unknown') + ' (Dòng ' + (e.lineno || '?') + ')';
+        document.body.appendChild(errBox);
+      }
     });
+    var _lastPMCheck = 0;
+    window._lastPMCheck = 0;
   </script>
 
   <meta charset="UTF-8" />
@@ -10046,11 +10050,14 @@ stationGroup.traverse((child) => {
         }
       }
 
-      // 1. Cây Đa Tân Trào (Chuyển từ Trạm 3 sang - bối cảnh đồng chí Võ Nguyên Giáp làm lễ xuất quân)
-      loadStation4Model('assets/models/tram4/cay_da.glb', -0.65, 0.105, -0.20, 0.85, Math.PI * 0.12);
+      // 1. Cây Đa Tân Trào (gốc cây đa thông thoáng, không bị che khuất, hướng rõ về tiền cảnh)
+      loadStation4Model('assets/models/tram4/cay_da.glb', -0.55, 0.105, 0.05, 0.95, Math.PI * 0.18);
 
-      // 2. Đoàn quân khởi nghĩa tiến về Thái Nguyên (nguoi_dan_khoi_nghia.glb)
-      loadStation4Model('assets/models/tram4/nguoi_dan_khoi_nghia.glb', 0.40, 0.105, 0.10, 1.45, -Math.PI * 0.05);
+      // 2. Đoàn Giải phóng quân xuất quân tiến về Thái Nguyên (nguoi_dan_khoi_nghia.glb)
+      loadStation4Model('assets/models/tram4/nguoi_dan_khoi_nghia.glb', 0.40, 0.105, -0.30, 1.25, -Math.PI * 0.05);
+
+      // 3. Quần chúng nhân dân đứng dậy khởi nghĩa (dung_day_khoi_nghia.glb - Chủ đề 3/Bài 6/Trạm 4/Đứng dậy khởi nghĩa.glb)
+      loadStation4Model('assets/models/tram4/dung_day_khoi_nghia.glb', 0.50, 0.105, 0.35, 1.25, -Math.PI * 0.12);
 
       // Bệ đá hoa cương nâng Bảng mốc lịch sử phía trước
       const plaqueStand = new THREE.Group();
@@ -10176,50 +10183,56 @@ stationGroup.traverse((child) => {
         return prefix + relPath.replace(/^\/+/, '');
       }
 
-      // Nạp mô hình 3D thực tế: Mít tinh Nhà hát Lớn Hà Nội (19/8/1945)
-      if (typeof gltfLoader !== 'undefined') {
-        const fullPath = resolveStation5AssetPath('assets/models/tram5/mit_tinh_nha_hat_lon.glb');
-        gltfLoader.load(
-          fullPath, (gltf) => {
-        if (gltf.scene) {
-          gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
-        }
-            const m = gltf.scene;
-            const scaleVal = 1.60; // Phóng to mô hình Nhà hát Lớn & biển người mít tinh hoành tráng
-            m.scale.set(scaleVal, scaleVal, scaleVal);
-            m.rotation.y = Math.PI; // Hướng mặt tiền Nhà hát Lớn về phía người tham quan
-            m.position.set(0, 0, 0.15);
-
-            // Tự động căn chỉnh chân đế chạm chính xác mặt sàn sa bàn 0.105m
-            m.updateMatrixWorld(true);
-            const bBox = new THREE.Box3().setFromObject(m);
-            if (isFinite(bBox.min.y)) {
-              m.position.y += (0.105 - bBox.min.y);
-            } else {
-              m.position.y = 0.105;
-            }
-
-            m.traverse((c) => {
-              if (c.isMesh) {
-                c.castShadow = false;
-            c.receiveShadow = false;
-            c.matrixAutoUpdate = false;
-            c.updateMatrix();
-                c.receiveShadow = false;
-                if (c.material) {
-                  c.material.roughness = Math.max(0.35, c.material.roughness || 0.65);
-                }
+      // Helper nạp nhiều mô hình 3D cho Trạm 5: Mít tinh Nhà hát Lớn & Thắng lợi toàn quốc
+      function loadStation5Model(relPath, posX, floorY, posZ, scaleVal, rotY) {
+        const fullPath = resolveStation5AssetPath(relPath);
+        if (typeof gltfLoader !== 'undefined') {
+          gltfLoader.load(
+            fullPath, (gltf) => {
+              if (gltf.scene) {
+                gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
               }
-              c.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
-            });
-            models3DGroup.add(m);
-          },
-          undefined,
-          (err) => {
-            console.warn('[Station 5] Không thể nạp GLB mit_tinh_nha_hat_lon:', fullPath, err);
-          }
-        );
+              const m = gltf.scene;
+              m.scale.set(scaleVal, scaleVal, scaleVal);
+              m.rotation.y = rotY;
+              m.position.set(posX, 0, posZ);
+
+              // Tự động căn chỉnh chân đế chạm chính xác mặt sàn sa bàn 0.105m
+              m.updateMatrixWorld(true);
+              const bBox = new THREE.Box3().setFromObject(m);
+              if (isFinite(bBox.min.y)) {
+                m.position.y += (floorY - bBox.min.y);
+              } else {
+                m.position.y = floorY;
+              }
+
+              m.traverse((c) => {
+                if (c.isMesh) {
+                  c.castShadow = false;
+                  c.receiveShadow = false;
+                  c.matrixAutoUpdate = false;
+                  c.updateMatrix();
+                  if (c.material) {
+                    c.material.roughness = Math.max(0.35, c.material.roughness || 0.65);
+                  }
+                }
+                c.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
+              });
+              models3DGroup.add(m);
+            },
+            undefined,
+            (err) => {
+              console.warn('[Station 5] Không thể nạp GLB:', fullPath, err);
+            }
+          );
+        }
       }
+
+      // 1. Mít tinh Nhà hát Lớn Hà Nội (19/8/1945) - Cánh trái
+      loadStation5Model('assets/models/tram5/mit_tinh_nha_hat_lon.glb', -0.55, 0.105, 0.15, 1.25, Math.PI);
+
+      // 2. Thắng lợi toàn quốc (Chủ đề 3/Bài 6/Trạm 5/Thắng lợi toàn quốc.glb) - Cánh phải
+      loadStation5Model('assets/models/tram5/thang_loi_toan_quoc.glb', 0.55, 0.105, 0.15, 1.25, 0);
 
       // Bệ đá hoa cương nâng Bảng mốc lịch sử phía trước (hướng về trung tâm phòng)
       const plaqueStand = new THREE.Group();
@@ -10800,158 +10813,189 @@ stationGroup.traverse((child) => {
     }
 
     // ──────────────────────────────────────────────────────────────────────────
-    // TRẠM 9: BỤC TỔNG KẾT — NGỌN ĐUỐC THỜI CƠ & CUỐN BIÊN NIÊN SỬ 1945
+    // TRẠM 9: BỤC TỔNG KẾT — 3 MÔ HÌNH LỊCH SỬ KHÚC KHẢI HOÀN TOÀN THẮNG
     // ──────────────────────────────────────────────────────────────────────────
     function buildTrueLociStation9(locus) {
       const stationGroup = new THREE.Group();
       stationGroup.name = 'true_loci_station_9';
 
-      const stoneTable = buildStoneTable(1.30);
-      stationGroup.add(stoneTable);
-
       const contentGroup = new THREE.Group();
       contentGroup.name = 'station9_content_group';
 
-      const summaryGroup = new THREE.Group();
-      summaryGroup.position.set(0, 0.93, 0);
+      // 1. Đế sa bàn đa giác thấp màu vàng kim hoàng gia (Diorama Pedestal Base R = 1.25m)
+      const baseRadius = 1.25;
+      const dioramaBase = createLowPolyDioramaBase(baseRadius, 0.10, 0x3b1c0b);
+      contentGroup.add(dioramaBase);
 
-      // Đài sen đồng 3 tầng vững chãi
-      const lotusMat = new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.85, roughness: 0.2 });
-      const tier1 = new THREE.Mesh(new THREE.CylinderGeometry(0.48, 0.56, 0.08, 32), lotusMat);
-      tier1.position.y = 0.04;
-      summaryGroup.add(tier1);
+      // Gold Rim quanh mép đế sa bàn
+      const rimGeo = new THREE.TorusGeometry(baseRadius + 0.015, 0.022, 16, 64);
+      const rimMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, roughness: 0.30, metalness: 0.85 });
+      const rim = new THREE.Mesh(rimGeo, rimMat);
+      rim.rotation.x = Math.PI / 2;
+      rim.position.y = 0.102;
+      contentGroup.add(rim);
 
-      const tier2 = new THREE.Mesh(new THREE.CylinderGeometry(0.38, 0.46, 0.08, 32), lotusMat);
-      tier2.position.y = 0.12;
-      summaryGroup.add(tier2);
+      // Mặt sàn sa bàn hoa cương hoàng gia
+      const groundGeo = new THREE.CircleGeometry(baseRadius * 0.98, 32);
+      const groundMat = new THREE.MeshStandardMaterial({ color: 0x451a03, roughness: 0.85, metalness: 0.10 });
+      const groundMesh = new THREE.Mesh(groundGeo, groundMat);
+      groundMesh.rotation.x = -Math.PI / 2;
+      groundMesh.position.y = 0.105;
+      groundMesh.receiveShadow = true;
+      contentGroup.add(groundMesh);
 
-      const tier3 = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.36, 0.08, 32), lotusMat);
-      tier3.position.y = 0.20;
-      summaryGroup.add(tier3);
+      // Sỏi đá sa bàn tự nhiên
+      const rockMat = new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.85, flatShading: true });
+      [
+        [-baseRadius * 0.72, 0.14, -baseRadius * 0.42, 0.11],
+        [baseRadius * 0.70, 0.14, baseRadius * 0.38, 0.13],
+        [-baseRadius * 0.50, 0.13, baseRadius * 0.58, 0.09],
+        [baseRadius * 0.58, 0.14, -baseRadius * 0.52, 0.10]
+      ].forEach(r => {
+        const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(r[3], 0), rockMat);
+        rock.position.set(r[0], r[1], r[2]);
+        contentGroup.add(rock);
+      });
 
-      // ĐÀI ĐUỐC ĐỘC LẬP VĨNH CỬU
+      // Nhóm chứa mô hình 3D thực tế
+      const models3DGroup = new THREE.Group();
+      models3DGroup.name = 'station9_models_group';
+      models3DGroup.rotation.y = 0.15;
+      contentGroup.add(models3DGroup);
+
+      function resolveStation9AssetPath(relPath) {
+        const pName = (typeof window !== 'undefined' && window.location) ? window.location.pathname : '';
+        const isInApp = pName.includes('/app/');
+        const prefix = isInApp ? '../' : './';
+        return prefix + relPath.replace(/^\/+/, '');
+      }
+
+      function loadStation9Model(relPath, posX, floorY, posZ, targetDim, rotY) {
+        const fullPath = resolveStation9AssetPath(relPath);
+        if (typeof gltfLoader !== 'undefined') {
+          gltfLoader.load(
+            fullPath, (gltf) => {
+              if (gltf.scene) {
+                gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
+              }
+              const m = gltf.scene;
+              m.rotation.y = rotY;
+              m.position.set(posX, 0, posZ);
+
+              // Auto scaling theo kích thước mục tiêu
+              m.updateMatrixWorld(true);
+              const bBox = new THREE.Box3().setFromObject(m);
+              const sz = new THREE.Vector3();
+              bBox.getSize(sz);
+              const maxDim = Math.max(sz.x, sz.y, sz.z);
+              if (maxDim > 0) {
+                const s = targetDim / maxDim;
+                m.scale.set(s, s, s);
+              }
+
+              // Auto grounding tiếp đất chuẩn
+              m.updateMatrixWorld(true);
+              const bBox2 = new THREE.Box3().setFromObject(m);
+              if (isFinite(bBox2.min.y)) {
+                m.position.y += (floorY - bBox2.min.y);
+              } else {
+                m.position.y = floorY;
+              }
+
+              m.traverse((c) => {
+                if (c.isMesh) {
+                  c.castShadow = false;
+                  c.receiveShadow = false;
+                  c.matrixAutoUpdate = false;
+                  c.updateMatrix();
+                  if (c.material) {
+                    c.material.roughness = Math.max(0.35, c.material.roughness || 0.65);
+                  }
+                }
+                c.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
+              });
+              models3DGroup.add(m);
+            },
+            undefined,
+            (err) => {
+              console.warn('[Station 9] Không thể nạp GLB:', fullPath, err);
+            }
+          );
+        }
+      }
+
+      // 3 Mô hình 3D thực tế của Trạm 9 (Chủ đề 3/Bài 6/9):
+      // 1. Phần 1: Thời cơ quốc tế - Liên Xô chiến thắng (lien_xo_chien_thang.glb) - Cánh trái
+      loadStation9Model('assets/models/tram9/lien_xo_chien_thang.glb', -0.85, 0.105, 0.05, 1.15, Math.PI * 0.10);
+
+      // 2. Phần 2: Ý nghĩa lịch sử - Giải phóng sau 1000 năm (giai_phong_sau_1000_nam.glb) - Tiền cảnh trung tâm
+      loadStation9Model('assets/models/tram9/giai_phong_sau_1000_nam.glb', 0.0, 0.105, 0.35, 1.20, 0);
+
+      // 3. Phần 3: Nguyên nhân then chốt & Bài học - Sự lãnh đạo của Đảng (lanh_dao_cua_dang.glb) - Cánh phải
+      loadStation9Model('assets/models/tram9/lanh_dao_cua_dang.glb', 0.85, 0.105, 0.05, 1.15, -Math.PI * 0.10);
+
+      // ĐÀI ĐUỐC THỜI CƠ & ĐỘC LẬP VĨNH CỬU PHÍA SAU TRUNG TÂM
       const torchGroup = new THREE.Group();
-      torchGroup.position.set(-0.16, 0.24, -0.05);
+      torchGroup.position.set(0, 0.105, -0.45);
 
       const stem = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.055, 0.038, 0.42, 24),
+        new THREE.CylinderGeometry(0.065, 0.045, 0.45, 24),
         new THREE.MeshStandardMaterial({ color: 0xb45309, metalness: 0.9, roughness: 0.2 })
       );
-      stem.position.y = 0.21;
+      stem.position.y = 0.22;
       torchGroup.add(stem);
 
       const cup = new THREE.Mesh(
-        new THREE.CylinderGeometry(0.11, 0.055, 0.12, 24),
+        new THREE.CylinderGeometry(0.13, 0.065, 0.14, 24),
         new THREE.MeshStandardMaterial({ color: 0xd97706, metalness: 0.92, roughness: 0.15 })
       );
-      cup.position.y = 0.45;
+      cup.position.y = 0.48;
       torchGroup.add(cup);
 
-      // Ngọn lửa thiêng độc lập
       const flameMat = new THREE.MeshStandardMaterial({
         color: 0xf97316,
         emissive: 0xef4444,
         emissiveIntensity: 1.2,
         roughness: 0.2
       });
-      const flame = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.26, 16), flameMat);
-      flame.position.y = 0.60;
+      const flame = new THREE.Mesh(new THREE.ConeGeometry(0.10, 0.28, 16), flameMat);
+      flame.position.y = 0.64;
       torchGroup.add(flame);
 
       const flameInner = new THREE.Mesh(
-        new THREE.ConeGeometry(0.05, 0.18, 16),
+        new THREE.ConeGeometry(0.06, 0.20, 16),
         new THREE.MeshStandardMaterial({ color: 0xfef08a, emissive: 0xfde047, emissiveIntensity: 1.5 })
       );
-      flameInner.position.y = 0.58;
+      flameInner.position.y = 0.62;
       torchGroup.add(flameInner);
 
-      summaryGroup.add(torchGroup);
+      contentGroup.add(torchGroup);
 
-      // CUỐN ĐẠI BIÊN NIÊN SỬ 1945 MẠ VÀNG
-      const bookGroup = new THREE.Group();
-      bookGroup.position.set(0.20, 0.28, 0.08);
-      bookGroup.rotation.y = -Math.PI * 0.20;
-
-      const bookCanvas = document.createElement('canvas');
-      bookCanvas.width = 320; bookCanvas.height = 180;
-      const bctx = bookCanvas.getContext('2d');
-      bctx.fillStyle = '#fffbeb';
-      bctx.fillRect(0, 0, 320, 180);
-      bctx.strokeStyle = '#d97706';
-      bctx.lineWidth = 4;
-      bctx.strokeRect(4, 4, 312, 172);
-
-      // Gáy sách
-      bctx.strokeStyle = '#92400e';
-      bctx.lineWidth = 2;
-      bctx.beginPath();
-      bctx.moveTo(160, 4); bctx.lineTo(160, 176);
-      bctx.stroke();
-
-      // Trang trái: 15 ngày thần tốc
-      bctx.fillStyle = '#991b1b';
-      bctx.font = 'bold 12px "Outfit", sans-serif';
-      bctx.fillText('15 NGÀY THẦN TỐC', 18, 28);
-      bctx.fillStyle = '#1e293b';
-      bctx.font = '9.5px "Outfit", sans-serif';
-      bctx.fillText('• 13/8: Quân lệnh số 1', 18, 52);
-      bctx.fillText('• 16/8: Đại hội Tân Trào', 18, 74);
-      bctx.fillText('• 19/8: Khởi nghĩa Hà Nội', 18, 96);
-      bctx.fillText('• 23/8: Giải phóng Huế', 18, 118);
-      bctx.fillText('• 25/8: Sài Gòn quật khởi', 18, 140);
-      bctx.fillText('• 30/8: Bảo Đại thoái vị', 18, 162);
-
-      // Trang phải: Bài học lịch sử
-      bctx.fillStyle = '#b45309';
-      bctx.font = 'bold 12px "Outfit", sans-serif';
-      bctx.fillText('BÀI HỌC VÀNG SON', 178, 28);
-      bctx.fillStyle = '#1e293b';
-      bctx.font = '9.5px "Outfit", sans-serif';
-      bctx.fillText('1. Dự báo & Nắm chắc thời cơ', 178, 56);
-      bctx.fillText('2. Phát huy sức mạnh toàn dân', 178, 84);
-      bctx.fillText('3. Đấu tranh chính trị & vũ trang', 178, 112);
-      bctx.fillText('   kết hợp sức mạnh thời đại', 178, 130);
-      bctx.fillStyle = '#dc2626';
-      bctx.font = 'bold 10px "Outfit", sans-serif';
-      bctx.fillText('🇻🇳 THỜI CƠ NGÀN NĂM CÓ MỘT', 178, 160);
-
-      const bookTex = new THREE.CanvasTexture(bookCanvas);
-      const bookMesh = new THREE.Mesh(
-        new THREE.PlaneGeometry(0.42, 0.24),
-        new THREE.MeshStandardMaterial({ map: bookTex, side: THREE.DoubleSide })
-      );
-      bookMesh.rotation.x = -Math.PI * 0.25;
-      bookGroup.add(bookMesh);
-      summaryGroup.add(bookGroup);
-
-      // Vòng nguyệt quế mạ vàng ôm quanh chân đài
-      const laurel = new THREE.Mesh(
-        new THREE.TorusGeometry(0.42, 0.02, 16, 48),
-        new THREE.MeshStandardMaterial({ color: 0xffd700, metalness: 0.95, roughness: 0.15 })
-      );
-      laurel.rotation.x = Math.PI / 2;
-      laurel.position.y = 0.25;
-      summaryGroup.add(laurel);
-
-      // Ánh sáng ngọn đuốc ấm áp
-      const torchLight = new THREE.PointLight(0xf59e0b, 2.0, 3.2);
-      torchLight.position.set(-0.16, 0.85, -0.05);
-      summaryGroup.add(torchLight);
-
-      contentGroup.add(summaryGroup);
+      // Ánh sáng vàng thiêng liêng rực rỡ
+      const torchLight = new THREE.PointLight(0xf59e0b, 2.2, 3.5);
+      torchLight.position.set(0, 1.2, 0);
+      contentGroup.add(torchLight);
 
       // Biển tên trạm tinh tế (Single Clean Badge)
-      const badgeT9 = createCalloutLabel('⭐ Trạm 9: Thắng Lợi & Bài Học Lịch Sử', 380, 52, 'rgba(234, 179, 8, 0.95)', '#ffffff');
-      badgeT9.position.set(0, 1.95, 0);
+      const badgeT9 = createCalloutLabel('⭐ Trạm 9: Thắng Lợi Vĩ Đại & Bài Học Lịch Sử', 420, 56, 'rgba(234, 179, 8, 0.95)', '#ffffff');
+      badgeT9.position.set(0, 3.40, 0);
       contentGroup.add(badgeT9);
 
       stationGroup.userData.anim = {
         flame: flame,
         flameInner: flameInner,
-        book: bookGroup,
-        light: torchLight
+        light: torchLight,
+        badge: badgeT9
       };
-stationGroup.add(contentGroup);
+
+      stationGroup.add(contentGroup);
+
+      stationGroup.traverse((child) => {
+        if (child.isMesh || child.isSprite) {
+          child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
+        }
+      });
+
       return stationGroup;
     }
 
@@ -16265,35 +16309,40 @@ window.addEventListener('pointermove', (e) => {
         { x: 0.45, y: 0.35, z: 0.30, label: "Lính Nhật đầu hàng không điều kiện (15/8/1945)" }    // Ý 3: Nhật Bản đầu hàng
       ],
       2: [ // Trạm 2: Lán Nà Nưa & Quân lệnh số 1
-        { x: -0.65, y: 0.65, z: 0.0, label: "Mô hình phong trào chuẩn bị lực lượng kháng Nhật" },   // Ý 1: Chuẩn bị lực lượng
-        { x: 0.65, y: 0.75, z: 0.0, label: "Bàn chỉ huy & Bản gốc Quân lệnh số 1 phát động Tổng khởi nghĩa" }, // Ý 2: Quân lệnh số 1
-        { x: 0.0, y: 0.95, z: -0.30, label: "Lán Nà Nưa — Nơi Hội nghị toàn quốc của Đảng họp" }      // Ý 3: Hội nghị Tân Trào
+        { x: -1.25, y: 0.65, z: 0.32, label: "Cao trào Kháng Nhật cứu nước & Phá kho thóc Nhật cứu đói" },
+        { x: 1.25, y: 0.65, z: 0.32, label: "Ủy ban Khởi nghĩa Toàn quốc & Quân lệnh số 1 phát động Tổng khởi nghĩa" },
+        { x: 0.0, y: 0.75, z: -0.45, label: "Lán Nà Nưa: 'Dù phải đốt cháy cả dãy Trường Sơn cũng phải giành độc lập!'" }
       ],
       3: [ // Trạm 3: Đình Tân Trào & Đại hội Quốc dân
-        { x: -0.65, y: 0.85, z: 0.0, label: "Cây đa Tân Trào & Lễ xuất quân của Giải phóng quân (16/8)" }, // Ý 1: Lễ xuất quân
-        { x: 0.45, y: 0.95, z: 0.0, label: "Đình Tân Trào & Đại biểu Quốc dân Đại hội thông qua 10 chính sách" } // Ý 2: Đại hội Quốc dân
+        { x: -0.15, y: 0.65, z: -0.05, label: "Bác Hồ trò chuyện thân mật cùng các đại biểu & nhân dân" },
+        { x: 0.55, y: 0.70, z: 0.40, label: "10 chính sách lớn - Mặt trận Việt Minh được Đại hội thông qua" },
+        { x: 0.20, y: 0.75, z: -0.75, label: "Hội trường Đình Tân Trào & Ủy ban Dân tộc Giải phóng" }
       ],
-      4: [ // Trạm 4: Thái Nguyên & 4 tỉnh tiên phong
-        { x: -0.45, y: 0.75, z: 0.0, label: "Giải phóng quân giải phóng thị xã Thái Nguyên (16/8)" }, // Ý 1: Thái Nguyên
-        { x: 0.45, y: 0.75, z: 0.0, label: "Quần chúng 4 tỉnh giành chính quyền sớm nhất (Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam)" } // Ý 2: 4 tỉnh
+      4: [ // Trạm 4: Cây đa Tân Trào & 4 tỉnh tiên phong & Đứng dậy khởi nghĩa
+        { x: -0.55, y: 0.65, z: 0.05, label: "Gốc Cây Đa Tân Trào: Đ/c Võ Nguyên Giáp làm lễ xuất quân (16/8)" },
+        { x: 0.40, y: 0.65, z: -0.30, label: "4 tỉnh giành chính quyền sớm nhất (Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam)", isMultiModel: true },
+        { x: 0.50, y: 0.65, z: 0.35, label: "Quần chúng đứng dậy khởi nghĩa giải phóng thị xã Thái Nguyên (16/8)" }
       ],
-      5: [ // Trạm 5: Khởi nghĩa Hà Nội — Nhà hát Lớn
-        { x: 0.0, y: 0.85, z: 0.15, label: "Quảng trường Nhà hát Lớn & Biển người mít tinh (19/8)" }, // Ý 1: Mít tinh Nhà hát Lớn
-        { x: 0.0, y: 1.25, z: -0.20, label: "Cổng Bắc Bộ Phủ & Cờ đỏ sao vàng chiến thắng" }         // Ý 2: Đánh chiếm Bắc Bộ Phủ
+      5: [ // Trạm 5: Khởi nghĩa Hà Nội — Nhà hát Lớn & Thắng lợi toàn quốc
+        { x: -0.55, y: 0.75, z: 0.15, label: "Quảng trường Nhà hát Lớn & Biển người mít tinh (19/8)" },
+        { x: 0.55, y: 0.75, z: 0.15, label: "Đánh chiếm 5 cơ quan đầu não — Thắng lợi toàn quốc" },
+        { x: 0.55, y: 0.75, z: 0.15, label: "Thắng lợi toàn quốc — Khởi nghĩa Hà Nội thắng lợi rực rỡ" }
       ],
-      6: [ // Trạm 6: Huế & Sài Gòn
-        { x: -0.55, y: 0.75, z: 0.0, label: "Quần chúng nhân dân Cố đô Huế giành chính quyền (23/8)" }, // Ý 1: Khởi nghĩa Huế
-        { x: 0.55, y: 0.75, z: 0.0, label: "Nhân dân Sài Gòn với tầm vông vạt nhọn khởi nghĩa (25/8)" }  // Ý 2: Khởi nghĩa Sài Gòn
+      6: [ // Trạm 6: Huế & Sài Gòn & Thắng lợi toàn quốc
+        { x: -0.65, y: 0.65, z: 0.0, label: "Quần chúng nhân dân Cố đô Huế giành chính quyền (23/8)" },
+        { x: 0.65, y: 0.65, z: 0.0, label: "Nhân dân Sài Gòn với tầm vông vạt nhọn khởi nghĩa (25/8)" },
+        { x: 0.65, y: 0.65, z: 0.0, label: "Đồng Nai Thượng & Hà Tiên (28/8) — Tổng khởi nghĩa thắng lợi hoàn toàn" }
       ],
       7: [ // Trạm 7: Bảo Đại thoái vị
-        { x: 0.0, y: 0.85, z: 0.0, label: "Vua Bảo Đại trao Ấn kiếm hoàng triều trước Cửa Ngọ Môn (30/8)" } // Ý 1: Thoái vị
+        { x: 0.0, y: 0.85, z: 0.0, label: "Vua Bảo Đại trao Ấn kiếm hoàng triều trước Cửa Ngọ Môn (30/8)" }
       ],
       8: [ // Trạm 8: Ba Đình Độc lập
-        { x: 0.0, y: 1.15, z: 0.0, label: "Lễ đài Ba Đình & Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập (2/9)" } // Ý 1: Tuyên ngôn Độc lập
+        { x: 0.0, y: 0.85, z: 0.0, label: "Lễ đài Ba Đình & Chủ tịch Hồ Chí Minh đọc Tuyên ngôn Độc lập (2/9)" }
       ],
-      9: [ // Trạm 9: Phòng Vàng Son
-        { x: -0.45, y: 0.85, z: 0.0, label: "Bục biểu trưng Phân tích 3 Nguyên nhân chủ quan & 1 khách quan" }, // Ý 1: Nguyên nhân
-        { x: 0.45, y: 0.95, z: 0.0, label: "Ngọn đuốc thiêng Ý nghĩa lịch sử thời đại & 3 Bài học kinh nghiệm" } // Ý 2: Ý nghĩa & Bài học
+      9: [ // Trạm 9: Khúc khải hoàn toàn thắng — 3 mô hình tổng kết
+        { x: -0.85, y: 0.65, z: 0.05, label: "Thời cơ quốc tế: Hồng quân Liên Xô đánh tan phát xít Nhật (Khách quan)" },
+        { x: 0.0, y: 0.65, z: 0.35, label: "Ý nghĩa lịch sử: Đập tan xiềng xích thực dân & phong kiến hơn 1000 năm" },
+        { x: 0.85, y: 0.65, z: 0.05, label: "Nguyên nhân then chốt: Sự lãnh đạo sáng suốt của Đảng Cộng sản & Bác Hồ" }
       ]
     };
     window.STATION_STEP_MODEL_OFFSETS = STATION_STEP_MODEL_OFFSETS;
