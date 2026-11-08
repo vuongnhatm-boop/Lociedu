@@ -1526,7 +1526,8 @@
             display: block;
         }
 
-        #view-overview {
+        #view-overview,
+        #view-pet {
             overflow-y: auto;
             overflow-x: hidden;
             -webkit-overflow-scrolling: touch;
@@ -1536,7 +1537,8 @@
             box-sizing: border-box;
         }
 
-        #view-overview>* {
+        #view-overview>*,
+        #view-pet>* {
             max-width: 1200px;
             margin-left: auto;
             margin-right: auto;
@@ -12909,6 +12911,9 @@
                         <button class="topbar-dropdown-item nav-item" data-tab="exam">
                             <span>Đề ôn tập</span>
                         </button>
+                        <button class="topbar-dropdown-item nav-item" data-tab="pet">
+                            <span>Linh Thú Tri Thức</span>
+                        </button>
                     </div>
                 </div>
 
@@ -13108,169 +13113,6 @@
                 <p class="welcome-subheading-text">Tiếp tục hành trình chinh phục tri thức của bạn.</p>
             </div>
 
-            <!-- KHU VỰC LINH THÚ TRI THỨC (COMPANION PET SYSTEM) -->
-            <!-- KHU VỰC TIẾN ĐỘ HỌC TẬP & LINH THÚ TRI THỨC (THEO GIAO DIỆN CHUẨN) -->
-            <section class="learning-mascot-section" style="margin-bottom: 28px;">
-                <!-- CARD LINH THÚ & TIẾN ĐỘ HỌC TẬP (GIỐNG ẢNH 100%) -->
-                <div id="loci-pet-dashboard-slot"
-                    style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 22px; padding: 26px 28px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04); position: relative; overflow: hidden;">
-                    <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 32px; align-items: center;"
-                        class="mascot-dash-grid">
-                        <!-- Cột Trái: Cú Tím Cử Nhân + Đại Hội Thần Tốc + Chips + Nút Tiếp tục học -->
-                        <div style="display: flex; gap: 24px; align-items: center;">
-                            <!-- Linh thú Tri Thức 3D (Đồng hành học tập) -->
-                            <div style="flex-shrink: 0; width: 145px; height: 165px; display: grid; place-items: center; position: relative;" class="mascot-img-wrap">
-                                <img id="active-mascot-img" src="assets/images/pets/owl_scholar.png" alt="Linh thú Tri thức"
-                                    style="width: 140px; height: 160px; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(109,40,217,0.22)); animation: mascotFloat 3.5s ease-in-out infinite; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
-                                    onclick="window.openPetSelectionModal && window.openPetSelectionModal()" title="Nhấp để đổi Linh thú Tri thức đồng hành">
-                                <button type="button" onclick="window.openPetSelectionModal && window.openPetSelectionModal()" 
-                                    style="position: absolute; bottom: 2px; right: 2px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px; border: 1.5px solid #fff; box-shadow: 0 4px 10px rgba(79,70,229,0.35); cursor: pointer; display: flex; align-items: center; gap: 3px; z-index: 2;">
-                                    <span>Đổi</span> <span style="font-size: 9px;">▾</span>
-                                </button>
-                            </div>
-
-                            <!-- Nội dung văn bản -->
-                            <div style="flex: 1;">
-                                <span
-                                    style="display: inline-block; background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 11.5px; padding: 3px 10px; border-radius: 99px; border: 1px solid #bae6fd;">Cấp
-                                    2</span>
-
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <span id="active-mascot-level-badge" style="display: inline-block; background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 11.5px; padding: 3px 10px; border-radius: 99px; border: 1px solid #bae6fd;">Cấp 2</span>
-                                    <span id="active-mascot-element-badge" style="display: inline-block; background: #f3e8ff; color: #7c3aed; font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 99px; border: 1px solid #e9d5ff;">TUỆ HỆ</span>
-                                </div>
-                                <h3 id="active-mascot-name" style="font-size: 21px; font-weight: 800; color: #0f172a; margin: 8px 0 6px 0; letter-spacing: -0.01em;">Cú Tím Cử Nhân · Đại Hội Thần Tốc</h3>
-
-                                <p id="active-mascot-desc" style="font-size: 13.5px; color: #64748b; margin: 0 0 14px 0; line-height: 1.45;">Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 20% phản xạ truy xuất sự kiện.</p>
-
-                                <!-- 3 Chips / Thẻ tính năng -->
-                                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
-                                    <span
-                                        style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
-                                            stroke-width="2.5">
-                                            <circle cx="12" cy="12" r="10"></circle>
-                                            <circle cx="12" cy="12" r="6"></circle>
-                                            <circle cx="12" cy="12" r="2"></circle>
-                                        </svg>
-                                        Bám sát chương trình
-                                    </span>
-                                    <span
-                                        style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#0284c7"
-                                            stroke-width="2.5">
-                                            <line x1="18" y1="20" x2="18" y2="10"></line>
-                                            <line x1="12" y1="20" x2="12" y2="4"></line>
-                                            <line x1="6" y1="20" x2="6" y2="14"></line>
-                                        </svg>
-                                        Luyện tập tăng tốc
-                                    </span>
-                                    <span
-                                        style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
-                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981"
-                                            stroke-width="2.5">
-                                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                            <polyline points="17 6 23 6 23 12"></polyline>
-                                        </svg>
-                                        Tiến bộ mỗi ngày
-                                    </span>
-                                </div>
-
-                                <!-- Nút Tiếp tục học -->
-                                <button type="button"
-                                    onclick="document.getElementById('space-grid') ? document.getElementById('space-grid').scrollIntoView({behavior:'smooth'}) : (window.location.href='#spaces-section')"
-                                    style="background: #2563eb; color: #ffffff; border: none; border-radius: 12px; padding: 10px 22px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); transition: all 0.2s;">
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
-                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                                    </svg>
-                                    Tiếp tục học
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Cột Phải: Tiến độ học tập & Thống kê cá nhân -->
-                        <div style="border-left: 1px solid #f1f5f9; padding-left: 28px;">
-                            <div
-                                style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
-                                    stroke-width="2.5">
-                                    <circle cx="12" cy="12" r="10"></circle>
-                                    <circle cx="12" cy="12" r="6"></circle>
-                                    <circle cx="12" cy="12" r="2"></circle>
-                                </svg>
-                                Tiến độ học tập
-                            </div>
-
-                            <!-- Phần trăm và số XP -->
-                            <div
-                                style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
-                                <span id="dash-progress-pct"
-                                    style="font-size: 24px; font-weight: 800; color: #0f172a;">42%</span>
-                                <span id="dash-xp-fraction"
-                                    style="font-size: 13.5px; font-weight: 700; color: #64748b;">160 XP / 380 XP</span>
-                            </div>
-
-                            <!-- Thanh tiến trình -->
-                            <div
-                                style="height: 9px; background: #f1f5f9; border-radius: 99px; overflow: hidden; margin-bottom: 18px;">
-                                <div id="dash-progress-bar"
-                                    style="height: 100%; width: 42%; background: #2563eb; border-radius: 99px;"></div>
-                            </div>
-
-                            <!-- Bảng thông số chi tiết -->
-                            <div
-                                style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; margin-bottom: 20px;">
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="color: #64748b;">XP hiện có</span>
-                                    <strong id="dash-xp-cur" style="color: #0f172a; font-weight: 700;">160 XP</strong>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="color: #64748b;">Xp cần để lên Cấp 3</span>
-                                    <strong id="dash-xp-next" style="color: #0f172a; font-weight: 700;">220 XP</strong>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="color: #64748b;">Chuỗi học tập</span>
-                                    <strong id="dash-streak" style="color: #0f172a; font-weight: 700;">15 ngày</strong>
-                                </div>
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <span style="color: #64748b;">Thời gian học tuần này</span>
-                                    <strong id="dash-study-time" style="color: #0f172a; font-weight: 700;">2 giờ 30
-                                        phút</strong>
-                                </div>
-                            </div>
-
-                            <!-- Hai nút hành động ở chân cột phải -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                                <button type="button"
-                                    onclick="window.openSpacedRepetitionModal ? window.openSpacedRepetitionModal() : (document.getElementById('space-grid') && document.getElementById('space-grid').scrollIntoView({behavior:'smooth'}))"
-                                    style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
-                                        stroke-width="2.2">
-                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                                        <line x1="16" y1="2" x2="16" y2="6"></line>
-                                        <line x1="8" y1="2" x2="8" y2="6"></line>
-                                        <line x1="3" y1="10" x2="21" y2="10"></line>
-                                    </svg>
-                                    Xem kế hoạch
-                                </button>
-                                <button type="button"
-                                    onclick="window.openCloudAuthModal ? window.openCloudAuthModal() : alert('Đang mở thống kê cá nhân')"
-                                    style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
-                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981"
-                                        stroke-width="2.2">
-                                        <path d="M18 20V10"></path>
-                                        <path d="M12 20V4"></path>
-                                        <path d="M6 20v-6"></path>
-                                    </svg>
-                                    Xem thống kê
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-
             <!-- SPACES TAB UI -->
             <div
                 style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
@@ -13421,78 +13263,6 @@
                     <!-- JS renders Top 3 Podium -->
                 </div>
             </section>
-            <!-- ==================== BẢNG TIN CỘNG ĐỒNG THẢO LUẬN TRÊN OVERVIEW ==================== -->
-            <section class="glass-card overview-community-feed-section" style="margin-top: 32px; padding: 24px 28px; border-radius: 20px; border: 1.5px solid #e0f2fe; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 249, 255, 0.6)); box-shadow: 0 10px 30px rgba(2, 132, 199, 0.05);">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-                    <div style="display: flex; align-items: center; gap: 12px;">
-                        <div style="width: 38px; height: 38px; border-radius: 12px; background: #e0f2fe; color: #0284c7; display: grid; place-items: center;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block; vertical-align:middle;"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                        <div>
-                            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">Bảng Tin Cộng Đồng Loci Edu · Thảo Luận Sôi Nổi</h2>
-                            <p style="font-size: 13px; color: #64748b; margin: 0;">Mẹo ghi nhớ Cung điện 3D, trao đổi câu hỏi trắc nghiệm &amp; kinh nghiệm ôn thi THPT</p>
-                        </div>
-                    </div>
-                    <button class="m-btn sec" onclick="window.switchPortalTab('connect')" style="padding: 8px 18px; font-size: 13.5px; font-weight: 700; color: #0284c7; border-color: #bae6fd; background: #fff; cursor: pointer;">
-                        Vào Mạng Xã Hội Thảo Luận ➔
-                    </button>
-                </div>
-
-                <!-- 3 Thẻ bài viết cộng đồng nổi bật nhất -->
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-                    <!-- Card 1: Minh Khang -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s;" onclick="window.switchPortalTab('connect')">
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                                <div style="width: 34px; height: 34px; border-radius: 50%; background: #f59e0b; color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center;">K</div>
-                                <div>
-                                    <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Nguyễn Minh Khang</div>
-                                    <span style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 1px 7px; border-radius: 99px;">Quán quân Top 1</span>
-                                </div>
-                            </div>
-                            <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0 0 12px 0;">"Mẹo nhớ 9 mốc Lịch sử Bài 6 bằng Cung điện 3D Triển lãm Nâu đỉnh thật sự! Neo mốc Tân Trào ở sảnh chính, Tuyên ngôn Độc lập ở bục phát biểu. Làm đề 28 câu đúng 100%!"</p>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px;">
-                            <span>38 Thích · 2 Bình luận</span>
-                            <span style="color: #0284c7; font-weight: 700;">Xem chi tiết ➔</span>
-                        </div>
-                    </div>
-
-                    <!-- Card 2: Trần Phương Linh -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s;" onclick="window.switchPortalTab('connect')">
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                                <div style="width: 34px; height: 34px; border-radius: 50%; background: #10b981; color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center;">L</div>
-                                <div>
-                                    <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Trần Phương Linh</div>
-                                    <span style="font-size: 11px; font-weight: 700; color: #047857; background: #d1fae5; padding: 1px 7px; border-radius: 99px;">Á quân Top 2</span>
-                                </div>
-                            </div>
-                            <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0 0 12px 0;">"Vừa hoàn thành xong phòng 3D Bài 7 (Kháng chiến chống Pháp). Tượng Bác Hồ trên núi Biên giới và Hầm Đờ Cát cực kỳ chân thực. Có cả thử thách phản xạ gõ mốc ăn 150 EXP!"</p>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px;">
-                            <span>29 Thích · 1 Bình luận</span>
-                            <span style="color: #0284c7; font-weight: 700;">Xem chi tiết ➔</span>
-                        </div>
-                    </div>
-
-                    <!-- Card 3: Lê Hoàng Nam -->
-                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s;" onclick="window.switchPortalTab('connect')">
-                        <div>
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
-                                <div style="width: 34px; height: 34px; border-radius: 50%; background: #0284c7; color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center;">N</div>
-                                <div>
-                                    <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Lê Hoàng Nam</div>
-                                    <span style="font-size: 11px; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 1px 7px; border-radius: 99px;">Quý quân Top 3</span>
-                                </div>
-                            </div>
-                            <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0 0 12px 0;">"Câu hỏi Đúng/Sai đề thi: 'Trong Hiệp định Paris 1973, Mĩ cam kết rút hết quân viễn chinh về nước trong 60 ngày' là ĐÚNG hoàn toàn theo Điều 5 nhé các bạn. Phòng 3D Bài 8 có chú thích!"</p>
-                        </div>
-                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px;">
-                            <span>22 Thích · 1 Bình luận</span>
-                            <span style="color: #0284c7; font-weight: 700;">Xem chi tiết ➔</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
 
             <!-- LỘ TRÌNH ÔN TẬP EBBINGHAUS (SPACED REPETITION) -->
@@ -13615,1131 +13385,204 @@
             <!-- ========================================================================= -->
             <!-- PHƯƠNG PHÁP CUNG ĐIỆN KÝ ỨC (METHOD OF LOCI) - TÍCH HỢP TRỰC TIẾP VÀO TỔNG QUAN -->
             <!-- ========================================================================= -->
-            <section id="overview-loci-section" class="overview-loci-embedded-master"
-                style="margin-top: 64px; border-top: 1px solid #e2e8f0; padding-top: 56px;">
-                <div class="loci-space-container">
-                    <!-- HEADER TRANG TRỌNG CỦA KHÔNG GIAN RIÊNG -->
-                    <!-- === GIỚI THIỆU GỌN & ĐẸP === -->
-                    <div
-                        style="display:flex; align-items:flex-start; justify-content:space-between; gap:24px; flex-wrap:wrap; margin-bottom:28px;">
-                        <div style="flex:1; min-width:260px;">
-                            <div
-                                style="display:inline-flex; align-items:center; gap:8px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:20px; padding:4px 14px; font-size:11px; font-weight:700; letter-spacing:.06em; color:#0369a1; margin-bottom:12px;">
-                                <span
-                                    style="width:7px;height:7px;border-radius:50%;background:#38bdf8;display:inline-block;"></span>
-                                KHOA HỌC NÃO BỘ · CHUẨN PHƯƠNG PHÁP LUẬN NCKH
-                            </div>
-                            <h2
-                                style="font-size:clamp(20px,3vw,26px); font-weight:800; color:#0f172a; line-height:1.3; margin-bottom:8px;">
-                                Phương Pháp Cung Điện Ký Ức
-                                <span
-                                    style="display:block; font-size:14px; font-weight:500; color:#64748b; margin-top:4px;">Method
-                                    of Loci · Hơn 2.500 năm lịch sử ghi nhớ không gian</span>
-                            </h2>
-                            <p
-                                style="font-size:14px; color:#475569; line-height:1.75; max-width:620px; margin-bottom:16px;">
-                                Chuyển hóa dữ kiện Lịch sử trừu tượng thành <strong>tọa độ đồ vật trong không gian
-                                    3D</strong> sống động.
-                                Não bộ xử lý kiến thức như bản đồ định vị sinh tồn tự nhiên, giúp ghi nhớ bền bỉ và hồi
-                                tưởng chính xác.
-                            </p>
-                            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                                <div
-                                    style="display:flex; align-items:center; gap:8px; background:#eff8f5; border:1px solid #a7f3d0; border-radius:10px; padding:7px 13px; font-size:13px; font-weight:600; color:#065f46;">
-                                    Tạo không gian 3D
-                                </div>
-                                <div
-                                    style="display:flex; align-items:center; gap:8px; background:#f0f9ff; border:1px solid #bae6fd; border-radius:10px; padding:7px 13px; font-size:13px; font-weight:600; color:#075985;">
-                                    Gắn mốc kiến thức
-                                </div>
-                                <div
-                                    style="display:flex; align-items:center; gap:8px; background:#faf5ff; border:1px solid #d8b4fe; border-radius:10px; padding:7px 13px; font-size:13px; font-weight:600; color:#6b21a8;">
-                                    Liên kết &amp; Ôn tập SM-2
-                                </div>
-                            </div>
+                        <section id="overview-loci-section" class="overview-loci-compact-strip"
+                style="margin-top: 36px; margin-bottom: 24px; padding: 18px 24px; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #eff6ff 100%); border: 1.5px solid #bae6fd; border-radius: 20px; box-shadow: 0 4px 20px rgba(2, 132, 199, 0.06); display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 260px;">
+                    <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; display: grid; place-items: center; font-size: 22px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">🏛️</div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 11px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;">Method of Loci</span>
+                            <span style="font-size: 15px; font-weight: 800; color: #0f172a;">Phương Pháp Cung Điện Ký Ức</span>
                         </div>
-                        <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
-                            <button class="m-btn sec" onclick="window.scrollToOverviewTop()" style="font-size:13px;">
-                                ↑ Về Tổng quan
-                            </button>
-                            <a href="trinh_chieu_loci.html" target="_blank" class="m-btn pri"
-                                style="text-decoration:none; font-size:13px;">
-                                Trình Chiếu Slide Loci ↗
-                            </a>
-                            <button class="m-btn sec"
-                                onclick="const w=document.getElementById('loci-detail-accordion'); if(w){ const hidden=w.style.display==='none'; w.style.display=hidden?'block':'none'; this.textContent=hidden?'▲ Thu gọn chi tiết':'▼ Xem chi tiết 9 phần'; }"
-                                style="font-size:12px; color:#0369a1; border-color:#bae6fd;">
-                                ▼ Xem chi tiết 9 phần
-                            </button>
-                        </div>
+                        <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0; line-height: 1.45;">Chuyển hóa dữ kiện Lịch sử thành tọa độ đồ vật không gian 3D sống động theo cơ chế định vị tự nhiên của não bộ.</p>
                     </div>
-
-                    <div id="loci-detail-accordion" style="display:none;">
-
-                        <!-- THANH ĐIỀU HƯỚNG NHANH CÁC PHẦN (QUICK JUMP MENU) -->
-                        <nav class="loci-subnav-bar" id="loci-quick-nav" aria-label="Mục lục phương pháp Loci">
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-origin')"><span class="qn-idx">01</span> Nguồn
-                                Gốc</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-video')"><span class="qn-idx">02</span> Trải
-                                Nghiệm 3D</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-evidence')"><span class="qn-idx">03</span> Thần
-                                Kinh Học</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-science')"><span class="qn-idx">04</span> 3 Trụ
-                                Cột</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-benchmark')"><span class="qn-idx">05</span> Đối
-                                Sánh</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-diagram')"><span class="qn-idx">06</span> Slide
-                                Bài Giảng</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-steps')"><span class="qn-idx">07</span> 5
-                                Bước</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-casestudy')"><span class="qn-idx">08</span>
-                                Thực Chiến</button>
-                            <button type="button" class="loci-subnav-btn"
-                                onclick="window.scrollToLociSection('sec-methodology')"><span class="qn-idx">09</span>
-                                Đánh Giá</button>
-                        </nav>
-
-                        <!-- SECTION 1: HERO BANNER TỔNG QUAN VỚI CÂU CHUYỆN SIMONIDES -->
-                        <section class="loci-hero-banner" id="sec-origin">
-                            <div class="loci-hero-content">
-                                <div class="loci-hero-tag"><span class="tag-fig">FIG. 01</span> LỊCH SỬ HƠN 2.500 NĂM TỪ
-                                    THỜI HY LẠP &amp; LA MÃ CỔ ĐẠI</div>
-                                <h2 class="loci-hero-heading">
-                                    Từ Bi Kịch Cổ Đại Đến <span>Vũ Khí Ghi Nhớ Không Gian</span> Của Nhân Loại
-                                </h2>
-                                <p class="loci-hero-text">
-                                    Vào thế kỷ thứ 5 TCN, thi sĩ <b>Simonides xứ Ceos</b> đã nhận diện chuẩn xác thi thể
-                                    từng nạn nhân trong một đại sảnh đổ sập nhờ hồi tưởng lại <b>vị trí chỗ ngồi</b> của
-                                    họ
-                                    trước thảm họa. Kể từ giây phút đó, nhân loại phát hiện: <b>Não bộ tiến hóa để ghi
-                                        nhớ
-                                        không gian (Spatial Memory) mạnh mẽ và bền bỉ hơn gấp nhiều lần so với các ký tự
-                                        chữ
-                                        viết rời rạc.</b> Về sau, các đại hùng biện gia La Mã như <i>Cicero (De
-                                        Oratore)</i> và <i>Quintilian</i> đã đúc kết thành thuật ghi nhớ kinh điển
-                                    <i>Ars
-                                        Memoriae</i>.
-                                </p>
-                                <div class="loci-insight-card">
-                                    <div class="insight-text">
-                                        <b>Cơ chế Thần kinh học (Vùng Hồi hải mã - Hippocampus):</b> Vùng hồi hải mã của
-                                        não
-                                        bộ chịu trách nhiệm thiết lập bản đồ nhận thức không gian (Cognitive Map). Khi
-                                        người
-                                        học "neo" các sự kiện lịch sử (năm 1945, hiệp định, chiến dịch) vào các tọa độ
-                                        đồ
-                                        vật trong phòng, não bộ sẽ xử lý kiến thức trừu tượng như thông tin định vị
-                                        không
-                                        gian sinh tồn tự nhiên.
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 2: VIDEO SHOWCASE CUNG ĐIỆN KÝ ỨC (CINEMATIC PLAYER) -->
-                        <section class="loci-video-showcase-section" id="sec-video">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">02</span> Trực Quan Hóa Cung Điện
-                                        Ký
-                                        Ức 3D &amp; Sa Bàn Tương Tác</h2>
-                                    <p class="loci-sec-sub">Mô phỏng hành trình khám phá không gian ký ức đa chiều và
-                                        trực
-                                        quan hóa mốc niên biểu Lịch sử 12</p>
-                                </div>
-                                <div class="diagram-actions">
-                                    <span class="loci-video-badge">Video Trải Nghiệm 3D Thực Tế</span>
-                                </div>
-                            </div>
-                            <div class="loci-video-wrapper">
-                                <div class="loci-video-stage">
-                                    <video class="loci-video-player" controls preload="metadata" playsinline
-                                        poster="assets/images/book_card.jpg">
-                                        <source src="cung_dien_ky_uc_v2 (1).mp4" type="video/mp4">
-                                        Trình duyệt của bạn không hỗ trợ phát thẻ video.
-                                    </video>
-                                </div>
-                                <div class="loci-video-caption-bar">
-                                    <div class="caption-item">
-                                        <span class="cap-icon">01</span>
-                                        <div>
-                                            <b>Không Gian 3D Sống Động</b>
-                                            <small>Mã hóa các sự kiện Lịch sử 12 vào từng tọa độ vật thể trực
-                                                quan</small>
-                                        </div>
-                                    </div>
-                                    <div class="caption-item">
-                                        <span class="cap-icon">02</span>
-                                        <div>
-                                            <b>Lộ Trình Đơn Hướng Cố Định</b>
-                                            <small>Di chuyển theo chiều kim đồng hồ, bảo toàn tuyệt đối dòng thời
-                                                gian</small>
-                                        </div>
-                                    </div>
-                                    <div class="caption-item">
-                                        <span class="cap-icon">03</span>
-                                        <div>
-                                            <b>Học Tích Cực Không Áp Lực</b>
-                                            <small>Biến việc học vẹt câu chữ thành trải nghiệm tham quan bảo tàng
-                                                3D</small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 3: MA TRẬN BẰNG CHỨNG KHOA HỌC QUỐC TẾ (PEER-REVIEWED RESEARCH MATRIX) -->
-                        <section class="loci-evidence-section" id="sec-evidence">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">03</span> Ma Trận Bằng Chứng Khoa
-                                        Học Thần Kinh &amp; Nhận Thức Quốc Tế</h2>
-                                    <p class="loci-sec-sub">Tổng hợp các công trình nghiên cứu trên các tạp chí danh giá
-                                        hàng đầu (Neuron, Nature Neuroscience, Nobel Prize, Science) kiểm chứng hiệu lực
-                                        của Method of Loci</p>
-                                </div>
-                                <div class="diagram-actions">
-                                    <span class="loci-video-badge">
-                                        Dữ Liệu Nghiên Cứu fMRI &amp; Thần Kinh Học
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="loci-evidence-grid">
-                                <!-- Bài báo 1: Neuron (Cell Press, 2017) -->
-                                <div class="evidence-card card-neuron">
-                                    <div class="ev-journal">
-                                        <span class="journal-badge badge-neuron">Neuron · Cell Press · 2017</span>
-                                        <div class="ev-authors">Martin Dresler, William Shirer et al.</div>
-                                        <div class="ev-institute">Viện Tâm thần học Max Planck (Đức) & ĐH Stanford (Mỹ)
-                                        </div>
-                                        <a href="https://doi.org/10.1016/j.neuron.2017.02.003" target="_blank"
-                                            class="ev-doi" title="Xem bài báo gốc">
-                                            DOI · 10.1016/j.neuron.2017.02.003 <span class="doi-arrow">↗</span>
-                                        </a>
-                                    </div>
-                                    <div class="ev-content">
-                                        <div class="ev-title">
-                                            "Mnemonic Training Reshapes Brain Networks to Support Superior Memory"
-                                            <em>(Huấn luyện Mnemonic tái cấu trúc mạng nơ-ron để hình thành khả năng ghi
-                                                nhớ
-                                                vượt trội)</em>
-                                        </div>
-                                        <div class="ev-method">
-                                            <b>Phương pháp:</b> Thử nghiệm ngẫu nhiên có đối chứng giữa người bình
-                                            thường và
-                                            các
-                                            Kỷ lục gia Trí nhớ Thế giới, chụp cộng hưởng từ chức năng (fMRI) trước và
-                                            sau lộ
-                                            trình luyện Method of Loci.
-                                        </div>
-                                    </div>
-                                    <div class="ev-finding">
-                                        <div class="ev-tag-highlight">Tái Tổ Chức Mạng Nơ-ron Chức Năng</div>
-                                        <div class="ev-desc">
-                                            Ảnh fMRI chứng minh việc rèn luyện Loci thúc đẩy <b>sự tái kết nối đồng
-                                                bộ</b>
-                                            giữa
-                                            Vỏ não trước trán (Prefrontal Cortex) và Hồi hải mã (Hippocampus), đưa mạng
-                                            lưới
-                                            chức năng não của người bình thường vận hành tương đương các chuyên gia trí
-                                            nhớ.
-                                        </div>
-                                    </div>
-                                    <div class="ev-app">
-                                        <b>Chuẩn hóa trong Loci Edu</b>
-                                        <span>Lộ trình ôn tập được thiết kế nhằm củng cố các liên kết synap thần kinh
-                                            dài
-                                            hạn
-                                            theo đúng chu kỳ vận hành não bộ.</span>
-                                    </div>
-                                </div>
-
-                                <!-- Bài báo 2: Nature Neuroscience (2003) -->
-                                <div class="evidence-card card-nature">
-                                    <div class="ev-journal">
-                                        <span class="journal-badge badge-nature">Nature Neuroscience · 2003</span>
-                                        <div class="ev-authors">Eleanor A. Maguire, E. Valentine et al.</div>
-                                        <div class="ev-institute">Wellcome Trust Centre for Neuroimaging, UCL (Vương
-                                            quốc
-                                            Anh)
-                                        </div>
-                                        <a href="https://doi.org/10.1038/nn988" target="_blank" class="ev-doi"
-                                            title="Xem bài báo gốc">
-                                            DOI · 10.1038/nn988 <span class="doi-arrow">↗</span>
-                                        </a>
-                                    </div>
-                                    <div class="ev-content">
-                                        <div class="ev-title">
-                                            "Routes to Remembering: The Brains Behind Superior Memory"
-                                            <em>(Các lộ trình để hồi tưởng: Giải mã não bộ của những người có trí nhớ
-                                                phi
-                                                thường)</em>
-                                        </div>
-                                        <div class="ev-method">
-                                            <b>Phương pháp:</b> Chụp cấu trúc não bộ (Structural MRI) và đo lường kích
-                                            hoạt
-                                            chuyển hóa (fMRI) giữa các chuyên gia trí nhớ hàng đầu thế giới và nhóm đối
-                                            chứng
-                                            cùng độ tuổi, trình độ.
-                                        </div>
-                                    </div>
-                                    <div class="ev-finding">
-                                        <div class="ev-tag-highlight">Kích Hoạt Vùng Bản Đồ Không Gian</div>
-                                        <div class="ev-desc">
-                                            Nghiên cứu khẳng định các chuyên gia trí nhớ <b>không có sự khác biệt về
-                                                kích
-                                                thước
-                                                giải phẫu não hay chỉ số thông minh</b>. Điểm mấu chốt là họ kích hoạt
-                                            đồng
-                                            bộ
-                                            vùng <b>Hồi hải mã bên phải (Right Hippocampus)</b> và Vỏ não đỉnh sau
-                                            chuyên
-                                            trách
-                                            xử lý không gian.
-                                        </div>
-                                    </div>
-                                    <div class="ev-app">
-                                        <b>Chuẩn hóa trong Loci Edu</b>
-                                        <span>Chuyển hóa dữ kiện lịch sử thành các vật thể trực quan trong sa bàn 3D để
-                                            kích
-                                            hoạt hệ thống bản đồ nhận thức không gian.</span>
-                                    </div>
-                                </div>
-
-                                <!-- Bài báo 3: Giải Nobel Y Sinh học (2014) -->
-                                <div class="evidence-card card-nobel">
-                                    <div class="ev-journal">
-                                        <span class="journal-badge badge-nobel">Giải Nobel Y Sinh Học · 2014</span>
-                                        <div class="ev-authors">John O'Keefe, May-Britt Moser, Edvard Moser</div>
-                                        <div class="ev-institute">Đại học UCL Luân Đôn & Viện Khoa học Na Uy (NTNU)
-                                        </div>
-                                        <a href="https://www.nobelprize.org/prizes/medicine/2014/summary/"
-                                            target="_blank" class="ev-doi" title="Xem tư liệu Nobel">
-                                            Nobel Assembly · Karolinska Institutet <span class="doi-arrow">↗</span>
-                                        </a>
-                                    </div>
-                                    <div class="ev-content">
-                                        <div class="ev-title">
-                                            "Discoveries of Cells That Constitute a Positioning System in the Brain"
-                                            <em>(Khám phá các tế bào cấu thành hệ thống định vị GPS tự nhiên bên trong
-                                                não
-                                                bộ)</em>
-                                        </div>
-                                        <div class="ev-method">
-                                            <b>Cơ chế khám phá:</b> Phát hiện tế bào vị trí (Place Cells) tại Hồi hải mã
-                                            và
-                                            tế
-                                            bào lưới (Grid Cells) tại Vỏ não nội khứu, hình thành nên hệ tọa độ định vị
-                                            lục
-                                            giác
-                                            tự nhiên cực kỳ chuẩn xác trong não người.
-                                        </div>
-                                    </div>
-                                    <div class="ev-finding">
-                                        <div class="ev-tag-highlight">Bản Năng Định Vị Sinh Tồn</div>
-                                        <div class="ev-desc">
-                                            Não người tiến hóa để định vị không gian sinh tồn. Khi "neo" kiến thức vào
-                                            tọa
-                                            độ
-                                            vật thể thực trong phòng, thông tin được <b>mã hóa vào hệ thống trí nhớ
-                                                không
-                                                gian
-                                                bền vững</b> thay vì chỉ dừng lại ở trí nhớ làm việc tạm thời.
-                                        </div>
-                                    </div>
-                                    <div class="ev-app">
-                                        <b>Chuẩn hóa trong Loci Edu</b>
-                                        <span>Xây dựng lộ trình tham quan cố định 1 chiều theo kim đồng hồ, bảo toàn
-                                            tính
-                                            liên
-                                            tục của hệ tọa độ tế bào lưới.</span>
-                                    </div>
-                                </div>
-
-                                <!-- Bài báo 4: Science & Cognitive Psychology -->
-                                <div class="evidence-card card-edu">
-                                    <div class="ev-journal">
-                                        <span class="journal-badge badge-edu">Science · Cognitive Psychology</span>
-                                        <div class="ev-authors">Roediger & Karpicke (Science) · Allan Paivio</div>
-                                        <div class="ev-institute">Đại học Washington & Đại học Western Ontario</div>
-                                        <a href="https://doi.org/10.1126/science.1152408" target="_blank" class="ev-doi"
-                                            title="Xem nghiên cứu">
-                                            DOI · 10.1126/science.1152408 <span class="doi-arrow">↗</span>
-                                        </a>
-                                    </div>
-                                    <div class="ev-content">
-                                        <div class="ev-title">
-                                            "The Power of Testing: Active Retrieval & Dual Coding Theory"
-                                            <em>(Sức mạnh của Hồi tưởng Chủ động và Thuyết Mã hóa Kép trong việc duy trì
-                                                tri
-                                                thức)</em>
-                                        </div>
-                                        <div class="ev-method">
-                                            <b>Phương pháp luận:</b> Nghiên cứu đối chứng giữa việc đọc lại thụ động và
-                                            phương
-                                            pháp truy xuất chủ động (Active Recall), kết hợp lý thuyết mã hóa thông tin
-                                            đồng
-                                            thời qua 2 kênh Ngôn ngữ và Hình ảnh/Không gian.
-                                        </div>
-                                    </div>
-                                    <div class="ev-finding">
-                                        <div class="ev-tag-highlight">Khắc Sâu Nhờ Mã Hóa Kép &amp; Active Recall</div>
-                                        <div class="ev-desc">
-                                            Khi thông tin được mã hóa song song qua cả <b>Kênh từ ngữ (Verbal Code)</b>
-                                            và
-                                            <b>Kênh hình ảnh không gian (Non-verbal Code)</b>, đồng thời được củng cố
-                                            bằng
-                                            việc
-                                            tự hồi tưởng không nhìn trước đáp án, liên kết synap thần kinh được củng cố
-                                            vững
-                                            chắc nhất.
-                                        </div>
-                                    </div>
-                                    <div class="ev-app">
-                                        <b>Chuẩn hóa trong Loci Edu</b>
-                                        <span>Tích hợp chế độ Ôn tập Không gian (Spatial Recall): ẩn nội dung có sẵn,
-                                            yêu
-                                            cầu
-                                            học sinh tự nhập kiến thức và AI đối soát.</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 4: 3 TRỤ CỘT KHOA HỌC NÃO BỘ -->
-                        <section class="loci-science-section" id="sec-science">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">04</span> 3 Trụ Cột Khoa Học Đột
-                                        Phá
-                                        Tại LOCI EDU</h2>
-                                    <p class="loci-sec-sub">Sự kết hợp liên ngành giữa Khoa học thần kinh, Tâm lý học
-                                        nhận
-                                        thức và Công nghệ 3D tương tác</p>
-                                </div>
-                            </div>
-
-                            <div class="loci-pillars-row">
-                                <div class="loci-sci-card">
-                                    <div class="sci-icon-box">01</div>
-                                    <div class="sci-info">
-                                        <h3>Định Vị Không Gian Não Bộ</h3>
-                                        <p class="sci-sub">Hồi Hải Mã (Hippocampus) & Tế Bào Lưới</p>
-                                        <p class="sci-desc">
-                                            Não người ghi nhớ không gian như một bản năng sinh tồn tự nhiên. Khi gắn sự
-                                            kiện
-                                            lịch sử vào vật thể 3D, kiến thức được mã hóa vào hệ tọa độ thần kinh mà
-                                            không
-                                            cần
-                                            gắng gượng học vẹt.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="loci-sci-card">
-                                    <div class="sci-icon-box">02</div>
-                                    <div class="sci-info">
-                                        <h3>Đường Cong Quên Lãng Ebbinghaus</h3>
-                                        <p class="sci-sub">Chu Trình Ôn Tập Ngắt Quãng 1-3-7</p>
-                                        <p class="sci-desc">
-                                            Hệ thống tự động nhắc nhở ôn tập ngắt quãng (Spaced Retrieval) sau 1 ngày, 3
-                                            ngày, 7
-                                            ngày, giúp chặn đứng sự thoái hóa thông tin và chuyển giao dữ liệu sang vùng
-                                            trí
-                                            nhớ
-                                            dài hạn.
-                                        </p>
-                                    </div>
-                                </div>
-
-                                <div class="loci-sci-card">
-                                    <div class="sci-icon-box">03</div>
-                                    <div class="sci-info">
-                                        <h3>Không Gian Số Hóa 3D & Gia Sư AI</h3>
-                                        <p class="sci-sub">Tương Tác Đa Chiều & Phản Hồi Tức Thì</p>
-                                        <p class="sci-desc">
-                                            Tương tác 360 độ quanh các hiện vật lịch sử sống động, kết hợp cùng Trợ lý
-                                            Gia
-                                            sư AI
-                                            giải đáp thắc mắc, phân tích ngữ nghĩa câu trả lời và chấm điểm tự luận theo
-                                            thời
-                                            gian thực.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 5: BẢNG ĐỐI SÁNH HIỆU NĂNG NHẬN THỨC TOÀN DIỆN (COGNITIVE BENCHMARK MATRIX) -->
-                        <section class="loci-benchmark-section" id="sec-benchmark">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">05</span> Bảng Đối Sánh Cơ Chế Nhận
-                                        Thức Toàn Diện</h2>
-                                    <p class="loci-sec-sub">Phân tích đa chiều so sánh giữa phương pháp truyền thống và
-                                        giải pháp Cung điện Ký ức 3D Loci Edu dựa trên các tiêu chí tâm lý học nhận thức
-                                    </p>
-                                </div>
-                                <div class="diagram-actions">
-                                    <span class="loci-video-badge">
-                                        Phân Tích Cơ Chế Khoa Học Nhận Thức
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="benchmark-table-wrapper">
-                                <table class="benchmark-table">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 25%;">Tiêu Chí Nhận Thức & Đo Lường</th>
-                                            <th style="width: 24%;">1. Học Vẹt Truyền Thống<br><small
-                                                    style="font-weight:500; color:#64748b;">(Đọc lặp lại thụ
-                                                    động)</small>
-                                            </th>
-                                            <th style="width: 24%;">2. Ghi Chú & Flashcard 2D<br><small
-                                                    style="font-weight:500; color:#64748b;">(Tuyến tính mặt phẳng rời
-                                                    rạc)</small></th>
-                                            <th class="th-highlight" style="width: 27%;">
-                                                3. Cung Điện Loci 3D EDU
-                                                <span class="bm-tag tag-best"
-                                                    style="margin-left: 6px; font-size:10px;">KHUYÊN
-                                                    DÙNG NCKH</span>
-                                                <br><small style="font-weight:600; color:#0369a1;">(Không gian 3D + Neo
-                                                    mốc
-                                                    +
-                                                    AI)</small>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Hàng 1 -->
-                                        <tr>
-                                            <td>
-                                                <div class="bm-criterion">
-                                                    <span class="bm-criterion-icon">01</span>
-                                                    <div>
-                                                        Cơ chế mã hóa dữ liệu
-                                                        <small>Cách não bộ tiếp nhận và chuyển đổi thông tin</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-bad">CƠ HỌC THỤ ĐỘNG</span>
-                                                <div style="font-size:12px; margin-top:4px;">Chỉ đọc đi đọc lại câu chữ, thông tin không có điểm bám vào tri giác.</div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-mid">MÃ HÓA NGẮN HẠN</span>
-                                                <div style="font-size:12px; margin-top:4px;">Ghi nhớ mặt chữ và câu hỏi - đáp án tách rời, thiếu tính liên kết ngữ cảnh.</div>
-                                            </td>
-                                            <td class="td-highlight">
-                                                <span class="bm-tag tag-best">MÃ HÓA KÉP (DUAL CODING)</span>
-                                                <div style="font-size:12.5px; margin-top:4px; color:#0f766e;">Kết hợp đồng thời ngôn ngữ, hình ảnh 3D và tọa độ không gian thành một thể thống nhất.</div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Hàng 2 -->
-                                        <tr>
-                                            <td>
-                                                <div class="bm-criterion">
-                                                    <span class="bm-criterion-icon">02</span>
-                                                    <div>
-                                                        Mạng lưới thần kinh kích hoạt
-                                                        <small>Vùng não chịu trách nhiệm xử lý thông tin</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-bad">GIỚI HẠN VỎ NÃO NGÔN NGỮ</span>
-                                                <div style="font-size:12px; margin-top:4px;">Khai thác đơn độc Trí nhớ làm việc (Working Memory), nhanh mỏi mệt.</div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-mid">KÍCH HOẠT MỘT PHẦN</span>
-                                                <div style="font-size:12px; margin-top:4px;">Kích thích vùng nhận diện thị giác 2D phẳng và trí nhớ làm việc.</div>
-                                            </td>
-                                            <td class="td-highlight">
-                                                <span class="bm-tag tag-best">ĐỒNG BỘ HỒI HẢI MÃ</span>
-                                                <div style="font-size:12.5px; margin-top:4px; color:#0f766e;">Kích hoạt đồng thời Hồi hải mã, Tế bào vị trí (Place Cells) và Vỏ não thị giác chuyên sâu.</div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Hàng 3 -->
-                                        <tr>
-                                            <td>
-                                                <div class="bm-criterion">
-                                                    <span class="bm-criterion-icon">03</span>
-                                                    <div>
-                                                        Bảo toàn niên biểu tuần tự
-                                                        <small>Khả năng nhớ đúng trật tự thời gian trước - sau</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-bad">CỰC KỲ DỄ LẪN</span>
-                                                <div style="font-size:12px; margin-top:4px;">Rất hay đảo lộn thứ tự các
-                                                    ngày
-                                                    trong cùng một giai đoạn (như các ngày 14, 16, 18, 19/8/1945).</div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-mid">TÍNH RỜI RẠC CAO</span>
-                                                <div style="font-size:12px; margin-top:4px;">Nhớ từng sự kiện riêng lẻ, khi xáo trộn thẻ thì khó tổng hợp thành dòng lịch sử liên tục.</div>
-                                            </td>
-                                            <td class="td-highlight">
-                                                <span class="bm-tag tag-best">TUẦN TỰ ĐƠN HƯỚNG 100%</span>
-                                                <div style="font-size:12.5px; margin-top:4px; color:#0f766e;">Lộ trình một chiều kim đồng hồ đảm bảo trật tự trước - sau luôn được cố định tự nhiên.</div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Hàng 4 -->
-                                        <tr>
-                                            <td>
-                                                <div class="bm-criterion">
-                                                    <span class="bm-criterion-icon">04</span>
-                                                    <div>
-                                                        Độ bền vững chống quên lãng
-                                                        <small>Sự ổn định của dấu vết synap thần kinh dài hạn</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-bad">SUY GIẢM RẤT NHANH</span>
-                                                <div style="font-size:12px; margin-top:4px;">Bị bào mòn nhanh chóng theo đường cong Ebbinghaus chỉ sau 24 - 48 giờ.</div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-mid">CẦN LẶP LẠI LIÊN TỤC</span>
-                                                <div style="font-size:12px; margin-top:4px;">Nếu ngừng lật thẻ thì các chi tiết ngày tháng năm và địa danh rất dễ phai nhạt.</div>
-                                            </td>
-                                            <td class="td-highlight">
-                                                <span class="bm-tag tag-best">LƯU TRỮ DÀI HẠN BỀN VỮNG</span>
-                                                <div style="font-size:12.5px; margin-top:4px; color:#0f766e;">Hình tượng hóa kỳ lạ kết hợp Spaced Repetition 1-3-7 củng cố ký ức dài hạn vững chắc.</div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Hàng 5 -->
-                                        <tr>
-                                            <td>
-                                                <div class="bm-criterion">
-                                                    <span class="bm-criterion-icon">05</span>
-                                                    <div>
-                                                        Tải trọng nhận thức & Tâm lý
-                                                        <small>Mức độ căng thẳng khi đối diện kỳ thi</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-bad">CĂNG THẲNG & DỄ HOẢNG</span>
-                                                <div style="font-size:12px; margin-top:4px;">Cảm giác mệt mỏi, quá tải khi phải ghi nhớ hàng trăm mốc niên biểu khô khan.</div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-mid">TRUNG BÌNH</span>
-                                                <div style="font-size:12px; margin-top:4px;">Giảm bớt sự ngột ngạt nhưng vẫn phải đối diện với khối lượng thẻ từ ngữ lớn.</div>
-                                            </td>
-                                            <td class="td-highlight">
-                                                <span class="bm-tag tag-best">THƯ GIÃN & TỰ TIN</span>
-                                                <div style="font-size:12.5px; margin-top:4px; color:#0f766e;">Biến việc học thành hành trình "dạo chơi" trong bảo tàng 3D, khơi gợi cảm xúc khám phá.</div>
-                                            </td>
-                                        </tr>
-
-                                        <!-- Hàng 6 -->
-                                        <tr>
-                                            <td>
-                                                <div class="bm-criterion">
-                                                    <span class="bm-criterion-icon">06</span>
-                                                    <div>
-                                                        Công nghệ hỗ trợ & Đánh giá
-                                                        <small>Mức độ thích ứng và phản hồi người học</small>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-bad">KHÔNG CÓ HỖ TRỢ</span>
-                                                <div style="font-size:12px; margin-top:4px;">Tự học độc lập, không có người giải thích hay chỉ ra điểm sai ngữ nghĩa.</div>
-                                            </td>
-                                            <td>
-                                                <span class="bm-tag tag-mid">TỰ KIỂM TRA ĐƠN LẺ</span>
-                                                <div style="font-size:12px; margin-top:4px;">Chỉ kiểm tra dạng đúng /
-                                                    sai cơ
-                                                    bản
-                                                    theo câu hỏi cố định, thiếu tính tương tác sâu.</div>
-                                            </td>
-                                            <td class="td-highlight">
-                                                <span class="bm-tag tag-best">GIA SƯ AI & ACTIVE RECALL</span>
-                                                <div style="font-size:12.5px; margin-top:4px; color:#0f766e;">AI chấm điểm ngữ nghĩa tự luận, phân tích từ khóa còn thiếu và tự động lên lịch nhắc ôn 1-3-7.</div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 6: TRÌNH CHIẾU BÀI GIẢNG CUNG ĐIỆN KÝ ỨC (CHỦ ĐỀ 3) -->
-                        <section class="loci-diagram-section" id="sec-diagram">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">06</span> Trình Chiếu Bài Giảng
-                                        Cung Điện Ký Ức</h2>
-                                    <p class="loci-sec-sub">Hệ thống 12 trạm Loci Lịch sử 12 chuẩn Nghiên Cứu Khoa Học
-                                        (Trích xuất từ Chủ Đề 3)</p>
-                                </div>
-                                <div class="diagram-actions">
-                                    <a href="trinh_chieu_loci.html" target="_blank" class="btn-diagram-expand">
-                                        Xem Trình Chiếu Toàn Màn Hình <span class="loci-btn-arrow">↗</span>
-                                    </a>
-                                </div>
-                            </div>
-
-                            <div class="loci-diagram-display"
-                                style="padding: 16px; background: linear-gradient(180deg, #f8fafc, #f1f5f9); border-radius: 16px;">
-                                <a href="trinh_chieu_loci.html" target="_blank"
-                                    style="text-decoration:none; display:block; position:relative; overflow:hidden; border-radius: 12px; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.06); transition: transform 0.25s ease, box-shadow 0.25s ease;"
-                                    onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 20px 35px -10px rgba(2,132,199,0.25), 0 0 0 2px #38bdf8';"
-                                    onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px -5px rgba(0,0,0,0.1), 0 0 0 1px rgba(0,0,0,0.06)';">
-                                    <div
-                                        style="position:relative; aspect-ratio: 16/9; background:#090d16; overflow:hidden;">
-                                        <picture>
-                                            <source srcset="assets/slides/slide_01.webp" type="image/webp">
-                                            <img src="assets/slides/slide_01.jpg"
-                                                alt="Trình chiếu Slide Cung Điện Ký Ức"
-                                                style="width:100%; height:100%; object-fit:contain; display:block;">
-                                        </picture>
-                                        <div
-                                            style="position:absolute; inset:0; background:linear-gradient(to top, rgba(9,13,22,0.85) 0%, rgba(9,13,22,0.2) 40%, transparent 100%); display:flex; flex-direction:column; justify-content:flex-end; padding:24px;">
-                                            <div style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-                                                <span
-                                                    style="background:#0284c7; color:#fff; font-size:12px; font-weight:700; padding:4px 10px; border-radius:99px; letter-spacing:0.5px;">BỘ
-                                                    12 SLIDE CHUẨN NCKH</span>
-                                                <span
-                                                    style="background:rgba(255,255,255,0.2); backdrop-filter:blur(6px); color:#fff; font-size:12px; font-weight:600; padding:4px 10px; border-radius:99px;">ĐỘ
-                                                    PHÂN GIẢI 2K</span>
-                                            </div>
-                                            <h3
-                                                style="color:#ffffff; font-size:20px; font-weight:800; margin-bottom:6px; text-shadow:0 2px 8px rgba(0,0,0,0.6);">
-                                                Chủ Đề 3: Ứng Dụng Phương Pháp Cung Điện Ký Ức Vào Môn Lịch Sử 12</h3>
-                                            <p style="color:#cbd5e1; font-size:13.5px; margin-bottom:12px;">Bấm để mở
-                                                trình chiếu tương tác mượt mà: hỗ trợ toàn màn hình, chuyển slide bằng
-                                                phím mũi tên & vuốt chạm cảm ứng.</p>
-                                            <div
-                                                style="display:inline-flex; align-items:center; gap:8px; align-self:flex-start; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; font-size:13.5px; font-weight:700; padding:8px 18px; border-radius:99px; box-shadow:0 4px 14px rgba(2,132,199,0.4);">
-                                                <span>Bắt Đầu Xem Trình Chiếu</span>
-                                                <span style="font-size:16px;">➔</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </a>
-
-                                <div class="diagram-phases-bar"
-                                    style="margin-top:16px; display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:12px;">
-                                    <div class="diagram-phase-chip phase-1"
-                                        style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; display:flex; align-items:flex-start; gap:10px;">
-                                        <span class="chip-num"
-                                            style="background:#e0f2fe; color:#0284c7; font-weight:800; width:28px; height:28px; border-radius:8px; display:grid; place-items:center; font-size:13px; flex-shrink:0;">1</span>
-                                        <div>
-                                            <b style="color:#0f172a; font-size:13.5px; display:block;">XÂY DỰNG BẢN ĐỒ
-                                                KHÔNG GIAN</b>
-                                            <p style="color:#64748b; font-size:12px; margin-top:2px;">Slide 1-4: Thiết
-                                                lập lộ trình 12 trạm cố định trong không gian thân quen.</p>
-                                        </div>
-                                    </div>
-                                    <div class="diagram-phase-chip phase-2"
-                                        style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; display:flex; align-items:flex-start; gap:10px;">
-                                        <span class="chip-num"
-                                            style="background:#fef3c7; color:#d97706; font-weight:800; width:28px; height:28px; border-radius:8px; display:grid; place-items:center; font-size:13px; flex-shrink:0;">2</span>
-                                        <div>
-                                            <b style="color:#0f172a; font-size:13.5px; display:block;">MÃ HÓA NEO MỐC
-                                                LỊCH SỬ 12</b>
-                                            <p style="color:#64748b; font-size:12px; margin-top:2px;">Slide 5-8: Gắn kết
-                                                sự kiện, mốc thời gian và nhân vật bằng hình tượng trực quan.</p>
-                                        </div>
-                                    </div>
-                                    <div class="diagram-phase-chip phase-3"
-                                        style="background:#fff; border:1px solid #e2e8f0; border-radius:12px; padding:12px 14px; display:flex; align-items:flex-start; gap:10px;">
-                                        <span class="chip-num"
-                                            style="background:#f3e8ff; color:#9333ea; font-weight:800; width:28px; height:28px; border-radius:8px; display:grid; place-items:center; font-size:13px; flex-shrink:0;">3</span>
-                                        <div>
-                                            <b style="color:#0f172a; font-size:13.5px; display:block;">TRUY XUẤT &amp;
-                                                ÔN TẬP 1-3-7</b>
-                                            <p style="color:#64748b; font-size:12px; margin-top:2px;">Slide 9-12: Kỹ
-                                                thuật kiểm tra đa tầng, ngăn suy giảm đường cong lãng quên.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 7: 5 BƯỚC THỰC HÀNH CUNG ĐIỆN KÝ ỨC (STEPPER CARDS) -->
-                        <section class="loci-steps-section" id="sec-steps">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">07</span> 5 Bước Xây Dựng Cung Điện
-                                        Ký Ức Trong LOCI EDU</h2>
-                                    <p class="loci-sec-sub">Lộ trình khoa học từng bước giúp người học làm chủ mọi mốc
-                                        thời
-                                        gian và sự kiện lịch sử</p>
-                                </div>
-                                <div class="diagram-actions">
-                                    <span class="loci-video-badge">
-                                        Quy Trình 5 Chuẩn Thần Kinh Học
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="loci-steps-flow">
-                                <!-- Bước 1 -->
-                                <div class="loci-step-card step-card-1">
-                                    <div class="step-card-header">
-                                        <div class="step-badge">01</div>
-                                        <span class="step-label">Bước</span>
-                                    </div>
-                                    <h3 class="step-name">Chọn Không Gian (Loci)</h3>
-                                    <p class="step-desc">
-                                        Chọn một không gian quen thuộc: căn phòng ngủ, phòng khách, lớp học, hoặc các mô
-                                        hình
-                                        <b>sa bàn 3D / ảnh 360°</b> được chuẩn hóa trong LOCI EDU.
-                                    </p>
-                                    <div class="step-rule">
-                                        <b>Quy tắc vàng:</b> Không gian càng quen thuộc, tốc độ truy xuất thông tin của
-                                        Hồi
-                                        hải
-                                        mã càng nhanh.
-                                    </div>
-                                </div>
-
-                                <!-- Bước 2 -->
-                                <div class="loci-step-card step-card-2">
-                                    <div class="step-card-header">
-                                        <div class="step-badge">02</div>
-                                        <span class="step-label">Bước</span>
-                                    </div>
-                                    <h3 class="step-name">Vạch Lộ Trình Cố Định (Path)</h3>
-                                    <p class="step-desc">
-                                        Xác lập tuyến đường đi một chiều duy nhất (ví dụ: Cửa ra vào → Bàn học → Giá
-                                        sách →
-                                        Giường ngủ → Cửa sổ) theo chiều kim đồng hồ.
-                                    </p>
-                                    <div class="step-rule">
-                                        <b>Quy tắc vàng:</b> Tuyệt đối không đi chéo hay quay ngược để không bao giờ bị
-                                        xáo
-                                        trộn
-                                        niên biểu thời gian.
-                                    </div>
-                                </div>
-
-                                <!-- Bước 3 -->
-                                <div class="loci-step-card step-card-3">
-                                    <div class="step-card-header">
-                                        <div class="step-badge">03</div>
-                                        <span class="step-label">Bước</span>
-                                    </div>
-                                    <h3 class="step-name">Mã Hóa Trực Quan (Encoding)</h3>
-                                    <p class="step-desc">
-                                        Biến các con số năm, tên hiệp định, chiến dịch khô khan thành <b>hình ảnh trực
-                                            quan,
-                                            phóng đại, giàu hành động hoặc cảm xúc</b>.
-                                    </p>
-                                    <div class="step-rule">
-                                        <b>Quy tắc vàng:</b> Hình ảnh càng khác thường (Bizarre Imagery Effect) thì dấu
-                                        ấn
-                                        synap
-                                        thần kinh càng sâu sắc.
-                                    </div>
-                                </div>
-
-                                <!-- Bước 4 -->
-                                <div class="loci-step-card step-card-4">
-                                    <div class="step-card-header">
-                                        <div class="step-badge">04</div>
-                                        <span class="step-label">Bước</span>
-                                    </div>
-                                    <h3 class="step-name">Neo Mốc Dữ Liệu (Anchor)</h3>
-                                    <p class="step-desc">
-                                        Gắn kết hình ảnh vừa mã hóa trực tiếp lên đồ vật trong phòng (ví dụ: gắn hình
-                                        ảnh xe
-                                        tăng húc cổng dinh lên chiếc TV phòng khách).
-                                    </p>
-                                    <div class="step-rule">
-                                        <b>Quy tắc vàng:</b> Hãy để đồ vật và hình ảnh có sự tương tác sống động, va
-                                        chạm cụ
-                                        thể
-                                        với nhau.
-                                    </div>
-                                </div>
-
-                                <!-- Bước 5 -->
-                                <div class="loci-step-card step-card-5">
-                                    <div class="step-card-header">
-                                        <div class="step-badge">05</div>
-                                        <span class="step-label">Bước</span>
-                                    </div>
-                                    <h3 class="step-name">Hồi Tưởng & Ôn Ngắt Quãng</h3>
-                                    <p class="step-desc">
-                                        Khi cần tái hiện, người học chỉ cần "tản bộ" trong tâm trí theo đúng lộ trình;
-                                        kết
-                                        hợp
-                                        chu kỳ ôn ngắt quãng 1-3-7 ngày để củng cố trí nhớ dài hạn.
-                                    </p>
-                                    <div class="step-rule">
-                                        <b>Quy tắc vàng:</b> Hồi tưởng chủ động (Active Recall) đánh bại sự suy giảm của
-                                        đường
-                                        cong quên lãng Ebbinghaus.
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 8: VÍ DỤ THỰC CHIẾN LỊCH SỬ 12 -->
-                        <section class="loci-case-study" id="sec-casestudy">
-                            <div class="case-study-card">
-                                <div class="case-header">
-                                    <div class="case-badge"><span class="case-idx">08</span> VÍ DỤ THỰC CHIẾN MÔN LỊCH
-                                        SỬ 12
-                                    </div>
-                                    <h3 class="case-title">Ghi nhớ mốc son: "Chiến dịch Hồ Chí Minh - Đại thắng mùa Xuân
-                                        1975"
-                                    </h3>
-                                </div>
-
-                                <div class="case-compare-grid">
-                                    <div class="case-col-traditional">
-                                        <div class="col-head">CÁCH HỌC VẸT CÂU CHỮ THỤ ĐỘNG
-                                        </div>
-                                        <div class="col-body">
-                                            <p class="sample-text">"11 giờ 30 phút ngày 30 tháng 4 năm 1975, lá cờ cách
-                                                mạng
-                                                tung bay trên nóc Dinh Độc Lập, miền Nam hoàn toàn giải phóng..."</p>
-                                            <ul class="weakness-list">
-                                                <li>Phải đọc lẩm bẩm hàng chục lần nhưng cảm xúc nhàm chán, mệt mỏi não
-                                                    bộ.
-                                                </li>
-                                                <li>Dễ quên hoặc nhầm lẫn giờ 11h30 thành 10h30 sau vài ngày không đọc
-                                                    lại.
-                                                </li>
-                                                <li>Khi vào phòng thi gặp áp lực tâm lý rất dễ rơi vào trạng thái "trắng
-                                                    não".
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-
-                                    <div class="case-col-loci">
-                                        <div class="col-head">MÃ HÓA CUNG ĐIỆN LOCI 3D</div>
-                                        <div class="col-body">
-                                            <div class="loci-chain">
-                                                <div class="chain-node">
-                                                    <span class="node-tag">1. Điểm Neo (Locus)</span>
-                                                    <b>Chiếc Smart TV Phòng Khách</b>
-                                                    <p>Vị trí số 4 trên lộ trình bước vào phòng khách.</p>
-                                                </div>
-                                                <div class="chain-arrow">→</div>
-                                                <div class="chain-node">
-                                                    <span class="node-tag">2. Hình Ảnh Mã Hóa</span>
-                                                    <b>Xe Tăng 390 Húc Đổ Màn Hình</b>
-                                                    <p>Hình ảnh xe tăng lao qua màn hình TV làm còi xe reo inh ỏi.</p>
-                                                </div>
-                                                <div class="chain-arrow">→</div>
-                                                <div class="chain-node">
-                                                    <span class="node-tag">3. Dữ Liệu Tức Thì</span>
-                                                    <b>30/04/1975 Lúc 11h30</b>
-                                                    <p>Trên nóc TV cắm lá cờ đỏ sao vàng tung bay phấp phới.</p>
-                                                </div>
-                                            </div>
-                                            <div class="loci-result-banner">
-                                                <b>Cơ chế nhận thức:</b> Hình ảnh va chạm kỳ lạ giữa xe tăng và chiếc TV
-                                                kích
-                                                hoạt đồng thời Vỏ não thị giác và Hồi hải mã, giúp người học tái hiện
-                                                chính
-                                                xác
-                                                thời gian và bản chất sự kiện mà không cần học vẹt.
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 9: KHUNG PHƯƠNG PHÁP LUẬN NCKH (THAY THẾ HOÀN TOÀN SỐ LIỆU BỊA ĐẶT) -->
-                        <section class="loci-methodology-section" id="sec-methodology">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">09</span> Khung Phương Pháp Luận
-                                        Nghiên Cứu &amp; Đánh Giá Năng Lực Học Sinh</h2>
-                                    <p class="loci-sec-sub">Hệ thống tiêu chí khoa học chuẩn hóa phương pháp luận NCKH,
-                                        đánh giá sự chuyển biến nhận thức mà không sử dụng các con số ước lượng cảm tính
-                                    </p>
-                                </div>
-                                <div class="diagram-actions">
-                                    <span class="loci-video-badge">
-                                        Khung Đánh Giá Chuẩn Giáo Dục
-                                    </span>
-                                </div>
-                            </div>
-
-                            <div class="methodology-grid">
-                                <!-- Card 1 -->
-                                <div class="method-card m-blue">
-                                    <span class="method-tag">TIÊU CHÍ 1 · ĐỊNH VỊ KHÔNG GIAN</span>
-                                    <h4 class="method-title">Năng Lực Khôi Phục Niên Biểu Không Gian</h4>
-                                    <p class="method-desc">
-                                        Đánh giá khả năng của người học trong việc tái hiện chính xác trật tự trước -
-                                        sau
-                                        của
-                                        chuỗi sự kiện lịch sử thông qua việc "tản bộ" theo tọa độ các mốc neo không gian
-                                        một
-                                        chiều.
-                                    </p>
-                                    <div class="method-evidence">
-                                        <b>Chỉ số đo lường:</b> Trật tự niên biểu tuần tự, khả năng không bị đảo lộn mốc
-                                        thời
-                                        gian.
-                                    </div>
-                                </div>
-
-                                <!-- Card 2 -->
-                                <div class="method-card m-green">
-                                    <span class="method-tag">TIÊU CHÍ 2 · TÂM LÝ NHẬN THỨC</span>
-                                    <h4 class="method-title">Tối Ưu Hóa Tải Trọng Nhận Thức (Sweller)</h4>
-                                    <p class="method-desc">
-                                        Đánh giá sự tinh giản tải trọng nhận thức ngoại lai (Extraneous Cognitive Load -
-                                        sự
-                                        nặng
-                                        nề của việc học thuộc lòng) và gia tăng tải trọng nhận thức hữu ích (Germane
-                                        Load -
-                                        hiểu
-                                        bản chất sự kiện).
-                                    </p>
-                                    <div class="method-evidence">
-                                        <b>Chỉ số đo lường:</b> Cảm giác thư giãn, mức độ hào hứng và tự tin khi truy
-                                        xuất
-                                        dữ
-                                        liệu.
-                                    </div>
-                                </div>
-
-                                <!-- Card 3 -->
-                                <div class="method-card m-purple">
-                                    <span class="method-tag">TIÊU CHÍ 3 · KHOA HỌC THẦN KINH</span>
-                                    <h4 class="method-title">Củng Cố Synap Qua Chu Kỳ 1-3-7 Ngày</h4>
-                                    <p class="method-desc">
-                                        Ứng dụng lý thuyết củng cố trí nhớ dài hạn (Memory Consolidation): kiểm tra tính
-                                        toàn
-                                        vẹn của dữ liệu sau các khoảng ngắt quãng 24h, 72h và 7 ngày theo chu trình
-                                        Spaced
-                                        Retrieval.
-                                    </p>
-                                    <div class="method-evidence">
-                                        <b>Chỉ số đo lường:</b> Tốc độ phản xạ hồi tưởng mốc sau các chu kỳ giãn cách
-                                        thời
-                                        gian.
-                                    </div>
-                                </div>
-
-                                <!-- Card 4 -->
-                                <div class="method-card m-amber">
-                                    <span class="method-tag">TIÊU CHÍ 4 · THANG ĐO BLOOM</span>
-                                    <h4 class="method-title">Phân Cấp Năng Lực Nhận Thức Lịch Sử</h4>
-                                    <p class="method-desc">
-                                        Đánh giá sự tiến bộ theo thang đo nhận thức cải biên: từ tầng <b>Nhận biết</b>
-                                        (ghi
-                                        nhớ
-                                        ngày tháng) → <b>Thông hiểu</b> (nội dung sự kiện) → <b>Vận dụng & Phân tích</b>
-                                        (xâu
-                                        chuỗi bối cảnh lịch sử).
-                                    </p>
-                                    <div class="method-evidence">
-                                        <b>Chỉ số đo lường:</b> Khả năng trả lời các câu hỏi tự luận mở và kết nối ý
-                                        nghĩa
-                                        lịch
-                                        sử với AI.
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- SECTION 10: BÍ QUYẾT TỪ KỶ LỤC GIA SIÊU TRÍ NHỚ (PRO TIPS) -->
-                        <section class="loci-tips-section">
-                            <div class="section-head-wrap">
-                                <div>
-                                    <h2 class="loci-sec-title"><span class="sec-idx">10</span> 4 Bí Quyết Vàng Từ Các Kỷ
-                                        Lục Gia Trí Nhớ Thế Giới</h2>
-                                    <p class="loci-sec-sub">Kinh nghiệm đúc kết từ các Đại kiện tướng Trí nhớ thế giới
-                                        (Grandmaster of Memory) giúp phát huy tối đa công năng của Cung điện Loci</p>
-                                </div>
-                            </div>
-                            <div class="tips-grid">
-                                <div class="tip-card">
-                                    <div class="tip-num">01</div>
-                                    <div class="tip-content">
-                                        <h4>Quy Tắc "Càng Khác Thường Càng Nhớ Sâu"</h4>
-                                        <p>Não bộ sẽ lướt qua những hình ảnh bình thường. Hãy phóng to kích thước đồ vật
-                                            lên
-                                            100
-                                            lần, đổi màu sắc sặc sỡ hoặc gán cho nó âm thanh ngộ nghĩnh.</p>
-                                    </div>
-                                </div>
-                                <div class="tip-card">
-                                    <div class="tip-num">02</div>
-                                    <div class="tip-content">
-                                        <h4>Khoảng Cách Mốc Neo Không Gian Chuẩn</h4>
-                                        <p>Giữ khoảng cách hợp lý giữa các đồ vật (tầm 1 đến 2 mét). Tránh đặt quá nhiều
-                                            sự
-                                            kiệnMô
-                                            vào cùng một vị trí gây nhiễu loạn bản đồ nhận thức.</p>
-                                    </div>
-                                </div>
-                                <div class="tip-card">
-                                    <div class="tip-num">03</div>
-                                    <div class="tip-content">
-                                        <h4>Hành Động Tương Tác Sống Động</h4>
-                                        <p>Hình ảnh tĩnh rất dễ bị lãng quên. Hãy tạo nên hành động: chiếc bàn đang nhảy
-                                            múa,
-                                            cuốn sách đang bốc cháy, ngọn đèn phát ra tiếng kèn xung trận.</p>
-                                    </div>
-                                </div>
-                                <div class="tip-card">
-                                    <div class="tip-num">04</div>
-                                    <div class="tip-content">
-                                        <h4>Vệ Sinh & Tái Sử Dụng Cung Điện</h4>
-                                        <p>Khi các sự kiện lịch sử đã ngấm sâu vào tiềm thức, bạn có thể "dọn phòng"
-                                            trong
-                                            tâm
-                                            trí để biến không gian đó thành cung điện cho bài học mới.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                    </div> <!-- END loci-detail-accordion -->
-
-                    <!-- SECTION 11: THANH HÀNH ĐỘNG NHANH (ACTION HUB) -->
-                    <div class="loci-cta-card">
-                        <div class="cta-left">
-                            <h3>Sẵn sàng biến mọi bài học Lịch sử thành Cung điện Tri thức?</h3>
-                            <p>Trải nghiệm sa bàn 3D sống động, thử thách chế độ Ôn tập Không gian hoặc trò chuyện cùng
-                                Gia
-                                sư AI ngay bây giờ.</p>
+                </div>
+                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <a href="trinh_chieu_loci.html" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 13px; font-weight: 700; color: #0f172a; text-decoration: none; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                        <span>Trình Chiếu Slide Loci ↗</span>
+                    </a>
+                    <!-- BIỂU TƯỢNG CON AI - NHẤP VÀO TRÒ CHUYỆN NGAY -->
+                    <button type="button" onclick="window.switchPortalTab('ai')" title="Trò chuyện ngay với Gia Sư AI Loci"
+                        style="display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 8px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #93c5fd; border-radius: 99px; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);">
+                        <div style="position: relative; width: 38px; height: 38px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: visible;">
+                            <img src="assets/images/pets/owl_scholar.png" alt="Gia sư AI" style="width: 32px; height: 32px; object-fit: contain; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
+                            <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
                         </div>
-                        <div class="cta-buttons">
-                            <button class="m-btn pri" onclick="window.switchPortalTab('spaces')">
-                                Khám phá Phòng 360°
-                            </button>
-                            <button class="m-btn sec" onclick="window.switchPortalTab('ai')">
-                                Hỏi Gia sư AI
-                            </button>
-                            <button class="m-btn sec" onclick="window.switchPortalTab('leaderboard')">
-                                Bảng Vàng vinh danh
-                            </button>
+                        <div style="text-align: left;">
+                            <div style="font-size: 13.5px; font-weight: 800; color: #1e40af; line-height: 1.2;">Gia Sư AI Loci</div>
+                            <div style="font-size: 11.5px; font-weight: 700; color: #0284c7; line-height: 1.2;">Trò chuyện ngay 💬</div>
+                        </div>
+                    </button>
+                </div>
+            </section>
+
+        </div> <!-- END #view-overview -->
+
+        <!-- VIEW 1.5: LINH THÚ TRI THỨC (PET COMPANION SYSTEM) -->
+        <div id="view-pet" class="portal-view">
+            <div class="pet-view-container" style="max-width: 1200px; margin: 0 auto; padding: 8px 0 48px 0;">
+                <!-- Header tab linh thú -->
+                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                    <div>
+                        <div style="display: inline-flex; align-items: center; gap: 8px; background: #ede9fe; color: #7c3aed; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; margin-bottom: 8px;">
+                            <span>✨ Đồng Hành Học Tập</span>
+                        </div>
+                        <h2 style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0;">Linh Thú Tri Thức</h2>
+                        <p style="font-size: 14px; color: #64748b; margin: 4px 0 0 0;">Nuôi dưỡng Linh thú bằng cách tích lũy XP qua các mốc học Lịch sử và ôn tập Spaced Repetition.</p>
+                    </div>
+                    <button type="button" onclick="window.openPetSelectionModal && window.openPetSelectionModal()"
+                        style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: #ffffff; border: none; border-radius: 12px; padding: 10px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                        Chọn Linh Thú Khác
+                    </button>
+                </div>
+
+                <!-- CARD LINH THÚ & TIẾN ĐỘ HỌC TẬP -->
+                <div id="loci-pet-dashboard-slot"
+                    style="background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 22px; padding: 26px 28px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04); position: relative; overflow: hidden;">
+                    <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 32px; align-items: center;"
+                        class="mascot-dash-grid">
+                        <!-- Cột Trái: Cú Tím Cử Nhân + Đại Hội Thần Tốc + Chips + Nút Tiếp tục học -->
+                        <div style="display: flex; gap: 24px; align-items: center;">
+                            <!-- Linh thú Tri Thức 3D (Đồng hành học tập) -->
+                            <div style="flex-shrink: 0; width: 145px; height: 165px; display: grid; place-items: center; position: relative;" class="mascot-img-wrap">
+                                <img id="active-mascot-img" src="assets/images/pets/owl_scholar.png" alt="Linh thú Tri thức"
+                                    style="width: 140px; height: 160px; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(109,40,217,0.22)); animation: mascotFloat 3.5s ease-in-out infinite; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
+                                    onclick="window.openPetSelectionModal && window.openPetSelectionModal()" title="Nhấp để đổi Linh thú Tri thức đồng hành">
+                                <button type="button" onclick="window.openPetSelectionModal && window.openPetSelectionModal()" 
+                                    style="position: absolute; bottom: 2px; right: 2px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px; border: 1.5px solid #fff; box-shadow: 0 4px 10px rgba(79,70,229,0.35); cursor: pointer; display: flex; align-items: center; gap: 3px; z-index: 2;">
+                                    <span>Đổi</span> <span style="font-size: 9px;">▾</span>
+                                </button>
+                            </div>
+
+                            <!-- Nội dung văn bản -->
+                            <div style="flex: 1;">
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span id="active-mascot-level-badge" style="display: inline-block; background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 11.5px; padding: 3px 10px; border-radius: 99px; border: 1px solid #bae6fd;">Cấp 2</span>
+                                    <span id="active-mascot-element-badge" style="display: inline-block; background: #f3e8ff; color: #7c3aed; font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 99px; border: 1px solid #e9d5ff;">TUỆ HỆ</span>
+                                </div>
+                                <h3 id="active-mascot-name" style="font-size: 21px; font-weight: 800; color: #0f172a; margin: 8px 0 6px 0; letter-spacing: -0.01em;">Cú Tím Cử Nhân · Đại Hội Thần Tốc</h3>
+
+                                <p id="active-mascot-desc" style="font-size: 13.5px; color: #64748b; margin: 0 0 14px 0; line-height: 1.45;">Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 20% phản xạ truy xuất sự kiện.</p>
+
+                                <!-- 3 Chips / Thẻ tính năng -->
+                                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+                                    <span
+                                        style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
+                                            stroke-width="2.5">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <circle cx="12" cy="12" r="6"></circle>
+                                            <circle cx="12" cy="12" r="2"></circle>
+                                        </svg>
+                                        Bám sát chương trình
+                                    </span>
+                                    <span
+                                        style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #0284c7;">
+                                        <line x1="18" y1="20" x2="18" y2="10"></line>
+                                        <line x1="12" y1="20" x2="12" y2="4"></line>
+                                        <line x1="6" y1="20" x2="6" y2="14"></line>
+                                    </span>
+                                    <span
+                                        style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #10b981;">
+                                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                        <polyline points="17 6 23 6 23 12"></polyline>
+                                    </span>
+                                </div>
+
+                                <!-- Nút Tiếp tục học -->
+                                <button type="button"
+                                    onclick="window.switchPortalTab('spaces')"
+                                    style="background: #2563eb; color: #ffffff; border: none; border-radius: 12px; padding: 10px 22px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); transition: all 0.2s;">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                                    </svg>
+                                    Vào Khám Phá Cung Điện
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Cột Phải: Tiến độ học tập & Thống kê cá nhân -->
+                        <div style="border-left: 1px solid #f1f5f9; padding-left: 28px;">
+                            <div
+                                style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
+                                    stroke-width="2.5">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <circle cx="12" cy="12" r="6"></circle>
+                                    <circle cx="12" cy="12" r="2"></circle>
+                                </svg>
+                                Tiến độ học tập
+                            </div>
+
+                            <!-- Phần trăm và số XP -->
+                            <div
+                                style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                                <span id="dash-progress-pct"
+                                    style="font-size: 24px; font-weight: 800; color: #0f172a;">42%</span>
+                                <span id="dash-xp-fraction"
+                                    style="font-size: 13.5px; font-weight: 700; color: #64748b;">160 XP / 380 XP</span>
+                            </div>
+
+                            <!-- Thanh tiến trình -->
+                            <div
+                                style="height: 9px; background: #f1f5f9; border-radius: 99px; overflow: hidden; margin-bottom: 18px;">
+                                <div id="dash-progress-bar"
+                                    style="height: 100%; width: 42%; background: #2563eb; border-radius: 99px;"></div>
+                            </div>
+
+                            <!-- Bảng thông số chi tiết -->
+                            <div
+                                style="display: flex; flex-direction: column; gap: 10px; font-size: 13px; margin-bottom: 20px;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">XP hiện có</span>
+                                    <strong id="dash-xp-cur" style="color: #0f172a; font-weight: 700;">160 XP</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">Xp cần để lên Cấp 3</span>
+                                    <strong id="dash-xp-next" style="color: #0f172a; font-weight: 700;">220 XP</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">Chuỗi học tập</span>
+                                    <strong id="dash-streak" style="color: #0f172a; font-weight: 700;">15 ngày</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span style="color: #64748b;">Thời gian học tuần này</span>
+                                    <strong id="dash-study-time" style="color: #0f172a; font-weight: 700;">2 giờ 30 phút</strong>
+                                </div>
+                            </div>
+
+                            <!-- Hai nút hành động ở chân cột phải -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                                <button type="button"
+                                    onclick="window.openSpacedRepetitionModal ? window.openSpacedRepetitionModal() : window.switchPortalTab('review')"
+                                    style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
+                                        stroke-width="2.2">
+                                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                                    </svg>
+                                    Xem kế hoạch
+                                </button>
+                                <button type="button"
+                                    onclick="window.openCloudAuthModal ? window.openCloudAuthModal() : alert('Đang mở thống kê cá nhân')"
+                                    style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
+                                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981"
+                                        stroke-width="2.2">
+                                        <path d="M18 20V10"></path>
+                                        <path d="M12 20V4"></path>
+                                        <path d="M6 20v-6"></path>
+                                    </svg>
+                                    Xem thống kê
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </section>
-        </div> <!-- END #view-overview -->
+            </div>
+        </div>
 
         <!-- VIEW 2: KHUNG ỨNG DỤNG NHÚNG (GIỮ NGUYÊN SIDEBAR BÊN TRÁI) -->
         <div id="view-frame-container" class="portal-view">
@@ -15950,7 +14793,7 @@
             } catch (_) {}
 
             const curHash = (location.hash || '').replace('#', '').trim();
-            const validTabs = ['overview', 'spaces', 'ai', 'review', 'exam', 'connect'];
+            const validTabs = ['overview', 'pet', 'spaces', 'ai', 'review', 'exam', 'connect'];
             let targetTab = validTabs.includes(curHash) ? curHash : 'overview';
 
             if (typeof window.switchPortalTab === 'function') {
@@ -16492,6 +15335,9 @@
                 } else if (msg.includes('unauthorized-domain')) {
                     window._showAuthAlert('Tên miền này chưa được thêm vào Authorized Domains trong Firebase Console.');
                 } else if (msg.includes('popup-blocked')) {
+                    window._showAuthAlert('Trình duyệt (Cốc Cốc) đã chặn cửa sổ Popup. Vui lòng bấm vào biểu tượng 🚫 ở góc phải thanh địa chỉ để "Luôn cho phép popup", hoặc Đăng nhập bằng Tên tài khoản!');
+                } else if (msg.includes('cancelled-popup-request') || msg.includes('popup-closed-by-user')) {
+                    window._showAuthAlert('Cửa sổ đăng nhập Google đã được đóng hoặc bị chặn. Bạn có thể bấm Đăng nhập lại hoặc dùng Tên tài khoản.');
                     window._showAuthAlert('Trình duyệt (Cốc Cốc) đã chặn cửa sổ Popup. Vui lòng bấm vào biểu tượng 🚫 ở góc phải thanh địa chỉ để "Luôn cho phép popup", hoặc Đăng nhập bằng Tên tài khoản!');
                 } else {
                     const cleanMsg = msg.replace(/Firebase:\s*Error\s*\(([^)]+)\)\.?/i, '$1');
@@ -18380,6 +17226,7 @@
         const viewFrameContainer = document.getElementById('view-frame-container');
         const viewLeaderboard = document.getElementById('view-leaderboard');
         const viewLoci = document.getElementById('view-loci');
+        const viewPet = document.getElementById('view-pet');
         const appFrame = document.getElementById('app-frame');
 
         function switchPortalTab(tabName, skipAuthCheck) {
@@ -18411,7 +17258,7 @@
                 return;
             }
 
-            const homeTabs = ['overview', 'spaces', 'ai', 'review', 'exam', 'loci'];
+            const homeTabs = ['overview', 'pet', 'spaces', 'ai', 'review', 'exam', 'loci'];
             const commTabs = ['connect', 'leaderboard'];
             const btnHome = document.getElementById('topbar-btn-home');
             const btnComm = document.getElementById('topbar-btn-community');
@@ -18446,14 +17293,27 @@
                 viewFrameContainer.classList.remove('active');
                 if (viewLeaderboard) viewLeaderboard.classList.remove('active');
                 if (viewLoci) viewLoci.classList.remove('active');
+                if (viewPet) viewPet.classList.remove('active');
                 applyAnim(viewOverview);
                 viewOverview.scrollTop = 0;
                 if (window.renderOverviewTop3) window.renderOverviewTop3();
                 history.replaceState(null, '', '#overview');
+            } else if (tabName === 'pet') {
+                viewOverview.classList.remove('active');
+                viewFrameContainer.classList.remove('active');
+                if (viewLeaderboard) viewLeaderboard.classList.remove('active');
+                if (viewLoci) viewLoci.classList.remove('active');
+                if (viewPet) {
+                    viewPet.classList.add('active');
+                    applyAnim(viewPet);
+                    viewPet.scrollTop = 0;
+                }
+                history.replaceState(null, '', '#pet');
             } else if (tabUrls[tabName]) {
                 viewOverview.classList.remove('active');
                 if (viewLeaderboard) viewLeaderboard.classList.remove('active');
                 if (viewLoci) viewLoci.classList.remove('active');
+                if (viewPet) viewPet.classList.remove('active');
                 viewFrameContainer.classList.add('active');
                 applyAnim(viewFrameContainer);
                 const targetUrl = new URL(tabUrls[tabName], window.location.href).href;
@@ -18583,7 +17443,9 @@
 
         // Khôi phục tab nếu URL có hash
         const initialHash = location.hash.replace('#', '');
-        if (initialHash === 'leaderboard') {
+        if (initialHash === 'pet') {
+            switchPortalTab('pet');
+        } else if (initialHash === 'leaderboard') {
             switchPortalTab('leaderboard');
         } else if (initialHash === 'loci') {
             switchPortalTab('loci');
@@ -22322,6 +21184,21 @@
         </div>
     </div>
 
+
+    <!-- FLOATING AI COMPANION LAUNCHER (NHẤP TRÒ CHUYỆN GIA SƯ AI NGAY TỪ BẤT CỨ ĐÂU) -->
+    <div id="loci-floating-ai-mascot"
+        onclick="window.switchPortalTab('ai')"
+        title="Trò chuyện cùng Gia Sư AI Loci"
+        style="position: fixed; bottom: 24px; right: 28px; z-index: 9999; display: flex; align-items: center; gap: 10px; background: #ffffff; padding: 6px 14px 6px 8px; border-radius: 99px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(37, 99, 235, 0.2); border: 2px solid #38bdf8; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        <div style="position: relative; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #eff6ff, #dbeafe); display: grid; place-items: center;">
+            <img src="assets/images/pets/owl_scholar.png" alt="Gia Sư AI" style="width: 34px; height: 34px; object-fit: contain; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
+            <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
+        </div>
+        <div style="text-align: left;">
+            <div style="font-size: 13px; font-weight: 800; color: #0369a1; line-height: 1.2;">Gia Sư AI Loci</div>
+            <div style="font-size: 11px; font-weight: 700; color: #10b981; line-height: 1.2;">Hỗ trợ 24/7 💬</div>
+        </div>
+    </div>
 </body>
 
 </html>
