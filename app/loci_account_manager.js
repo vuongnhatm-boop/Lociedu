@@ -20,6 +20,112 @@
     TOKEN: 'loci_auth_token'
   };
 
+  const DEFAULT_SEED_ACCOUNTS = {
+    "quangminh": {
+      uid: "loci_quangminh",
+      username: "quangminh",
+      displayName: "Trần Quang Minh (12A1 Chu Văn An)",
+      email: "quangminh@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('loci123456') : 'loci123456'),
+      photoURL: "assets/images/avatar_quangminh.jpg",
+      avatar: "assets/images/avatar_quangminh.jpg",
+      school: "THPT Chuyên Chu Văn An, Hà Nội",
+      xp: 3850,
+      level: 5,
+      streak: 14,
+      honorRole: "Quán quân Top 1 Toàn quốc · 3,850 pts",
+      petName: "Bạch Hổ Thần Tốc",
+      petTier: 4,
+      registeredAt: "2026-10-15T08:30:00.000Z"
+    },
+    "hamy": {
+      uid: "loci_hamy",
+      username: "hamy",
+      displayName: "Nguyễn Hà My (12 Sử Ams)",
+      email: "hamy@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('loci123456') : 'loci123456'),
+      photoURL: "assets/images/avatar_hamy.jpg",
+      avatar: "assets/images/avatar_hamy.jpg",
+      school: "THPT Chuyên Hà Nội - Amsterdam",
+      xp: 3620,
+      level: 5,
+      streak: 12,
+      honorRole: "Á quân Top 2 · 3,620 pts",
+      petName: "Phượng Hoàng Lửa",
+      petTier: 3,
+      registeredAt: "2026-10-18T09:15:00.000Z"
+    },
+    "baoanh": {
+      uid: "loci_baoanh",
+      username: "baoanh",
+      displayName: "Lê Bảo Anh (12 Chuyên LHP)",
+      email: "baoanh@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('loci123456') : 'loci123456'),
+      photoURL: "assets/images/avatar_baoanh.jpg",
+      avatar: "assets/images/avatar_baoanh.jpg",
+      school: "THPT Chuyên Lê Hồng Phong, TP.HCM",
+      xp: 3410,
+      level: 4,
+      streak: 10,
+      honorRole: "Cao thủ Đấu Trường Tri Thức · 3,410 pts",
+      petName: "Kỳ Lân Trí Tuệ",
+      petTier: 3,
+      registeredAt: "2026-10-22T14:20:00.000Z"
+    },
+    "nhathoang": {
+      uid: "loci_nhathoang",
+      username: "nhathoang",
+      displayName: "Phạm Nhật Hoàng (12A4 Phan Đình Phùng)",
+      email: "nhathoang@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('loci123456') : 'loci123456'),
+      photoURL: "assets/images/avatar_nhathoang.jpg",
+      avatar: "assets/images/avatar_nhathoang.jpg",
+      school: "THPT Phan Đình Phùng, Hà Nội",
+      xp: 3150,
+      level: 4,
+      streak: 9,
+      honorRole: "Linh Thú Bậc 4: Bạch Hổ · 3,150 pts",
+      petName: "Bạch Hổ Thần Tốc",
+      petTier: 4,
+      registeredAt: "2026-10-25T11:00:00.000Z"
+    },
+    "thaolinh": {
+      uid: "loci_thaolinh",
+      username: "thaolinh",
+      displayName: "Hoàng Vũ Thảo Linh (12A1 Lê Khiết)",
+      email: "thaolinh@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('loci123456') : 'loci123456'),
+      photoURL: "assets/images/avatar_thaolinh.jpg",
+      avatar: "assets/images/avatar_thaolinh.jpg",
+      school: "THPT Chuyên Lê Khiết, Quảng Ngãi",
+      xp: 2980,
+      level: 4,
+      streak: 8,
+      honorRole: "Quán quân Đường Lên Đỉnh Loci · 2,980 pts",
+      petName: "Phượng Hoàng Lửa",
+      petTier: 3,
+      registeredAt: "2026-10-28T16:45:00.000Z"
+    },
+    "tuankiet": {
+      uid: "loci_tuankiet",
+      username: "tuankiet",
+      displayName: "Đặng Tuấn Kiệt (12 Sử Quốc Học Huế)",
+      email: "tuankiet@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('loci123456') : 'loci123456'),
+      photoURL: "assets/images/avatar_tuankiet.jpg",
+      avatar: "assets/images/avatar_tuankiet.jpg",
+      school: "THPT Chuyên Quốc Học Huế",
+      xp: 2750,
+      level: 3,
+      streak: 7,
+      honorRole: "Học sinh Xuất sắc · 2,750 pts",
+      petName: "Kỳ Lân Trí Tuệ",
+      petTier: 2,
+      registeredAt: "2026-11-01T10:10:00.000Z"
+    }
+  };
+
+
   const TIERS = [
     { level: 1, name: 'Tập sự Loci', minXp: 0, nextXp: 150 },
     { level: 2, name: 'Khám phá Không gian', minXp: 150, nextXp: 400 },
@@ -59,6 +165,22 @@
     _listeners: [],
 
     init() {
+      // Tự động gieo sẵn 6 tài khoản học sinh thật vào hệ thống nếu chưa có
+      try {
+        const raw = localStorage.getItem(STORAGE_KEYS.ACCOUNTS);
+        const accs = raw ? JSON.parse(raw) : {};
+        let updated = false;
+        Object.keys(DEFAULT_SEED_ACCOUNTS).forEach(k => {
+          if (!accs[k]) {
+            accs[k] = DEFAULT_SEED_ACCOUNTS[k];
+            updated = true;
+          }
+        });
+        if (updated || !raw) {
+          localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accs));
+        }
+      } catch (_) {}
+
       this.loadSession();
       // Listen for cross-tab storage changes
       if (typeof window !== 'undefined') {

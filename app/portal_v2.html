@@ -17651,21 +17651,15 @@
         };
 
         const LEADERBOARD_STUDENTS = [
-            { id: 's1', name: 'Nguyễn Minh Khang', score: 3850, streak: 21, quiz: 98, avatar: 'K', bg: '#0284c7', mark: 'Thần Nhớ Loci', markType: 'gold', iconKey: 'crown' },
-            { id: 's2', name: 'Trần Phương Linh', score: 3420, streak: 18, quiz: 95, avatar: 'L', bg: '#10b981', mark: 'Kiến Trúc Sư', markType: 'silver', iconKey: 'temple' },
-            { id: 's3', name: 'Lê Hoàng Nam', score: 3180, streak: 15, quiz: 94, avatar: 'N', bg: '#f59e0b', mark: 'Siêu Ký Ức', markType: 'bronze', iconKey: 'lightning' },
-            { id: 's4', name: 'Vũ Hải Đăng', score: 2890, streak: 14, quiz: 92, avatar: 'Đ', bg: '#6366f1', mark: 'Chiến Binh Loci', markType: 'blue', iconKey: 'warrior' },
-            { id: 's5', name: 'Đặng Thảo My', score: 2650, streak: 12, quiz: 90, avatar: 'M', bg: '#ec4899', mark: 'Học Thần', markType: 'green', iconKey: 'star' },
-            { id: 's6', name: 'Bùi Gia Huy', score: 2420, streak: 11, quiz: 89, avatar: 'H', bg: '#14b8a6', mark: 'Tinh Anh Loci', markType: 'blue', iconKey: 'temple' },
-            { id: 's7', name: 'Phạm Quỳnh Anh', score: 2280, streak: 10, quiz: 91, avatar: 'A', bg: '#8b5cf6', mark: 'Chuyên Cần', markType: 'green', iconKey: 'book' },
-            { id: 's8', name: 'Ngô Đức Trọng', score: 2150, streak: 9, quiz: 88, avatar: 'T', bg: '#3b82f6', mark: 'Thám Hiểm', markType: 'blue', iconKey: 'compass' },
-            { id: 's9', name: 'Hoàng Mai Chi', score: 1980, streak: 8, quiz: 87, avatar: 'C', bg: '#f97316', mark: 'Bền Bỉ', markType: 'green', iconKey: 'flame' },
-            { id: 's10', name: 'Đỗ Tuấn Kiệt', score: 1860, streak: 7, quiz: 86, avatar: 'K', bg: '#06b6d4', mark: 'Thủ Khoa 2K9', markType: 'blue', iconKey: 'crown' },
-            { id: 's11', name: 'Phan Khánh Vy', score: 1740, streak: 7, quiz: 85, avatar: 'V', bg: '#a855f7', mark: 'Đại Sứ Loci', markType: 'green', iconKey: 'star' },
-            { id: 's12', name: 'Trịnh Bảo Ngọc', score: 1620, streak: 6, quiz: 84, avatar: 'N', bg: '#ec4899', mark: 'Kiên Trì 1-3-7', markType: 'bronze', iconKey: 'lightning' },
-            { id: 's13', name: 'Dương Quốc Anh', score: 1510, streak: 5, quiz: 83, avatar: 'Q', bg: '#3b82f6', mark: 'Chiến Binh 9+', markType: 'blue', iconKey: 'warrior' },
-            { id: 's14', name: 'Lâm Gia Bảo', score: 1400, streak: 5, quiz: 82, avatar: 'B', bg: '#10b981', mark: 'Học Trưởng', markType: 'green', iconKey: 'book' },
-            { id: 's15', name: 'Tạ Thị Thu Trang', score: 1290, streak: 4, quiz: 80, avatar: 'T', bg: '#f59e0b', mark: 'Mầm Non Loci', markType: 'green', iconKey: 'sprout' }
+            { id: 's1', username: 'quangminh', name: 'Trần Quang Minh', score: 3850, streak: 21, quiz: 98, photo: 'assets/images/avatar_quangminh.jpg', avatar: 'M', bg: '#0284c7', mark: 'Quán Quân Top 1', markType: 'gold', iconKey: 'crown', school: 'THPT Chu Văn An' },
+            { id: 's2', username: 'hamy', name: 'Nguyễn Hà My', score: 3620, streak: 18, quiz: 96, photo: 'assets/images/avatar_hamy.jpg', avatar: 'M', bg: '#ec4899', mark: 'Á Quân Top 2', markType: 'silver', iconKey: 'temple', school: 'THPT Chuyên Hà Nội - Ams' },
+            { id: 's3', username: 'baoanh', name: 'Lê Bảo Anh', score: 3410, streak: 15, quiz: 95, photo: 'assets/images/avatar_baoanh.jpg', avatar: 'B', bg: '#8b5cf6', mark: 'Quý Quân Top 3', markType: 'bronze', iconKey: 'lightning', school: 'THPT Chuyên Lê Hồng Phong' },
+            { id: 's4', username: 'nhathoang', name: 'Phạm Nhật Hoàng', score: 3150, streak: 14, quiz: 93, photo: 'assets/images/avatar_nhathoang.jpg', avatar: 'H', bg: '#f59e0b', mark: 'Linh Thú Bậc 4', markType: 'blue', iconKey: 'warrior', school: 'THPT Phan Đình Phùng' },
+            { id: 's5', username: 'thaolinh', name: 'Hoàng Vũ Thảo Linh', score: 2980, streak: 12, quiz: 91, photo: 'assets/images/avatar_thaolinh.jpg', avatar: 'L', bg: '#10b981', mark: 'Vô Địch Olympia Loci', markType: 'green', iconKey: 'star', school: 'THPT Chuyên Lê Khiết' },
+            { id: 's6', username: 'tuankiet', name: 'Đặng Tuấn Kiệt', score: 2750, streak: 11, quiz: 90, photo: 'assets/images/avatar_tuankiet.jpg', avatar: 'K', bg: '#3b82f6', mark: 'Học Sinh Xuất Sắc', markType: 'blue', iconKey: 'compass', school: 'Quốc Học Huế' },
+            { id: 's7', username: 'quynhanh', name: 'Phạm Quỳnh Anh', score: 2480, streak: 10, quiz: 89, avatar: 'A', bg: '#8b5cf6', mark: 'Chuyên Cần', markType: 'green', iconKey: 'book', school: 'THPT Thăng Long' },
+            { id: 's8', username: 'ductrong', name: 'Ngô Đức Trọng', score: 2250, streak: 9, quiz: 88, avatar: 'T', bg: '#3b82f6', mark: 'Thám Hiểm', markType: 'blue', iconKey: 'compass', school: 'THPT Trần Phú' },
+            { id: 's9', username: 'maichi', name: 'Hoàng Mai Chi', score: 1980, streak: 8, quiz: 87, avatar: 'C', bg: '#f97316', mark: 'Cần Mẫn', markType: 'gold', iconKey: 'heart', school: 'THPT Việt Đức' }
         ];
 
         function getCurrentUserEntry() {
