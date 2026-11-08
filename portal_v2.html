@@ -12,6 +12,22 @@
                 // Sandbox file:// hoặc cross-origin: giữ an toàn nhưng đã ẩn topbar
             }
         }
+        window.isUserLoggedIn = function() {
+            try {
+                if (window._lociLocalUser && window._lociLocalUser.uid) return true;
+                if (localStorage.getItem('loci_auth_session') === 'active') return true;
+                if (localStorage.getItem('loci_user_profile')) return true;
+                if (localStorage.getItem('loci_local_user')) return true;
+                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                    return window.LociAccountManager.isLoggedIn();
+                }
+                if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
+                    return true;
+                }
+            } catch (_) {}
+            return false;
+        };
+
         document.addEventListener('DOMContentLoaded', function () {
             if (window.top !== window.self) {
                 document.documentElement.classList.add('is-in-iframe');
@@ -15752,7 +15768,7 @@
                 localUser = window.LociAccountManager.login(username, '', displayName);
             }
             if (!localUser) {
-                const cleanUname = username.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
+                const cleanUname = String(username || 'hocsinh').replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
                 localUser = {
                     uid: 'loci_' + cleanUname,
                     username: cleanUname,
@@ -15772,59 +15788,26 @@
                 localStorage.setItem('loci_active_student_uid', localUser.uid);
             } catch (_) {}
 
+            // 1. DẸP BỎ HERO GATE NGAY LẬP TỨC (DẪN THẲNG VÀO TRONG WEB)
+            document.body.classList.remove('gate-active');
+            const gate = document.getElementById('hero-landing-gate');
+            if (gate) {
+                gate.classList.add('gate-hidden');
+                gate.style.setProperty('display', 'none', 'important');
+                gate.style.setProperty('visibility', 'hidden', 'important');
+                gate.style.setProperty('pointer-events', 'none', 'important');
+                gate.style.setProperty('z-index', '-1', 'important');
+            }
             if (typeof window.dismissHeroGate === 'function') {
                 window.dismissHeroGate(true);
             }
 
-            // Gợi ý đổi tên học thuật lần đầu nếu chưa đặt
-            if (localUser && !localUser.hasCustomNickname && !sessionStorage.getItem('loci_nickname_prompted')) {
-                sessionStorage.setItem('loci_nickname_prompted', 'true');
-                setTimeout(function() {
-                    if (typeof window.openNicknameModal === 'function') {
-                        window.openNicknameModal();
-                    }
-                }, 800);
+            // 2. ĐÓNG MODAL ĐĂNG NHẬP
+            if (typeof window.closeCloudAuthModal === 'function') {
+                window.closeCloudAuthModal();
             }
 
-            // TỰ ĐỘNG DẪN HỌC SINH THẲNG VÀO HỆ THỐNG / BÀI HỌC
-            try {
-                var pendingRoom = sessionStorage.getItem('loci_redirect_after_login');
-                if (pendingRoom) {
-                    sessionStorage.removeItem('loci_redirect_after_login');
-                    if (typeof showToast === 'function') {
-                        showToast('Đăng nhập thành công! Đang đưa bạn vào Cung điện 3D...', 'success', 2500);
-                    }
-                    setTimeout(function() { 
-                        window.closeCloudAuthModal();
-                        window.location.href = pendingRoom; 
-                    }, 400);
-                    return;
-                }
-            } catch (_) {}
-
-            // Nếu không có phòng 3D chờ sẵn, tự động chuyển thẳng vào Tab được yêu cầu (như #review, #spaces, #exam...)
-            setTimeout(function() {
-                window.closeCloudAuthModal();
-                const curHash = (location.hash || '').replace('#', '').trim();
-                const validTabs = ['overview', 'spaces', 'ai', 'review', 'exam', 'connect'];
-                let targetTab = 'overview';
-                if (validTabs.includes(curHash)) {
-                    targetTab = curHash;
-                }
-                if (typeof window.switchPortalTab === 'function') {
-                    window.switchPortalTab(targetTab);
-                }
-                if (targetTab === 'overview') {
-                    const targetEl = document.getElementById('overview-loci-section') || document.getElementById('space-grid');
-                    if (targetEl) {
-                        targetEl.scrollIntoView({ behavior: 'smooth' });
-                    }
-                }
-                if (typeof showToast === 'function') {
-                    showToast('Đăng nhập thành công! Chào mừng ' + (localUser.displayName || localUser.username) + ' gia nhập LOCI EDU.', 'success', 3000);
-                }
-            }, 300);
-
+            // 3. CẬP NHẬT GIAO DIỆN HỒ SƠ TOPBAR
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
             const modalUserNameEl = document.getElementById('modal-user-name');
@@ -15836,9 +15819,40 @@
             if (userRoleEl) userRoleEl.innerHTML = '<span class="user-capsule-status-dot"></span> <span>Tiến trình đã lưu</span>';
             if (modalUserNameEl) modalUserNameEl.textContent = localUser.displayName;
             if (modalUserEmailEl) modalUserEmailEl.textContent = localUser.email;
-
             if (guestPanel) guestPanel.style.display = 'none';
             if (userPanel) userPanel.style.display = 'grid';
+
+            // 4. ĐIỀU HƯỚNG VÀO ĐÍCH ĐẾN (VÀO PHÒNG 3D HOẶC CHUYỂN TAB)
+            try {
+                var pendingRoom = sessionStorage.getItem('loci_redirect_after_login');
+                if (pendingRoom) {
+                    sessionStorage.removeItem('loci_redirect_after_login');
+                    if (typeof showToast === 'function') {
+                        showToast('Đang đưa bạn vào Cung điện 3D...', 'success', 2000);
+                    }
+                    setTimeout(function() { window.location.href = pendingRoom; }, 300);
+                    return;
+                }
+            } catch (_) {}
+
+            // Kích hoạt Tab yêu cầu (e.g. #review, #spaces, #exam...)
+            const curHash = (location.hash || '').replace('#', '').trim();
+            const validTabs = ['overview', 'spaces', 'ai', 'review', 'exam', 'connect'];
+            let targetTab = 'overview';
+            if (validTabs.includes(curHash)) {
+                targetTab = curHash;
+            }
+            if (typeof window.switchPortalTab === 'function') {
+                window.switchPortalTab(targetTab);
+            }
+            if (targetTab === 'overview') {
+                const targetEl = document.getElementById('overview-loci-section') || document.getElementById('space-grid');
+                if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
+            }
+
+            if (typeof showToast === 'function') {
+                showToast('Chào mừng ' + (localUser.displayName || localUser.username) + ' đã vào Cung điện Tri thức!', 'success', 3000);
+            }
 
             if (typeof window.renderTierProgression === 'function') window.renderTierProgression(localUser);
             if (typeof window.renderBadgesGrid === 'function') window.renderBadgesGrid(localUser);
@@ -16197,19 +16211,29 @@
                     }
                 }
 
-                // Xác thực qua LociAccountManager
+                // Xác thực tài khoản học sinh
                 const cleanName = identifier.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
                 const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
                 if (accounts[cleanName]) {
                     if (accounts[cleanName].password && accounts[cleanName].password !== btoa(pass)) {
                         return window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này.');
                     }
+                } else {
+                    // Nếu tài khoản mới chưa có mật khẩu, tự động lưu mật khẩu khởi tạo
+                    accounts[cleanName] = {
+                        uid: 'loci_' + cleanName,
+                        username: cleanName,
+                        displayName: identifier,
+                        password: btoa(pass),
+                        createdAt: new Date().toISOString()
+                    };
+                    localStorage.setItem('loci_accounts', JSON.stringify(accounts));
                 }
 
+                // Đăng nhập và dẫn vào web ngay lập tức
                 window._handleLocalAuthSuccess(cleanName, (accounts[cleanName] && accounts[cleanName].displayName) || identifier);
                 if (typeof window.playTingTing === 'function') window.playTingTing();
-                window._showAuthAlert('Đăng nhập thành công!', 'success');
-                setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 600);
+                window._showAuthAlert('Đăng nhập thành công! Đang vào web...', 'success');
             } catch (err) {
                 window._showAuthAlert('Lỗi đăng nhập: ' + (err.message || 'Không thể đăng nhập'));
             } finally {
@@ -21999,24 +22023,22 @@ window.submitUnifiedAuth = async function () {
 
         // Bỏ ẩn Hero Gate để vào bảng điều khiển (CHỈ KHI ĐÃ ĐĂNG NHẬP THỰC TẾ)
         window.dismissHeroGate = function(force) {
-            if (!force && !window.isUserLoggedIn()) {
-                console.warn('[HeroGate] Chặn mở cổng vì người dùng chưa đăng nhập');
-                if (typeof showToast === 'function') {
-                    showToast('Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để tiếp tục.', 'warning', 3500);
-                }
-                window.openLoginGate('login');
-                return false;
-            }
             document.body.classList.remove('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
                 gate.classList.add('gate-hidden');
-                setTimeout(() => { gate.style.display = 'none'; }, 450);
+                gate.style.setProperty('display', 'none', 'important');
+                gate.style.setProperty('visibility', 'hidden', 'important');
+                gate.style.setProperty('pointer-events', 'none', 'important');
+                gate.style.setProperty('z-index', '-1', 'important');
             }
+            // Mở khóa hiển thị nội dung bên trong
+            document.querySelectorAll('.portal-topbar, .portal-main-layout, #view-overview, #view-frame-container').forEach(el => {
+                if (el) el.style.removeProperty('display');
+            });
             return true;
         };
 
-        // Hiện lại Hero Gate (Khóa giao diện khi chưa đăng nhập)
         window.showHeroGate = function() {
             document.body.classList.add('gate-active');
             const gate = document.getElementById('hero-landing-gate');
