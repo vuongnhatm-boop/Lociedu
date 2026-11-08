@@ -15786,13 +15786,44 @@
                 }, 800);
             }
 
+            // TỰ ĐỘNG DẪN HỌC SINH THẲNG VÀO HỆ THỐNG / BÀI HỌC
             try {
                 var pendingRoom = sessionStorage.getItem('loci_redirect_after_login');
                 if (pendingRoom) {
                     sessionStorage.removeItem('loci_redirect_after_login');
-                    setTimeout(function() { window.location.href = pendingRoom; }, 600);
+                    if (typeof showToast === 'function') {
+                        showToast('Đăng nhập thành công! Đang đưa bạn vào Cung điện 3D...', 'success', 2500);
+                    }
+                    setTimeout(function() { 
+                        window.closeCloudAuthModal();
+                        window.location.href = pendingRoom; 
+                    }, 400);
+                    return;
                 }
             } catch (_) {}
+
+            // Nếu không có phòng 3D chờ sẵn, tự động chuyển thẳng vào Tab được yêu cầu (như #review, #spaces, #exam...)
+            setTimeout(function() {
+                window.closeCloudAuthModal();
+                const curHash = (location.hash || '').replace('#', '').trim();
+                const validTabs = ['overview', 'spaces', 'ai', 'review', 'exam', 'connect'];
+                let targetTab = 'overview';
+                if (validTabs.includes(curHash)) {
+                    targetTab = curHash;
+                }
+                if (typeof window.switchPortalTab === 'function') {
+                    window.switchPortalTab(targetTab);
+                }
+                if (targetTab === 'overview') {
+                    const targetEl = document.getElementById('overview-loci-section') || document.getElementById('space-grid');
+                    if (targetEl) {
+                        targetEl.scrollIntoView({ behavior: 'smooth' });
+                    }
+                }
+                if (typeof showToast === 'function') {
+                    showToast('Đăng nhập thành công! Chào mừng ' + (localUser.displayName || localUser.username) + ' gia nhập LOCI EDU.', 'success', 3000);
+                }
+            }, 300);
 
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
@@ -22019,15 +22050,18 @@ window.submitUnifiedAuth = async function () {
 
         // Xử lý nút START trên Hero Gate (Chỉ cho phép khi đã đăng nhập)
         window.handleHeroStartClick = function() {
+            const defaultModel = 'trien_lam_nau.glb';
+            const defaultName = 'Triển lãm Nâu (Bài 6)';
+            const href = 'app/index.html?model=' + encodeURIComponent(defaultModel) + '&name=' + encodeURIComponent(defaultName) + '&lesson=bai_6&skip_start=1&direct=1';
+
             if (!window.isUserLoggedIn()) {
+                try {
+                    sessionStorage.setItem('loci_redirect_after_login', href);
+                } catch (_) {}
                 window.openLoginGate('login');
                 return false;
             }
             window.dismissHeroGate(true);
-            // Vào thẳng không gian 3D Loci mặc định: Triển lãm Nâu (Bài 6: Cách mạng Tháng Tám 1945)
-            const defaultModel = 'trien_lam_nau.glb';
-            const defaultName = 'Triển lãm Nâu (Bài 6)';
-            const href = 'app/index.html?model=' + encodeURIComponent(defaultModel) + '&name=' + encodeURIComponent(defaultName) + '&lesson=bai_6&skip_start=1&direct=1';
             window.location.href = href;
             return true;
         };
