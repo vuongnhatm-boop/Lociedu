@@ -1252,7 +1252,7 @@
         .btn-close-modal:hover { background: rgba(255, 255, 255, 0.2); }
 
         /* Login overlay */
-        .require-login-overlay {
+        .require-login-overlay { display: none !important;
             position: absolute;
             inset: 0;
             background: rgba(255,255,255,0.92);
@@ -1972,7 +1972,9 @@
                     applyUserLoggedIn(fallback);
                 } else {
                     currentUser = null;
-                    loginOverlay.style.display = 'flex';
+                    if (loginOverlay) loginOverlay.style.display = 'none';
+                    if (typeof showGuestNoticeBanner === 'function') showGuestNoticeBanner();
+                    loadPosts();
                     if (typeof window.renderHonorBoard === 'function') window.renderHonorBoard();
                 }
             }
@@ -1982,7 +1984,13 @@
         setTimeout(() => {
             if (!currentUser) {
                 const fallback = resolveActiveUser();
-                if (fallback) applyUserLoggedIn(fallback);
+                if (fallback) {
+                    applyUserLoggedIn(fallback);
+                } else {
+                    if (typeof showGuestNoticeBanner === 'function') showGuestNoticeBanner();
+                    loadPosts();
+                    if (typeof window.renderHonorBoard === 'function') window.renderHonorBoard();
+                }
             }
         }, 120);
 
@@ -2239,6 +2247,29 @@
                 console.warn('[Moderation] Không tải được trạng thái:', e.message);
             }
         }
+
+        
+        function showGuestNoticeBanner() {
+            let b = document.getElementById('guest-feed-banner');
+            const pCont = document.getElementById('posts-container');
+            if (!b && pCont && pCont.parentNode) {
+                b = document.createElement('div');
+                b.id = 'guest-feed-banner';
+                b.style.cssText = 'background: linear-gradient(135deg, #f0f9ff, #f0fdf4); border: 1.5px solid #bae6fd; border-radius: 16px; padding: 14px 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px; box-shadow: 0 4px 16px rgba(2,132,199,0.06);';
+                b.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <span style="font-size: 26px; line-height: 1;">🏛️</span>
+                        <div>
+                            <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 2px;">Bảng Tin Cộng Đồng & Thảo Luận Ôn Thi Loci Edu</div>
+                            <div style="font-size: 12.5px; color: #64748b; line-height: 1.4;">Bạn đang xem bảng tin với tư cách <b>Khách</b>. Hãy đăng nhập để đăng bài, bình luận và cùng nhận XP thi đua!</div>
+                        </div>
+                    </div>
+                    <button type="button" onclick="if(window.parent && window.parent.openLoginGate){ window.parent.openLoginGate('login'); } else if(window.parent && window.parent.openCloudAuthModal){ window.parent.openCloudAuthModal(); } else { alert('Vui lòng đăng nhập từ thanh trên!'); }" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border: none; padding: 9px 18px; border-radius: 99px; font-weight: 800; font-size: 13px; cursor: pointer; white-space: nowrap; box-shadow: 0 4px 12px rgba(2,132,199,0.3);">🔑 Đăng nhập</button>
+                `;
+                pCont.parentNode.insertBefore(b, pCont);
+            }
+        }
+    
 
         function renderPosts(posts) {
             if (!postsContainer) return;

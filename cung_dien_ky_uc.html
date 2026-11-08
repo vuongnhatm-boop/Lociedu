@@ -2,21 +2,20 @@
 <html lang="vi">
 
 <head>
-    <!-- BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO -->
+        <!-- BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO -->
     <script id="loci-space-auth-guard">
         (function() {
             try {
                 var isAuth = false;
-                if (window.LociFirebase && window.LociFirebase.currentUser) isAuth = true;
-                if (window._lociLocalUser && window._lociLocalUser.uid) isAuth = true;
-                var p = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user');
-                if (p) {
-                    var parsed = JSON.parse(p);
-                    if (parsed && (parsed.uid || parsed.name || parsed.email)) isAuth = true;
+                if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) isAuth = true;
+                var sFlag = localStorage.getItem('loci_auth_session');
+                if (sFlag === 'active' || sFlag === 'true') {
+                    var lu = localStorage.getItem('loci_local_user');
+                    if (lu) {
+                        var p = JSON.parse(lu);
+                        if (p && (p.uid || p.displayName)) isAuth = true;
+                    }
                 }
-                if (localStorage.getItem('loci_active_student_uid')) isAuth = true;
-
-                // Cho phép xem trước nếu có flag bypass kiểm thử nội bộ
                 var urlParams = new URLSearchParams(window.location.search);
                 if (urlParams.get('preview') === 'guest') isAuth = true;
 

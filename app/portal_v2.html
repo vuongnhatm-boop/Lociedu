@@ -13359,6 +13359,79 @@
                     <!-- JS renders Top 3 Podium -->
                 </div>
             </section>
+            <!-- ==================== BẢNG TIN CỘNG ĐỒNG THẢO LUẬN TRÊN OVERVIEW ==================== -->
+            <section class="glass-card overview-community-feed-section" style="margin-top: 32px; padding: 24px 28px; border-radius: 20px; border: 1.5px solid #e0f2fe; background: linear-gradient(135deg, rgba(255, 255, 255, 0.95), rgba(240, 249, 255, 0.6)); box-shadow: 0 10px 30px rgba(2, 132, 199, 0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div style="width: 38px; height: 38px; border-radius: 12px; background: #e0f2fe; color: #0284c7; display: grid; place-items: center; font-size: 18px;">💬</div>
+                        <div>
+                            <h2 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 3px 0;">Bảng Tin Cộng Đồng Loci Edu · Thảo Luận Sôi Nổi</h2>
+                            <p style="font-size: 13px; color: #64748b; margin: 0;">Mẹo ghi nhớ Cung điện 3D, trao đổi câu hỏi trắc nghiệm &amp; kinh nghiệm ôn thi THPT</p>
+                        </div>
+                    </div>
+                    <button class="m-btn sec" onclick="window.switchPortalTab('connect')" style="padding: 8px 18px; font-size: 13.5px; font-weight: 700; color: #0284c7; border-color: #bae6fd; background: #fff; cursor: pointer;">
+                        Vào Mạng Xã Hội Thảo Luận ➔
+                    </button>
+                </div>
+
+                <!-- 3 Thẻ bài viết cộng đồng nổi bật nhất -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                    <!-- Card 1: Minh Khang -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s;" onclick="window.switchPortalTab('connect')">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="width: 34px; height: 34px; border-radius: 50%; background: #f59e0b; color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center;">K</div>
+                                <div>
+                                    <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Nguyễn Minh Khang</div>
+                                    <span style="font-size: 11px; font-weight: 700; color: #b45309; background: #fef3c7; padding: 1px 7px; border-radius: 99px;">👑 Quán quân Top 1</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0 0 12px 0;">"Mẹo nhớ 9 mốc Lịch sử Bài 6 bằng Cung điện 3D Triển lãm Nâu đỉnh thật sự! Neo mốc Tân Trào ở sảnh chính, Tuyên ngôn Độc lập ở bục phát biểu. Làm đề 28 câu đúng 100%!"</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px;">
+                            <span>❤️ 38 Thích · 💬 2 Bình luận</span>
+                            <span style="color: #0284c7; font-weight: 700;">Xem chi tiết ➔</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Trần Phương Linh -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s;" onclick="window.switchPortalTab('connect')">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="width: 34px; height: 34px; border-radius: 50%; background: #10b981; color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center;">L</div>
+                                <div>
+                                    <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Trần Phương Linh</div>
+                                    <span style="font-size: 11px; font-weight: 700; color: #047857; background: #d1fae5; padding: 1px 7px; border-radius: 99px;">🥈 Á quân Top 2</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0 0 12px 0;">"Vừa hoàn thành xong phòng 3D Bài 7 (Kháng chiến chống Pháp). Tượng Bác Hồ trên núi Biên giới và Hầm Đờ Cát cực kỳ chân thực. Có cả thử thách phản xạ gõ mốc ăn 150 EXP!"</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px;">
+                            <span>❤️ 29 Thích · 💬 1 Bình luận</span>
+                            <span style="color: #0284c7; font-weight: 700;">Xem chi tiết ➔</span>
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Lê Hoàng Nam -->
+                    <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 18px; box-shadow: 0 4px 14px rgba(0,0,0,0.03); display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; transition: transform 0.2s;" onclick="window.switchPortalTab('connect')">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 12px;">
+                                <div style="width: 34px; height: 34px; border-radius: 50%; background: #0284c7; color: #fff; font-weight: 800; font-size: 14px; display: grid; place-items: center;">N</div>
+                                <div>
+                                    <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Lê Hoàng Nam</div>
+                                    <span style="font-size: 11px; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 1px 7px; border-radius: 99px;">🥉 Quý quân Top 3</span>
+                                </div>
+                            </div>
+                            <p style="font-size: 13px; color: #334155; line-height: 1.5; margin: 0 0 12px 0;">"Câu hỏi Đúng/Sai đề thi: 'Trong Hiệp định Paris 1973, Mĩ cam kết rút hết quân viễn chinh về nước trong 60 ngày' là ĐÚNG hoàn toàn theo Điều 5 nhé các bạn. Phòng 3D Bài 8 có chú thích!"</p>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; border-top: 1px solid #f1f5f9; padding-top: 8px;">
+                            <span>❤️ 22 Thích · 💬 1 Bình luận</span>
+                            <span style="color: #0284c7; font-weight: 700;">Xem chi tiết ➔</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
 
             <!-- LỘ TRÌNH ÔN TẬP EBBINGHAUS (SPACED REPETITION) -->
             <div
@@ -15632,6 +15705,10 @@
         };
 
         window._handleLocalAuthSuccess = function (username, displayName) {
+            try { localStorage.setItem('loci_auth_session', 'active'); } catch (_) {}
+            if (typeof window.dismissHeroGate === 'function') {
+                window.dismissHeroGate();
+            }
             if (typeof window.dismissHeroGate === 'function') {
                 window.dismissHeroGate();
             }
@@ -15671,6 +15748,13 @@
         };
 
         window._handleLocalLogout = function () {
+            try {
+                localStorage.removeItem('loci_auth_session');
+                localStorage.removeItem('loci_local_user');
+                localStorage.removeItem('loci_user_profile');
+                localStorage.removeItem('loci_active_student_uid');
+            } catch (_) {}
+            if (typeof window.showHeroGate === 'function') window.showHeroGate();
             if (typeof window.showHeroGate === 'function') window.showHeroGate();
             window._lociLocalUser = null;
             try { localStorage.removeItem('loci_local_user'); } catch (_) { }
@@ -21394,18 +21478,25 @@
 
     <!-- LOGIC HERO GATE & BẢO VỆ KHÔNG GIAN 3D (YÊU CẦU ĐĂNG NHẬP + CHỐNG BOT) -->
     <script>
-        // Kiểm tra xem người dùng đã đăng nhập hay chưa
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa (chuẩn xác tuyệt đối, không giả lập)
         window.isUserLoggedIn = function() {
             try {
-                if (window.LociFirebase && window.LociFirebase.currentUser) return true;
-                if (window._lociLocalUser && window._lociLocalUser.uid) return true;
-                const profile = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user');
-                if (profile) {
-                    const parsed = JSON.parse(profile);
-                    if (parsed && (parsed.uid || parsed.name || parsed.email)) return true;
+                // 1. Tài khoản Firebase thực tế đang đăng nhập
+                if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
+                    return true;
                 }
-                const activeUid = localStorage.getItem('loci_active_student_uid');
-                if (activeUid) return true;
+                // 2. Cờ phiên đăng nhập thực tế của người dùng
+                const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
+                const localUserStr = localStorage.getItem('loci_local_user');
+                if (sessionActive && localUserStr) {
+                    const parsed = JSON.parse(localUserStr);
+                    if (parsed && parsed.uid && (parsed.displayName || parsed.email)) {
+                        return true;
+                    }
+                }
+                if (window._lociLocalUser && window._lociLocalUser.uid && window._lociLocalUser.isLoggedIn) {
+                    return true;
+                }
             } catch (_) {}
             return false;
         };

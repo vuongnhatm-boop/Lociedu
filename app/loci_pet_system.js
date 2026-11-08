@@ -25,55 +25,27 @@
     };
 
     // Danh mục 3 Linh thú tri thức thần thoại được vẽ vector chuẩn xác
+        // Danh mục 4 Linh thú tri thức 3D Pixar chất lượng cao
     const PET_SPECIES = {
+        owl: {
+            id: 'owl',
+            name: 'Cú Tím Cử Nhân',
+            subName: 'Noctua Scholar · Đại Hội Thần Tốc',
+            desc: 'Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 25% tốc độ truy xuất sự kiện.',
+            color: '#7c3aed',
+            colorGrad: 'linear-gradient(135deg, #6d28d9, #8b5cf6)',
+            badge: 'TUỆ HỆ · ĐẠI HỘI THẦN TỐC',
+            image: 'assets/images/pets/owl_scholar.png'
+        },
         phoenix: {
             id: 'phoenix',
             name: 'Phượng Hoàng Lửa',
             subName: 'Ignis Phoenix · Linh Thú Ý Chí',
             desc: 'Biểu trưng cho ý chí kiên định và sự tái sinh của tri thức lịch sử. Tăng 20% khả năng truy xuất mốc sự kiện.',
-            color: '#f97316',
+            color: '#ea580c',
             colorGrad: 'linear-gradient(135deg, #ea580c, #f59e0b)',
             badge: 'HỎA HỆ · TĂNG TRUY XUẤT',
-            svgBody: (level) => `
-                <g class="pet-phoenix-root">
-                    <defs>
-                        <linearGradient id="phxGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#ea580c" />
-                            <stop offset="50%" stop-color="#f97316" />
-                            <stop offset="100%" stop-color="#fbbf24" />
-                        </linearGradient>
-                        <radialGradient id="phxAura" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="rgba(249, 115, 22, 0.45)" />
-                            <stop offset="100%" stop-color="rgba(249, 115, 22, 0)" />
-                        </radialGradient>
-                    </defs>
-                    <circle cx="100" cy="100" r="85" fill="url(#phxAura)" class="pet-glow-pulse" />
-                    <!-- Đuôi lửa thần thoại -->
-                    <path d="M100 130 C85 160, 60 185, 45 195 C65 175, 80 155, 95 135" fill="none" stroke="url(#phxGrad)" stroke-width="4.5" stroke-linecap="round" class="phx-tail-l" />
-                    <path d="M100 130 C100 165, 100 195, 100 205 C102 180, 103 155, 100 135" fill="none" stroke="url(#phxGrad)" stroke-width="5" stroke-linecap="round" class="phx-tail-m" />
-                    <path d="M100 130 C115 160, 140 185, 155 195 C135 175, 120 155, 105 135" fill="none" stroke="url(#phxGrad)" stroke-width="4.5" stroke-linecap="round" class="phx-tail-r" />
-                    <!-- Đôi cánh hoàng kim vỗ nhịp -->
-                    <g class="phx-wings">
-                        <path d="M75 105 C40 70, 20 85, 12 110 C28 102, 50 110, 70 120 Z" fill="url(#phxGrad)" />
-                        <path d="M125 105 C160 70, 180 85, 188 110 C172 102, 150 110, 130 120 Z" fill="url(#phxGrad)" />
-                    </g>
-                    <!-- Thân phượng hoàng -->
-                    <ellipse cx="100" cy="112" rx="20" ry="28" fill="url(#phxGrad)" />
-                    <!-- Bụng sáng hào quang -->
-                    <ellipse cx="100" cy="116" rx="12" ry="18" fill="#fef08a" opacity="0.9" />
-                    <!-- Đầu & Mào lửa -->
-                    <circle cx="100" cy="74" r="16" fill="url(#phxGrad)" />
-                    <path d="M100 60 Q106 42 100 34 Q94 48 98 60" fill="#fef08a" />
-                    <path d="M103 62 Q115 48 114 40 Q105 52 102 62" fill="#f97316" />
-                    <!-- Mỏ vàng -->
-                    <polygon points="100,74 92,79 100,84" fill="#fbbf24" stroke="#d97706" stroke-width="1" />
-                    <!-- Mắt ngọc -->
-                    <circle cx="96" cy="71" r="2.8" fill="#0f172a" />
-                    <circle cx="95" cy="70" r="1" fill="#ffffff" />
-                    <!-- Vương miện khi đạt Cấp 3 -->
-                    ${level >= 3 ? `<polygon points="90,56 95,44 100,52 105,44 110,56" fill="#fbbf24" stroke="#b45309" stroke-width="1.2" />` : ''}
-                </g>
-            `
+            image: 'assets/images/pets/phoenix_fire.png'
         },
         kirin: {
             id: 'kirin',
@@ -83,97 +55,17 @@
             color: '#0284c7',
             colorGrad: 'linear-gradient(135deg, #0284c7, #06b6d4)',
             badge: 'QUANG HỆ · NHÂN ĐÔI TẬP TRUNG',
-            svgBody: (level) => `
-                <g class="pet-kirin-root">
-                    <defs>
-                        <linearGradient id="kirinGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#0284c7" />
-                            <stop offset="50%" stop-color="#38bdf8" />
-                            <stop offset="100%" stop-color="#a5f3fc" />
-                        </linearGradient>
-                        <radialGradient id="kirinAura" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="rgba(56, 189, 248, 0.45)" />
-                            <stop offset="100%" stop-color="rgba(56, 189, 248, 0)" />
-                        </radialGradient>
-                    </defs>
-                    <circle cx="100" cy="100" r="85" fill="url(#kirinAura)" class="pet-glow-pulse" />
-                    <!-- Thân Kỳ Lân đĩnh đạc -->
-                    <ellipse cx="100" cy="118" rx="30" ry="24" fill="url(#kirinGrad)" />
-                    <!-- Bờm mây thần thoại -->
-                    <path d="M78 88 C65 72, 60 95, 72 105 C60 112, 68 132, 85 125" fill="#e0f2fe" opacity="0.9" />
-                    <path d="M122 88 C135 72, 140 95, 128 105 C140 112, 132 132, 115 125" fill="#e0f2fe" opacity="0.9" />
-                    <!-- Chân Kỳ Lân lướt mây -->
-                    <rect x="80" y="136" width="10" height="24" rx="5" fill="#0284c7" />
-                    <rect x="110" y="136" width="10" height="24" rx="5" fill="#0284c7" />
-                    <ellipse cx="85" cy="160" rx="7" ry="3.5" fill="#38bdf8" />
-                    <ellipse cx="115" cy="160" rx="7" ry="3.5" fill="#38bdf8" />
-                    <!-- Đầu Kỳ Lân -->
-                    <circle cx="100" cy="80" r="22" fill="url(#kirinGrad)" />
-                    <!-- Mũi & miệng -->
-                    <ellipse cx="100" cy="88" rx="10" ry="7" fill="#e0f2fe" />
-                    <circle cx="96" cy="87" r="1.5" fill="#0369a1" />
-                    <circle cx="104" cy="87" r="1.5" fill="#0369a1" />
-                    <!-- Đôi mắt sáng thông thái -->
-                    <ellipse cx="91" cy="76" rx="3.5" ry="5" fill="#0f172a" />
-                    <circle cx="90" cy="74" r="1.5" fill="#ffffff" />
-                    <ellipse cx="109" cy="76" rx="3.5" ry="5" fill="#0f172a" />
-                    <circle cx="108" cy="74" r="1.5" fill="#ffffff" />
-                    <!-- Sừng Kỳ Lân ngọc bích -->
-                    <polygon points="100,42 96,62 104,62" fill="#fbbf24" stroke="#d97706" stroke-width="1.2" class="kirin-horn-glow" />
-                    ${level >= 3 ? `<circle cx="100" cy="38" r="5" fill="#fef08a" class="pet-star-pulse" />` : ''}
-                </g>
-            `
+            image: 'assets/images/pets/kirin_aura.png'
         },
         tiger: {
             id: 'tiger',
             name: 'Bạch Hổ Thần Tốc',
-            subName: 'Solar Tiger · Linh Thú Phản Xạ',
-            desc: 'Linh thú biểu trưng cho phản xạ nhạy bén và tốc độ ghi nhớ đỉnh cao trong mọi kỳ thi trắc nghiệm.',
+            subName: 'Solar White Tiger · Linh Thú Phản Xạ',
+            desc: 'Linh thú biểu trưng cho phản xạ nhạy bén và tốc độ xử lý đỉnh cao trong mọi kỳ thi thử và đề trắc nghiệm lịch sử.',
             color: '#4f46e5',
             colorGrad: 'linear-gradient(135deg, #4338ca, #6366f1)',
             badge: 'LÔI HỆ · TĂNG PHẢN XẠ THI CỬ',
-            svgBody: (level) => `
-                <g class="pet-tiger-root">
-                    <defs>
-                        <linearGradient id="tigerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" stop-color="#4f46e5" />
-                            <stop offset="60%" stop-color="#818cf8" />
-                            <stop offset="100%" stop-color="#e0e7ff" />
-                        </linearGradient>
-                        <radialGradient id="tigerAura" cx="50%" cy="50%" r="50%">
-                            <stop offset="0%" stop-color="rgba(99, 102, 241, 0.45)" />
-                            <stop offset="100%" stop-color="rgba(99, 102, 241, 0)" />
-                        </radialGradient>
-                    </defs>
-                    <circle cx="100" cy="100" r="85" fill="url(#tigerAura)" class="pet-glow-pulse" />
-                    <!-- Thân hổ trắng dũng mãnh -->
-                    <ellipse cx="100" cy="122" rx="32" ry="24" fill="url(#tigerGrad)" />
-                    <!-- Vằn lôi điện -->
-                    <path d="M85 110 L92 118 L84 126" stroke="#312e81" stroke-width="2.5" fill="none" stroke-linecap="round" />
-                    <path d="M115 110 L108 118 L116 126" stroke="#312e81" stroke-width="2.5" fill="none" stroke-linecap="round" />
-                    <!-- Tai hổ -->
-                    <polygon points="76,68 82,48 94,62" fill="#4338ca" />
-                    <polygon points="80,64 84,52 90,62" fill="#fbcfe8" />
-                    <polygon points="124,68 118,48 106,62" fill="#4338ca" />
-                    <polygon points="120,64 116,52 110,62" fill="#fbcfe8" />
-                    <!-- Đầu hổ -->
-                    <circle cx="100" cy="82" r="24" fill="url(#tigerGrad)" />
-                    <!-- Vết trán chữ Vương (王) -->
-                    <path d="M93 68 H107 M100 68 V76 M95 72 H105 M92 76 H108" stroke="#fbbf24" stroke-width="1.8" stroke-linecap="round" />
-                    <!-- Mõm -->
-                    <ellipse cx="100" cy="91" rx="11" ry="8" fill="#ffffff" />
-                    <polygon points="100,89 96,86 104,86" fill="#ec4899" />
-                    <!-- Đôi mắt hổ tinh anh -->
-                    <ellipse cx="88" cy="78" rx="3.5" ry="4.5" fill="#0f172a" />
-                    <circle cx="87" cy="76" r="1.5" fill="#ffffff" />
-                    <ellipse cx="112" cy="78" rx="3.5" ry="4.5" fill="#0f172a" />
-                    <circle cx="111" cy="76" r="1.5" fill="#ffffff" />
-                    <!-- Chân & vuốt thần tốc -->
-                    <rect x="76" y="138" width="12" height="22" rx="6" fill="#3730a3" />
-                    <rect x="112" y="138" width="12" height="22" rx="6" fill="#3730a3" />
-                    ${level >= 3 ? `<circle cx="100" cy="122" r="34" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="6,4" class="pet-spin-halo" />` : ''}
-                </g>
-            `
+            image: 'assets/images/pets/tiger_speed.png'
         }
     };
 
@@ -199,7 +91,7 @@
         }
 
         createNewPet(speciesId, nickname, roomCode = null) {
-            const species = PET_SPECIES[speciesId] || PET_SPECIES.phoenix;
+            const species = PET_SPECIES[speciesId] || PET_SPECIES.owl;
             this.petData = {
                 speciesId: species.id,
                 name: nickname || species.name,
@@ -358,7 +250,7 @@
                 `;
             } else {
                 // Đã có pet -> Hiển thị Dashboard Linh thú sinh động
-                const species = PET_SPECIES[this.petData.speciesId] || PET_SPECIES.phoenix;
+                const species = PET_SPECIES[this.petData.speciesId] || PET_SPECIES.owl;
                 const evoTitle = this.petData.level >= 3 ? 'Cấp 3: Thần Thoại Khởi Sắc' : (this.petData.level >= 2 ? 'Cấp 2: Trưởng Thành Dũng Mãnh' : 'Cấp 1: Sơ Sinh Đáng Yêu');
                 const expPct = Math.min(100, Math.round((this.petData.exp / this.petData.maxExp) * 100));
 
@@ -383,10 +275,9 @@
                             <div style="background: radial-gradient(circle at center, #f0fdf4 0%, #f8fafc 80%); border-radius: 20px; border: 1px solid #f1f5f9; padding: 20px; text-align: center; position: relative;" onclick="window.LociPet.play()">
                                 <div id="pet-action-toast" style="position: absolute; top: 12px; left: 50%; transform: translateX(-50%); background: #0f172a; color: #fff; padding: 4px 14px; border-radius: 99px; font-size: 12px; font-weight: 800; opacity: 0; pointer-events: none; transition: all 0.3s;"></div>
                                 
-                                <div class="pet-svg-container" title="Bấm vào để vuốt ve và chơi cùng Linh Thú">
-                                    <svg width="190" height="190" viewBox="0 0 200 200">
-                                        ${species.svgBody(this.petData.level)}
-                                    </svg>
+                                <div class="pet-3d-mascot-stage" style="position: relative; width: 180px; height: 180px; margin: 0 auto; display: grid; place-items: center;" title="Bấm vào để tương tác và nhận năng lượng học tập cùng Linh Thú">
+                                    <div style="position: absolute; inset: 15px; border-radius: 50%; background: ${species.colorGrad}; opacity: 0.28; filter: blur(28px); animation: petGlow 3.5s ease-in-out infinite;"></div>
+                                    <img src="${species.image || 'assets/images/pets/owl_scholar.png'}" alt="${this.petData.name}" style="width: 165px; height: 165px; object-fit: contain; filter: drop-shadow(0 14px 28px rgba(0,0,0,0.22)); animation: petFloat 3.8s ease-in-out infinite; cursor: pointer; transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1); z-index: 2;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'" onclick="window.LociPet.play()">
                                 </div>
 
                                 <div style="font-size: 18px; font-weight: 800; color: #0f172a; margin-top: 10px;">${this.petData.name}</div>
@@ -472,8 +363,8 @@
                     <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px;">
                         ${Object.values(PET_SPECIES).map((sp, idx) => `
                             <div class="pet-pick-card" onclick="window.LociPet.selectSpecies('${sp.id}', this)" style="border: 2px solid ${idx === 0 ? sp.color : '#e2e8f0'}; background: ${idx === 0 ? 'rgba(2,132,199,0.04)' : '#fff'}; border-radius: 16px; padding: 16px; cursor: pointer; text-align: center; transition: all 0.2s;" data-species="${sp.id}">
-                                <div style="width: 90px; height: 90px; margin: 0 auto 8px;">
-                                    <svg viewBox="0 0 200 200" width="100%" height="100%">${sp.svgBody(1)}</svg>
+                                <div style="width: 100px; height: 100px; margin: 0 auto 8px; display: grid; place-items: center;">
+                                    <img src="${sp.image}" alt="${sp.name}" style="width: 95px; height: 95px; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.18));">
                                 </div>
                                 <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">${sp.name}</div>
                                 <div style="font-size: 11px; font-weight: 700; color: ${sp.color}; margin: 4px 0;">${sp.badge}</div>
@@ -514,7 +405,7 @@
         confirmAdoption() {
             const nameInput = document.getElementById('pet-custom-name');
             const nickname = nameInput ? nameInput.value.trim() : '';
-            this.createNewPet(this.selectedSpeciesId || 'phoenix', nickname);
+            this.createNewPet(this.selectedSpeciesId || 'owl', nickname);
             const modal = document.getElementById('pet-adoption-modal');
             if (modal) modal.classList.remove('open');
         }
@@ -600,3 +491,4 @@
 
     window.LociPet = new LociPetManager();
 })();
+
