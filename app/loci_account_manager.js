@@ -151,13 +151,17 @@
         localStorage.setItem(STORAGE_KEYS.ACTIVE_UID, profile.uid);
         localStorage.setItem(STORAGE_KEYS.SESSION, 'active');
 
-        // Also register into accounts list
+        // Also register into accounts list (bảo lưu mật khẩu và quy tắc đổi tên)
         const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
+        const prevAcc = accounts[profile.username] || {};
         accounts[profile.username] = {
+          ...prevAcc,
           uid: profile.uid,
           username: profile.username,
           displayName: profile.displayName,
           email: profile.email,
+          hasCustomNickname: profile.hasCustomNickname !== undefined ? profile.hasCustomNickname : (prevAcc.hasCustomNickname !== undefined ? prevAcc.hasCustomNickname : true),
+          lastNicknameChangeDate: profile.lastNicknameChangeDate || prevAcc.lastNicknameChangeDate || null,
           updatedAt: profile.updatedAt
         };
         localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
@@ -341,9 +345,9 @@
       } catch (_) {}
 
       this._currentUser = null;
-      this._notify(null);
+      try { this._notify(null); } catch (_) {}
 
-      if (global.LociFirebase && typeof global.LociFirebase.logout === 'function') {
+      if (!global._isLoggingOut && global.LociFirebase && typeof global.LociFirebase.logout === 'function') {
         try { global.LociFirebase.logout(); } catch (_) {}
       }
     },

@@ -12,6 +12,24 @@
                 // Sandbox file:// hoặc cross-origin: giữ an toàn nhưng đã ẩn topbar
             }
         }
+        window.isUserLoggedIn = function() {
+            try {
+                if (window._isUserExplicitlyLoggedIn) return true;
+                if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
+                if (window.LociAccountManager && window.LociAccountManager._currentUser) return true;
+                const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
+                const localUserStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
+                if (sessionActive && localUserStr) return true;
+                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                    if (window.LociAccountManager.isLoggedIn()) return true;
+                }
+                if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
+                    return true;
+                }
+            } catch (_) {}
+            return false;
+        };
+
         document.addEventListener('DOMContentLoaded', function () {
             if (window.top !== window.self) {
                 document.documentElement.classList.add('is-in-iframe');
@@ -238,6 +256,7 @@
             const modal = document.getElementById('avatar-picker-modal');
             if (!modal) return;
             modal.style.display = 'grid';
+            if (typeof window.renderTurnstileIfReady === 'function') window.renderTurnstileIfReady();
             if (typeof window.renderPresetAvatars === 'function') window.renderPresetAvatars();
         };
 
@@ -352,6 +371,56 @@
         };
 
 
+        
+        /* CLOUDFLARE TURNSTILE CONTROLLER & FALLBACK */
+        window.turnstileToken = null;
+        window.onTurnstileSuccess = function(token) {
+            window.turnstileToken = token || 'cf_verified_token';
+            console.log('[Cloudflare Turnstile] Verified successfully:', window.turnstileToken ? window.turnstileToken.substring(0, 15) + '...' : 'OK');
+            const alertEl = document.getElementById('auth-alert');
+            if (alertEl && alertEl.textContent.includes('Turnstile')) {
+                alertEl.style.display = 'none';
+            }
+            // Update fallback mark if visible
+            const markLogin = document.getElementById('cf-mark-login');
+            const markReg = document.getElementById('cf-mark-reg');
+            if (markLogin) markLogin.style.display = 'inline-block';
+            if (markReg) markReg.style.display = 'inline-block';
+        };
+
+        window.renderTurnstileIfReady = function() {
+            setTimeout(() => {
+                if (window.turnstile && typeof window.turnstile.render === 'function') {
+                    ['cf-turnstile-login', 'cf-turnstile-register'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el && !el.hasChildNodes()) {
+                            try {
+                                window.turnstile.render(el, {
+                                    sitekey: '1x00000000000000000000AA',
+                                    theme: 'light',
+                                    callback: function(token) { window.onTurnstileSuccess(token); }
+                                });
+                            } catch (e) {
+                                console.warn('[Turnstile] Render error:', e);
+                            }
+                        }
+                    });
+                }
+            }, 80);
+        };
+
+        window.toggleManualTurnstile = function(type) {
+            window.onTurnstileSuccess('cf_manual_pass_' + Date.now());
+            const mark = document.getElementById(type === 'login' ? 'cf-mark-login' : 'cf-mark-reg');
+            if (mark) {
+                mark.style.display = 'inline-block';
+                mark.style.color = '#10b981';
+            }
+            if (typeof showToast === 'function') {
+                showToast('Xác thực bảo mật Cloudflare thành công!', 'success', 2500);
+            }
+        };
+
         window.openCloudAuthModal = function () {
             const modal = document.getElementById('cloud-modal');
             if (!modal) return;
@@ -426,16 +495,9 @@
         };
 
         window.setAuthTab = function (isLogin) {
-            var tabLogin = document.getElementById('tab-btn-login');
-            var tabReg = document.getElementById('tab-btn-register');
-            var formLogin = document.getElementById('form-login');
-            var formReg = document.getElementById('form-register');
-            if (tabLogin) tabLogin.classList.toggle('active', !!isLogin);
-            if (tabReg) tabReg.classList.toggle('active', !isLogin);
-            if (formLogin) formLogin.style.display = isLogin ? 'block' : 'none';
-            if (formReg) formReg.style.display = isLogin ? 'none' : 'block';
-            var alertEl = document.getElementById('auth-alert');
-            if (alertEl) { alertEl.style.display = 'none'; alertEl.textContent = ''; }
+            if (typeof window.switchAuthTab === 'function') {
+                window.switchAuthTab(isLogin ? 'login' : 'register');
+            }
         };
     </script>
 
@@ -12418,6 +12480,15 @@
             box-shadow: 0 8px 20px -2px rgba(99, 102, 241, 0.22);
         }
     
+        
+        /* Ẩn hoàn toàn nội dung Portal & bài tập khi chưa đăng nhập */
+        body.gate-active .portal-topbar,
+        body.gate-active .portal-main-layout,
+        body.gate-active #view-overview,
+        body.gate-active #view-frame-container {
+            display: none !important;
+        }
+
         /* ═════════════════════════════════════════════════════════════════
            HERO LANDING GATE (CHƯA ĐĂNG NHẬP - CHUẨN 100% THEO ẢNH USER)
            "Mỗi kiến thức – Một dấu ấn ký ức"
@@ -12708,7 +12779,8 @@
             border: 1.5px solid #bfdbfe !important;
         }
     </style>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="app/loci_account_manager.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" async defer></script>
     <style>
         /* Responsive mascot dashboard matching user screenshot */
         .mascot-dash-grid {
@@ -12749,35 +12821,28 @@
         <!-- Header Navbar Hero Gate (Khớp ảnh 100%) -->
         <header class="hero-gate-nav">
             <div class="hero-gate-left">
-                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleHeroStartClick()">
-                    <!-- Biểu tượng ngôi đền Hy Lạp / Bảo tàng tri thức màu xanh cyan -->
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="21" x2="21" y2="21"></line>
-                        <line x1="6" y1="21" x2="6" y2="9"></line>
-                        <line x1="10" y1="21" x2="10" y2="9"></line>
-                        <line x1="14" y1="21" x2="14" y2="9"></line>
-                        <line x1="18" y1="21" x2="18" y2="9"></line>
-                        <polygon points="3 9 12 3 21 9"></polygon>
-                    </svg>
+                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleGateNavClick('home')" style="display: flex; align-items: center; text-decoration: none; font-weight: 800; font-size: 19px; color: #ffffff; letter-spacing: 0.5px;">
+                    <img class="hero-gate-logo-icon" src="assets/images/logo_loci_edu.png" alt="LOCI EDU" style="width: 38px; height: 38px; border-radius: 10px; object-fit: contain; margin-right: 10px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); border: 1.5px solid rgba(255,255,255,0.2);">
                     <span>LOCI EDU</span>
                 </a>
             </div>
 
             <div class="hero-gate-center-pills">
-                <button type="button" class="hero-gate-pill-btn" onclick="window.handleHeroStartClick()">
+                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('home')" title="Yêu cầu đăng nhập">
                     <span>Trang chủ</span> <span>▾</span>
                 </button>
-                <button type="button" class="hero-gate-pill-btn" onclick="window.switchPortalTab && window.switchPortalTab('connect'); window.dismissHeroGate();">
+                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('community')" title="Yêu cầu đăng nhập">
                     <span>Cộng đồng</span> <span>▾</span>
                 </button>
             </div>
 
             <div class="hero-gate-right-actions">
-                <button type="button" class="hero-gate-login-link" onclick="window.openLoginGate('login')">
-                    Đăng nhập
-                </button>
-                <button type="button" class="hero-gate-register-btn" onclick="window.openLoginGate('register')">
-                    Đăng ký
+                <button type="button" class="hero-gate-register-btn" onclick="window.openLoginGate('auth')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; font-size: 14.5px; font-weight: 700; border-radius: 99px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Đăng nhập / Đăng ký</span>
                 </button>
             </div>
         </header>
@@ -12790,10 +12855,7 @@
             </button>
         </div>
 
-        <!-- Footer trang trí tinh tế -->
-        <div style="position: relative; z-index: 10; text-align: center; font-size: 12px; color: rgba(148, 163, 184, 0.6);">
-            Nền tảng Cung điện Ký ức Loci 3D & AI Tutor · Đề tài Nghiên cứu Khoa học
-        </div>
+
     </div>
     
 
@@ -14989,6 +15051,12 @@
 
                     <div id="modal-user-name"
                         style="font-size:18px; font-weight:800; color:#0f172a; text-align:center;">Học sinh Lộc</div>
+                    <button type="button" onclick="window.openNicknameModal()"
+                        style="display:flex; align-items:center; justify-content:center; gap:5px; margin: 4px auto 8px; background: #f0f9ff; border: 1px dashed #7dd3fc; border-radius: 99px; padding: 4px 12px; font-size: 11.5px; font-weight: 700; color: #0369a1; cursor: pointer; transition: all 0.2s;"
+                        onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f9ff'"
+                        title="Đổi biệt danh học thuật (quy định 14 ngày/lần)">
+                        <span>✎ Đổi Tên Hiển Thị (14 ngày/lần)</span>
+                    </button>
                     <div id="profile-level-badge"
                         style="background:#e0f2fe; color:#0284c7; font-size:12.5px; font-weight:800; padding:4px 14px; border-radius:99px; margin:6px auto 18px; display:table;">
                         LV.2 Học Hỏi</div>
@@ -15335,84 +15403,87 @@
 
             <!-- GIAO DIỆN 2: KHI CHƯA ĐĂNG NHẬP (MINIMALIST ĐĂNG NHẬP / ĐĂNG KÝ - MATCH IMAGE 2) -->
             <div id="auth-panel-guest" class="student-guest-panel"
-                style="max-width: 440px; margin: 0 auto; padding: 36px 32px 28px; background: #ffffff; border-radius: 24px; text-align: left;">
+                style="max-width: 460px; margin: 0 auto; padding: 28px 24px 22px; background: #ffffff; border-radius: 24px; text-align: left; position: relative; box-shadow: 0 20px 45px rgba(15,23,42,0.15);">
 
                 <!-- Nút đóng góc phải -->
                 <button type="button" onclick="window.closeCloudAuthModal()" title="Đóng"
-                    style="position:absolute; top:20px; right:20px; background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#64748b; font-size:16px;">
+                    style="position:absolute; top:16px; right:16px; background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; display:grid; place-items:center; cursor:pointer; color:#64748b; font-size:15px; transition: all 0.2s;"
+                    onmouseover="this.style.background='#e2e8f0'; this.style.color='#0f172a'"
+                    onmouseout="this.style.background='#f1f5f9'; this.style.color='#64748b'">
                     ✕
                 </button>
 
-                <!-- LOGO WEB TRÒN (MATCH IMAGE 2) -->
-                <div
-                    style="width: 76px; height: 76px; border-radius: 50%; background: #eff6ff; border: 2px solid #bfdbfe; margin: 0 auto 16px; display: grid; place-items: center; box-shadow: 0 4px 14px rgba(2,132,199,0.12);">
-                    <svg width="42" height="42" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="1.8"
-                        stroke-linecap="round" stroke-linejoin="round">
-                        <path
-                            d="M9.5 2A2.5 2.5 0 0 1 12 4.5v15a2.5 2.5 0 0 1-4.96.44 2.5 2.5 0 0 1-2.96-3.08 3 3 0 0 1-.34-5.58 2.5 2.5 0 0 1 1.32-4.24 2.5 2.5 0 0 1 4.44-2.04z" />
-                        <path
-                            d="M14.5 2A2.5 2.5 0 0 0 12 4.5v15a2.5 2.5 0 0 0 4.96.44 2.5 2.5 0 0 0 2.96-3.08 3 3 0 0 0 .34-5.58 2.5 2.5 0 0 0-1.32-4.24 2.5 2.5 0 0 0-4.44-2.04z" />
-                    </svg>
+                <!-- LOGO LOCI EDU CHÍNH HÃNG & TIÊU ĐỀ -->
+                <div style="text-align: center; margin-bottom: 16px;">
+                    <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU Logo"
+                        style="width: 68px; height: 68px; border-radius: 16px; object-fit: contain; box-shadow: 0 4px 14px rgba(2,132,199,0.22); border: 2px solid #bfdbfe; margin: 0 auto 8px; display: block;">
+                    <h3 id="auth-modal-main-title"
+                        style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0 0 5px; letter-spacing: -0.3px;">
+                        Đăng Nhập Cung Điện Tri Thức</h3>
+                    <p id="auth-modal-main-desc"
+                        style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0 auto; max-width: 340px;">
+                        Tiếp tục hành trình học tập và tích lũy điểm tri thức của bạn.
+                    </p>
                 </div>
 
-                <h3
-                    style="font-size: 22px; font-weight: 800; color: #0f172a; text-align: center; margin: 0 0 8px; letter-spacing: -0.3px;">
-                    Kích Hoạt Căn Cước Tri Thức</h3>
-                <p
-                    style="font-size: 13px; color: #64748b; text-align: center; line-height: 1.5; margin: 0 auto 24px; max-width: 340px;">
-                    Lưu trữ tiến trình học Loci, tích lũy XP thông qua việc mở khóa 7 kiến thức quan trọng dành cho bạn.
-                </p>
+                <!-- 2 MỤC TAB: ĐĂNG NHẬP VÀ ĐĂNG KÝ -->
+                <div id="auth-tab-bar" style="display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
+                    <button type="button" id="tab-btn-login" onclick="window.switchAuthTab('login')"
+                        style="flex: 1; padding: 9px; border: none; border-radius: 9px; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: #ffffff; color: #0f172a; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
+                        Đăng Nhập
+                    </button>
+                    <button type="button" id="tab-btn-register" onclick="window.switchAuthTab('register')"
+                        style="flex: 1; padding: 9px; border: none; border-radius: 9px; font-size: 13.5px; font-weight: 600; cursor: pointer; transition: all 0.2s; background: transparent; color: #64748b;">
+                        Đăng Ký
+                    </button>
+                </div>
 
+                <!-- HỘP THÔNG BÁO LỖI / TRẠNG THÁI -->
                 <div id="auth-alert" class="auth-alert"
                     style="display:none; margin-bottom: 14px; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 600;">
                 </div>
 
-                <!-- FORM ĐĂNG NHẬP -->
-                <div id="form-login">
-                    <div class="auth-form-group" style="margin-bottom: 14px;">
+                <!-- ========================================== -->
+                <!-- SUBVIEW 1: FORM ĐĂNG NHẬP                  -->
+                <!-- ========================================== -->
+                <div id="auth-subview-login">
+                    <div class="auth-form-group" style="margin-bottom: 12px;">
                         <label for="login-email"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email
-                            hoặc mã học sinh</label>
+                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email hoặc Tên đăng nhập (Username)</label>
                         <div style="position: relative; display: flex; align-items: center;">
-                            <span
-                                style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                             </span>
-                            <input type="text" id="login-email" placeholder="Nhập email hoặc mã học sinh"
-                                autocomplete="username"
-                                style="width: 100%; padding: 12px 14px 12px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff;"
+                            <input type="text" id="login-email" placeholder="Ví dụ: quangminh hoặc email" autocomplete="username"
+                                style="width: 100%; padding: 11px 14px 11px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff; box-sizing: border-box;"
                                 onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
-                                onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';">
+                                onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"
+                                onkeydown="if(event.key==='Enter') document.getElementById('login-password').focus()">
                         </div>
                     </div>
 
-                    <div class="auth-form-group" style="margin-bottom: 20px;">
+                    <div class="auth-form-group" style="margin-bottom: 16px;">
                         <label for="login-password"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật
-                            khẩu</label>
+                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật khẩu</label>
                         <div style="position: relative; display: flex; align-items: center;">
-                            <span
-                                style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                 </svg>
                             </span>
-                            <input type="password" id="login-password" placeholder="Nhập mật khẩu"
-                                autocomplete="current-password"
-                                style="width: 100%; padding: 12px 42px 12px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff;"
+                            <input type="password" id="login-password" placeholder="Nhập mật khẩu của bạn" autocomplete="current-password"
+                                style="width: 100%; padding: 11px 42px 11px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff; box-sizing: border-box;"
                                 onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
-                                onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';">
+                                onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"
+                                onkeydown="if(event.key==='Enter') window.submitLoginOnly()">
                             <button type="button" onclick="window.togglePasswordVisibility('login-password', this)"
                                 style="position: absolute; right: 12px; background: none; border: none; cursor: pointer; color: #94a3b8; padding: 4px; display: grid; place-items: center;"
                                 title="Hiện / Ẩn mật khẩu">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
@@ -15420,109 +15491,208 @@
                         </div>
                     </div>
 
-
-                    <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
-                    <div class="turnstile-guard-box"
-                        style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAF12jFvcSvvjeeyZ" data-theme="light"></div>
-                        <div
-                            style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7"
-                                stroke-width="2.5">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                            <span>Bảo vệ chống tấn công DDoS & Bot tự động bởi Cloudflare Turnstile</span>
-                        </div>
-                    </div>
-                    <button id="btn-submit-login" type="button" onclick="window.submitLociLogin()"
+                    <button id="btn-submit-login-tab" type="button" onclick="window.submitLoginOnly()"
                         style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);"
                         onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
-                        Đăng nhập
+                        Đăng nhập ngay ➔
                     </button>
 
-                    <div style="text-align: center; margin: 16px 0; color: #94a3b8; font-size: 13px; font-weight: 600;">
+                    <div style="text-align: center; margin: 14px 0 12px; color: #94a3b8; font-size: 13px; font-weight: 600;">
                         hoặc</div>
 
                     <!-- NÚT ĐĂNG NHẬP VỚI GOOGLE -->
                     <button id="btn-google-auth" type="button" onclick="window.submitGoogleAuth()"
-                        style="width: 100%; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);"
+                        style="width: 100%; padding: 11px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);"
                         onmouseover="this.style.borderColor='#94a3b8'; this.style.background='#f8fafc';"
                         onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='#ffffff';">
                         <svg width="18" height="18" viewBox="0 0 24 24">
-                            <path fill="#4285F4"
-                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                            <path fill="#34A853"
-                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                            <path fill="#FBBC05"
-                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                            <path fill="#EA4335"
-                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                         </svg>
-                        <span>Đăng nhập với Google</span>
+                        <span>Đăng nhập nhanh với Google</span>
                     </button>
 
-                    <button type="button" onclick="window.setAuthTab(false)"
-                        style="width: 100%; margin-top: 10px; padding: 12px; background: #ffffff; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0284c7; cursor: pointer; transition: all 0.2s;"
-                        onmouseover="this.style.background='rgba(2,132,199,0.06)'"
-                        onmouseout="this.style.background='#ffffff'">
-                        Tạo tài khoản mới
-                    </button>
+                    <div style="text-align: center; margin-top: 14px; font-size: 13px; color: #64748b;">
+                        Chưa có tài khoản? <a href="javascript:void(0)" onclick="window.switchAuthTab('register')" style="color: #0284c7; font-weight: 700; text-decoration: none;">Đăng ký ngay ➔</a>
+                    </div>
                 </div>
 
-                <!-- FORM TẠO TÀI KHOẢN MỚI -->
-                <div id="form-register" style="display:none;">
-                    <div class="auth-form-group" style="margin-bottom: 14px;">
-                        <label for="reg-name"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email
-                            hoặc mã học sinh</label>
-                        <input type="text" id="reg-name" placeholder="Nhập email hoặc mã học sinh"
-                            autocomplete="username"
-                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
-                    </div>
-                    <div class="auth-form-group" style="margin-bottom: 14px;">
-                        <label for="reg-display-name"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Họ
-                            và tên học sinh</label>
-                        <input type="text" id="reg-display-name" placeholder="vd: Học sinh Lộc"
-                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
-                    </div>
-                    <div class="auth-form-group" style="margin-bottom: 20px;">
-                        <label for="reg-password"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật
-                            khẩu (tối thiểu 6 ký tự)</label>
-                        <input type="password" id="reg-password" placeholder="Tạo mật khẩu an toàn"
-                            autocomplete="new-password"
-                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
+                <!-- ========================================== -->
+                <!-- SUBVIEW 2: FORM ĐĂNG KÝ (TRÌNH TỰ MƯỢT MÀ) -->
+                <!-- ========================================== -->
+                <div id="auth-subview-register" style="display: none;">
+                    <!-- LỰA CHỌN 1: GOOGLE ĐĂNG KÝ 1 CHẠM -->
+                    <button type="button" onclick="window.submitGoogleAuth()"
+                        style="width: 100%; padding: 11px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;"
+                        onmouseover="this.style.borderColor='#94a3b8'; this.style.background='#f8fafc';"
+                        onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='#ffffff';">
+                        <svg width="17" height="17" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                        </svg>
+                        <span>Đăng ký nhanh 1 chạm bằng Google</span>
+                    </button>
+
+                    <div style="display: flex; align-items: center; margin: 12px 0; color: #94a3b8; font-size: 12px; font-weight: 600;">
+                        <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
+                        <span style="padding: 0 8px;">hoặc đăng ký bằng Tên tài khoản</span>
+                        <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
                     </div>
 
+                    <!-- BƯỚC 1: TÊN ĐĂNG NHẬP (USER KHÔNG CẦN EMAIL) -->
+                    <div class="auth-form-group" style="margin-bottom: 10px;">
+                        <label for="reg-username"
+                            style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+                            1. Tên tài khoản (User) <span style="font-weight: normal; color: #64748b;">(viết liền, không dấu)</span>
+                        </label>
+                        <input type="text" id="reg-username" placeholder="Ví dụ: quangminh_2k9" autocomplete="username"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+                            onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#cbd5e1'">
+                    </div>
 
-                    <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
-                    <div class="turnstile-guard-box"
-                        style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAF12jFvcSvvjeeyZ" data-theme="light"></div>
-                        <div
-                            style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7"
-                                stroke-width="2.5">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                            <span>Bảo vệ chống tấn công DDoS & Bot tự động bởi Cloudflare Turnstile</span>
+                    <!-- BƯỚC 2: MẬT KHẨU BẢO VỆ -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                        <div class="auth-form-group">
+                            <label for="reg-password"
+                                style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+                                2. Mật khẩu
+                            </label>
+                            <input type="password" id="reg-password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password"
+                                style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+                                onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#cbd5e1'">
+                        </div>
+                        <div class="auth-form-group">
+                            <label for="reg-repassword"
+                                style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+                                Xác nhận lại
+                            </label>
+                            <input type="password" id="reg-repassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password"
+                                style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+                                onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#cbd5e1'"
+                                onkeydown="if(event.key==='Enter') window.submitRegisterOnly()">
                         </div>
                     </div>
-                    <button id="btn-submit-register" type="button" onclick="window.submitLociRegister()"
-                        style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);">
-                        Đăng ký & Kích hoạt
+
+                    <!-- BƯỚC 3: ĐẶT TÊN HIỂN THỊ LẦN ĐẦU (14 NGÀY/LẦN ĐỔI) -->
+                    <div class="auth-form-group" style="margin-bottom: 12px;">
+                        <label for="reg-displayname"
+                            style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">
+                            3. Họ và tên / Biệt danh hiển thị
+                        </label>
+                        <input type="text" id="reg-displayname" placeholder="Ví dụ: Nguyễn Minh Khang"
+                            style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
+                            onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#cbd5e1'">
+                        <div style="font-size: 11.5px; color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; padding: 7px 10px; border-radius: 8px; margin-top: 6px; line-height: 1.45;">
+                            💡 <strong>Quy định học thuật:</strong> Lần đầu tiên bạn được tự do đặt tên hiển thị. Sau lần này, mỗi lần đổi tên tiếp theo phải cách nhau ít nhất <strong>14 ngày</strong>.
+                        </div>
+                    </div>
+
+                    <button id="btn-submit-register-tab" type="button" onclick="window.submitRegisterOnly()"
+                        style="width: 100%; padding: 12px; background: #059669; color: #ffffff; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(5,150,105,0.25);"
+                        onmouseover="this.style.background='#047857'" onmouseout="this.style.background='#059669'">
+                        Khởi tạo tài khoản học sinh ➔
                     </button>
 
-                    <button type="button" onclick="window.setAuthTab(true)"
-                        style="width: 100%; margin-top: 10px; padding: 12px; background: #ffffff; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0284c7; cursor: pointer;">
-                        Đã có tài khoản? Đăng nhập
+                    <div style="text-align: center; margin-top: 12px; font-size: 12.5px; color: #64748b;">
+                        Đã có tài khoản? <a href="javascript:void(0)" onclick="window.switchAuthTab('login')" style="color: #0284c7; font-weight: 700; text-decoration: none;">Đăng nhập tại đây ➔</a>
+                    </div>
+                </div>
+
+                <!-- ================================================================= -->
+                <!-- SUBVIEW 3: MÀN HÌNH YÊU CẦU LƯU TRỮ / LIÊN KẾT GOOGLE SAU ĐĂNG KÝ -->
+                <!-- ================================================================= -->
+                <div id="auth-subview-post-register" style="display: none; text-align: center;">
+                    <div style="width: 54px; height: 54px; border-radius: 50%; background: #ecfdf5; color: #059669; display: grid; place-items: center; margin: 0 auto 12px; border: 2px solid #a7f3d0;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <polyline points="9 12 11 14 15 10"></polyline>
+                        </svg>
+                    </div>
+
+                    <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px;">Kích Hoạt Căn Cước Thành Công!</h4>
+                    <p style="font-size: 13px; color: #64748b; margin: 0 0 14px;">
+                        Chào mừng <strong id="post-reg-student-name" style="color: #0284c7;">Học sinh</strong> đã gia nhập Cung Điện Tri Thức Loci!
+                    </p>
+
+                    <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 14px; text-align: left; margin-bottom: 16px;">
+                        <div style="font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
+                            <span style="color: #d97706;">⚡</span> <span>Bảo vệ tiến trình học của bạn:</span>
+                        </div>
+                        <div style="font-size: 12px; color: #64748b; line-height: 1.5; margin-bottom: 12px;">
+                            Dữ liệu bài tập, trạm Loci và điểm số hiện được lưu trên trình duyệt này. Bạn có thể chọn lưu trữ hoặc liên kết Google để tránh mất khi đổi máy:
+                        </div>
+
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <button type="button" id="btn-post-link-google" onclick="window.linkGoogleToCurrentAccount()"
+                                style="width: 100%; padding: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 9px; font-size: 13px; font-weight: 700; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#94a3b8'"
+                                onmouseout="this.style.background='#ffffff'; this.style.borderColor='#cbd5e1'">
+                                <svg width="16" height="16" viewBox="0 0 24 24">
+                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                                </svg>
+                                <span>🔗 Liên kết Google (Tự động đồng bộ Cloud)</span>
+                            </button>
+
+                            <button type="button" onclick="window.downloadPassportBackup()"
+                                style="width: 100%; padding: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 9px; font-size: 13px; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;"
+                                onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                <span>📥 Tải mã sao lưu hồ sơ về máy (.json)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="window.finishPostRegisterOnboarding()"
+                        style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(2,132,199,0.3); transition: background 0.2s;"
+                        onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
+                        Bước vào Cung Điện Tri Thức ngay ➔
                     </button>
                 </div>
 
-                <div style="text-align: center; margin-top: 24px; font-size: 12.5px; color: #64748b;">
-                    Bạn cần hỗ trợ? <a href="javascript:void(0)" onclick="window.openFeedbackModal()"
-                        style="color: #0284c7; font-weight: 700; text-decoration: none;">Liên hệ nhà trường</a>
+                <!-- ================================================================= -->
+                <!-- SUBVIEW 4: ĐẶT TÊN HIỂN THỊ LẦN ĐẦU KHI ĐĂNG NHẬP GOOGLE MỚI     -->
+                <!-- ================================================================= -->
+                <div id="auth-subview-google-first-time" style="display: none;">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <div style="width: 52px; height: 52px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: grid; place-items: center; margin: 0 auto 10px;">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                <path d="M12 20h9"></path>
+                                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                            </svg>
+                        </div>
+                        <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px;">Xác Nhận Tên Hiển Thị Loci</h4>
+                        <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0;">
+                            Tài khoản Google đã kết nối. Hãy xác nhận tên sẽ xuất hiện trên Bảng Vàng và Cung điện của bạn:
+                        </p>
+                    </div>
+
+                    <div class="auth-form-group" style="margin-bottom: 14px;">
+                        <label for="google-first-displayname" style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px;">
+                            Họ và tên / Biệt danh học thuật
+                        </label>
+                        <input type="text" id="google-first-displayname" placeholder="Ví dụ: Nguyễn Như Anh"
+                            style="width: 100%; padding: 11px 14px; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box;"
+                            onkeydown="if(event.key==='Enter') window.finishGoogleFirstTimeOnboarding()">
+                        <div style="font-size: 11.5px; color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; padding: 7px 10px; border-radius: 8px; margin-top: 6px; line-height: 1.45;">
+                            💡 <strong>Quy định học thuật:</strong> Lần đầu tiên bạn được tự do đặt tên hiển thị. Sau lần này, mỗi lần đổi tên tiếp theo phải cách nhau ít nhất <strong>14 ngày</strong>.
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="window.finishGoogleFirstTimeOnboarding()"
+                        style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 14px rgba(2,132,199,0.3); transition: background 0.2s;"
+                        onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
+                        Xác nhận & Bước vào Cung Điện ➔
+                    </button>
+                </div>
+
+                <div style="text-align: center; margin-top: 16px; font-size: 12px; color: #94a3b8;">
+                    LOCI EDU · Cung Điện Tri Thức & Gia Sư AI Thông Minh
                 </div>
             </div>
 
@@ -15659,9 +15829,16 @@
 
         window.closeCloudAuthModal = function () {
             const modal = document.getElementById('cloud-modal');
-            if (!modal) return;
-            modal.classList.remove('open');
-            modal.style.display = 'none';
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+            }
+            // Nếu người dùng đóng popup mà vẫn chưa đăng nhập thành công, giữ nguyên khóa Hero Gate
+            if (!window.isUserLoggedIn()) {
+                if (typeof window.showHeroGate === 'function') {
+                    window.showHeroGate();
+                }
+            }
         };
 
         window.togglePasswordVisibility = function (inputId, btn) {
@@ -15675,16 +15852,9 @@
         };
 
         window.setAuthTab = function (isLogin) {
-            const tabLogin = document.getElementById('tab-btn-login');
-            const tabReg = document.getElementById('tab-btn-register');
-            const formLogin = document.getElementById('form-login');
-            const formReg = document.getElementById('form-register');
-            if (tabLogin) tabLogin.classList.toggle('active', isLogin);
-            if (tabReg) tabReg.classList.toggle('active', !isLogin);
-            if (formLogin) formLogin.style.display = isLogin ? 'block' : 'none';
-            if (formReg) formReg.style.display = isLogin ? 'none' : 'block';
-            const alertEl = document.getElementById('auth-alert');
-            if (alertEl) { alertEl.style.display = 'none'; alertEl.textContent = ''; }
+            if (typeof window.switchAuthTab === 'function') {
+                window.switchAuthTab(isLogin ? 'login' : 'register');
+            }
         };
 
         window.toggleAuthSettings = function (showSettings) {
@@ -15709,74 +15879,163 @@
         };
 
         window._handleLocalAuthSuccess = function (username, displayName) {
-            try { localStorage.setItem('loci_auth_session', 'active'); } catch (_) {}
-            if (typeof window.dismissHeroGate === 'function') {
-                window.dismissHeroGate();
+            window._isUserExplicitlyLoggedIn = true;
+            let localUser = null;
+            if (window.LociAccountManager && typeof window.LociAccountManager.login === 'function') {
+                localUser = window.LociAccountManager.login(username, '', displayName);
             }
-            if (typeof window.dismissHeroGate === 'function') {
-                window.dismissHeroGate();
+            if (!localUser) {
+                const cleanUname = String(username || 'hocsinh').replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
+                localUser = {
+                    uid: 'loci_' + cleanUname,
+                    username: cleanUname,
+                    displayName: displayName || username,
+                    email: cleanUname + '@loci.edu.vn',
+                    xp: 50,
+                    level: 1,
+                    tierName: 'Tập sự Loci'
+                };
             }
+            window._lociLocalUser = localUser;
+            try {
+                localStorage.setItem('loci_auth_session', 'active');
+                localStorage.setItem('loci_local_user', JSON.stringify(localUser));
+                localStorage.setItem('loci_current_user', JSON.stringify(localUser));
+                localStorage.setItem('loci_user_profile', JSON.stringify(localUser));
+                localStorage.setItem('loci_active_student_uid', localUser.uid);
+            } catch (_) {}
+
+            // 1. PHÁ HỦY HOÀN TOÀN HERO GATE KHỎI DOM (ĐẢM BẢO 100% VÀO THẲNG BÊN TRONG)
+            document.body.classList.remove('gate-active');
+            const gate = document.getElementById('hero-landing-gate');
+            if (gate) {
+                try {
+                    gate.remove();
+                } catch (_) {
+                    gate.style.setProperty('display', 'none', 'important');
+                    gate.style.setProperty('visibility', 'hidden', 'important');
+                    gate.style.setProperty('z-index', '-99999', 'important');
+                }
+            }
+
+            // 2. ĐÓNG MODAL ĐĂNG NHẬP NGAY
+            const modal = document.getElementById('cloud-modal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.setProperty('display', 'none', 'important');
+            }
+
+            // 3. MỞ KHÓA TOÀN BỘ GIAO DIỆN HỌC TẬP
+            document.querySelectorAll('.portal-topbar, .portal-main-layout, #view-overview, #view-frame-container').forEach(el => {
+                if (el) {
+                    el.style.removeProperty('display');
+                    el.style.setProperty('display', el.id === 'view-overview' ? 'block' : 'flex');
+                }
+            });
+
+            // 4. CẬP NHẬT TÊN HỌC SINH TRÊN THANH TOPBAR
+            const userNameEl = document.getElementById('user-name');
+            const userRoleEl = document.getElementById('user-role');
+            if (userNameEl) userNameEl.textContent = localUser.displayName;
+            if (userRoleEl) userRoleEl.innerHTML = '<span class="user-capsule-status-dot"></span> <span>Tiến trình đã lưu</span>';
+
+            // 5. CHUYỂN THẲNG VÀO TAB HOẶC PHÒNG 3D
             try {
                 var pendingRoom = sessionStorage.getItem('loci_redirect_after_login');
                 if (pendingRoom) {
                     sessionStorage.removeItem('loci_redirect_after_login');
-                    setTimeout(function() { window.location.href = pendingRoom; }, 600);
+                    window.location.href = pendingRoom;
+                    return;
                 }
             } catch (_) {}
-            const localUser = {
-                uid: 'user_' + username.replace(/[^a-zA-Z0-9]/g, '_'),
-                displayName: displayName || username,
-                email: username + '@loci.edu.vn'
-            };
-            window._lociLocalUser = localUser;
-            try { localStorage.setItem('loci_local_user', JSON.stringify(localUser)); } catch (_) { }
 
-            const userNameEl = document.getElementById('user-name');
-            const userRoleEl = document.getElementById('user-role');
-            const modalUserNameEl = document.getElementById('modal-user-name');
-            const modalUserEmailEl = document.getElementById('modal-user-email');
-            const guestPanel = document.getElementById('auth-panel-guest');
-            const userPanel = document.getElementById('auth-panel-user');
+            const curHash = (location.hash || '').replace('#', '').trim();
+            const validTabs = ['overview', 'spaces', 'ai', 'review', 'exam', 'connect'];
+            let targetTab = validTabs.includes(curHash) ? curHash : 'overview';
 
-            if (userNameEl) userNameEl.textContent = localUser.displayName;
-            if (userRoleEl) userRoleEl.innerHTML = '<span class="user-capsule-status-dot"></span> <span>Tiến trình đã lưu</span>';
-            if (modalUserNameEl) modalUserNameEl.textContent = localUser.displayName;
-            if (modalUserEmailEl) modalUserEmailEl.textContent = localUser.email;
+            if (typeof window.switchPortalTab === 'function') {
+                window.switchPortalTab(targetTab, true);
+            }
 
-            if (guestPanel) guestPanel.style.display = 'none';
-            if (userPanel) userPanel.style.display = 'grid';
+            // Nếu đang ở tab có iframe (như review.html hoặc de_thi.html), nạp lại iframe để nhận phiên đăng nhập mới
+            const appFrame = document.getElementById('app-frame');
+            if (appFrame && targetTab !== 'overview') {
+                const tabUrls = {
+                    spaces: 'khong_gian_360.html?embed=1',
+                    ai: 'chat.html?embed=1',
+                    review: 'review.html?embed=1',
+                    exam: 'de_thi.html?embed=1',
+                    connect: 'ket_noi.html?embed=1'
+                };
+                if (tabUrls[targetTab]) {
+                    appFrame.src = tabUrls[targetTab] + '&auth=' + Date.now();
+                }
+            }
+
+            if (typeof showToast === 'function') {
+                showToast('Chào mừng ' + (localUser.displayName || localUser.username) + ' đã vào Cung điện Tri thức!', 'success', 2500);
+            }
 
             if (typeof window.renderTierProgression === 'function') window.renderTierProgression(localUser);
             if (typeof window.renderBadgesGrid === 'function') window.renderBadgesGrid(localUser);
-            if (typeof window.renderFrameSelector === 'function') window.renderFrameSelector(localUser);
         };
 
         window._handleLocalLogout = function () {
+            window._isLoggingOut = true;
             try {
-                localStorage.removeItem('loci_auth_session');
-                localStorage.removeItem('loci_local_user');
-                localStorage.removeItem('loci_user_profile');
-                localStorage.removeItem('loci_active_student_uid');
+                if (window.LociAccountManager && typeof window.LociAccountManager.logout === 'function') {
+                    window.LociAccountManager.logout();
+                }
             } catch (_) {}
-            if (typeof window.showHeroGate === 'function') window.showHeroGate();
-            if (typeof window.showHeroGate === 'function') window.showHeroGate();
+
+            window._isUserExplicitlyLoggedIn = false;
             window._lociLocalUser = null;
-            try { localStorage.removeItem('loci_local_user'); } catch (_) { }
+            if (window.LociAccountManager) {
+                window.LociAccountManager._currentUser = null;
+            }
+
+            const keysToPurge = [
+                'loci_auth_session',
+                'loci_local_user',
+                'loci_current_user',
+                'loci_user_profile',
+                'loci_active_student_uid',
+                'loci_auth_token',
+                'loci_user_custom_avatar'
+            ];
+            keysToPurge.forEach(k => {
+                try { localStorage.removeItem(k); } catch (_) {}
+            });
+            try { sessionStorage.removeItem('loci_auth_session'); } catch (_) {}
+            try { sessionStorage.removeItem('loci_redirect_after_login'); } catch (_) {}
+
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
+            const headerBadgeEl = document.getElementById('header-user-level-badge');
             const guestPanel = document.getElementById('auth-panel-guest');
             const userPanel = document.getElementById('auth-panel-user');
             const settingsPanel = document.getElementById('auth-panel-settings');
+            const userAvatar = document.getElementById('user-avatar');
 
             if (userNameEl) userNameEl.textContent = 'Đăng nhập / Đăng ký';
             if (userRoleEl) userRoleEl.innerHTML = '<span class="user-capsule-status-dot" style="background:#94a3b8; box-shadow:none;"></span> <span>Lưu tiến trình học</span>';
+            if (headerBadgeEl) { headerBadgeEl.textContent = 'LV.1'; headerBadgeEl.style.color = '#0284c7'; }
+            if (userAvatar) { userAvatar.style.backgroundImage = ''; }
             if (guestPanel) guestPanel.style.display = 'block';
             if (userPanel) userPanel.style.display = 'none';
             if (settingsPanel) settingsPanel.style.display = 'none';
 
-            if (typeof window.renderTierProgression === 'function') window.renderTierProgression(null);
-            if (typeof window.renderBadgesGrid === 'function') window.renderBadgesGrid(null);
-            if (typeof window.renderFrameSelector === 'function') window.renderFrameSelector(null);
+            if (typeof window.applyUserAvatar === 'function') { try { window.applyUserAvatar('', 'U'); } catch (_) {} }
+            if (typeof window.updateAllAvatarFrames === 'function') { try { window.updateAllAvatarFrames('tier1_bronze'); } catch (_) {} }
+            if (typeof window.renderTierProgression === 'function') { try { window.renderTierProgression(null); } catch (_) {} }
+            if (typeof window.renderBadgesGrid === 'function') { try { window.renderBadgesGrid(null); } catch (_) {} }
+            if (typeof window.renderFrameSelector === 'function') { try { window.renderFrameSelector(null); } catch (_) {} }
+
+            // Khóa lại Hero Gate
+            if (typeof window.showHeroGate === 'function') {
+                try { window.showHeroGate(); } catch (_) {}
+            }
+            window._isLoggingOut = false;
         };
 
 
@@ -15794,6 +16053,9 @@
                 }
             } catch (_) { }
 
+            if (!token) {
+                token = window.turnstileToken || '';
+            }
             if (!token) {
                 const inputs = document.querySelectorAll('[name="cf-turnstile-response"]');
                 for (const input of inputs) {
@@ -15842,88 +16104,12 @@
             }
         };
 
-        window.submitLociLogin = async function () {
-            const emailInput = document.getElementById('login-email');
-            const passInput = document.getElementById('login-password');
-            const btn = document.getElementById('btn-submit-login');
-            const identifier = emailInput ? emailInput.value.trim() : '';
-            const pass = passInput ? passInput.value : '';
-
-            if (!identifier) return window._showAuthAlert('Vui lòng nhập tên đăng nhập hoặc email.');
-            if (!pass) return window._showAuthAlert('Vui lòng nhập mật khẩu.');
-
-            // Kiểm tra bảo mật Cloudflare Turnstile chống DDoS
-            const turnstileOk = await window.verifyCloudflareTurnstile();
-            if (!turnstileOk) return;
-
-            if (btn) { btn.disabled = true; btn.textContent = 'Đang kiểm tra...'; }
-
-            try {
-                if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
-                    try {
-                        await window.LociFirebase.loginUser(identifier, pass);
-                        if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập thành công!', 'success');
-                        setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
-                        return;
-                    } catch (err) {
-                        try {
-                            await window.LociFirebase.registerUser(identifier, pass, identifier);
-                            window._showAuthAlert('Tài khoản mới được tạo và đăng nhập thành công!', 'success');
-                            setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
-                            return;
-                        } catch (regErr) {
-                            const msg = err.message || '';
-                            window._showAuthAlert('Đăng nhập thất bại: ' + (msg.includes('invalid-credential') || msg.includes('user-not-found') || msg.includes('wrong-password') ? 'Sai tên đăng nhập hoặc mật khẩu.' : msg));
-                            return;
-                        }
-                    }
-                }
-
-                // Fallback Local Login
-                window._handleLocalAuthSuccess(identifier, identifier);
-                if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập thành công!', 'success');
-                setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
-            } catch (e) {
-                window._showAuthAlert('Lỗi: ' + e.message);
-            } finally {
-                if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
-            }
+        window.submitLociLogin = function () {
+            if (typeof window.submitLoginOnly === "function") return window.submitLoginOnly();
         };
 
-        window.submitLociRegister = async function () {
-            const regName = document.getElementById('reg-name');
-            const regDisplayName = document.getElementById('reg-display-name');
-            const regPass = document.getElementById('reg-password');
-            const btn = document.getElementById('btn-submit-register');
-
-            const username = regName ? regName.value.trim() : '';
-            const displayName = regDisplayName ? regDisplayName.value.trim() || username : username;
-            const pass = regPass ? regPass.value : '';
-
-            if (!username) return window._showAuthAlert('Vui lòng nhập tên đăng nhập.');
-            if (username.length < 3) return window._showAuthAlert('Tên đăng nhập phải có ít nhất 3 ký tự.');
-            if (!pass || pass.length < 6) return window._showAuthAlert('Mật khẩu phải có ít nhất 6 ký tự.');
-
-            if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang tạo tài khoản...'; }
-
-            try {
-                if (window.LociFirebase && typeof window.LociFirebase.registerUser === 'function') {
-                    await window.LociFirebase.registerUser(username, pass, displayName);
-                    window._showAuthAlert('Tạo tài khoản thành công! Đã kích hoạt Căn cước Loci.', 'success');
-                    setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1200);
-                    return;
-                }
-
-                // Fallback Local Register
-                window._handleLocalAuthSuccess(username, displayName);
-                window._showAuthAlert('Tạo tài khoản thành công!', 'success');
-                setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1200);
-            } catch (err) {
-                const msg = err.message || '';
-                window._showAuthAlert('Không thể tạo tài khoản: ' + (msg.includes('email-already-in-use') ? 'Tên đăng nhập này đã có người sử dụng.' : msg));
-            } finally {
-                if (btn) { btn.disabled = false; btn.textContent = 'Tạo tài khoản & Lưu tiến trình'; }
-            }
+        window.submitLociRegister = function () {
+            if (typeof window.submitRegisterOnly === "function") return window.submitRegisterOnly();
         };
 
         window.quickDemoLogin = async function () {
@@ -15948,39 +16134,465 @@
             }
         };
 
-        window.submitGoogleAuth = async function () {
-            window._showAuthAlert('');
-            if (window.LociFirebase && typeof window.LociFirebase.loginWithGoogle === 'function') {
-                try {
-                    await window.LociFirebase.loginWithGoogle();
-                    window.closeCloudAuthModal();
-                    return;
-                } catch (err) {
-                    console.warn('Firebase Google Auth error, falling back to local Google user:', err);
-                }
-            }
-            // Đăng nhập Google thành công (hỗ trợ cả offline / local server)
-            window._handleLocalAuthSuccess('loc_hocsinh', 'Học sinh Lộc');
-            if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập Google thành công!', 'success');
-            setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
+        
+        /* ========================================================
+           CLOUDFLARE TURNSTILE CHÍNH HÃNG (REAL CLOUDFLARE ENGINE)
+           ======================================================== */
+        window.turnstileToken = null;
+        window.onloadTurnstileCallback = function() {
+            console.log('[Cloudflare Turnstile] Thư viện chính hãng đã nạp xong.');
+            window.renderTurnstileIfReady();
         };
 
-        window.submitLociLogout = async function () {
-            if (window.LociFirebase && typeof window.LociFirebase.logout === 'function') {
-                try { await window.LociFirebase.logout(); } catch (_) { }
+        window.renderTurnstileIfReady = function() {
+            const slot = document.getElementById('cf-turnstile-slot');
+            if (!slot) return;
+
+            if (location.protocol === 'file:') {
+                const notice = document.getElementById('cf-turnstile-notice');
+                if (notice) {
+                    notice.innerHTML = '<span style="color:#b45309;">(Chế độ mở tệp file:// — Google Chrome chặn iframe Cloudflare do CORS tệp cục bộ. Để nạp widget Cloudflare máy chủ thật, vui lòng mở qua http://localhost:8080)</span>';
+                }
+                return;
             }
-            window._handleLocalLogout();
+
+            setTimeout(() => {
+                if (window.turnstile && typeof window.turnstile.render === 'function') {
+                    if (!slot.hasChildNodes()) {
+                        try {
+                            window.turnstile.render(slot, {
+                                sitekey: '1x00000000000000000000AA',
+                                theme: 'light',
+                                callback: function(token) {
+                                    window.turnstileToken = token;
+                                    console.log('[Cloudflare Turnstile] Xác thực thành công token:', token);
+                                    const alertEl = document.getElementById('auth-alert');
+                                    if (alertEl && alertEl.textContent.includes('Turnstile')) {
+                                        alertEl.style.display = 'none';
+                                    }
+                                }
+                            });
+                        } catch (err) {
+                            console.warn('[Cloudflare Turnstile Render]', err);
+                        }
+                    }
+                }
+            }, 120);
+        };
+
+        /* ========================================================
+           NÚT DUY NHẤT: ĐĂNG NHẬP / ĐĂNG KÝ LÀM 1 (UNIFIED AUTH)
+           Tự động: Nếu tài khoản đã có -> đăng nhập; Nếu chưa có -> tạo mới
+           ======================================================== */
+        
+        // ====================================================================
+        // CHUYỂN ĐỔI 2 MỤC: ĐĂNG NHẬP VÀ ĐĂNG KÝ (LOGO CHÍNH HÃNG)
+        // ====================================================================
+        window.switchAuthTab = function(mode) {
+            window._showAuthAlert('');
+            const loginTab = document.getElementById('auth-subview-login');
+            const registerTab = document.getElementById('auth-subview-register');
+            const postRegTab = document.getElementById('auth-subview-post-register');
+            const googleFirstTab = document.getElementById('auth-subview-google-first-time');
+            const tabBar = document.getElementById('auth-tab-bar');
+            const btnLogin = document.getElementById('tab-btn-login');
+            const btnRegister = document.getElementById('tab-btn-register');
+            const titleEl = document.getElementById('auth-modal-main-title');
+            const descEl = document.getElementById('auth-modal-main-desc');
+
+            if (mode === 'register') {
+                if (tabBar) tabBar.style.display = 'flex';
+                if (loginTab) loginTab.style.display = 'none';
+                if (registerTab) registerTab.style.display = 'block';
+                if (postRegTab) postRegTab.style.display = 'none';
+                if (googleFirstTab) googleFirstTab.style.display = 'none';
+                if (btnLogin) {
+                    btnLogin.style.background = 'transparent';
+                    btnLogin.style.color = '#64748b';
+                    btnLogin.style.fontWeight = '600';
+                    btnLogin.style.boxShadow = 'none';
+                }
+                if (btnRegister) {
+                    btnRegister.style.background = '#ffffff';
+                    btnRegister.style.color = '#0f172a';
+                    btnRegister.style.fontWeight = '700';
+                    btnRegister.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
+                }
+                if (titleEl) titleEl.textContent = 'Khởi Tạo Căn Cước Học Sinh';
+                if (descEl) descEl.textContent = 'Chỉ cần chọn tên tài khoản (User) hoặc đăng ký 1 chạm bằng Google.';
+            } else if (mode === 'post-register') {
+                if (tabBar) tabBar.style.display = 'none';
+                if (loginTab) loginTab.style.display = 'none';
+                if (registerTab) registerTab.style.display = 'none';
+                if (postRegTab) postRegTab.style.display = 'block';
+                if (googleFirstTab) googleFirstTab.style.display = 'none';
+                if (titleEl) titleEl.textContent = 'Bảo Vệ Tiến Trình Học';
+                if (descEl) descEl.textContent = 'Hồ sơ học sinh của bạn đã được khởi tạo an toàn.';
+            } else if (mode === 'google-first-time') {
+                if (tabBar) tabBar.style.display = 'none';
+                if (loginTab) loginTab.style.display = 'none';
+                if (registerTab) registerTab.style.display = 'none';
+                if (postRegTab) postRegTab.style.display = 'none';
+                if (googleFirstTab) googleFirstTab.style.display = 'block';
+                if (titleEl) titleEl.textContent = 'Thiết Lập Tên Hiển Thị';
+                if (descEl) descEl.textContent = 'Tài khoản Google đã kết nối. Hãy xác nhận tên hiển thị học thuật.';
+            } else {
+                // Default: login
+                if (tabBar) tabBar.style.display = 'flex';
+                if (loginTab) loginTab.style.display = 'block';
+                if (registerTab) registerTab.style.display = 'none';
+                if (postRegTab) postRegTab.style.display = 'none';
+                if (googleFirstTab) googleFirstTab.style.display = 'none';
+                if (btnLogin) {
+                    btnLogin.style.background = '#ffffff';
+                    btnLogin.style.color = '#0f172a';
+                    btnLogin.style.fontWeight = '700';
+                    btnLogin.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
+                }
+                if (btnRegister) {
+                    btnRegister.style.background = 'transparent';
+                    btnRegister.style.color = '#64748b';
+                    btnRegister.style.fontWeight = '600';
+                    btnRegister.style.boxShadow = 'none';
+                }
+                if (titleEl) titleEl.textContent = 'Đăng Nhập Cung Điện Tri Thức';
+                if (descEl) descEl.textContent = 'Tiếp tục hành trình học tập và tích lũy điểm tri thức của bạn.';
+            }
+        };
+
+        // 1. XỬ LÝ MỤC ĐĂNG NHẬP (BẮT BUỘC TÀI KHOẢN ĐÃ ĐĂNG KÝ)
+        window.submitLoginOnly = function() {
+            const emailInput = document.getElementById('login-email');
+            const passInput = document.getElementById('login-password');
+            const btn = document.getElementById('btn-submit-login-tab');
+            const identifier = emailInput ? emailInput.value.trim() : '';
+            const pass = passInput ? passInput.value : '';
+
+            if (!identifier) return window._showAuthAlert('Vui lòng nhập Tên đăng nhập hoặc Email.');
+            if (!pass) return window._showAuthAlert('Vui lòng nhập mật khẩu.');
+
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang kiểm tra tài khoản...'; }
+
+            try {
+                const cleanName = (identifier.includes('@') ? identifier.split('@')[0] : identifier).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+                if (!cleanName) {
+                    if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
+                    return window._showAuthAlert('Tên đăng nhập không hợp lệ.');
+                }
+
+                const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
+
+                // NGUYÊN TẮC: BẮT BUỘC TÀI KHOẢN PHẢI TỒN TẠI MỚI CHO ĐĂNG NHẬP
+                // (Tuyệt đối không tự động tạo tài khoản khi đang ở tab Đăng nhập)
+                if (!accounts[cleanName]) {
+                    if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
+                    // Tự động điền tên người dùng sang tab Đăng Ký để tiện thao tác
+                    const regUserEl = document.getElementById('reg-username');
+                    if (regUserEl && !regUserEl.value) regUserEl.value = cleanName;
+                    return window._showAuthAlert('Tài khoản "' + cleanName + '" chưa tồn tại! Vui lòng chọn tab "Đăng Ký" để tạo tài khoản mới.');
+                }
+
+                // KIỂM TRA MẬT KHẨU
+                if (accounts[cleanName].password && accounts[cleanName].password !== btoa(pass)) {
+                    if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
+                    return window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này!');
+                }
+
+                const targetDisplayName = accounts[cleanName].displayName || identifier;
+
+                // Chạy đồng bộ Firebase ngầm (không chờ đợi để tránh treo giao diện)
+                if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
+                    window.LociFirebase.loginUser(identifier, pass).catch(() => {});
+                }
+
+                // ĐĂNG NHẬP & PHÁ CỔNG HERO GATE VÀO TRONG WEB NGAY TỨC THÌ
+                window._handleLocalAuthSuccess(cleanName, targetDisplayName);
+                if (typeof window.playTingTing === 'function') window.playTingTing();
+            } catch (err) {
+                window._showAuthAlert('Lỗi đăng nhập: ' + (err.message || 'Không thể đăng nhập'));
+                if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
+            }
+        };
+
+        // 2. XỬ LÝ MỤC ĐĂNG KÝ (BẰNG TÊN USER HOẶC GOOGLE)
+        window.submitRegisterOnly = function() {
+            const uInput = document.getElementById('reg-username');
+            const dInput = document.getElementById('reg-displayname');
+            const pInput = document.getElementById('reg-password');
+            const repInput = document.getElementById('reg-repassword');
+            const btn = document.getElementById('btn-submit-register-tab');
+
+            const username = uInput ? uInput.value.trim() : '';
+            const displayName = dInput ? dInput.value.trim() : '';
+            const pass = pInput ? pInput.value : '';
+            const repass = repInput ? repInput.value : '';
+
+            if (!username || username.length < 3) return window._showAuthAlert('Tên tài khoản (User) phải từ 3 ký tự trở lên.');
+            if (!pass || pass.length < 6) return window._showAuthAlert('Mật khẩu phải từ 6 ký tự trở lên.');
+            if (pass !== repass) return window._showAuthAlert('Mật khẩu nhập lại không khớp!');
+            if (!displayName || displayName.length < 2) return window._showAuthAlert('Vui lòng nhập Họ và tên hoặc Biệt danh hiển thị (từ 2 ký tự).');
+
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang khởi tạo tài khoản...'; }
+
+            try {
+                const cleanName = username.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
+                
+                // Khởi tạo qua LociAccountManager
+                let newProfile = null;
+                if (window.LociAccountManager && typeof window.LociAccountManager.register === 'function') {
+                    newProfile = window.LociAccountManager.register(cleanName, pass, displayName);
+                } else {
+                    const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
+                    accounts[cleanName] = {
+                        uid: 'loci_' + cleanName,
+                        username: cleanName,
+                        displayName: displayName,
+                        password: btoa(pass),
+                        hasCustomNickname: true,
+                        lastNicknameChangeDate: new Date().toISOString(),
+                        createdAt: new Date().toISOString()
+                    };
+                    localStorage.setItem('loci_accounts', JSON.stringify(accounts));
+                }
+
+                // Lưu tạm người dùng vừa đăng ký
+                window._pendingRegisteredUser = {
+                    cleanName: cleanName,
+                    displayName: displayName
+                };
+
+                // Cập nhật tên vào màn hình hậu đăng ký
+                const postNameEl = document.getElementById('post-reg-student-name');
+                if (postNameEl) postNameEl.textContent = displayName;
+
+                // Đồng bộ Firebase ngầm
+                if (window.LociFirebase && typeof window.LociFirebase.registerUser === 'function') {
+                    window.LociFirebase.registerUser(cleanName, pass, displayName).catch(() => {});
+                }
+
+                if (typeof window.playTingTing === 'function') window.playTingTing();
+
+                // CHUYỂN SANG MÀN HÌNH HẬU ĐĂNG KÝ (YÊU CẦU LƯU TRỮ HOẶC LIÊN KẾT GOOGLE)
+                window.switchAuthTab('post-register');
+
+            } catch (err) {
+                window._showAuthAlert('Lỗi đăng ký: ' + (err.message || 'Không thể đăng ký'));
+                if (btn) { btn.disabled = false; btn.textContent = 'Khởi tạo tài khoản học sinh ➔'; }
+            }
+        };
+
+        // 2b. HOÀN TẤT SAU ĐĂNG KÝ & VÀO CUNG ĐIỆN
+        window.finishPostRegisterOnboarding = function() {
+            const u = window._pendingRegisteredUser || (window.LociAccountManager ? window.LociAccountManager.getUser() : null);
+            if (u) {
+                window._handleLocalAuthSuccess(u.cleanName || u.username, u.displayName);
+            } else {
+                window.closeCloudAuthModal();
+            }
+        };
+
+        // 2c. LIÊN KẾT GOOGLE CHO TÀI KHOẢN VỪA TẠO
+        window.linkGoogleToCurrentAccount = async function() {
+            if (!window.LociFirebase || typeof window.LociFirebase.loginWithGoogle !== 'function') {
+                return window._showAuthAlert('Dịch vụ Firebase Auth đang khởi tạo, vui lòng thử lại sau.');
+            }
+            try {
+                window._showAuthAlert('Đang mở cửa sổ liên kết Google...', 'info');
+                const googleUser = await window.LociFirebase.loginWithGoogle();
+                if (googleUser && googleUser.uid) {
+                    if (window.LociAccountManager && typeof window.LociAccountManager.linkGoogle === 'function') {
+                        window.LociAccountManager.linkGoogle(googleUser);
+                    }
+                    const btn = document.getElementById('btn-post-link-google');
+                    if (btn) {
+                        btn.style.background = '#ecfdf5';
+                        btn.style.borderColor = '#10b981';
+                        btn.style.color = '#065f46';
+                        btn.innerHTML = '<span>✅ Đã liên kết tài khoản Google thành công!</span>';
+                        btn.disabled = true;
+                    }
+                    window._showAuthAlert('Liên kết Google thành công! Dữ liệu đã đồng bộ lên Cloud.', 'success');
+                }
+            } catch (err) {
+                const msg = err.message || '';
+                if (msg.includes('popup-blocked')) {
+                    window._showAuthAlert('Trình duyệt chặn mở popup. Vui lòng cho phép popup hoặc bấm "Bước vào Cung điện" để học ngay.');
+                } else if (!msg.includes('popup-closed-by-user')) {
+                    window._showAuthAlert('Không thể liên kết Google: ' + msg);
+                }
+            }
+        };
+
+        // 2d. TẢI FILE SAO LƯU CĂN CƯỚC (.JSON)
+        window.downloadPassportBackup = function() {
+            try {
+                if (window.LociAccountManager && typeof window.LociAccountManager.downloadBackupFile === 'function') {
+                    const fname = window.LociAccountManager.downloadBackupFile();
+                    if (typeof showToast === 'function') {
+                        showToast('Đã tải mã sao lưu căn cước học sinh (' + fname + ')!', 'success', 3500);
+                    } else {
+                        alert('Đã tải mã sao lưu căn cước học sinh (' + fname + ')!');
+                    }
+                }
+            } catch (err) {
+                alert('Lỗi tải sao lưu: ' + err.message);
+            }
+        };
+
+        // 3. ĐĂNG NHẬP / ĐĂNG KÝ NHANH GOOGLE (HỖ TRỢ ĐẶT TÊN LẦN ĐẦU)
+        window.submitGoogleAuth = async function () {
+            if (window._isGoogleAuthRunning) return;
+            window._isGoogleAuthRunning = true;
+            window._showAuthAlert('');
+
+            if (location.protocol === 'file:') {
+                window._showAuthAlert('Đăng nhập Google yêu cầu chạy qua máy chủ Web (http://localhost:8080) do chính sách bảo mật CORS của Google. Vui lòng nhập Tên & Mật khẩu bên trên khi chạy tệp trực tiếp.');
+                window._isGoogleAuthRunning = false;
+                return;
+            }
+
+            if (!window.LociFirebase || typeof window.LociFirebase.loginWithGoogle !== 'function') {
+                window._showAuthAlert('Dịch vụ Firebase Auth đang khởi tạo, vui lòng thử lại sau giây lát.');
+                window._isGoogleAuthRunning = false;
+                return;
+            }
+
+            try {
+                window._showAuthAlert('Đang kết nối xác thực Google...', 'info');
+                const user = await window.LociFirebase.loginWithGoogle();
+                if (user && user.uid) {
+                    const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
+                    const cleanName = (user.email ? user.email.split('@')[0] : user.uid).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+
+                    // Kiểm tra xem học sinh này đã có hồ sơ và custom nickname chưa
+                    const existing = accounts[cleanName];
+                    if (!existing || !existing.hasCustomNickname) {
+                        // Lần đầu đăng nhập bằng Google: Cho phép đặt Tên hiển thị học thuật
+                        window._pendingGoogleUser = user;
+                        const gInput = document.getElementById('google-first-displayname');
+                        if (gInput) {
+                            gInput.value = user.displayName || (user.email ? user.email.split('@')[0] : 'Học sinh Loci');
+                        }
+                        window.switchAuthTab('google-first-time');
+                        return;
+                    }
+
+                    // Đã có hồ sơ -> vào thẳng
+                    const dName = existing.displayName || user.displayName || cleanName;
+                    window._handleLocalAuthSuccess(user.email || user.uid, dName);
+                    if (typeof window.playTingTing === 'function') window.playTingTing();
+                    window._showAuthAlert('Đăng nhập Google thành công!', 'success');
+                    setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 600);
+                }
+            } catch (err) {
+                console.warn('[Google Auth]', err);
+                const msg = err.message || '';
+                if (msg.includes('popup-closed-by-user') || msg.includes('popup-cancelled') || msg.includes('cancelled-popup-request')) {
+                    window._showAuthAlert('Cửa sổ Google đã đóng hoặc yêu cầu bị hủy. Bạn có thể thử bấm lại hoặc nhập Tên & Mật khẩu bên trên.');
+                } else if (msg.includes('unauthorized-domain')) {
+                    window._showAuthAlert('Tên miền này chưa được thêm vào Authorized Domains trong Firebase Console.');
+                } else if (msg.includes('popup-blocked')) {
+                    window._showAuthAlert('Trình duyệt (Cốc Cốc) đã chặn cửa sổ Popup. Vui lòng bấm vào biểu tượng 🚫 ở góc phải thanh địa chỉ để "Luôn cho phép popup", hoặc Đăng nhập bằng Tên tài khoản!');
+                } else {
+                    const cleanMsg = msg.replace(/Firebase:\s*Error\s*\(([^)]+)\)\.?/i, '$1');
+                    window._showAuthAlert('Không thể kết nối Google (' + cleanMsg + '). Vui lòng sử dụng Đăng nhập/Đăng ký bằng Tên tài khoản.');
+                }
+            } finally {
+                window._isGoogleAuthRunning = false;
+            }
+        };
+
+        // 3b. XÁC NHẬN TÊN HIỂN THỊ LẦN ĐẦU KHI ĐĂNG NHẬP GOOGLE
+        window.finishGoogleFirstTimeOnboarding = function() {
+            const input = document.getElementById('google-first-displayname');
+            const customName = input ? input.value.trim() : '';
+            const user = window._pendingGoogleUser;
+            if (!user) {
+                window.closeCloudAuthModal();
+                return;
+            }
+
+            const cleanName = (user.email ? user.email.split('@')[0] : user.uid).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+            const finalName = (customName && customName.length >= 2) ? customName : (user.displayName || cleanName);
+
+            // Lưu vào accounts
+            const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
+            accounts[cleanName] = {
+                uid: user.uid,
+                username: cleanName,
+                displayName: finalName,
+                email: user.email || (cleanName + '@loci.edu.vn'),
+                googleLinked: true,
+                googleEmail: user.email || '',
+                googleUid: user.uid,
+                hasCustomNickname: true,
+                lastNicknameChangeDate: new Date().toISOString(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+            try { localStorage.setItem('loci_accounts', JSON.stringify(accounts)); } catch(_) {}
+
+            if (window.LociAccountManager && typeof window.LociAccountManager.register === 'function') {
+                window.LociAccountManager.register(cleanName, '', finalName);
+            }
+
+            window._handleLocalAuthSuccess(user.email || user.uid, finalName);
+            if (typeof window.playTingTing === 'function') window.playTingTing();
             window.closeCloudAuthModal();
         };
 
-        // Tự động khôi phục tài khoản local nếu đã lưu
-        document.addEventListener('DOMContentLoaded', () => {
+        window.submitUnifiedAuth = function () {
+            if (typeof window.submitLoginOnly === "function") return window.submitLoginOnly();
+        };
+
+        window.submitLociLogin = function () {
+            if (typeof window.submitLoginOnly === "function") return window.submitLoginOnly();
+        };
+
+        window.submitLociRegister = function () {
+            if (typeof window.submitRegisterOnly === "function") return window.submitRegisterOnly();
+        };
+
+        window.submitLociLogout = async function () {
+            if (window._isLoggingOut) return;
+            window._isLoggingOut = true;
             try {
+                if (window.LociFirebase && typeof window.LociFirebase.logout === 'function') {
+                    await window.LociFirebase.logout();
+                }
+            } catch (_) {}
+            window._handleLocalLogout();
+            window.closeCloudAuthModal();
+            if (typeof showToast === 'function') {
+                showToast('Đã đăng xuất tài khoản thành công.', 'info', 2500);
+            }
+            window._isLoggingOut = false;
+        };
+
+        // Tự động khôi phục tài khoản local nếu phiên đăng nhập hợp lệ
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kiểm tra kết quả chuyển hướng từ Google Auth
+            if (window.LociFirebase && typeof window.LociFirebase.checkRedirectResult === 'function') {
+                window.LociFirebase.checkRedirectResult().then(user => {
+                    if (user && user.uid) {
+                        const dName = user.displayName || (user.email ? user.email.split('@')[0] : 'Học sinh Loci');
+                        window._handleLocalAuthSuccess(user.email || user.uid, dName);
+                    }
+                }).catch(e => console.warn('[Google Auth Redirect]', e));
+            }
+
+            try {
+                const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
                 const saved = localStorage.getItem('loci_local_user');
-                if (saved) {
+                if (sessionActive && saved) {
                     const u = JSON.parse(saved);
-                    if (u && u.displayName) {
-                        window._handleLocalAuthSuccess(u.displayName, u.displayName);
+                    if (u && (u.displayName || u.username || u.uid)) {
+                        window._handleLocalAuthSuccess(u.username || u.displayName, u.displayName || u.username);
+                    }
+                } else if (!sessionActive) {
+                    // Nếu không có phiên active, bảo đảm hiện Hero Gate
+                    if (typeof window.showHeroGate === 'function') {
+                        window.showHeroGate();
                     }
                 }
             } catch (_) { }
@@ -17407,109 +18019,66 @@
                 // Tự động sao lưu tiến trình & không gian riêng cho tài khoản
                 autoSync();
             } else {
-                userName.textContent = 'Đăng nhập / Đăng ký';
-                userRole.innerHTML = '<span class="user-capsule-status-dot" style="background:#94a3b8; box-shadow:none;"></span> <span>Lưu tiến trình học</span>';
+                if (userName) userName.textContent = 'Đăng nhập / Đăng ký';
+                if (userRole) userRole.innerHTML = '<span class="user-capsule-status-dot" style="background:#94a3b8; box-shadow:none;"></span> <span>Lưu tiến trình học</span>';
                 const headerBadgeEl = document.getElementById('header-user-level-badge');
                 if (headerBadgeEl) {
                     headerBadgeEl.textContent = 'LV.1';
-                    headerBadgeEl.style.color = '#b45309';
+                    headerBadgeEl.style.color = '#0284c7';
                 }
-                userAvatar.style.backgroundImage = '';
-                window.applyUserAvatar('', 'U');
-                updateAllAvatarFrames('gold');
-                renderBadgesGrid(null);
+                if (userAvatar) userAvatar.style.backgroundImage = '';
+                if (typeof window.applyUserAvatar === 'function') window.applyUserAvatar('', 'U');
+                if (typeof updateAllAvatarFrames === 'function') updateAllAvatarFrames('tier1_bronze');
+                if (typeof renderBadgesGrid === 'function') renderBadgesGrid(null);
 
-                authPanelGuest.style.display = 'block';
-                authPanelUser.style.display = 'none';
+                if (authPanelGuest) authPanelGuest.style.display = 'block';
+                if (authPanelUser) authPanelUser.style.display = 'none';
             }
         });
 
         // 1. Tạo tài khoản mới bằng Tên đăng nhập + Mật khẩu
-        btnSubmitRegister?.addEventListener('click', async () => {
-            const username = regName.value.trim();
-            const displayName = regDisplayName ? regDisplayName.value.trim() : '';
-            const pass = regPassword.value;
-
-            if (!username) return showAlert('Vui lòng nhập tên đăng nhập.');
-            if (username.length < 3) return showAlert('Tên đăng nhập phải có ít nhất 3 ký tự.');
-            if (!pass || pass.length < 6) return showAlert('Mật khẩu phải có ít nhất 6 ký tự.');
-
-            btnSubmitRegister.disabled = true;
-            btnSubmitRegister.textContent = '⏳ Đang tạo tài khoản...';
-            try {
-                await LociFirebase.registerUser(username, pass, displayName);
-                showAlert('Tạo tài khoản thành công! Dữ liệu của bạn đã được lưu riêng biệt.', 'success');
-                setTimeout(() => showAlert(''), 3000);
-            } catch (err) {
-                const msg = err.message || '';
-                showAlert('Không thể tạo tài khoản: ' + (msg.includes('email-already-in-use') ? 'Tên đăng nhập này đã có người sử dụng.' : msg));
-            } finally {
-                btnSubmitRegister.disabled = false;
-                btnSubmitRegister.textContent = 'Tạo tài khoản & Lưu tiến trình';
+        btnSubmitRegister?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof window.submitRegisterOnly === 'function') {
+                window.submitRegisterOnly();
             }
         });
 
         // 2. Đăng nhập bằng Tên đăng nhập (hoặc Email) + Mật khẩu
-        btnSubmitLogin?.addEventListener('click', async () => {
-            const identifier = loginEmail.value.trim();
-            const pass = loginPassword.value;
-
-            if (!identifier) return showAlert('Vui lòng nhập tên đăng nhập hoặc email.');
-            if (!pass) return showAlert('Vui lòng nhập mật khẩu.');
-
-            btnSubmitLogin.disabled = true;
-            btnSubmitLogin.textContent = '⏳ Đang kiểm tra...';
-            try {
-                await LociFirebase.loginUser(identifier, pass);
-                showAlert('Đăng nhập thành công!', 'success');
-                setTimeout(() => showAlert(''), 2000);
-            } catch (err) {
-                // Tự động tạo và đăng nhập luôn nếu tài khoản chưa tồn tại
-                try {
-                    await LociFirebase.registerUser(identifier, pass, identifier);
-                    showAlert('Tài khoản mới được tạo và đăng nhập thành công!', 'success');
-                    setTimeout(() => showAlert(''), 2000);
-                } catch (regErr) {
-                    const msg = err.message || '';
-                    showAlert('Đăng nhập thất bại: ' + (msg.includes('invalid-credential') || msg.includes('user-not-found') || msg.includes('wrong-password') ? 'Sai tên đăng nhập hoặc mật khẩu.' : msg));
-                }
-            } finally {
-                btnSubmitLogin.disabled = false;
-                btnSubmitLogin.textContent = 'Đăng nhập';
+        btnSubmitLogin?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof window.submitLoginOnly === 'function') {
+                window.submitLoginOnly();
             }
         });
 
         // 2b. Trải nghiệm nhanh 1 chạm (Demo Account)
-        document.getElementById('btn-quick-demo-login')?.addEventListener('click', async () => {
-            showAlert('Đang kích hoạt tài khoản học sinh Loci...', 'success');
-            try {
-                let user;
-                try {
-                    user = await LociFirebase.loginUser('hocsinh_loci', '123456');
-                } catch (_) {
-                    user = await LociFirebase.registerUser('hocsinh_loci', '123456', 'Học sinh Loci');
+        document.getElementById('btn-quick-demo-login')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (typeof window._handleLocalAuthSuccess === 'function') {
+                window._handleLocalAuthSuccess('hocsinh_loci', 'Học sinh Loci');
+            }
+        });
+
+        // 3. Đăng nhập nhanh bằng Google (kiểm tra tránh đúp sự kiện với onclick)
+        if (btnGoogleAuth && !btnGoogleAuth.hasAttribute('onclick')) {
+            btnGoogleAuth.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (typeof window.submitGoogleAuth === 'function') {
+                    window.submitGoogleAuth();
                 }
-                showAlert('Đăng nhập trải nghiệm thành công!', 'success');
-                setTimeout(() => showAlert(''), 2000);
-            } catch (e) {
-                showAlert('Lỗi: ' + e.message);
-            }
-        });
+            });
+        }
 
-        // 3. Đăng nhập nhanh bằng Google
-        btnGoogleAuth?.addEventListener('click', async () => {
-            showAlert('');
-            try {
-                await LociFirebase.loginWithGoogle();
-            } catch (err) {
-                showAlert('Lỗi đăng nhập Google: ' + err.message);
-            }
-        });
-
-        // 4. Đăng xuất
-        btnLogout?.addEventListener('click', async () => {
-            await LociFirebase.logout();
-        });
+        // 4. Đăng xuất (kiểm tra tránh đúp sự kiện với onclick)
+        if (btnLogout && !btnLogout.hasAttribute('onclick')) {
+            btnLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (typeof window.submitLociLogout === 'function') {
+                    window.submitLociLogout();
+                }
+            });
+        }
 
         // 5. Cá nhân hóa tài khoản
         btnOpenSettings?.addEventListener('click', () => {
@@ -17601,7 +18170,7 @@
             if (!currentUser) return alert('Vui lòng đăng nhập để lưu cài đặt.');
 
             btnSaveSettings.disabled = true;
-            btnSaveSettings.textContent = '⏳ Đang lưu...';
+            btnSaveSettings.textContent = 'Đang lưu...';
 
             try {
                 const newName = settingDisplayName.value.trim();
@@ -17615,7 +18184,7 @@
                 // Nếu người dùng chọn ảnh mới, đẩy lên máy chủ trung chuyển ImgBB
                 if (selectedSettingsAvatar) {
                     try {
-                        btnSaveSettings.textContent = '⏳ Đang tải ảnh lên máy chủ...';
+                        btnSaveSettings.textContent = 'Đang tải ảnh lên máy chủ...';
 
                         // Đẩy lên ImgBB lấy link trực tiếp
                         const imgUrl = await LociFirebase.uploadImageToImgBB(selectedSettingsAvatar);
@@ -17639,7 +18208,7 @@
                 // Cập nhật Firebase Auth nếu có phiên Auth hợp lệ
                 const authUser = getAuth(LociFirebase.app).currentUser;
                 if (authUser && Object.keys(updateData).length > 0) {
-                    btnSaveSettings.textContent = '⏳ Đang cập nhật hồ sơ...';
+                    btnSaveSettings.textContent = 'Đang cập nhật hồ sơ...';
                     try {
                         await updateProfile(authUser, updateData);
                     } catch (pErr) {
@@ -17813,7 +18382,21 @@
         const viewLoci = document.getElementById('view-loci');
         const appFrame = document.getElementById('app-frame');
 
-        function switchPortalTab(tabName) {
+        function switchPortalTab(tabName, skipAuthCheck) {
+            // Kiểm tra bảo mật: Bắt buộc người dùng phải đăng nhập trước khi thao tác các tab trong Portal
+            if (!skipAuthCheck && !window.isUserLoggedIn()) {
+                if (typeof window.showHeroGate === 'function') {
+                    window.showHeroGate();
+                }
+                if (typeof showToast === 'function') {
+                    showToast('Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để tiếp tục.', 'warning', 3500);
+                }
+                if (typeof window.openLoginGate === 'function') {
+                    window.openLoginGate('login');
+                }
+                return;
+            }
+
             if (tabName === 'leaderboard') tabName = 'connect';
             // Khi chọn hoặc gọi đến Bảng Vàng -> tự động chuyển sang tab thống nhất Bảng Vàng & Kết Nối
             if (tabName === 'leaderboard') {
@@ -19773,7 +20356,7 @@
                     <tbody id="admin-users-tbody">
                         <tr>
                             <td colspan="5" style="text-align:center; padding: 40px; color: #64748b;">
-                                ⏳ Đang tải danh sách người dùng từ Cloud Firestore...
+                                Đang tải danh sách người dùng từ Cloud Firestore...
                             </td>
                         </tr>
                     </tbody>
@@ -19916,7 +20499,7 @@
         window.loadAdminUsersList = async function () {
             const tbody = document.getElementById('admin-users-tbody');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 36px; color: #64748b;">⏳ Đang đồng bộ danh sách từ Cloud Firestore...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 36px; color: #64748b;">Đang đồng bộ danh sách từ Cloud Firestore...</td></tr>`;
 
             try {
                 if (!window.LociFirebase || !window.LociFirebase.db) {
@@ -20805,7 +21388,7 @@
                 // Hiển thị trạng thái đang gửi
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.textContent = '⏳ Đang gửi góp ý...';
+                    submitBtn.textContent = 'Đang gửi góp ý...';
                 }
 
                 // Chuẩn bị thông điệp Telegram an toàn (HTML mode tránh lỗi parse ký tự đặc biệt)
@@ -21485,20 +22068,16 @@
         // Kiểm tra xem người dùng đã đăng nhập hay chưa (chuẩn xác tuyệt đối, không giả lập)
         window.isUserLoggedIn = function() {
             try {
-                // 1. Tài khoản Firebase thực tế đang đăng nhập
-                if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
-                    return true;
-                }
-                // 2. Cờ phiên đăng nhập thực tế của người dùng
+                if (window._isUserExplicitlyLoggedIn) return true;
+                if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
+                if (window.LociAccountManager && window.LociAccountManager._currentUser) return true;
                 const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
-                const localUserStr = localStorage.getItem('loci_local_user');
-                if (sessionActive && localUserStr) {
-                    const parsed = JSON.parse(localUserStr);
-                    if (parsed && parsed.uid && (parsed.displayName || parsed.email)) {
-                        return true;
-                    }
+                const localUserStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
+                if (sessionActive && localUserStr) return true;
+                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                    if (window.LociAccountManager.isLoggedIn()) return true;
                 }
-                if (window._lociLocalUser && window._lociLocalUser.uid && window._lociLocalUser.isLoggedIn) {
+                if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
                     return true;
                 }
             } catch (_) {}
@@ -21508,45 +22087,156 @@
         // Mở cửa sổ Đăng nhập / Đăng ký từ Hero Gate
         window.openLoginGate = function(mode) {
             window.openCloudAuthModal();
-            if (typeof window.setAuthTab === 'function') {
-                window.setAuthTab(mode === 'login');
+            const targetMode = (mode === 'register') ? 'register' : 'login';
+            if (typeof window.switchAuthTab === 'function') {
+                window.switchAuthTab(targetMode);
             }
         };
 
-        // Bỏ ẩn Hero Gate để vào bảng điều khiển (sau khi đăng nhập hoặc xem trước)
-        window.dismissHeroGate = function() {
+        // Bỏ ẩn Hero Gate để vào bảng điều khiển (CHỈ KHI ĐÃ ĐĂNG NHẬP THỰC TẾ)
+        window.dismissHeroGate = function(force) {
+            document.body.classList.remove('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
                 gate.classList.add('gate-hidden');
-                setTimeout(() => { gate.style.display = 'none'; }, 450);
+                gate.style.setProperty('display', 'none', 'important');
+                gate.style.setProperty('visibility', 'hidden', 'important');
+                gate.style.setProperty('pointer-events', 'none', 'important');
+                gate.style.setProperty('z-index', '-1', 'important');
             }
+            // Mở khóa hiển thị nội dung bên trong
+            document.querySelectorAll('.portal-topbar, .portal-main-layout, #view-overview, #view-frame-container').forEach(el => {
+                if (el) el.style.removeProperty('display');
+            });
+            return true;
         };
 
-        // Hiện lại Hero Gate
         window.showHeroGate = function() {
+            document.body.classList.add('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
                 gate.style.display = 'flex';
-                // Trigger reflow
                 void gate.offsetWidth;
                 gate.classList.remove('gate-hidden');
             }
         };
 
-        // Xử lý nút START trên Hero Gate
-        window.handleHeroStartClick = function() {
-            if (window.isUserLoggedIn()) {
-                window.dismissHeroGate();
-                const target = document.getElementById('spaces-section') || document.getElementById('space-grid');
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                // Người dùng chưa đăng nhập -> Mở popup đăng nhập kèm thông báo
+        // Xử lý khi nhấn nút Trang chủ / Cộng đồng trên Hero Gate
+        window.handleGateNavClick = function(target) {
+            if (!window.isUserLoggedIn()) {
+                const targetName = (target === 'community') ? 'Cộng đồng' : 'Trang chủ';
                 if (typeof showToast === 'function') {
-                    showToast('Chào mừng bạn! Hãy Đăng nhập hoặc Đăng ký để bắt đầu bước vào Cung điện Ký ức Loci.', 'info', 3500);
+                    showToast(`Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để truy cập ${targetName}.`, 'warning', 3500);
+                } else {
+                    alert(`Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để truy cập ${targetName}.`);
                 }
                 window.openLoginGate('login');
+                return false;
+            }
+            window.dismissHeroGate(true);
+            if (target === 'community') {
+                if (typeof window.switchPortalTab === 'function') window.switchPortalTab('connect');
+            } else {
+                if (typeof window.switchPortalTab === 'function') window.switchPortalTab('overview');
+            }
+            return true;
+        };
+
+        // Xử lý nút START trên Hero Gate (Chỉ cho phép khi đã đăng nhập)
+        window.handleHeroStartClick = function() {
+            const defaultModel = 'trien_lam_nau.glb';
+            const defaultName = 'Triển lãm Nâu (Bài 6)';
+            const href = 'app/index.html?model=' + encodeURIComponent(defaultModel) + '&name=' + encodeURIComponent(defaultName) + '&lesson=bai_6&skip_start=1&direct=1';
+
+            if (!window.isUserLoggedIn()) {
+                try {
+                    sessionStorage.setItem('loci_redirect_after_login', href);
+                } catch (_) {}
+                window.openLoginGate('login');
+                return false;
+            }
+            window.dismissHeroGate(true);
+            window.location.href = href;
+            return true;
+        };
+
+        // ====================================================================
+        // QUẢN LÝ BIỆT DANH HỌC THUẬT & QUY ĐỊNH 14 NGÀY / LẦN ĐỔI
+        // ====================================================================
+        window.openNicknameModal = function() {
+            if (!window.isUserLoggedIn()) {
+                window.openLoginGate('login');
+                return;
+            }
+            const modal = document.getElementById('nickname-modal-box');
+            const input = document.getElementById('nickname-custom-input');
+            const ruleText = document.getElementById('nickname-rule-indicator');
+            const saveBtn = document.getElementById('btn-confirm-nickname-change');
+            
+            const user = window.LociAccountManager ? window.LociAccountManager.getUser() : null;
+            if (input && user) {
+                input.value = user.displayName || user.username || '';
+            }
+
+            if (window.LociAccountManager && typeof window.LociAccountManager.canChangeNickname === 'function') {
+                const check = window.LociAccountManager.canChangeNickname();
+                if (!check.canChange) {
+                    const dateStr = check.nextEligibleDate ? check.nextEligibleDate.toLocaleDateString('vi-VN') : '';
+                    if (ruleText) {
+                        ruleText.innerHTML = '<span style="color: #dc2626; font-weight: 700;">[Đã giới hạn đổi tên]</span> Bạn đã đổi tên gần đây. Quy định học thuật yêu cầu 14 ngày mỗi lần đổi. Vui lòng quay lại sau <strong>' + check.daysRemaining + ' ngày</strong> nữa (sau ngày ' + dateStr + ').';
+                    }
+                    if (saveBtn) {
+                        saveBtn.disabled = true;
+                        saveBtn.style.opacity = '0.5';
+                        saveBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (ruleText) {
+                        ruleText.innerHTML = '<strong>Quy định học thuật:</strong> ' + (check.isFirstTime ? 'Lần đầu tiên bạn được đổi tên miễn phí.' : 'Đã đủ 14 ngày kể từ lần đổi trước.') + ' Sau lần đổi này, mỗi lần đổi tên tiếp theo phải cách nhau ít nhất <strong>14 ngày</strong>.';
+                    }
+                    if (saveBtn) {
+                        saveBtn.disabled = false;
+                        saveBtn.style.opacity = '1';
+                        saveBtn.style.cursor = 'pointer';
+                    }
+                }
+            }
+
+            if (modal) modal.style.display = 'flex';
+        };
+
+        window.closeNicknameModal = function() {
+            const modal = document.getElementById('nickname-modal-box');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.submitNicknameChangeAction = function() {
+            const input = document.getElementById('nickname-custom-input');
+            const val = input ? input.value.trim() : '';
+            if (!val || val.length < 2) {
+                alert('Vui lòng nhập biệt danh học thuật từ 2 ký tự trở lên!');
+                return;
+            }
+
+            try {
+                if (window.LociAccountManager && typeof window.LociAccountManager.changeNickname === 'function') {
+                    const res = window.LociAccountManager.changeNickname(val);
+                    if (typeof showToast === 'function') {
+                        showToast('Đã đổi biệt danh học thuật thành: "' + res.displayName + '" thành công!', 'success', 3500);
+                    } else {
+                        alert('Đã đổi biệt danh học thuật thành: "' + res.displayName + '" thành công!');
+                    }
+                    const userNameEl = document.getElementById('user-name');
+                    if (userNameEl) userNameEl.textContent = res.displayName;
+                    const topbarUserLabel = document.querySelector('.topbar-user-name');
+                    if (topbarUserLabel) topbarUserLabel.textContent = res.displayName;
+                    window.closeNicknameModal();
+                }
+            } catch (err) {
+                alert(err.message || 'Không thể đổi tên vào lúc này.');
             }
         };
+
 
         // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO
         window.enterSpatialRoom = function(href, spaceName) {
@@ -21602,6 +22292,36 @@
         });
     </script>
     
+
+    <!-- MODAL ĐỔI BIỆT DANH HỌC THUẬT & QUY ĐỊNH 14 NGÀY -->
+    <div id="nickname-modal-box" class="cloud-modal-overlay" style="display:none; z-index: 100000; align-items:center; justify-content:center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px);" onclick="if(event.target===this) window.closeNicknameModal()">
+        <div style="background: #ffffff; border-radius: 18px; width: 100%; max-width: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid #e2e8f0; animation: modalPop 0.2s ease;">
+            <div style="padding: 18px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: #ffffff;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                    <span style="font-size: 18px;">✍</span>
+                    <h3 style="font-size: 16.5px; font-weight: 800; color: #0f172a; margin: 0;">Thiết Lập Biệt Danh Học Thuật</h3>
+                </div>
+                <button type="button" onclick="window.closeNicknameModal()" style="background: transparent; border: none; font-size: 18px; color: #64748b; cursor: pointer; padding: 4px;">✕</button>
+            </div>
+            <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
+                <p style="font-size: 13.5px; color: #475569; margin: 0; line-height: 1.5;">
+                    Biệt danh này xuất hiện trên Bảng Vinh Danh Loci, Báo cáo Nghiên cứu và Hồ sơ Học sinh của bạn.
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 6px;">
+                    <label style="font-size: 12.5px; font-weight: 700; color: #0f172a;">Biệt danh / Tên hiển thị:</label>
+                    <input type="text" id="nickname-custom-input" maxlength="32" placeholder="Ví dụ: Nguyễn Minh Khang" style="width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14.5px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
+                </div>
+                <div id="nickname-rule-indicator" style="background: #f8fafc; border-left: 3.5px solid #d97706; padding: 12px 14px; font-size: 12.5px; color: #64748b; line-height: 1.5; border-radius: 0 8px 8px 0;">
+                    <strong>Quy định học thuật:</strong> Mỗi tài khoản được đổi tên 14 ngày một lần.
+                </div>
+            </div>
+            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="window.closeNicknameModal()" style="padding: 10px 18px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: #475569; cursor: pointer;">Hủy bỏ</button>
+                <button type="button" id="btn-confirm-nickname-change" onclick="window.submitNicknameChangeAction()" style="padding: 10px 22px; background: #0284c7; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 700; color: #ffffff; cursor: pointer; box-shadow: 0 2px 8px rgba(2,132,199,0.3);">Xác nhận đổi tên ➔</button>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 </html>

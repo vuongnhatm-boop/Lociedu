@@ -15981,34 +15981,61 @@
         };
 
         window._handleLocalLogout = function () {
-            if (window.LociAccountManager && typeof window.LociAccountManager.logout === 'function') {
-                window.LociAccountManager.logout();
-            }
+            window._isLoggingOut = true;
             try {
-                localStorage.removeItem('loci_auth_session');
-                localStorage.removeItem('loci_local_user');
-                localStorage.removeItem('loci_current_user');
-                localStorage.removeItem('loci_user_profile');
-                localStorage.removeItem('loci_active_student_uid');
+                if (window.LociAccountManager && typeof window.LociAccountManager.logout === 'function') {
+                    window.LociAccountManager.logout();
+                }
             } catch (_) {}
-            if (typeof window.showHeroGate === 'function') window.showHeroGate();
+
+            window._isUserExplicitlyLoggedIn = false;
             window._lociLocalUser = null;
-            try { localStorage.removeItem('loci_local_user'); } catch (_) { }
+            if (window.LociAccountManager) {
+                window.LociAccountManager._currentUser = null;
+            }
+
+            const keysToPurge = [
+                'loci_auth_session',
+                'loci_local_user',
+                'loci_current_user',
+                'loci_user_profile',
+                'loci_active_student_uid',
+                'loci_auth_token',
+                'loci_user_custom_avatar'
+            ];
+            keysToPurge.forEach(k => {
+                try { localStorage.removeItem(k); } catch (_) {}
+            });
+            try { sessionStorage.removeItem('loci_auth_session'); } catch (_) {}
+            try { sessionStorage.removeItem('loci_redirect_after_login'); } catch (_) {}
+
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
+            const headerBadgeEl = document.getElementById('header-user-level-badge');
             const guestPanel = document.getElementById('auth-panel-guest');
             const userPanel = document.getElementById('auth-panel-user');
             const settingsPanel = document.getElementById('auth-panel-settings');
+            const userAvatar = document.getElementById('user-avatar');
 
             if (userNameEl) userNameEl.textContent = 'Đăng nhập / Đăng ký';
             if (userRoleEl) userRoleEl.innerHTML = '<span class="user-capsule-status-dot" style="background:#94a3b8; box-shadow:none;"></span> <span>Lưu tiến trình học</span>';
+            if (headerBadgeEl) { headerBadgeEl.textContent = 'LV.1'; headerBadgeEl.style.color = '#0284c7'; }
+            if (userAvatar) { userAvatar.style.backgroundImage = ''; }
             if (guestPanel) guestPanel.style.display = 'block';
             if (userPanel) userPanel.style.display = 'none';
             if (settingsPanel) settingsPanel.style.display = 'none';
 
-            if (typeof window.renderTierProgression === 'function') window.renderTierProgression(null);
-            if (typeof window.renderBadgesGrid === 'function') window.renderBadgesGrid(null);
-            if (typeof window.renderFrameSelector === 'function') window.renderFrameSelector(null);
+            if (typeof window.applyUserAvatar === 'function') { try { window.applyUserAvatar('', 'U'); } catch (_) {} }
+            if (typeof window.updateAllAvatarFrames === 'function') { try { window.updateAllAvatarFrames('tier1_bronze'); } catch (_) {} }
+            if (typeof window.renderTierProgression === 'function') { try { window.renderTierProgression(null); } catch (_) {} }
+            if (typeof window.renderBadgesGrid === 'function') { try { window.renderBadgesGrid(null); } catch (_) {} }
+            if (typeof window.renderFrameSelector === 'function') { try { window.renderFrameSelector(null); } catch (_) {} }
+
+            // Khóa lại Hero Gate
+            if (typeof window.showHeroGate === 'function') {
+                try { window.showHeroGate(); } catch (_) {}
+            }
+            window._isLoggingOut = false;
         };
 
 
@@ -16233,7 +16260,7 @@
             }
         };
 
-        // 1. XỬ LÝ MỤC ĐĂNG NHẬP (TỨC THÌ 0MS - KHÔNG BỊ TREO MẠNG)
+        // 1. XỬ LÝ MỤC ĐĂNG NHẬP (BẮT BUỘC TÀI KHOẢN ĐÃ ĐĂNG KÝ)
         window.submitLoginOnly = function() {
             const emailInput = document.getElementById('login-email');
             const passInput = document.getElementById('login-password');
@@ -16244,30 +16271,34 @@
             if (!identifier) return window._showAuthAlert('Vui lòng nhập Tên đăng nhập hoặc Email.');
             if (!pass) return window._showAuthAlert('Vui lòng nhập mật khẩu.');
 
-            if (btn) { btn.disabled = true; btn.textContent = 'Đang vào hệ thống...'; }
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang kiểm tra tài khoản...'; }
 
             try {
-                const cleanName = (identifier.includes('@') ? identifier.split('@')[0] : identifier).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
-                const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
-                let targetDisplayName = identifier;
-
-                if (accounts[cleanName]) {
-                    if (accounts[cleanName].password && accounts[cleanName].password !== btoa(pass)) {
-                        if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
-                        return window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này.');
-                    }
-                    if (accounts[cleanName].displayName) targetDisplayName = accounts[cleanName].displayName;
-                } else {
-                    // Tự động lưu tài khoản nếu đăng nhập lần đầu
-                    accounts[cleanName] = {
-                        uid: 'loci_' + cleanName,
-                        username: cleanName,
-                        displayName: identifier,
-                        password: btoa(pass),
-                        createdAt: new Date().toISOString()
-                    };
-                    localStorage.setItem('loci_accounts', JSON.stringify(accounts));
+                const cleanName = (identifier.includes('@') ? identifier.split('@')[0] : identifier).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
+                if (!cleanName) {
+                    if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
+                    return window._showAuthAlert('Tên đăng nhập không hợp lệ.');
                 }
+
+                const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
+
+                // NGUYÊN TẮC: BẮT BUỘC TÀI KHOẢN PHẢI TỒN TẠI MỚI CHO ĐĂNG NHẬP
+                // (Tuyệt đối không tự động tạo tài khoản khi đang ở tab Đăng nhập)
+                if (!accounts[cleanName]) {
+                    if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
+                    // Tự động điền tên người dùng sang tab Đăng Ký để tiện thao tác
+                    const regUserEl = document.getElementById('reg-username');
+                    if (regUserEl && !regUserEl.value) regUserEl.value = cleanName;
+                    return window._showAuthAlert('Tài khoản "' + cleanName + '" chưa tồn tại! Vui lòng chọn tab "Đăng Ký" để tạo tài khoản mới.');
+                }
+
+                // KIỂM TRA MẬT KHẨU
+                if (accounts[cleanName].password && accounts[cleanName].password !== btoa(pass)) {
+                    if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
+                    return window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này!');
+                }
+
+                const targetDisplayName = accounts[cleanName].displayName || identifier;
 
                 // Chạy đồng bộ Firebase ngầm (không chờ đợi để tránh treo giao diện)
                 if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
@@ -16410,19 +16441,24 @@
 
         // 3. ĐĂNG NHẬP / ĐĂNG KÝ NHANH GOOGLE (HỖ TRỢ ĐẶT TÊN LẦN ĐẦU)
         window.submitGoogleAuth = async function () {
+            if (window._isGoogleAuthRunning) return;
+            window._isGoogleAuthRunning = true;
             window._showAuthAlert('');
+
             if (location.protocol === 'file:') {
                 window._showAuthAlert('Đăng nhập Google yêu cầu chạy qua máy chủ Web (http://localhost:8080) do chính sách bảo mật CORS của Google. Vui lòng nhập Tên & Mật khẩu bên trên khi chạy tệp trực tiếp.');
+                window._isGoogleAuthRunning = false;
                 return;
             }
 
             if (!window.LociFirebase || typeof window.LociFirebase.loginWithGoogle !== 'function') {
                 window._showAuthAlert('Dịch vụ Firebase Auth đang khởi tạo, vui lòng thử lại sau giây lát.');
+                window._isGoogleAuthRunning = false;
                 return;
             }
 
             try {
-                window._showAuthAlert('Đang mở cửa sổ Google...', 'info');
+                window._showAuthAlert('Đang kết nối xác thực Google...', 'info');
                 const user = await window.LociFirebase.loginWithGoogle();
                 if (user && user.uid) {
                     const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
@@ -16451,22 +16487,18 @@
             } catch (err) {
                 console.warn('[Google Auth]', err);
                 const msg = err.message || '';
-                if (msg.includes('popup-closed-by-user')) {
-                    window._showAuthAlert('Bạn đã đóng cửa sổ đăng nhập Google.');
+                if (msg.includes('popup-closed-by-user') || msg.includes('popup-cancelled') || msg.includes('cancelled-popup-request')) {
+                    window._showAuthAlert('Cửa sổ Google đã đóng hoặc yêu cầu bị hủy. Bạn có thể thử bấm lại hoặc nhập Tên & Mật khẩu bên trên.');
                 } else if (msg.includes('unauthorized-domain')) {
                     window._showAuthAlert('Tên miền này chưa được thêm vào Authorized Domains trong Firebase Console.');
                 } else if (msg.includes('popup-blocked')) {
-                    window._showAuthAlert('Trình duyệt đã chặn cửa sổ Popup Google. Đang tự động chuyển hướng...');
-                    try {
-                        if (window.LociFirebase && typeof window.LociFirebase.loginWithGoogleRedirect === 'function') {
-                            await window.LociFirebase.loginWithGoogleRedirect();
-                        }
-                    } catch (e2) {
-                        window._showAuthAlert('Trình duyệt chặn mở cửa sổ Google. Bạn hãy nhập Tên & Mật khẩu ở tab bên trên để vào ngay!');
-                    }
+                    window._showAuthAlert('Trình duyệt (Cốc Cốc) đã chặn cửa sổ Popup. Vui lòng bấm vào biểu tượng 🚫 ở góc phải thanh địa chỉ để "Luôn cho phép popup", hoặc Đăng nhập bằng Tên tài khoản!');
                 } else {
-                    window._showAuthAlert('Đăng nhập Google: ' + msg);
+                    const cleanMsg = msg.replace(/Firebase:\s*Error\s*\(([^)]+)\)\.?/i, '$1');
+                    window._showAuthAlert('Không thể kết nối Google (' + cleanMsg + '). Vui lòng sử dụng Đăng nhập/Đăng ký bằng Tên tài khoản.');
                 }
+            } finally {
+                window._isGoogleAuthRunning = false;
             }
         };
 
@@ -16522,11 +16554,19 @@
         };
 
         window.submitLociLogout = async function () {
-            if (window.LociFirebase && typeof window.LociFirebase.logout === 'function') {
-                try { await window.LociFirebase.logout(); } catch (_) { }
-            }
+            if (window._isLoggingOut) return;
+            window._isLoggingOut = true;
+            try {
+                if (window.LociFirebase && typeof window.LociFirebase.logout === 'function') {
+                    await window.LociFirebase.logout();
+                }
+            } catch (_) {}
             window._handleLocalLogout();
             window.closeCloudAuthModal();
+            if (typeof showToast === 'function') {
+                showToast('Đã đăng xuất tài khoản thành công.', 'info', 2500);
+            }
+            window._isLoggingOut = false;
         };
 
         // Tự động khôi phục tài khoản local nếu phiên đăng nhập hợp lệ
@@ -17979,20 +18019,20 @@
                 // Tự động sao lưu tiến trình & không gian riêng cho tài khoản
                 autoSync();
             } else {
-                userName.textContent = 'Đăng nhập / Đăng ký';
-                userRole.innerHTML = '<span class="user-capsule-status-dot" style="background:#94a3b8; box-shadow:none;"></span> <span>Lưu tiến trình học</span>';
+                if (userName) userName.textContent = 'Đăng nhập / Đăng ký';
+                if (userRole) userRole.innerHTML = '<span class="user-capsule-status-dot" style="background:#94a3b8; box-shadow:none;"></span> <span>Lưu tiến trình học</span>';
                 const headerBadgeEl = document.getElementById('header-user-level-badge');
                 if (headerBadgeEl) {
                     headerBadgeEl.textContent = 'LV.1';
-                    headerBadgeEl.style.color = '#b45309';
+                    headerBadgeEl.style.color = '#0284c7';
                 }
-                userAvatar.style.backgroundImage = '';
-                window.applyUserAvatar('', 'U');
-                updateAllAvatarFrames('gold');
-                renderBadgesGrid(null);
+                if (userAvatar) userAvatar.style.backgroundImage = '';
+                if (typeof window.applyUserAvatar === 'function') window.applyUserAvatar('', 'U');
+                if (typeof updateAllAvatarFrames === 'function') updateAllAvatarFrames('tier1_bronze');
+                if (typeof renderBadgesGrid === 'function') renderBadgesGrid(null);
 
-                authPanelGuest.style.display = 'block';
-                authPanelUser.style.display = 'none';
+                if (authPanelGuest) authPanelGuest.style.display = 'block';
+                if (authPanelUser) authPanelUser.style.display = 'none';
             }
         });
 
@@ -18020,18 +18060,25 @@
             }
         });
 
-        // 3. Đăng nhập nhanh bằng Google
-        btnGoogleAuth?.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (typeof window.submitGoogleAuth === 'function') {
-                window.submitGoogleAuth();
-            }
-        });
+        // 3. Đăng nhập nhanh bằng Google (kiểm tra tránh đúp sự kiện với onclick)
+        if (btnGoogleAuth && !btnGoogleAuth.hasAttribute('onclick')) {
+            btnGoogleAuth.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (typeof window.submitGoogleAuth === 'function') {
+                    window.submitGoogleAuth();
+                }
+            });
+        }
 
-        // 4. Đăng xuất
-        btnLogout?.addEventListener('click', async () => {
-            await LociFirebase.logout();
-        });
+        // 4. Đăng xuất (kiểm tra tránh đúp sự kiện với onclick)
+        if (btnLogout && !btnLogout.hasAttribute('onclick')) {
+            btnLogout.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (typeof window.submitLociLogout === 'function') {
+                    window.submitLociLogout();
+                }
+            });
+        }
 
         // 5. Cá nhân hóa tài khoản
         btnOpenSettings?.addEventListener('click', () => {

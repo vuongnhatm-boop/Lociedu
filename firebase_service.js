@@ -272,8 +272,16 @@ export const LociFirebase = {
             // Nếu trình duyệt (Cốc Cốc, Safari, Chrome) chặn Popup, tự động chuyển hướng sang Redirect
             if (error.code === 'auth/popup-blocked' || (error.message && error.message.includes('popup-blocked'))) {
                 console.log('[Firebase Auth] Pop-up bị chặn, tự động chuyển hướng sang signInWithRedirect...');
-                await signInWithRedirect(auth, googleProvider);
-                return null;
+                try {
+                    await signInWithRedirect(auth, googleProvider);
+                    return null;
+                } catch (e2) {
+                    throw error;
+                }
+            }
+            if (error.code === 'auth/cancelled-popup-request' || (error.message && error.message.includes('cancelled-popup-request'))) {
+                console.warn('[Firebase Auth] Cửa sổ popup bị hủy hoặc có yêu cầu song song.');
+                throw new Error('popup-cancelled');
             }
             throw error;
         }
@@ -336,8 +344,8 @@ export const LociFirebase = {
             await signOut(auth);
         } catch (_) {}
         this.currentUser = null;
-        localStorage.removeItem('loci_current_user');
-        this._notifyAuth(null);
+        try { localStorage.removeItem('loci_current_user'); } catch (_) {}
+        try { this._notifyAuth(null); } catch (_) {}
         console.log('[Auth] Đã đăng xuất');
     },
 
