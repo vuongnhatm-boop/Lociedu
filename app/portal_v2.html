@@ -12417,7 +12417,226 @@
             background: #f5f3ff;
             box-shadow: 0 8px 20px -2px rgba(99, 102, 241, 0.22);
         }
-    </style>
+    
+        /* ═════════════════════════════════════════════════════════════════
+           HERO LANDING GATE (CHƯA ĐĂNG NHẬP - CHUẨN 100% THEO ẢNH USER)
+           "Mỗi kiến thức – Một dấu ấn ký ức"
+        ═════════════════════════════════════════════════════════════════ */
+        #hero-landing-gate {
+            position: fixed;
+            inset: 0;
+            z-index: 99999;
+            background: radial-gradient(ellipse at 50% 32%, #0e2f50 0%, #07192d 46%, #020913 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 24px 44px 50px 44px;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+            color: #ffffff;
+            transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+        }
+        #hero-landing-gate.gate-hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+            transform: scale(1.03) translateY(-15px);
+        }
+
+        /* Lớp hạt sao lấp lánh trang trí */
+        .hero-sparkles-layer {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .hero-sparkle {
+            position: absolute;
+            color: rgba(148, 163, 184, 0.45);
+            font-size: 24px;
+            user-select: none;
+            animation: heroStarPulse 3.5s ease-in-out infinite alternate;
+        }
+        .hero-sparkle.sp-1 { bottom: 18%; right: 10%; font-size: 34px; color: rgba(148, 163, 184, 0.65); animation-delay: 0s; }
+        .hero-sparkle.sp-2 { top: 26%; left: 14%; font-size: 19px; color: rgba(56, 189, 248, 0.45); animation-delay: 1.2s; }
+        .hero-sparkle.sp-3 { bottom: 28%; left: 20%; font-size: 22px; color: rgba(253, 224, 71, 0.4); animation-delay: 0.8s; }
+        .hero-sparkle.sp-4 { top: 34%; right: 22%; font-size: 16px; color: rgba(148, 163, 184, 0.35); animation-delay: 1.9s; }
+        @keyframes heroStarPulse {
+            0% { opacity: 0.25; transform: scale(0.8) rotate(0deg); }
+            100% { opacity: 1; transform: scale(1.2) rotate(18deg); }
+        }
+
+        /* Header Navbar Hero Gate */
+        .hero-gate-nav {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+        .hero-gate-logo {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            color: #38bdf8;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .hero-gate-center-pills {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .hero-gate-pill-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 99px;
+            padding: 7px 18px;
+            color: #f1f5f9;
+            font-size: 13.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-gate-pill-btn:hover {
+            background: rgba(255, 255, 255, 0.16);
+            border-color: rgba(255, 255, 255, 0.35);
+            transform: translateY(-1px);
+        }
+        .hero-gate-right-actions {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+        .hero-gate-login-link {
+            background: transparent;
+            border: none;
+            color: #f8fafc;
+            font-size: 14.5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s;
+            padding: 6px 10px;
+        }
+        .hero-gate-login-link:hover {
+            color: #38bdf8;
+        }
+        .hero-gate-register-btn {
+            background: transparent;
+            border: 1.5px solid #fde047;
+            border-radius: 99px;
+            padding: 8px 22px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 0 16px rgba(253, 224, 71, 0.22);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .hero-gate-register-btn:hover {
+            background: rgba(253, 224, 71, 0.14);
+            box-shadow: 0 0 24px rgba(253, 224, 71, 0.45);
+            transform: translateY(-1px);
+        }
+
+        /* Trung tâm Hero Gate: Tiêu đề + Nút Start phát sáng */
+        .hero-gate-main-body {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin: auto 0;
+            padding: 20px 0;
+        }
+        .hero-gate-headline {
+            font-size: clamp(32px, 5.2vw, 54px);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.6px;
+            margin: 0 0 32px 0;
+            text-shadow: 0 4px 28px rgba(0, 0, 0, 0.6);
+            max-width: 950px;
+            line-height: 1.25;
+        }
+        .hero-gate-start-btn {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
+            border: none;
+            border-radius: 99px;
+            padding: 13px 48px;
+            font-size: 17.5px;
+            font-weight: 800;
+            color: #ffffff;
+            cursor: pointer;
+            box-shadow: 0 0 32px rgba(56, 189, 248, 0.75), 0 4px 18px rgba(2, 132, 199, 0.6);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            letter-spacing: 0.4px;
+        }
+        .hero-gate-start-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 0 45px rgba(56, 189, 248, 0.95), 0 6px 24px rgba(2, 132, 199, 0.75);
+        }
+
+        /* Nút quay lại màn hình chào mừng (nếu muốn) */
+        .hero-gate-return-pill {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: #94a3b8;
+            padding: 6px 14px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .hero-gate-return-pill:hover {
+            color: #fff;
+            border-color: #38bdf8;
+            background: rgba(2, 132, 199, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            #hero-landing-gate {
+                padding: 18px 20px 40px 20px;
+            }
+            .hero-gate-center-pills {
+                display: none;
+            }
+            .hero-gate-headline {
+                font-size: 32px;
+                margin-bottom: 26px;
+            }
+            .hero-gate-start-btn {
+                padding: 11px 38px;
+                font-size: 16px;
+            }
+        }
+    
+</style>
     <script src="custom_popup_system.js"></script>
     <style>
         /* --- CHUẨN ĐỒNG BỘ GIAO DIỆN HỌC SINH (MATCH 3 HÌNH ẢNH USER GỬI) --- */
@@ -12516,6 +12735,68 @@
 </head>
 
 <body>
+
+    <!-- ==================== HERO LANDING GATE (CHƯA ĐĂNG NHẬP - CHUẨN THEO ẢNH USER) ==================== -->
+    <div id="hero-landing-gate">
+        <!-- Lớp hạt sao lấp lánh -->
+        <div class="hero-sparkles-layer">
+            <span class="hero-sparkle sp-1">✦</span>
+            <span class="hero-sparkle sp-2">✦</span>
+            <span class="hero-sparkle sp-3">✦</span>
+            <span class="hero-sparkle sp-4">✦</span>
+        </div>
+
+        <!-- Header Navbar Hero Gate (Khớp ảnh 100%) -->
+        <header class="hero-gate-nav">
+            <div class="hero-gate-left">
+                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleHeroStartClick()">
+                    <!-- Biểu tượng ngôi đền Hy Lạp / Bảo tàng tri thức màu xanh cyan -->
+                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="3" y1="21" x2="21" y2="21"></line>
+                        <line x1="6" y1="21" x2="6" y2="9"></line>
+                        <line x1="10" y1="21" x2="10" y2="9"></line>
+                        <line x1="14" y1="21" x2="14" y2="9"></line>
+                        <line x1="18" y1="21" x2="18" y2="9"></line>
+                        <polygon points="3 9 12 3 21 9"></polygon>
+                    </svg>
+                    <span>LOCI EDU</span>
+                </a>
+            </div>
+
+            <div class="hero-gate-center-pills">
+                <button type="button" class="hero-gate-pill-btn" onclick="window.handleHeroStartClick()">
+                    <span>Trang chủ</span> <span>▾</span>
+                </button>
+                <button type="button" class="hero-gate-pill-btn" onclick="window.switchPortalTab && window.switchPortalTab('connect'); window.dismissHeroGate();">
+                    <span>Cộng đồng</span> <span>▾</span>
+                </button>
+            </div>
+
+            <div class="hero-gate-right-actions">
+                <button type="button" class="hero-gate-login-link" onclick="window.openLoginGate('login')">
+                    Đăng nhập
+                </button>
+                <button type="button" class="hero-gate-register-btn" onclick="window.openLoginGate('register')">
+                    Đăng ký <span style="font-size: 13px;">✨</span>
+                </button>
+            </div>
+        </header>
+
+        <!-- Trung tâm Hero Gate: Tiêu đề & Nút Start -->
+        <div class="hero-gate-main-body">
+            <h1 class="hero-gate-headline">Mỗi kiến thức – Một dấu ấn ký ức</h1>
+            <button type="button" id="hero-start-btn" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()">
+                Start
+            </button>
+        </div>
+
+        <!-- Footer trang trí tinh tế -->
+        <div style="position: relative; z-index: 10; text-align: center; font-size: 12px; color: rgba(148, 163, 184, 0.6);">
+            Nền tảng Cung điện Ký ức Loci 3D & AI Tutor · Đề tài Nghiên cứu Khoa học
+        </div>
+    </div>
+    
+
     <div id="file-protocol-warning"
         style="display:none; background: linear-gradient(90deg, #f59e0b, #ef4444); color: white; padding: 12px 20px; font-weight: 600; font-size: 13.5px; text-align: center; position: sticky; top: 0; z-index: 99999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
         ⚠️ Bạn đang mở trực tiếp từ tệp (<code>file:///</code>). Trình duyệt sẽ chặn tải mô hình 3D & Đồng bộ Tài khoản
@@ -15351,6 +15632,16 @@
         };
 
         window._handleLocalAuthSuccess = function (username, displayName) {
+            if (typeof window.dismissHeroGate === 'function') {
+                window.dismissHeroGate();
+            }
+            try {
+                var pendingRoom = sessionStorage.getItem('loci_redirect_after_login');
+                if (pendingRoom) {
+                    sessionStorage.removeItem('loci_redirect_after_login');
+                    setTimeout(function() { window.location.href = pendingRoom; }, 600);
+                }
+            } catch (_) {}
             const localUser = {
                 uid: 'user_' + username.replace(/[^a-zA-Z0-9]/g, '_'),
                 displayName: displayName || username,
@@ -15380,6 +15671,7 @@
         };
 
         window._handleLocalLogout = function () {
+            if (typeof window.showHeroGate === 'function') window.showHeroGate();
             window._lociLocalUser = null;
             try { localStorage.removeItem('loci_local_user'); } catch (_) { }
             const userNameEl = document.getElementById('user-name');
@@ -15655,7 +15947,7 @@
             else if (s.lesson === 'bai_7') badge = '5 MỐC 3D • ĐIỆN BIÊN PHỦ';
             else if (s.lesson === 'bai_8') badge = '9 MỐC 3D • VĨ TUYẾN 17';
 
-            return `<a class="space" href="${href}">
+            return `<a class="space" href="javascript:void(0)" onclick="window.enterSpatialRoom('${href}', '${s.name}')">
                 <div class="space-thumb" style="${thumbStyle}">
                     <span class="space-pill-top">${badge}</span>
                     <span class="space-pill-bottom">🏛️ KHÔNG GIAN 3D</span>
@@ -21099,6 +21391,122 @@
             }
         });
     </script>
+
+    <!-- LOGIC HERO GATE & BẢO VỆ KHÔNG GIAN 3D (YÊU CẦU ĐĂNG NHẬP + CHỐNG BOT) -->
+    <script>
+        // Kiểm tra xem người dùng đã đăng nhập hay chưa
+        window.isUserLoggedIn = function() {
+            try {
+                if (window.LociFirebase && window.LociFirebase.currentUser) return true;
+                if (window._lociLocalUser && window._lociLocalUser.uid) return true;
+                const profile = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user');
+                if (profile) {
+                    const parsed = JSON.parse(profile);
+                    if (parsed && (parsed.uid || parsed.name || parsed.email)) return true;
+                }
+                const activeUid = localStorage.getItem('loci_active_student_uid');
+                if (activeUid) return true;
+            } catch (_) {}
+            return false;
+        };
+
+        // Mở cửa sổ Đăng nhập / Đăng ký từ Hero Gate
+        window.openLoginGate = function(mode) {
+            window.openCloudAuthModal();
+            if (typeof window.setAuthTab === 'function') {
+                window.setAuthTab(mode === 'login');
+            }
+        };
+
+        // Bỏ ẩn Hero Gate để vào bảng điều khiển (sau khi đăng nhập hoặc xem trước)
+        window.dismissHeroGate = function() {
+            const gate = document.getElementById('hero-landing-gate');
+            if (gate) {
+                gate.classList.add('gate-hidden');
+                setTimeout(() => { gate.style.display = 'none'; }, 450);
+            }
+        };
+
+        // Hiện lại Hero Gate
+        window.showHeroGate = function() {
+            const gate = document.getElementById('hero-landing-gate');
+            if (gate) {
+                gate.style.display = 'flex';
+                // Trigger reflow
+                void gate.offsetWidth;
+                gate.classList.remove('gate-hidden');
+            }
+        };
+
+        // Xử lý nút START trên Hero Gate
+        window.handleHeroStartClick = function() {
+            if (window.isUserLoggedIn()) {
+                window.dismissHeroGate();
+                const target = document.getElementById('spaces-section') || document.getElementById('space-grid');
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                // Người dùng chưa đăng nhập -> Mở popup đăng nhập kèm thông báo
+                if (typeof showToast === 'function') {
+                    showToast('👋 Chào mừng bạn! Hãy Đăng nhập hoặc Đăng ký để bắt đầu bước vào Cung điện Ký ức Loci.', 'info', 3500);
+                }
+                window.openLoginGate('login');
+            }
+        };
+
+        // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO
+        window.enterSpatialRoom = function(href, spaceName) {
+            if (!window.isUserLoggedIn()) {
+                if (typeof showToast === 'function') {
+                    showToast(`🔒 Bạn cần Đăng nhập / Đăng ký tài khoản Loci để vào "${spaceName || 'Không gian 3D'}"!`, 'warning', 3500);
+                } else {
+                    alert(`🔒 Bạn cần Đăng nhập / Đăng ký tài khoản Loci để vào "${spaceName || 'Không gian 3D'}"!`);
+                }
+                window.openLoginGate('login');
+                return;
+            }
+            window.location.href = href;
+        };
+
+        // CLOUDFLARE TURNSTILE CHỐNG BOT
+        let turnstileToken = null;
+        window.onTurnstileSuccess = function(token) {
+            turnstileToken = token;
+            console.log('[Cloudflare Turnstile] Xác thực người thật thành công token:', token ? token.substring(0, 15) + '...' : 'OK');
+            const alertEl = document.getElementById('auth-alert');
+            if (alertEl && alertEl.style.display !== 'none' && alertEl.textContent.includes('Turnstile')) {
+                alertEl.style.display = 'none';
+            }
+        };
+
+        // Tự động kiểm tra trạng thái đăng nhập khi trang tải xong
+        document.addEventListener('DOMContentLoaded', () => {
+            // Kiểm tra nếu chuyển hướng từ không gian 3D do chưa đăng nhập
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('need_login') === '1' || urlParams.get('auth_required') === '1') {
+                if (!window.isUserLoggedIn()) {
+                    window.showHeroGate();
+                    setTimeout(() => {
+                        if (typeof showToast === 'function') {
+                            showToast('🔒 Vui lòng Đăng nhập tài khoản Loci Edu để bước vào Không gian 3D!', 'warning', 4000);
+                        }
+                        window.openLoginGate('login');
+                    }, 400);
+                }
+            }
+    
+            const gate = document.getElementById('hero-landing-gate');
+            if (gate) {
+                if (window.isUserLoggedIn()) {
+                    gate.style.display = 'none';
+                    gate.classList.add('gate-hidden');
+                } else {
+                    gate.style.display = 'flex';
+                    gate.classList.remove('gate-hidden');
+                }
+            }
+        });
+    </script>
+    
 </body>
 
 </html>

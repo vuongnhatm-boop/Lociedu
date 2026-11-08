@@ -2,6 +2,37 @@
 <html lang="vi">
 
 <head>
+    <!-- BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO -->
+    <script id="loci-space-auth-guard">
+        (function() {
+            try {
+                var isAuth = false;
+                if (window.LociFirebase && window.LociFirebase.currentUser) isAuth = true;
+                if (window._lociLocalUser && window._lociLocalUser.uid) isAuth = true;
+                var p = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user');
+                if (p) {
+                    var parsed = JSON.parse(p);
+                    if (parsed && (parsed.uid || parsed.name || parsed.email)) isAuth = true;
+                }
+                if (localStorage.getItem('loci_active_student_uid')) isAuth = true;
+
+                // Cho phép xem trước nếu có flag bypass kiểm thử nội bộ
+                var urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('preview') === 'guest') isAuth = true;
+
+                if (!isAuth) {
+                    try { sessionStorage.setItem('loci_redirect_after_login', window.location.href); } catch(_) {}
+                    var isInsideAppDir = window.location.pathname.indexOf('/app/') !== -1;
+                    var portalUrl = isInsideAppDir ? '../portal_v2.html?need_login=1' : 'portal_v2.html?need_login=1';
+                    window.location.replace(portalUrl);
+                }
+            } catch(err) {
+                console.warn('[Loci Auth Guard] Error:', err);
+            }
+        })();
+    </script>
+
+
 
   <!-- KHỞI TẠO HỆ THỐNG TRỢ LÝ ẢO AI & PHÍM TẮT B TOÀN CỤC (SẴN SÀNG NGAY KHI TẢI TRANG) -->
   <script>
