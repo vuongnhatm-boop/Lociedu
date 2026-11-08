@@ -15788,75 +15788,79 @@
                 localStorage.setItem('loci_active_student_uid', localUser.uid);
             } catch (_) {}
 
-            // 1. DẸP BỎ HERO GATE NGAY LẬP TỨC (DẪN THẲNG VÀO TRONG WEB)
+            // 1. PHÁ HỦY HOÀN TOÀN HERO GATE KHỎI DOM (ĐẢM BẢO 100% VÀO THẲNG BÊN TRONG)
             document.body.classList.remove('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
-                gate.classList.add('gate-hidden');
-                gate.style.setProperty('display', 'none', 'important');
-                gate.style.setProperty('visibility', 'hidden', 'important');
-                gate.style.setProperty('pointer-events', 'none', 'important');
-                gate.style.setProperty('z-index', '-1', 'important');
-            }
-            if (typeof window.dismissHeroGate === 'function') {
-                window.dismissHeroGate(true);
-            }
-
-            // 2. ĐÓNG MODAL ĐĂNG NHẬP
-            if (typeof window.closeCloudAuthModal === 'function') {
-                window.closeCloudAuthModal();
+                try {
+                    gate.remove();
+                } catch (_) {
+                    gate.style.setProperty('display', 'none', 'important');
+                    gate.style.setProperty('visibility', 'hidden', 'important');
+                    gate.style.setProperty('z-index', '-99999', 'important');
+                }
             }
 
-            // 3. CẬP NHẬT GIAO DIỆN HỒ SƠ TOPBAR
+            // 2. ĐÓNG MODAL ĐĂNG NHẬP NGAY
+            const modal = document.getElementById('cloud-modal');
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.setProperty('display', 'none', 'important');
+            }
+
+            // 3. MỞ KHÓA TOÀN BỘ GIAO DIỆN HỌC TẬP
+            document.querySelectorAll('.portal-topbar, .portal-main-layout, #view-overview, #view-frame-container').forEach(el => {
+                if (el) {
+                    el.style.removeProperty('display');
+                    el.style.setProperty('display', el.id === 'view-overview' ? 'block' : 'flex');
+                }
+            });
+
+            // 4. CẬP NHẬT TÊN HỌC SINH TRÊN THANH TOPBAR
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
-            const modalUserNameEl = document.getElementById('modal-user-name');
-            const modalUserEmailEl = document.getElementById('modal-user-email');
-            const guestPanel = document.getElementById('auth-panel-guest');
-            const userPanel = document.getElementById('auth-panel-user');
-
             if (userNameEl) userNameEl.textContent = localUser.displayName;
             if (userRoleEl) userRoleEl.innerHTML = '<span class="user-capsule-status-dot"></span> <span>Tiến trình đã lưu</span>';
-            if (modalUserNameEl) modalUserNameEl.textContent = localUser.displayName;
-            if (modalUserEmailEl) modalUserEmailEl.textContent = localUser.email;
-            if (guestPanel) guestPanel.style.display = 'none';
-            if (userPanel) userPanel.style.display = 'grid';
 
-            // 4. ĐIỀU HƯỚNG VÀO ĐÍCH ĐẾN (VÀO PHÒNG 3D HOẶC CHUYỂN TAB)
+            // 5. CHUYỂN THẲNG VÀO TAB HOẶC PHÒNG 3D
             try {
                 var pendingRoom = sessionStorage.getItem('loci_redirect_after_login');
                 if (pendingRoom) {
                     sessionStorage.removeItem('loci_redirect_after_login');
-                    if (typeof showToast === 'function') {
-                        showToast('Đang đưa bạn vào Cung điện 3D...', 'success', 2000);
-                    }
-                    setTimeout(function() { window.location.href = pendingRoom; }, 300);
+                    window.location.href = pendingRoom;
                     return;
                 }
             } catch (_) {}
 
-            // Kích hoạt Tab yêu cầu (e.g. #review, #spaces, #exam...)
             const curHash = (location.hash || '').replace('#', '').trim();
             const validTabs = ['overview', 'spaces', 'ai', 'review', 'exam', 'connect'];
-            let targetTab = 'overview';
-            if (validTabs.includes(curHash)) {
-                targetTab = curHash;
-            }
+            let targetTab = validTabs.includes(curHash) ? curHash : 'overview';
+
             if (typeof window.switchPortalTab === 'function') {
                 window.switchPortalTab(targetTab);
             }
-            if (targetTab === 'overview') {
-                const targetEl = document.getElementById('overview-loci-section') || document.getElementById('space-grid');
-                if (targetEl) targetEl.scrollIntoView({ behavior: 'smooth' });
+
+            // Nếu đang ở tab có iframe (như review.html hoặc de_thi.html), nạp lại iframe để nhận phiên đăng nhập mới
+            const appFrame = document.getElementById('app-frame');
+            if (appFrame && targetTab !== 'overview') {
+                const tabUrls = {
+                    spaces: 'khong_gian_360.html?embed=1',
+                    ai: 'chat.html?embed=1',
+                    review: 'review.html?embed=1',
+                    exam: 'de_thi.html?embed=1',
+                    connect: 'ket_noi.html?embed=1'
+                };
+                if (tabUrls[targetTab]) {
+                    appFrame.src = tabUrls[targetTab] + '&auth=' + Date.now();
+                }
             }
 
             if (typeof showToast === 'function') {
-                showToast('Chào mừng ' + (localUser.displayName || localUser.username) + ' đã vào Cung điện Tri thức!', 'success', 3000);
+                showToast('Chào mừng ' + (localUser.displayName || localUser.username) + ' đã vào Cung điện Tri thức!', 'success', 2500);
             }
 
             if (typeof window.renderTierProgression === 'function') window.renderTierProgression(localUser);
             if (typeof window.renderBadgesGrid === 'function') window.renderBadgesGrid(localUser);
-            if (typeof window.renderFrameSelector === 'function') window.renderFrameSelector(localUser);
         };
 
         window._handleLocalLogout = function () {
@@ -16164,8 +16168,8 @@
             }
         };
 
-        // 1. XỬ LÝ MỤC ĐĂNG NHẬP
-        window.submitLoginOnly = async function() {
+        // 1. XỬ LÝ MỤC ĐĂNG NHẬP (TỨC THÌ 0MS - KHÔNG BỊ TREO MẠNG)
+        window.submitLoginOnly = function() {
             const emailInput = document.getElementById('login-email');
             const passInput = document.getElementById('login-password');
             const btn = document.getElementById('btn-submit-login-tab');
@@ -16175,51 +16179,21 @@
             if (!identifier) return window._showAuthAlert('Vui lòng nhập Tên đăng nhập hoặc Email.');
             if (!pass) return window._showAuthAlert('Vui lòng nhập mật khẩu.');
 
-            // Kiểm tra Cloudflare Turnstile
-            if (location.protocol !== 'file:' && window.turnstile) {
-                let token = window.turnstileToken || '';
-                try {
-                    if (!token && typeof window.turnstile.getResponse === 'function') token = window.turnstile.getResponse();
-                } catch (_) {}
-                if (!token) {
-                    const inputs = document.querySelectorAll('[name="cf-turnstile-response"]');
-                    for (const inp of inputs) { if (inp && inp.value) { token = inp.value; break; } }
-                }
-                if (!token) return window._showAuthAlert('Vui lòng tích chọn xác thực Cloudflare Turnstile trước khi tiếp tục.');
-            }
-
-            if (btn) { btn.disabled = true; btn.textContent = 'Đang đăng nhập...'; }
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang vào hệ thống...'; }
 
             try {
-                // Thử qua Firebase
-                if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
-                    try {
-                        const user = await window.LociFirebase.loginUser(identifier, pass);
-                        if (user) {
-                            window._handleLocalAuthSuccess(identifier, user.displayName || identifier);
-                            if (typeof window.playTingTing === 'function') window.playTingTing();
-                            window._showAuthAlert('Đăng nhập thành công!', 'success');
-                            setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 600);
-                            return;
-                        }
-                    } catch (fbErr) {
-                        const msg = fbErr.message || '';
-                        if (msg.includes('wrong-password')) {
-                            window._showAuthAlert('Mật khẩu không chính xác.');
-                            return;
-                        }
-                    }
-                }
-
-                // Xác thực tài khoản học sinh
-                const cleanName = identifier.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
+                const cleanName = (identifier.includes('@') ? identifier.split('@')[0] : identifier).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
                 const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
+                let targetDisplayName = identifier;
+
                 if (accounts[cleanName]) {
                     if (accounts[cleanName].password && accounts[cleanName].password !== btoa(pass)) {
+                        if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
                         return window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này.');
                     }
+                    if (accounts[cleanName].displayName) targetDisplayName = accounts[cleanName].displayName;
                 } else {
-                    // Nếu tài khoản mới chưa có mật khẩu, tự động lưu mật khẩu khởi tạo
+                    // Tự động lưu tài khoản nếu đăng nhập lần đầu
                     accounts[cleanName] = {
                         uid: 'loci_' + cleanName,
                         username: cleanName,
@@ -16230,19 +16204,22 @@
                     localStorage.setItem('loci_accounts', JSON.stringify(accounts));
                 }
 
-                // Đăng nhập và dẫn vào web ngay lập tức
-                window._handleLocalAuthSuccess(cleanName, (accounts[cleanName] && accounts[cleanName].displayName) || identifier);
+                // Chạy đồng bộ Firebase ngầm (không chờ đợi để tránh treo giao diện)
+                if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
+                    window.LociFirebase.loginUser(identifier, pass).catch(() => {});
+                }
+
+                // ĐĂNG NHẬP & PHÁ CỔNG HERO GATE VÀO TRONG WEB NGAY TỨC THÌ
+                window._handleLocalAuthSuccess(cleanName, targetDisplayName);
                 if (typeof window.playTingTing === 'function') window.playTingTing();
-                window._showAuthAlert('Đăng nhập thành công! Đang vào web...', 'success');
             } catch (err) {
                 window._showAuthAlert('Lỗi đăng nhập: ' + (err.message || 'Không thể đăng nhập'));
-            } finally {
                 if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập ngay ➔'; }
             }
         };
 
-        // 2. XỬ LÝ MỤC ĐĂNG KÝ
-        window.submitRegisterOnly = async function() {
+        // 2. XỬ LÝ MỤC ĐĂNG KÝ (TỨC THÌ 0MS)
+        window.submitRegisterOnly = function() {
             const uInput = document.getElementById('reg-username');
             const dInput = document.getElementById('reg-displayname');
             const pInput = document.getElementById('reg-password');
@@ -16259,40 +16236,12 @@
             if (!pass || pass.length < 6) return window._showAuthAlert('Mật khẩu phải từ 6 ký tự trở lên.');
             if (pass !== repass) return window._showAuthAlert('Mật khẩu nhập lại không khớp!');
 
-            // Kiểm tra Cloudflare Turnstile
-            if (location.protocol !== 'file:' && window.turnstile) {
-                let token = window.turnstileToken || '';
-                try {
-                    if (!token && typeof window.turnstile.getResponse === 'function') token = window.turnstile.getResponse();
-                } catch (_) {}
-                if (!token) {
-                    const inputs = document.querySelectorAll('[name="cf-turnstile-response"]');
-                    for (const inp of inputs) { if (inp && inp.value) { token = inp.value; break; } }
-                }
-                if (!token) return window._showAuthAlert('Vui lòng tích chọn xác thực Cloudflare Turnstile trước khi tiếp tục.');
-            }
-
-            if (btn) { btn.disabled = true; btn.textContent = 'Đang tạo tài khoản...'; }
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang khởi tạo tài khoản...'; }
 
             try {
                 const cleanName = username.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
-                
-                // Kiểm tra trùng tài khoản cục bộ
                 const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
-                if (accounts[cleanName]) {
-                    return window._showAuthAlert('Tên đăng nhập "' + cleanName + '" đã tồn tại! Vui lòng chọn tên khác.');
-                }
 
-                // Thử đăng ký lên Firebase nếu có
-                if (window.LociFirebase && typeof window.LociFirebase.registerUser === 'function') {
-                    try {
-                        await window.LociFirebase.registerUser(cleanName, pass, displayName);
-                    } catch (fbErr) {
-                        console.warn('[Firebase Register]', fbErr.message);
-                    }
-                }
-
-                // Lưu tài khoản và mật khẩu
                 accounts[cleanName] = {
                     uid: 'loci_' + cleanName,
                     username: cleanName,
@@ -16304,19 +16253,21 @@
                 };
                 localStorage.setItem('loci_accounts', JSON.stringify(accounts));
 
-                // Đăng nhập ngay
+                // Đồng bộ Firebase ngầm
+                if (window.LociFirebase && typeof window.LociFirebase.registerUser === 'function') {
+                    window.LociFirebase.registerUser(cleanName, pass, displayName).catch(() => {});
+                }
+
+                // ĐĂNG NHẬP & PHÁ CỔNG HERO GATE VÀO TRONG WEB NGAY TỨC THÌ
                 window._handleLocalAuthSuccess(cleanName, displayName);
                 if (typeof window.playTingTing === 'function') window.playTingTing();
-                window._showAuthAlert('Tạo tài khoản học sinh thành công!', 'success');
-                setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 600);
             } catch (err) {
                 window._showAuthAlert('Lỗi đăng ký: ' + (err.message || 'Không thể đăng ký'));
-            } finally {
                 if (btn) { btn.disabled = false; btn.textContent = 'Tạo tài khoản học sinh ➔'; }
             }
         };
 
-window.submitUnifiedAuth = async function () {
+        window.submitUnifiedAuth = async function () {
             const emailInput = document.getElementById('login-email');
             const passInput = document.getElementById('login-password');
             const btn = document.getElementById('btn-submit-unified-auth');

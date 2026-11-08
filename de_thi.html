@@ -1263,6 +1263,9 @@
 
         function isUserAuthenticated() {
             try {
+                if (window.parent && window.parent !== window && typeof window.parent.isUserLoggedIn === 'function') {
+                    if (window.parent.isUserLoggedIn()) return true;
+                }
                 if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
                     return window.LociAccountManager.isLoggedIn();
                 }
