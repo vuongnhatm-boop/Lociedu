@@ -12896,22 +12896,22 @@
                         <span class="chevron-icon">▾</span>
                     </button>
                     <div class="topbar-dropdown-menu" id="dropdown-menu-home">
-                        <button class="topbar-dropdown-item nav-item active" data-tab="overview">
+                        <button class="topbar-dropdown-item nav-item active" data-tab="overview" onclick="window.switchPortalTab('overview')">
                             <span>Tổng quan</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="spaces">
+                        <button class="topbar-dropdown-item nav-item" data-tab="spaces" onclick="window.switchPortalTab('spaces')">
                             <span>Phòng 360° tự chụp</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="ai">
+                        <button class="topbar-dropdown-item nav-item" data-tab="ai" onclick="window.switchPortalTab('ai')">
                             <span>Gia sư AI</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="review">
+                        <button class="topbar-dropdown-item nav-item" data-tab="review" onclick="window.switchPortalTab('review')">
                             <span>Thẻ ôn tập</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="exam">
+                        <button class="topbar-dropdown-item nav-item" data-tab="exam" onclick="window.switchPortalTab('exam')">
                             <span>Đề ôn tập</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="pet">
+                        <button class="topbar-dropdown-item nav-item" data-tab="pet" onclick="window.switchPortalTab('pet')">
                             <span>Linh Thú Tri Thức</span>
                         </button>
                                                 <button class="topbar-dropdown-item" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'">
@@ -12931,7 +12931,7 @@
                         <span class="chevron-icon">▾</span>
                     </button>
                     <div class="topbar-dropdown-menu" id="dropdown-menu-community">
-                        <button class="topbar-dropdown-item nav-item" data-tab="connect">
+                        <button class="topbar-dropdown-item nav-item" data-tab="connect" onclick="window.switchPortalTab('connect')">
                             <span>Kết Nối &amp; Vinh Danh</span>
                         </button>
                         <button class="topbar-dropdown-item" onclick="window.openFeedbackModal()">
@@ -14734,12 +14734,12 @@
             }
 
             // 3. MỞ KHÓA TOÀN BỘ GIAO DIỆN HỌC TẬP
-            document.querySelectorAll('.portal-topbar, .portal-main-layout, #view-overview, #view-frame-container').forEach(el => {
-                if (el) {
-                    el.style.removeProperty('display');
-                    el.style.setProperty('display', el.id === 'view-overview' ? 'block' : 'flex');
-                }
+            document.querySelectorAll('.portal-topbar, .portal-main-layout').forEach(el => {
+                if (el) el.style.removeProperty('display');
             });
+            if (typeof window.switchPortalTab === 'function') {
+                window.switchPortalTab('overview');
+            }
 
             // 4. CẬP NHẬT TÊN HỌC SINH TRÊN THANH TOPBAR
             const userNameEl = document.getElementById('user-name');
@@ -17205,10 +17205,6 @@
             document.querySelectorAll('.topbar-nav-pill-btn').forEach(b => b.classList.remove('dropdown-open'));
 
             if (tabName === 'leaderboard') tabName = 'connect';
-            // Khi chọn hoặc gọi đến Bảng Vàng -> tự động chuyển sang tab thống nhất Bảng Vàng & Kết Nối
-            if (tabName === 'leaderboard') {
-                tabName = 'connect';
-            }
             // Khi nhấn hoặc điều hướng đến 'loci' -> chuyển sang tab Tổng quan và cuộn mượt xuống phần Phương pháp Loci
             if (tabName === 'loci') {
                 switchPortalTab('overview');
@@ -17225,16 +17221,12 @@
             if (btnHome) btnHome.classList.toggle('active', homeTabs.includes(tabName));
             if (btnComm) btnComm.classList.toggle('active', commTabs.includes(tabName));
 
-            // Đóng menu thả xuống của topbar
+            // Đóng menu thả xuống của topbar ngay lập tức
             document.querySelectorAll('.topbar-dropdown-menu').forEach(m => m.classList.remove('show'));
             document.querySelectorAll('.topbar-nav-pill-btn').forEach(b => b.classList.remove('dropdown-open'));
 
-            const currentActive = document.querySelector('.nav-item.active');
-            if (currentActive && currentActive.dataset.tab === tabName && tabName !== 'overview') {
-                return;
-            }
-
-            navItems.forEach(item => {
+            // Cập nhật trạng thái active cho tất cả các nút nav
+            document.querySelectorAll('.nav-item[data-tab]').forEach(item => {
                 item.classList.toggle('active', item.dataset.tab === tabName);
             });
 
@@ -17248,37 +17240,46 @@
                 }, { once: true });
             };
 
+            const vOverview = document.getElementById('view-overview');
+            const vFrameContainer = document.getElementById('view-frame-container');
+            const vLeaderboard = document.getElementById('view-leaderboard');
+            const vLoci = document.getElementById('view-loci');
+            const vPet = document.getElementById('view-pet');
+            const vAppFrame = document.getElementById('app-frame');
+
+            // ẨN TRIỆT ĐỂ TẤT CẢ CÁC VIEW (chống đè inline style)
+            const allViews = [vOverview, vFrameContainer, vLeaderboard, vLoci, vPet].filter(Boolean);
+            allViews.forEach(v => {
+                v.classList.remove('active');
+                v.style.setProperty('display', 'none', 'important');
+            });
+
             if (tabName === 'overview') {
-                viewOverview.classList.add('active');
-                viewFrameContainer.classList.remove('active');
-                if (viewLeaderboard) viewLeaderboard.classList.remove('active');
-                if (viewLoci) viewLoci.classList.remove('active');
-                if (viewPet) viewPet.classList.remove('active');
-                applyAnim(viewOverview);
-                viewOverview.scrollTop = 0;
+                if (vOverview) {
+                    vOverview.classList.add('active');
+                    vOverview.style.setProperty('display', 'block', 'important');
+                    applyAnim(vOverview);
+                    vOverview.scrollTop = 0;
+                }
                 if (window.renderOverviewTop3) window.renderOverviewTop3();
                 history.replaceState(null, '', '#overview');
             } else if (tabName === 'pet') {
-                viewOverview.classList.remove('active');
-                viewFrameContainer.classList.remove('active');
-                if (viewLeaderboard) viewLeaderboard.classList.remove('active');
-                if (viewLoci) viewLoci.classList.remove('active');
-                if (viewPet) {
-                    viewPet.classList.add('active');
-                    applyAnim(viewPet);
-                    viewPet.scrollTop = 0;
+                if (vPet) {
+                    vPet.classList.add('active');
+                    vPet.style.setProperty('display', 'block', 'important');
+                    applyAnim(vPet);
+                    vPet.scrollTop = 0;
                 }
                 history.replaceState(null, '', '#pet');
             } else if (tabUrls[tabName]) {
-                viewOverview.classList.remove('active');
-                if (viewLeaderboard) viewLeaderboard.classList.remove('active');
-                if (viewLoci) viewLoci.classList.remove('active');
-                if (viewPet) viewPet.classList.remove('active');
-                viewFrameContainer.classList.add('active');
-                applyAnim(viewFrameContainer);
-                const targetUrl = new URL(tabUrls[tabName], window.location.href).href;
-                if (appFrame.src !== targetUrl) {
-                    appFrame.src = tabUrls[tabName];
+                if (vFrameContainer && vAppFrame) {
+                    vFrameContainer.classList.add('active');
+                    vFrameContainer.style.setProperty('display', 'block', 'important');
+                    applyAnim(vFrameContainer);
+                    const targetUrl = new URL(tabUrls[tabName], window.location.href).href;
+                    if (vAppFrame.src !== targetUrl) {
+                        vAppFrame.src = tabUrls[tabName];
+                    }
                 }
                 history.replaceState(null, '', '#' + tabName);
             }

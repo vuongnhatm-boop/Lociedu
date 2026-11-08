@@ -1217,10 +1217,8 @@ function _decodeGeminiKey(s) {
             overflow: hidden !important;
         }
 
-        html.is-embedded .sidebar,
-        body.is-embedded .sidebar {
-            display: none !important;
-        }
+        /* Sidebar enabled in embedded mode */
+html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important; }
 
         html.is-embedded .chat,
         body.is-embedded .chat {
@@ -1901,182 +1899,936 @@ function _decodeGeminiKey(s) {
         }
     }
 
-</style>
+
+        /* ==========================================================================
+           CHATGPT ULTRA MODERN DESIGN SYSTEM & DOCUMENT ATTACHMENT SUITE
+           ========================================================================== */
+        body {
+            background: #ffffff !important;
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+        }
+
+        /* ChatGPT Sidebar */
+        .sidebar {
+            width: 260px !important;
+            background: #f9f9f9 !important;
+            border-right: 1px solid #e5e7eb !important;
+            display: flex !important;
+            flex-direction: column !important;
+            padding: 14px 12px !important;
+            box-shadow: none !important;
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+            z-index: 99 !important;
+            overflow-x: hidden !important;
+        }
+
+        body.sidebar-collapsed .sidebar {
+            width: 0 !important;
+            min-width: 0 !important;
+            padding: 0 !important;
+            border-right: none !important;
+            opacity: 0 !important;
+            pointer-events: none !important;
+        }
+
+        .sidebar-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 800;
+            color: #0f172a;
+            text-decoration: none;
+        }
+
+        .sidebar-brand img {
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .btn-sidebar-toggle {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 6px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+        }
+
+        .btn-sidebar-toggle:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        /* Button Đoạn chat mới */
+        .btn-new-chat-chatgpt {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            padding: 9px 12px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #ffffff;
+            color: #0f172a;
+            font-size: 13.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+            margin-bottom: 12px;
+        }
+
+        .btn-new-chat-chatgpt:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .btn-new-chat-chatgpt span {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Thanh tìm kiếm lịch sử */
+        .sidebar-search-box {
+            position: relative;
+            margin-bottom: 12px;
+        }
+
+        .sidebar-search-box input {
+            width: 100%;
+            padding: 7px 10px 7px 30px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            background: #ffffff;
+            font-size: 12.5px;
+            color: #0f172a;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .sidebar-search-box input:focus {
+            border-color: #3b82f6;
+        }
+
+        .sidebar-search-box svg {
+            position: absolute;
+            left: 9px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        /* Danh mục nhóm lịch sử */
+        .history-wrap {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 2px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .history-wrap::-webkit-scrollbar {
+            width: 4px;
+        }
+        .history-wrap::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        .history-group-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #94a3b8;
+            padding: 12px 8px 4px 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .history-item-chatgpt {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #334155;
+            cursor: pointer;
+            transition: background 0.15s ease;
+            position: relative;
+            group: true;
+            margin-bottom: 2px;
+        }
+
+        .history-item-chatgpt:hover {
+            background: #ececec;
+            color: #0f172a;
+        }
+
+        .history-item-chatgpt.active {
+            background: #ececec;
+            color: #0f172a;
+            font-weight: 700;
+        }
+
+        .history-item-title-wrap {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            flex: 1;
+        }
+
+        .history-item-title-wrap svg {
+            flex-shrink: 0;
+            color: #64748b;
+        }
+
+        .history-item-title {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            flex: 1;
+        }
+
+        .history-item-actions {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            margin-left: 6px;
+        }
+
+        .history-item-chatgpt:hover .history-item-actions,
+        .history-item-chatgpt.active .history-item-actions {
+            display: flex;
+        }
+
+        .btn-history-action {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 3px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: color 0.15s;
+        }
+
+        .btn-history-action:hover {
+            color: #0f172a;
+            background: #cbd5e1;
+        }
+
+        .btn-history-action.del:hover {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding-top: 10px;
+            border-top: 1px solid #e5e7eb;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-user-pill {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 7px 8px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+        }
+
+        .sidebar-user-pill img {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .sidebar-bottom-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 2px 4px;
+        }
+
+        .btn-sidebar-subtle {
+            background: none;
+            border: none;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 4px 6px;
+            border-radius: 6px;
+            transition: all 0.15s;
+        }
+
+        .btn-sidebar-subtle:hover {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        /* Chat Main Workspace */
+        .chat {
+            background: #ffffff !important;
+            flex: 1 !important;
+            display: flex !important;
+            flex-direction: column !important;
+            height: 100vh !important;
+            position: relative !important;
+            overflow: hidden !important;
+        }
+
+        /* Chat Head */
+        .chat-head {
+            height: 52px !important;
+            min-height: 52px !important;
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(12px) !important;
+            border-bottom: 1px solid #f1f5f9 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            padding: 0 16px !important;
+            z-index: 20 !important;
+        }
+
+        .chat-head-left-gpt {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Model Selector Dropdown Pill */
+        .model-selector-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 12px;
+            border-radius: 12px;
+            background: #f1f5f9;
+            border: 1px solid #e2e8f0;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0f172a;
+            cursor: pointer;
+            position: relative;
+            user-select: none;
+            transition: all 0.15s ease;
+        }
+
+        .model-selector-pill:hover {
+            background: #e2e8f0;
+        }
+
+        .model-dropdown-menu {
+            display: none;
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            width: 290px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            padding: 6px;
+            z-index: 100;
+        }
+
+        .model-dropdown-menu.show {
+            display: block;
+        }
+
+        .model-dropdown-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 9px 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+
+        .model-dropdown-item:hover {
+            background: #f8fafc;
+        }
+
+        .model-dropdown-item.active {
+            background: #eff6ff;
+        }
+
+        .mdi-icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .mdi-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .mdi-desc {
+            font-size: 11.5px;
+            color: #64748b;
+            line-height: 1.3;
+        }
+
+        /* Scroll thread */
+        .scroll {
+            flex: 1 !important;
+            overflow-y: auto !important;
+            padding: 24px 20px 20px 20px !important;
+            display: flex !important;
+            justify-content: center !important;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .thread {
+            width: 100% !important;
+            max-width: 820px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            gap: 22px !important;
+        }
+
+        /* Welcome Hero Screen */
+        .welcome-chatgpt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 60vh;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .welcome-avatar-orb {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.25);
+            margin-bottom: 18px;
+        }
+
+        .welcome-avatar-orb img {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .welcome-chatgpt h2 {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .welcome-chatgpt p {
+            font-size: 14px;
+            color: #64748b;
+            max-width: 520px;
+            margin-bottom: 28px;
+            line-height: 1.5;
+        }
+
+        .welcome-prompt-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            width: 100%;
+            max-width: 720px;
+        }
+
+        @media (max-width: 640px) {
+            .welcome-prompt-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .welcome-prompt-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 14px 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .welcome-prompt-card:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+        }
+
+        .wpc-title {
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .wpc-desc {
+            font-size: 12px;
+            color: #64748b;
+            line-height: 1.4;
+        }
+
+        /* Messages */
+        .msg.user {
+            display: flex !important;
+            justify-content: flex-end !important;
+            width: 100% !important;
+            margin-bottom: 4px !important;
+        }
+
+        .msg.user .bubble {
+            background: #f4f4f4 !important;
+            color: #0d0d0d !important;
+            border-radius: 20px 20px 4px 20px !important;
+            padding: 12px 18px !important;
+            font-size: 15px !important;
+            line-height: 1.6 !important;
+            max-width: 82% !important;
+            box-shadow: none !important;
+            word-break: break-word !important;
+        }
+
+        .msg.user .av {
+            display: none !important;
+        }
+
+        .msg.ai {
+            display: flex !important;
+            align-items: flex-start !important;
+            gap: 14px !important;
+            width: 100% !important;
+            margin-bottom: 6px !important;
+        }
+
+        .msg.ai .av {
+            width: 32px !important;
+            height: 32px !important;
+            border-radius: 50% !important;
+            flex-shrink: 0 !important;
+            overflow: hidden !important;
+            margin-top: 3px !important;
+        }
+
+        .msg.ai .bubble {
+            flex: 1 !important;
+            background: transparent !important;
+            color: #0d0d0d !important;
+            border: none !important;
+            box-shadow: none !important;
+            padding: 0 !important;
+            font-size: 15px !important;
+            line-height: 1.68 !important;
+            word-break: break-word !important;
+        }
+
+        /* Attachment inside User Bubble */
+        .user-doc-card {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 12px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            width: fit-content;
+        }
+
+        .user-doc-icon {
+            font-size: 20px;
+            line-height: 1;
+        }
+
+        .user-doc-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-doc-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #0f172a;
+            max-width: 280px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-doc-size {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        /* Composer Pill ChatGPT */
+        .composer-wrap {
+            padding: 8px 20px 18px 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            background: #ffffff !important;
+            border-top: none !important;
+            width: 100% !important;
+        }
+
+        .composer-chatgpt-box {
+            width: 100%;
+            max-width: 820px;
+            background: #f4f4f4;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 26px;
+            padding: 8px 12px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .composer-chatgpt-box:focus-within {
+            background: #ffffff;
+            border-color: #94a3b8;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.07);
+        }
+
+        /* Document Attachment Preview Chip */
+        .attached-doc-preview {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            width: fit-content;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        }
+
+        .adp-icon {
+            font-size: 18px;
+        }
+
+        .adp-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .adp-name {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #0f172a;
+            max-width: 240px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .adp-meta {
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .adp-close {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 14px;
+            padding: 2px 5px;
+            border-radius: 50%;
+            transition: all 0.15s;
+        }
+
+        .adp-close:hover {
+            color: #ef4444;
+            background: #fee2e2;
+        }
+
+        .composer-row-gpt {
+            display: flex;
+            align-items: flex-end;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .btn-composer-icon {
+            background: none;
+            border: none;
+            color: #64748b;
+            cursor: pointer;
+            padding: 7px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            flex-shrink: 0;
+            margin-bottom: 2px;
+        }
+
+        .btn-composer-icon:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .composer-textarea {
+            flex: 1;
+            border: none;
+            outline: none;
+            background: transparent;
+            font-family: inherit;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #0f172a;
+            resize: none;
+            max-height: 160px;
+            min-height: 24px;
+            padding: 6px 4px;
+        }
+
+        .btn-send-round-gpt {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #0f172a;
+            color: #ffffff;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.15s ease;
+            flex-shrink: 0;
+            margin-bottom: 2px;
+        }
+
+        .btn-send-round-gpt:disabled {
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+        }
+
+        .btn-send-round-gpt:not(:disabled):hover {
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .chatgpt-disclaimer {
+            font-size: 11.5px;
+            color: #94a3b8;
+            text-align: center;
+            margin-top: 8px;
+        }
+    </style>
+
 </head>
 
 <body>
-    <aside class="sidebar">
-        <a class="logo" href="portal_v2.html" target="_top"><img class="logo-mark" src="assets/images/logo_loci_edu.png"
-                alt="LOCI EDU"> LOCI EDU</a>
-        <ul class="nav-menu">
-            <li><a class="nav-item" href="portal_v2.html" target="_top">Tổng quan</a></li>
-            
-            <li><a class="nav-item active" href="chat.html"><img src="assets/images/loci_avatar.jpg" alt="AI"
-                        style="width:20px;height:20px;border-radius:50%;margin-right:2px;border:1px solid #cbd5e1;"> Gia
-                    sư AI</a></li>
-            <li><a class="nav-item" href="review.html">Thẻ ôn tập</a></li>
-            <li><a class="nav-item" href="de_thi.html">Đề ôn tập</a></li>
-        </ul>
+    <!-- CHATGPT STYLE SIDEBAR -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header-row">
+            <a class="sidebar-brand" href="portal_v2.html" target="_top">
+                <img src="assets/images/logo_loci_edu.png" alt="LOCI">
+                <span>LOCI EDU GPT</span>
+            </a>
+            <button type="button" class="btn-sidebar-toggle" id="btn-sidebar-collapse" title="Thu gọn thanh bên" onclick="window.toggleSidebar()">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
+            </button>
+        </div>
 
-        <button class="btn-new-chat" id="new-chat">
-            <span>＋</span> Cuộc trò chuyện mới
+        <button type="button" class="btn-new-chat-chatgpt" id="new-chat" onclick="createNewChat()">
+            <span>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                Đoạn chat mới
+            </span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
         </button>
 
-        <div class="history-wrap">
-            <div class="history-header">
-                <span>Lịch sử trò chuyện</span>
-                <button id="clear-all-history" class="btn-clear-history" title="Xóa toàn bộ lịch sử">Xóa hết</button>
-            </div>
+        <div class="sidebar-search-box">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <input type="text" id="history-search-input" placeholder="Tìm đoạn chat..." oninput="renderHistory()">
+        </div>
+
+        <div class="history-wrap" id="history-scroll-wrap">
             <div class="history-list" id="history-list">
-                <!-- Rendered dynamically -->
+                <!-- Rendered dynamically grouped by date -->
             </div>
         </div>
 
-        <div class="user-status-pill" id="user-status-pill">
-            <span class="user-status-icon">👤</span>
-            <span class="user-status-name" id="user-display-name">Học sinh</span>
-            <span class="user-status-badge">Tự động lưu</span>
+        <div class="sidebar-footer">
+            <div class="sidebar-user-pill">
+                <img src="assets/images/loci_avatar.jpg" alt="User">
+                <span id="user-display-name">Học sinh LOCI EDU</span>
+            </div>
+            <div class="sidebar-bottom-actions">
+                <button type="button" class="btn-sidebar-subtle" id="clear-all-history" title="Xóa toàn bộ lịch sử">
+                    🗑️ Xóa tất cả
+                </button>
+                <button type="button" class="btn-sidebar-subtle" onclick="window.parent && window.parent.switchPortalTab ? window.parent.switchPortalTab('overview') : window.location.href='portal_v2.html'">
+                    ← Về Cung Điện
+                </button>
+            </div>
         </div>
     </aside>
 
+    <!-- CHATGPT STYLE MAIN CHAT WORKSPACE -->
     <section class="chat">
         <header class="chat-head">
-        <div class="chat-head-left" style="display:flex;align-items:center;gap:10px;">
-            <button type="button" class="btn-head-tool mobile-menu-btn" id="btn-toggle-mobile-sidebar" title="Mở danh mục & Lịch sử" style="display:none;padding:6px 10px;font-size:15px;border-radius:10px;cursor:pointer;">
-                ☰
-            </button>
-            <h1>
-                <img src="assets/images/loci_avatar.jpg" alt="Loci"
-                    style="width:36px;height:36px;border-radius:50%;border:2px solid #fff;box-shadow:0 2px 8px rgba(0,0,0,0.1);vertical-align:middle;margin-right:8px;">
-                Gia sư AI Loci
-            </h1>
-        </div>
-            <div class="chat-head-tools">
-                <button type="button" class="btn-head-tool pri" id="btn-head-new-chat" title="Tạo cuộc trò chuyện mới">
-                    ＋ Đoạn chat mới
+            <div class="chat-head-left-gpt">
+                <button type="button" class="btn-sidebar-toggle" id="btn-toggle-sidebar" title="Đóng / Mở thanh bên" onclick="window.toggleSidebar()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
                 </button>
-                <button type="button" class="btn-head-tool" id="btn-head-history" title="Xem danh sách lịch sử trò chuyện">
-                    💬 Lịch sử
+
+                <div class="model-selector-pill" id="model-selector-pill" onclick="window.toggleModelDropdown(event)">
+                    <span class="mdi-icon" id="header-model-icon">🤖</span>
+                    <span id="header-model-title">Gia Sư Loci AI</span>
+                    <span style="font-size:10px; color:#64748b;">▾</span>
+
+                    <div class="model-dropdown-menu" id="model-dropdown-menu">
+                        <div class="model-dropdown-item active" data-model="standard" onclick="window.selectChatModel('standard')">
+                            <div class="mdi-icon">🤖</div>
+                            <div class="mdi-info">
+                                <div class="mdi-title">Gia Sư Loci AI (Gemini Flash)</div>
+                                <div class="mdi-desc">Tư duy sắc sảo, bám sát toàn diện SGK Lịch sử 12</div>
+                            </div>
+                        </div>
+                        <div class="model-dropdown-item" data-model="loci3d" onclick="window.selectChatModel('loci3d')">
+                            <div class="mdi-icon">🏛️</div>
+                            <div class="mdi-info">
+                                <div class="mdi-title">Cố Vấn 9 Mốc Loci 3D</div>
+                                <div class="mdi-desc">Định vị dữ kiện vào 9 mốc không gian và cung điện ký ức</div>
+                            </div>
+                        </div>
+                        <div class="model-dropdown-item" data-model="exam" onclick="window.selectChatModel('exam')">
+                            <div class="mdi-icon">🎓</div>
+                            <div class="mdi-info">
+                                <div class="mdi-title">Chuyên Gia Luyện Thi THPT</div>
+                                <div class="mdi-desc">Tập trung câu hỏi phân hóa 8+, bẫy trắc nghiệm, mẹo SM-2</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button type="button" class="btn-sidebar-toggle" id="btn-head-new-chat-quick" title="Đoạn chat mới" onclick="createNewChat()">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
                 </button>
-                
-                <button type="button" class="btn-head-tool api-settings-btn" id="btn-open-settings" style="display:none !important;" aria-hidden="true">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    <span>Cài đặt API</span>
-                </button>
-                                <div class="sentinel-guard-badge" id="sentinel-guard-badge" title="Bot Quét Kết Nối & Kiểm Duyệt Lịch Sử Loci đang hoạt động 24/7">
+                <div class="sentinel-guard-badge" id="sentinel-guard-badge" title="Sentinel Guard kiểm soát nội dung 24/7">
                     <span class="sentinel-radar-dot"></span>
                     <span class="sentinel-badge-text">🛡️ Sentinel Guard</span>
                 </div>
-                <div class="status" id="status"><i></i><span>Sẵn sàng</span></div>
             </div>
         </header>
 
-        <!-- Drawer Lịch sử trò chuyện khi ở chế độ nhúng -->
-        <div class="history-drawer-backdrop" id="history-drawer">
-            <div class="history-drawer-card">
-                <div class="modal-head" style="margin-bottom:14px;">
-                    <h3>💬 Lịch sử trò chuyện</h3>
-                    <button type="button" class="btn-close-modal" id="btn-close-history" title="Đóng">✕</button>
-                </div>
-                <div style="display:flex;gap:8px;margin-bottom:14px;">
-                    <button type="button" class="btn-head-tool pri" id="btn-drawer-new-chat" style="flex:1;justify-content:center;">
-                        ＋ Trò chuyện mới
-                    </button>
-                    <button type="button" class="btn-clear-history" id="btn-drawer-clear-history" title="Xóa toàn bộ">
-                        🗑️ Xóa hết
-                    </button>
-                </div>
-                <div class="history-list" id="drawer-history-list" style="flex:1;overflow-y:auto;">
-                    <!-- Rendered dynamically -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal Cài đặt API Key -->
-        <div class="api-modal-backdrop" id="api-modal">
-            <div class="api-modal-card">
-                <div class="modal-head">
-                    <h3>⚙️ Cài đặt Gia sư Loci</h3>
-                    <button type="button" class="btn-close-modal" id="btn-close-settings" title="Đóng">✕</button>
-                </div>
-                <div class="modal-form-group">
-                    <label for="input-api-key">Mã Khóa API (Google Gemini hoặc OpenRouter):</label>
-                    <input type="text" id="input-api-key" class="modal-input" placeholder="Dán mã API của bạn vào đây...">
-                    <p class="modal-helper" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-                        <span>Khóa được lưu trực tiếp trên máy của bạn (Local Storage) để bảo mật.</span>
-                        <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" style="color:#0284c7; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:4px; font-size:12.5px; background:rgba(2,132,199,0.08); padding:3px 10px; border-radius:99px;">
-                            🔑 Lấy mã Google Gemini Key miễn phí ➔
-                        </a>
-                    </p>
-                </div>
-                <div class="modal-form-group">
-                    <label for="select-api-model">Mô hình AI:</label>
-                    <select id="select-api-model" class="modal-select">
-                        <option value="gemini-3.5-flash-lite" selected>Google Gemini 3.5 Flash Lite (Khuyên dùng - Siêu tốc &amp; Ổn định nhất)</option>
-                        <option value="gemini-3.5-flash">Google Gemini 3.5 Flash (Mới nhất • Sâu sắc)</option>
-                        <option value="gemini-3.8-flash">Google Gemini 3.8 Flash (Thế hệ kế tiếp)</option>
-                        <option value="gemini-flash-latest">Google Gemini Flash Latest (Tự động cập nhật)</option>
-                        <option value="google/gemini-2.5-flash">OpenRouter - Gemini 2.5 Flash</option>
-                    </select>
-                </div>
-                <div class="test-status-box" id="test-status-box"></div>
-                <div class="modal-actions">
-                    <button type="button" class="modal-btn sec" id="btn-test-key">
-                        ⚡ Kiểm tra kết nối
-                    </button>
-                    <div style="display:flex;gap:8px;">
-                        <button type="button" class="modal-btn danger" id="btn-reset-key" title="Dùng khóa mặc định">
-                            Khôi phục
-                        </button>
-                        <button type="button" class="modal-btn pri" id="btn-save-key">
-                            💾 Lưu & Kích hoạt
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        <!-- BANNER TRẠNG THÁI -->
         <div class="banner" id="banner"></div>
 
+        <!-- KHUNG TIN NHẮN (THREAD) -->
         <div class="scroll" id="scroll" aria-live="polite">
             <div class="thread" id="thread">
-                <!-- Messages or Welcome Screen injected dynamically -->
+                <!-- Welcome Screen or Messages will be injected here -->
             </div>
         </div>
 
+        <!-- COMPOSER PILL CHATGPT (CÓ TẢI TÀI LIỆU) -->
         <div class="composer-wrap">
-            <div class="composer-api-pill-row" style="display:none !important;" aria-hidden="true">
-                <span class="composer-model-indicator" id="composer-model-indicator">
-                    <span class="model-dot"></span>
-                    <span id="composer-model-txt">Gemini 3.5 Flash Lite</span>
-                </span>
-                <button type="button" class="btn-composer-settings" id="btn-composer-settings" title="Cài đặt API và Mô hình AI">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
-                    <span>Cài đặt API</span>
-                </button>
-            </div>
-            <div class="spatial-vision-preview" id="spatial-vision-preview" style="display:none;">
-                <div class="svp-inner">
-                    <img id="svp-thumb" src="" alt="3D View Snapshot" />
-                    <div class="svp-info">
-                        <div class="svp-badge">👀 ĐANG QUAN SÁT MÀN HÌNH 3D</div>
-                        <div class="svp-desc" id="svp-desc">Mô hình trước mắt</div>
+            <div class="composer-chatgpt-box">
+                <!-- Document Attachment Preview Chip -->
+                <div class="attached-doc-preview" id="attached-doc-preview" style="display:none;">
+                    <div class="adp-icon" id="adp-icon">📄</div>
+                    <div class="adp-info">
+                        <div class="adp-name" id="adp-name">tai_lieu.pdf</div>
+                        <div class="adp-meta" id="adp-meta">240 KB · Sẵn sàng gửi kèm</div>
                     </div>
-                    <button type="button" class="svp-close" id="svp-close" title="Bỏ quan sát ảnh">✕</button>
+                    <button type="button" class="adp-close" id="adp-close" title="Xóa tài liệu đính kèm" onclick="window.removeAttachedDoc(event)">✕</button>
                 </div>
+
+                <!-- Hidden File Input for Documents/Images -->
+                <input type="file" id="file-doc-input" accept=".pdf,.doc,.docx,.txt,.csv,.json,image/*" style="display:none;" onchange="window.handleDocFileSelected(event)">
+
+                <!-- Spatial Vision Snapshot Preview -->
+                <div class="spatial-vision-preview" id="spatial-vision-preview" style="display:none;">
+                    <div class="svp-inner">
+                        <img id="svp-thumb" src="" alt="3D View Snapshot" />
+                        <div class="svp-info">
+                            <div class="svp-badge">👀 ĐANG QUAN SÁT MÀN HÌNH 3D</div>
+                            <div class="svp-desc" id="svp-desc">Mô hình trước mắt</div>
+                        </div>
+                        <button type="button" class="svp-close" id="svp-close" title="Bỏ quan sát ảnh">✕</button>
+                    </div>
+                </div>
+
+                <form class="composer-row-gpt" id="form" onsubmit="event.preventDefault(); window.submitChatForm();">
+                    <button type="button" class="btn-composer-icon" id="btn-attach-doc" title="Tải tài liệu, đề thi, tệp PDF/ảnh để Gia sư AI phân tích" onclick="document.getElementById('file-doc-input').click()">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path></svg>
+                    </button>
+
+                    <button type="button" class="btn-composer-icon vision-btn" id="vision-btn" title="Gia sư AI chụp và quan sát góc nhìn 3D hiện tại của bạn">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                    </button>
+
+                    <textarea id="input" class="composer-textarea" rows="1" placeholder="Hỏi bất kỳ điều gì hoặc tải tài liệu lên…" aria-label="Tin nhắn"></textarea>
+
+                    <button type="button" class="btn-composer-icon" id="mic" title="Nói bằng giọng nói">
+                        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line></svg>
+                    </button>
+
+                    <button type="submit" class="btn-send-round-gpt" id="send" aria-label="Gửi" disabled>
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+                    </button>
+                </form>
             </div>
-            <form class="composer" id="form">
-                <button type="button" class="vision-btn" id="vision-btn" title="Gia sư AI chụp và quan sát góc nhìn 3D hiện tại của bạn" aria-label="Quan sát màn hình 3D">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                    <span class="vision-btn-text">Nhìn 3D</span>
-                </button>
-                <textarea id="input" rows="1" placeholder="Nhập câu hỏi cho Loci…" aria-label="Tin nhắn"></textarea>
-                <button type="button" class="mic" id="mic" title="Nói bằng giọng" aria-label="Nói bằng giọng">🎤</button>
-                <button type="submit" class="send" id="send" aria-label="Gửi" disabled>
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </button>
-            </form>
-            <p class="hint">Enter để gửi · Shift+Enter xuống dòng · Loci theo sát sách giáo khoa Lịch sử 12.</p>
+            <div class="chatgpt-disclaimer">
+                Gia sư AI Loci có thể mắc lỗi. Hãy kiểm tra thông tin quan trọng với Sách giáo khoa Lịch sử 12.
+            </div>
         </div>
     </section>
 
@@ -2119,18 +2871,28 @@ function _decodeGeminiKey(s) {
         function autosize() {
             input.style.height = 'auto';
             input.style.height = Math.min(input.scrollHeight, 160) + 'px';
-            send.disabled = busy || !input.value.trim();
+            send.disabled = busy || (!input.value.trim() && !window.currentAttachment);
         }
         input.addEventListener('input', autosize);
         input.addEventListener('keydown', e => {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
-                if (input.value.trim() && !busy) ask(input.value);
+                if ((input.value.trim() || window.currentAttachment) && !busy) {
+                    const val = input.value;
+                    input.value = '';
+                    autosize();
+                    ask(val);
+                }
             }
         });
         $('form').addEventListener('submit', e => {
             e.preventDefault();
-            if (input.value.trim() && !busy) ask(input.value);
+            if ((input.value.trim() || window.currentAttachment) && !busy) {
+                const val = input.value;
+                input.value = '';
+                autosize();
+                ask(val);
+            }
         });
 
         // Safe Markdown -> HTML
@@ -2176,29 +2938,54 @@ function _decodeGeminiKey(s) {
 
         function renderWelcome() {
             thread.innerHTML = `
-                <div class="welcome" id="welcome">
-                    <div class="orb" style="background: url('assets/images/loci_avatar.jpg') center/cover; border: 4px solid #fff; box-shadow: 0 10px 25px rgba(0,0,0,0.1); font-size: 0;"></div>
-                    <h2>Chào bạn, mình là Gia sư Loci</h2>
-                    <p>Mình ở đây để đồng hành, giải đáp kiến thức Lịch sử 12 và tư vấn mẹo ghi nhớ Cung điện Ký ức riêng cho bạn.</p>
-                    <div class="chips">
-                        <button class="chip">Hôm nay mình hơi mệt và nản, cho mình lời khuyên nhé 🌿</button>
-                        <button class="chip">Đánh giá tiến độ học tập của mình hôm nay</button>
-                        <button class="chip">Mình hay quên Bài 6, hãy gợi ý mẹo Loci</button>
-                        <button class="chip">Phân tích Chiến dịch Điện Biên Phủ 1954</button>
-                        <button class="chip">Lên lộ trình ôn tập tuần tới cho mình</button>
+                <div class="welcome-chatgpt" id="welcome">
+                    <div class="welcome-avatar-orb">
+                        <img src="assets/images/loci_avatar.jpg" alt="Loci AI">
+                    </div>
+                    <h2>Hôm nay tôi có thể giúp gì cho bạn ôn tập Lịch sử?</h2>
+                    <p>Đồng hành cùng bạn làm chủ 9 mốc Loci trong không gian 3D, phân tích tài liệu và bứt phá điểm thi THPT.</p>
+                    <div class="welcome-prompt-grid">
+                        <div class="welcome-prompt-card" onclick="ask('Hướng dẫn tôi gắn 9 mốc diễn biến Chiến dịch Điện Biên Phủ 1954 vào không gian 3D')">
+                            <div class="wpc-title">💡 9 Mốc Loci Điện Biên Phủ</div>
+                            <div class="wpc-desc">Định vị diễn biến chiến dịch theo toạ độ đồ vật 3D sống động</div>
+                        </div>
+                        <div class="welcome-prompt-card" onclick="ask('So sánh điểm giống và khác biệt cơ bản giữa Hiệp định Genève 1954 và Hiệp định Paris 1973')">
+                            <div class="wpc-title">⚖️ So sánh Hiệp định Genève &amp; Paris</div>
+                            <div class="wpc-desc">Phân tích bối cảnh, nội dung và ý nghĩa lịch sử so sánh</div>
+                        </div>
+                        <div class="welcome-prompt-card" onclick="ask('Hãy ra cho tôi 5 câu trắc nghiệm phân hóa mức độ vận dụng cao về cuộc kháng chiến chống Mỹ')">
+                            <div class="wpc-title">🎯 Trắc nghiệm Vận dụng cao</div>
+                            <div class="wpc-desc">Thử sức với các câu hỏi phân hóa điểm 8+ và bẫy đề thi</div>
+                        </div>
+                        <div class="welcome-prompt-card" onclick="document.getElementById('file-doc-input').click()">
+                            <div class="wpc-title">📄 Tải tài liệu &amp; Đề thi (PDF / Ảnh)</div>
+                            <div class="wpc-desc">Nhấn để tải tài liệu lên, Gia sư AI sẽ phân tích và giải đáp ngay</div>
+                        </div>
                     </div>
                 </div>
             `;
-            thread.querySelectorAll('.chip').forEach(c => c.onclick = () => ask(c.textContent));
         }
 
-                function addMsg(role, text, isStream = false) {
+                function addMsg(role, text, isStream = false, attachment = null) {
             $('welcome')?.remove();
             const el = document.createElement('div');
             el.className = `msg ${role === 'user' ? 'user' : 'ai'}`;
             const av = `<div class="av" aria-hidden="true">${role === 'user' ? 'B' : '<img src="assets/images/loci_avatar.jpg" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">'}</div>`;
             if (role === 'user') {
-                el.innerHTML = `${av}<div class="bubble">${esc(text)}</div>`;
+                let docHtml = '';
+                if (attachment) {
+                    const icon = attachment.name.endsWith('.pdf') ? '📕' : (attachment.name.match(/\.(png|jpg|jpeg|webp)$/i) ? '🖼️' : '📄');
+                    docHtml = `
+                        <div class="user-doc-card">
+                            <span class="user-doc-icon">${icon}</span>
+                            <div class="user-doc-details">
+                                <span class="user-doc-name">${esc(attachment.name)}</span>
+                                <span class="user-doc-size">${esc(attachment.size || 'Tài liệu đính kèm')}</span>
+                            </div>
+                        </div>
+                    `;
+                }
+                el.innerHTML = `${av}<div class="bubble">${docHtml}<div>${esc(text)}</div></div>`;
                 thread.appendChild(el);
                 scroll.scrollTop = scroll.scrollHeight;
             } else {
@@ -2352,46 +3139,92 @@ function _decodeGeminiKey(s) {
 
         function renderHistory() {
             const list = $('history-list');
-            const drawerList = $('drawer-history-list');
-            const targets = [list, drawerList].filter(Boolean);
-            if (targets.length === 0) return;
+            if (!list) return;
 
             if (!sessions || sessions.length === 0) {
-                const emptyHtml = `<div class="history-empty">Chưa có cuộc trò chuyện nào.<br>Hãy đặt câu hỏi để bắt đầu!</div>`;
-                targets.forEach(t => t.innerHTML = emptyHtml);
+                list.innerHTML = `<div style="padding:18px 8px; text-align:center; font-size:12.5px; color:#94a3b8;">Chưa có đoạn chat nào.<br>Hãy đặt câu hỏi hoặc gửi tài liệu để bắt đầu!</div>`;
                 return;
             }
 
-            const html = sessions.map(s => {
-                const isActive = s.id === activeSessionId;
-                const timeStr = formatTime(s.updatedAt);
-                const count = (s.messages || []).length;
-                return `
-                    <div class="history-item ${isActive ? 'active' : ''}" data-id="${s.id}">
-                        <div class="history-main">
-                            <span class="history-title" title="${esc(s.title || 'Cuộc trò chuyện')}">${esc(s.title || 'Cuộc trò chuyện')}</span>
-                            <span class="history-meta">💬 ${count} tin nhắn · ${timeStr}</span>
-                        </div>
-                        <button class="history-del" data-del="${s.id}" title="Xóa cuộc trò chuyện này">🗑️</button>
-                    </div>
-                `;
-            }).join('');
+            const searchQuery = ($('history-search-input')?.value || '').toLowerCase().trim();
+            const filtered = sessions.filter(s => {
+                if (!searchQuery) return true;
+                return (s.title || '').toLowerCase().includes(searchQuery);
+            });
 
-            targets.forEach(t => {
-                t.innerHTML = html;
-                t.querySelectorAll('.history-item').forEach(el => {
-                    el.onclick = (e) => {
-                        if (e.target.closest('[data-del]')) return;
-                        selectSession(el.dataset.id);
-                        $('history-drawer')?.classList.remove('open');
-                    };
+            if (filtered.length === 0) {
+                list.innerHTML = `<div style="padding:14px 8px; text-align:center; font-size:12px; color:#94a3b8;">Không tìm thấy đoạn chat phù hợp</div>`;
+                return;
+            }
+
+            const now = Date.now();
+            const groupToday = [];
+            const group7Days = [];
+            const groupOlder = [];
+
+            filtered.forEach(s => {
+                const diffHours = (now - (s.updatedAt || now)) / (1000 * 3600);
+                if (diffHours < 24) groupToday.push(s);
+                else if (diffHours < 168) group7Days.push(s);
+                else groupOlder.push(s);
+            });
+
+            const renderGroup = (label, items) => {
+                if (items.length === 0) return '';
+                let h = `<div class="history-group-label">${label}</div>`;
+                items.forEach(s => {
+                    const isActive = s.id === activeSessionId;
+                    h += `
+                        <div class="history-item-chatgpt ${isActive ? 'active' : ''}" data-id="${s.id}">
+                            <div class="history-item-title-wrap" title="${esc(s.title || 'Đoạn chat')}">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                                <span class="history-item-title">${esc(s.title || 'Đoạn chat')}</span>
+                            </div>
+                            <div class="history-item-actions">
+                                <button type="button" class="btn-history-action" data-rename="${s.id}" title="Đổi tên đoạn chat">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                                </button>
+                                <button type="button" class="btn-history-action del" data-del="${s.id}" title="Xóa đoạn chat">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    `;
                 });
-                t.querySelectorAll('[data-del]').forEach(btn => {
-                    btn.onclick = (e) => {
-                        e.stopPropagation();
+                return h;
+            };
+
+            list.innerHTML = renderGroup('Hôm nay', groupToday) + renderGroup('7 ngày qua', group7Days) + renderGroup('Trước đó', groupOlder);
+
+            list.querySelectorAll('.history-item-chatgpt').forEach(el => {
+                el.onclick = (e) => {
+                    if (e.target.closest('[data-del]') || e.target.closest('[data-rename]')) return;
+                    selectSession(el.dataset.id);
+                };
+            });
+
+            list.querySelectorAll('[data-del]').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    if (confirm('Bạn có chắc muốn xóa đoạn chat này?')) {
                         deleteSession(btn.dataset.del);
-                    };
-                });
+                    }
+                };
+            });
+
+            list.querySelectorAll('[data-rename]').forEach(btn => {
+                btn.onclick = (e) => {
+                    e.stopPropagation();
+                    const sid = btn.dataset.rename;
+                    const sess = sessions.find(x => x.id === sid);
+                    if (!sess) return;
+                    const newName = prompt('Nhập tiêu đề mới cho đoạn chat:', sess.title);
+                    if (newName && newName.trim()) {
+                        sess.title = newName.trim();
+                        saveSessions();
+                        renderHistory();
+                    }
+                };
             });
         }
 
@@ -2405,7 +3238,7 @@ function _decodeGeminiKey(s) {
             if (!sess.messages || sess.messages.length === 0) {
                 renderWelcome();
             } else {
-                sess.messages.forEach(m => addMsg(m.role, m.text));
+                sess.messages.forEach(m => addMsg(m.role, m.text, false, m.attachment));
                 if (ai) {
                     ai.chatHistory = sess.messages.slice(-8).map(m => ({
                         role: m.role === 'user' ? 'user' : 'model',
@@ -2456,7 +3289,19 @@ function _decodeGeminiKey(s) {
         }
 
         async function ask(text) {
-            text = text.trim(); if (!text || busy) return;
+            text = (text || '').trim();
+            if ((!text && !window.currentAttachment) || busy) return;
+
+            if (!text && window.currentAttachment) {
+                text = `Phân tích và giải đáp tài liệu: ${window.currentAttachment.name}`;
+            }
+
+            const attachedDocForThisMsg = window.currentAttachment;
+            window.currentAttachment = null;
+            const adp = $('attached-doc-preview');
+            if (adp) adp.style.display = 'none';
+            const fi = $('file-doc-input');
+            if (fi) fi.value = '';
 
             // Đảm bảo AI instance đã sẵn sàng
             if (!ai) {
@@ -2501,11 +3346,25 @@ function _decodeGeminiKey(s) {
                 sess.updatedAt = Date.now();
             }
 
-            // 2. HIỆN TIN NHẮN CỦA HỌC SINH (USER) TRƯỚC TIÊN VÀO KHUNG CHAT
-            addMsg('user', text);
-            sess.messages.push({ role: 'user', text });
+            // 2. HIỆN TIN NHẮN CỦA HỌC SINH (USER) VÀO KHUNG CHAT (KÈM TÀI LIỆU NẾU CÓ)
+            addMsg('user', text, false, attachedDocForThisMsg);
+            sess.messages.push({ role: 'user', text, attachment: attachedDocForThisMsg });
             saveSessions();
             renderHistory();
+
+            // Bổ sung tài liệu vào prompt gửi cho AI
+            if (attachedDocForThisMsg) {
+                text = `[HỌC SINH TẢI LÊN TÀI LIỆU/ĐỀ THI: "${attachedDocForThisMsg.name}" (${attachedDocForThisMsg.size || ''})]\n` +
+                    `NỘI DUNG TÀI LIỆU:\n${attachedDocForThisMsg.content}\n\n` +
+                    `YÊU CẦU: ${text}`;
+            }
+
+            // Bổ sung chế độ mô hình (Persona)
+            if (window.currentChatModelMode === 'loci3d') {
+                text = `[CHẾ ĐỘ CỐ VẤN: 9 MỐC LOCI 3D. Hãy liên hệ và giải thích kiến thức gắn liền với 9 mốc không gian 3D, toạ độ các đồ vật, kích hoạt trí nhớ hình ảnh và phương pháp Cung điện Ký ức Loci]\n\n` + text;
+            } else if (window.currentChatModelMode === 'exam') {
+                text = `[CHẾ ĐỘ CỐ VẤN: CHUYÊN GIA LUYỆN THI THPT 8+. Tập trung vào kỹ năng làm bài trắc nghiệm, phân hóa sâu sắc các mốc, bẫy đề thi, kỹ thuật loại trừ đáp án nhiễu]\n\n` + text;
+            }
 
             // 3. XÓA Ô NHẬP VÀ BẬT BIỂU TƯỢNG ĐANG SOẠN THẢO (TYPING INDICATOR) DƯỚI TIN NHẮN USER
             input.value = '';
@@ -3374,6 +4233,127 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
                 rec.start();
             };
         }
+    
+        // =========================================================================
+        // CHATGPT DOCUMENT ATTACHMENT & INTERFACE CONTROLLERS
+        // =========================================================================
+        window.currentAttachment = null;
+        window.currentChatModelMode = 'standard';
+
+        window.handleDocFileSelected = function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            const sizeStr = file.size > 1024 * 1024 ? 
+                (file.size / (1024 * 1024)).toFixed(1) + ' MB' : 
+                Math.round(file.size / 1024) + ' KB';
+
+            const reader = new FileReader();
+            if (file.name.match(/\.(txt|json|csv|md)$/i)) {
+                reader.onload = function(evt) {
+                    window.currentAttachment = {
+                        name: file.name,
+                        size: sizeStr,
+                        type: file.type || 'text/plain',
+                        content: (evt.target.result || '').slice(0, 15000)
+                    };
+                    window.showAttachedPreview(window.currentAttachment);
+                };
+                reader.readAsText(file);
+            } else if (file.name.match(/\.(png|jpg|jpeg|webp)$/i)) {
+                reader.onload = function(evt) {
+                    window.currentAttachment = {
+                        name: file.name,
+                        size: sizeStr,
+                        type: file.type || 'image/jpeg',
+                        content: `[Ảnh tư liệu/đề thi lịch sử đính kèm: ${file.name}]`
+                    };
+                    window.showAttachedPreview(window.currentAttachment);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // PDF / Word documents
+                window.currentAttachment = {
+                    name: file.name,
+                    size: sizeStr,
+                    type: file.type || 'application/octet-stream',
+                    content: `[Tài liệu ôn tập Lịch sử 12: ${file.name} (${sizeStr}). Yêu cầu Gia sư AI phân tích các mốc thời gian, sự kiện, câu hỏi trắc nghiệm và phương pháp ghi nhớ Loci liên quan]`
+                };
+                window.showAttachedPreview(window.currentAttachment);
+            }
+        };
+
+        window.showAttachedPreview = function(att) {
+            const adp = $('attached-doc-preview');
+            if (!adp) return;
+            const icon = att.name.endsWith('.pdf') ? '📕' : (att.name.match(/\.(png|jpg|jpeg|webp)$/i) ? '🖼️' : '📄');
+            $('adp-icon').textContent = icon;
+            $('adp-name').textContent = att.name;
+            $('adp-meta').textContent = `${att.size} · Đã đính kèm`;
+            adp.style.display = 'flex';
+            $('send').disabled = false;
+        };
+
+        window.removeAttachedDoc = function(e) {
+            if (e) e.stopPropagation();
+            window.currentAttachment = null;
+            const adp = $('attached-doc-preview');
+            if (adp) adp.style.display = 'none';
+            const fi = $('file-doc-input');
+            if (fi) fi.value = '';
+            const txt = ($('input')?.value || '').trim();
+            if (!txt) $('send').disabled = true;
+        };
+
+        window.submitChatForm = function() {
+            const val = ($('input')?.value || '').trim();
+            if ((val || window.currentAttachment) && !busy) {
+                const toSend = val;
+                $('input').value = '';
+                autosize();
+                ask(toSend);
+            }
+        };
+
+        window.toggleSidebar = function() {
+            document.body.classList.toggle('sidebar-collapsed');
+        };
+
+        window.toggleModelDropdown = function(e) {
+            if (e) e.stopPropagation();
+            const menu = $('model-dropdown-menu');
+            if (menu) menu.classList.toggle('show');
+        };
+
+        window.selectChatModel = function(mode) {
+            window.currentChatModelMode = mode;
+            const menu = $('model-dropdown-menu');
+            if (menu) menu.classList.remove('show');
+            
+            document.querySelectorAll('.model-dropdown-item').forEach(el => {
+                el.classList.toggle('active', el.dataset.model === mode);
+            });
+
+            const titleEl = $('header-model-title');
+            const iconEl = $('header-model-icon');
+            if (mode === 'loci3d') {
+                if (titleEl) titleEl.textContent = 'Cố Vấn 9 Mốc Loci 3D';
+                if (iconEl) iconEl.textContent = '🏛️';
+            } else if (mode === 'exam') {
+                if (titleEl) titleEl.textContent = 'Chuyên Gia Luyện Thi THPT';
+                if (iconEl) iconEl.textContent = '🎓';
+            } else {
+                if (titleEl) titleEl.textContent = 'Gia Sư Loci AI';
+                if (iconEl) iconEl.textContent = '🤖';
+            }
+        };
+
+        window.addEventListener('click', (e) => {
+            if (!e.target.closest('#model-selector-pill')) {
+                $('model-dropdown-menu')?.classList.remove('show');
+            }
+        });
+
     </script>
 
     <!-- Mobile Sidebar Backdrop Overlay -->
