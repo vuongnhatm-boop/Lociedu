@@ -2852,6 +2852,7 @@
     <!-- 3D Model Viewer & Interactive 3D Model Examination Engine -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     <script src="app/model3d_exam_engine.js" onerror="this.onerror=null;this.src='model3d_exam_engine.js'"></script>
+    <script src="app/loci_account_manager.js" onerror="this.onerror=null;this.src='loci_account_manager.js'"></script>
     <script>
                 window.goBackToPortal = function () {
             if (window.top && window.top !== window.self) {
@@ -2970,7 +2971,51 @@
                 return a;
             }
 
+            function isUserAuthenticated() {
+                try {
+                    if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                        return window.LociAccountManager.isLoggedIn();
+                    }
+                    const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
+                    const userStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
+                    return !!(sessionActive && userStr);
+                } catch (_) { return false; }
+            }
+
             function home() {
+                // CHẶN BẢO MẬT: Bắt buộc đăng nhập mới được xem và làm bài tập
+                if (!isUserAuthenticated()) {
+                    root.innerHTML = `
+                        <div class="review-auth-gate-box" style="max-width: 600px; margin: 40px auto; padding: 44px 32px; background: #ffffff; border: 1.5px solid #bae6fd; border-radius: 20px; box-shadow: 0 10px 30px rgba(2,132,199,0.08); text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+                            <div style="width: 58px; height: 58px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                            <div style="font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; color: #0284c7; text-transform: uppercase; margin-bottom: 6px;">BẢO VỆ TIẾN TRÌNH HỌC TẬP</div>
+                            <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 10px;">Yêu cầu Đăng nhập để Xem Bài tập</h2>
+                            <p style="font-size: 14px; line-height: 1.55; color: #64748b; margin: 0 0 26px;">
+                                Kho bài tập ôn luyện Loci Edu yêu cầu xác thực tài khoản học sinh để theo dõi chu kỳ lặp lại ngắt quãng SM-2, ghi nhận điểm số và đồng bộ tiến độ học.
+                            </p>
+                            <button type="button" class="btn-hero-primary" id="btn-request-review-login" style="padding: 13px 28px; font-size: 15px; font-weight: 700; border-radius: 12px; border: none; background: #0284c7; color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                                <span>Đăng nhập ngay để mở bài tập</span> ➔
+                            </button>
+                        </div>
+                    `;
+                    const btnLogin = document.getElementById('btn-request-review-login');
+                    if (btnLogin) {
+                        btnLogin.onclick = () => {
+                            if (window.self !== window.top) {
+                                window.parent.postMessage({ type: 'LOCI_OPEN_LOGIN' }, '*');
+                            } else {
+                                window.location.href = 'portal_v2.html?need_login=1';
+                            }
+                        };
+                    }
+                    return;
+                }
+
                 // Luôn đảm bảo chọn đúng 1 trong 3 bài
                 if (!ALLOWED_LESSONS.includes(activeLessonFilter)) {
                     activeLessonFilter = 'bai_6';
@@ -4006,6 +4051,7 @@
             }
 
             // Bắt đầu khởi tạo giao diện
+            window.addEventListener('loci:auth:change', () => home());
             home();
         })();
     </script>

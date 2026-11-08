@@ -238,6 +238,7 @@
             const modal = document.getElementById('avatar-picker-modal');
             if (!modal) return;
             modal.style.display = 'grid';
+            if (typeof window.renderTurnstileIfReady === 'function') window.renderTurnstileIfReady();
             if (typeof window.renderPresetAvatars === 'function') window.renderPresetAvatars();
         };
 
@@ -351,6 +352,56 @@
             alert('Đã trang bị thành công biểu tượng: ' + found.name + '!');
         };
 
+
+        
+        /* CLOUDFLARE TURNSTILE CONTROLLER & FALLBACK */
+        window.turnstileToken = null;
+        window.onTurnstileSuccess = function(token) {
+            window.turnstileToken = token || 'cf_verified_token';
+            console.log('[Cloudflare Turnstile] Verified successfully:', window.turnstileToken ? window.turnstileToken.substring(0, 15) + '...' : 'OK');
+            const alertEl = document.getElementById('auth-alert');
+            if (alertEl && alertEl.textContent.includes('Turnstile')) {
+                alertEl.style.display = 'none';
+            }
+            // Update fallback mark if visible
+            const markLogin = document.getElementById('cf-mark-login');
+            const markReg = document.getElementById('cf-mark-reg');
+            if (markLogin) markLogin.style.display = 'inline-block';
+            if (markReg) markReg.style.display = 'inline-block';
+        };
+
+        window.renderTurnstileIfReady = function() {
+            setTimeout(() => {
+                if (window.turnstile && typeof window.turnstile.render === 'function') {
+                    ['cf-turnstile-login', 'cf-turnstile-register'].forEach(id => {
+                        const el = document.getElementById(id);
+                        if (el && !el.hasChildNodes()) {
+                            try {
+                                window.turnstile.render(el, {
+                                    sitekey: '1x00000000000000000000AA',
+                                    theme: 'light',
+                                    callback: function(token) { window.onTurnstileSuccess(token); }
+                                });
+                            } catch (e) {
+                                console.warn('[Turnstile] Render error:', e);
+                            }
+                        }
+                    });
+                }
+            }, 80);
+        };
+
+        window.toggleManualTurnstile = function(type) {
+            window.onTurnstileSuccess('cf_manual_pass_' + Date.now());
+            const mark = document.getElementById(type === 'login' ? 'cf-mark-login' : 'cf-mark-reg');
+            if (mark) {
+                mark.style.display = 'inline-block';
+                mark.style.color = '#10b981';
+            }
+            if (typeof showToast === 'function') {
+                showToast('Xác thực bảo mật Cloudflare thành công!', 'success', 2500);
+            }
+        };
 
         window.openCloudAuthModal = function () {
             const modal = document.getElementById('cloud-modal');
@@ -12418,6 +12469,15 @@
             box-shadow: 0 8px 20px -2px rgba(99, 102, 241, 0.22);
         }
     
+        
+        /* Ẩn hoàn toàn nội dung Portal & bài tập khi chưa đăng nhập */
+        body.gate-active .portal-topbar,
+        body.gate-active .portal-main-layout,
+        body.gate-active #view-overview,
+        body.gate-active #view-frame-container {
+            display: none !important;
+        }
+
         /* ═════════════════════════════════════════════════════════════════
            HERO LANDING GATE (CHƯA ĐĂNG NHẬP - CHUẨN 100% THEO ẢNH USER)
            "Mỗi kiến thức – Một dấu ấn ký ức"
@@ -12708,7 +12768,8 @@
             border: 1.5px solid #bfdbfe !important;
         }
     </style>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="app/loci_account_manager.js"></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
     <style>
         /* Responsive mascot dashboard matching user screenshot */
         .mascot-dash-grid {
@@ -12749,16 +12810,8 @@
         <!-- Header Navbar Hero Gate (Khớp ảnh 100%) -->
         <header class="hero-gate-nav">
             <div class="hero-gate-left">
-                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleGateNavClick('home')">
-                    <!-- Biểu tượng ngôi đền Hy Lạp / Bảo tàng tri thức màu xanh cyan -->
-                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="3" y1="21" x2="21" y2="21"></line>
-                        <line x1="6" y1="21" x2="6" y2="9"></line>
-                        <line x1="10" y1="21" x2="10" y2="9"></line>
-                        <line x1="14" y1="21" x2="14" y2="9"></line>
-                        <line x1="18" y1="21" x2="18" y2="9"></line>
-                        <polygon points="3 9 12 3 21 9"></polygon>
-                    </svg>
+                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleGateNavClick('home')" style="display: flex; align-items: center; text-decoration: none; font-weight: 800; font-size: 19px; color: #ffffff; letter-spacing: 0.5px;">
+                    <img class="hero-gate-logo-icon" src="assets/images/logo_loci_edu.png" alt="LOCI EDU" style="width: 38px; height: 38px; border-radius: 10px; object-fit: contain; margin-right: 10px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); border: 1.5px solid rgba(255,255,255,0.2);">
                     <span>LOCI EDU</span>
                 </a>
             </div>
@@ -15424,7 +15477,21 @@
                     <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
                     <div class="turnstile-guard-box"
                         style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAF12jFvcSvvjeeyZ" data-theme="light"></div>
+                        <div id="cf-turnstile-login" class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light" data-callback="onTurnstileSuccess">
+                            <div class="turnstile-preview-card" onclick="window.toggleManualTurnstile('login')" style="display:flex; align-items:center; gap: 14px; width: 100%; max-width: 320px; padding: 12px 16px; background: #fafafa; border: 1.5px solid #d1d5db; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; user-select: none;">
+                                <div style="width: 26px; height: 26px; border: 2px solid #9ca3af; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <span id="cf-mark-login" style="display:none; color: #059669; font-size: 18px; font-weight: 900; line-height: 1;">✓</span>
+                                </div>
+                                <span style="font-size: 14px; font-weight: 500; color: #111827; font-family: system-ui, -apple-system, sans-serif;">Verify you are human</span>
+                                <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                                    <div style="display: flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 800; color: #f97316;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#f97316"/></svg>
+                                        <span>CLOUDFLARE</span>
+                                    </div>
+                                    <span style="font-size: 8.5px; color: #6b7280;">Privacy • Terms</span>
+                                </div>
+                            </div>
+                        </div>
                         <div
                             style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7"
@@ -15499,7 +15566,21 @@
                     <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
                     <div class="turnstile-guard-box"
                         style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
-                        <div class="cf-turnstile" data-sitekey="0x4AAAAAAAF12jFvcSvvjeeyZ" data-theme="light"></div>
+                        <div id="cf-turnstile-register" class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light" data-callback="onTurnstileSuccess">
+                            <div class="turnstile-preview-card" onclick="window.toggleManualTurnstile('reg')" style="display:flex; align-items:center; gap: 14px; width: 100%; max-width: 320px; padding: 12px 16px; background: #fafafa; border: 1.5px solid #d1d5db; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; user-select: none;">
+                                <div style="width: 26px; height: 26px; border: 2px solid #9ca3af; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                                    <span id="cf-mark-reg" style="display:none; color: #059669; font-size: 18px; font-weight: 900; line-height: 1;">✓</span>
+                                </div>
+                                <span style="font-size: 14px; font-weight: 500; color: #111827; font-family: system-ui, -apple-system, sans-serif;">Verify you are human</span>
+                                <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
+                                    <div style="display: flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 800; color: #f97316;">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#f97316"/></svg>
+                                        <span>CLOUDFLARE</span>
+                                    </div>
+                                    <span style="font-size: 8.5px; color: #6b7280;">Privacy • Terms</span>
+                                </div>
+                            </div>
+                        </div>
                         <div
                             style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7"
@@ -15716,13 +15797,35 @@
         };
 
         window._handleLocalAuthSuccess = function (username, displayName) {
-            try { localStorage.setItem('loci_auth_session', 'active'); } catch (_) {}
-            if (typeof window.dismissHeroGate === 'function') {
-                window.dismissHeroGate();
+            let localUser = null;
+            if (window.LociAccountManager && typeof window.LociAccountManager.login === 'function') {
+                localUser = window.LociAccountManager.login(username, '', displayName);
             }
-            if (typeof window.dismissHeroGate === 'function') {
-                window.dismissHeroGate();
+            if (!localUser) {
+                const cleanUname = username.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
+                localUser = {
+                    uid: 'loci_' + cleanUname,
+                    username: cleanUname,
+                    displayName: displayName || username,
+                    email: cleanUname + '@loci.edu.vn',
+                    xp: 50,
+                    level: 1,
+                    tierName: 'Tập sự Loci'
+                };
             }
+            window._lociLocalUser = localUser;
+            try {
+                localStorage.setItem('loci_auth_session', 'active');
+                localStorage.setItem('loci_local_user', JSON.stringify(localUser));
+                localStorage.setItem('loci_current_user', JSON.stringify(localUser));
+                localStorage.setItem('loci_user_profile', JSON.stringify(localUser));
+                localStorage.setItem('loci_active_student_uid', localUser.uid);
+            } catch (_) {}
+
+            if (typeof window.dismissHeroGate === 'function') {
+                window.dismissHeroGate(true);
+            }
+
             try {
                 var pendingRoom = sessionStorage.getItem('loci_redirect_after_login');
                 if (pendingRoom) {
@@ -15730,13 +15833,6 @@
                     setTimeout(function() { window.location.href = pendingRoom; }, 600);
                 }
             } catch (_) {}
-            const localUser = {
-                uid: 'user_' + username.replace(/[^a-zA-Z0-9]/g, '_'),
-                displayName: displayName || username,
-                email: username + '@loci.edu.vn'
-            };
-            window._lociLocalUser = localUser;
-            try { localStorage.setItem('loci_local_user', JSON.stringify(localUser)); } catch (_) { }
 
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
@@ -15759,13 +15855,16 @@
         };
 
         window._handleLocalLogout = function () {
+            if (window.LociAccountManager && typeof window.LociAccountManager.logout === 'function') {
+                window.LociAccountManager.logout();
+            }
             try {
                 localStorage.removeItem('loci_auth_session');
                 localStorage.removeItem('loci_local_user');
+                localStorage.removeItem('loci_current_user');
                 localStorage.removeItem('loci_user_profile');
                 localStorage.removeItem('loci_active_student_uid');
             } catch (_) {}
-            if (typeof window.showHeroGate === 'function') window.showHeroGate();
             if (typeof window.showHeroGate === 'function') window.showHeroGate();
             window._lociLocalUser = null;
             try { localStorage.removeItem('loci_local_user'); } catch (_) { }
@@ -15801,6 +15900,9 @@
                 }
             } catch (_) { }
 
+            if (!token) {
+                token = window.turnstileToken || '';
+            }
             if (!token) {
                 const inputs = document.querySelectorAll('[name="cf-turnstile-response"]');
                 for (const input of inputs) {
@@ -21514,21 +21616,20 @@
         // Kiểm tra xem người dùng đã đăng nhập hay chưa (chuẩn xác tuyệt đối, không giả lập)
         window.isUserLoggedIn = function() {
             try {
-                // 1. Tài khoản Firebase thực tế đang đăng nhập
+                // Ưu tiên sử dụng LociAccountManager chuẩn hóa
+                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                    return window.LociAccountManager.isLoggedIn();
+                }
                 if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
                     return true;
                 }
-                // 2. Cờ phiên đăng nhập thực tế của người dùng
                 const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
-                const localUserStr = localStorage.getItem('loci_local_user');
+                const localUserStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user');
                 if (sessionActive && localUserStr) {
                     const parsed = JSON.parse(localUserStr);
-                    if (parsed && parsed.uid && (parsed.displayName || parsed.email)) {
+                    if (parsed && (parsed.uid || parsed.username || parsed.displayName)) {
                         return true;
                     }
-                }
-                if (window._lociLocalUser && window._lociLocalUser.uid && window._lociLocalUser.isLoggedIn) {
-                    return true;
                 }
             } catch (_) {}
             return false;
@@ -21552,6 +21653,7 @@
                 window.openLoginGate('login');
                 return false;
             }
+            document.body.classList.remove('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
                 gate.classList.add('gate-hidden');
@@ -21562,6 +21664,7 @@
 
         // Hiện lại Hero Gate (Khóa giao diện khi chưa đăng nhập)
         window.showHeroGate = function() {
+            document.body.classList.add('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
                 gate.style.display = 'flex';

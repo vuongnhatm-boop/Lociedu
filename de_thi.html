@@ -1260,6 +1260,54 @@
         // Nhận diện khi nhúng iframe trong Portal v2
         if (window.self !== window.top || location.search.includes('embed=1')) {
             document.documentElement.classList.add('is-embedded');
+
+        function isUserAuthenticated() {
+            try {
+                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                    return window.LociAccountManager.isLoggedIn();
+                }
+                const session = localStorage.getItem('loci_auth_session') === 'active';
+                const user = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
+                return !!(session && user);
+            } catch (_) { return false; }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            if (!isUserAuthenticated()) {
+                const setupScreen = document.getElementById('screen-setup');
+                if (setupScreen) {
+                    setupScreen.innerHTML = `
+                        <div class="exam-auth-gate-card" style="max-width: 600px; margin: 40px auto; padding: 44px 32px; background: #ffffff; border: 1.5px solid #bae6fd; border-radius: 20px; box-shadow: 0 10px 30px rgba(2,132,199,0.08); text-align: center; font-family: 'Plus Jakarta Sans', sans-serif;">
+                            <div style="width: 58px; height: 58px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                            </div>
+                            <div style="font-size: 11.5px; font-weight: 800; letter-spacing: 0.5px; color: #0284c7; text-transform: uppercase; margin-bottom: 6px;">BẢO VỆ PHÒNG THI CHUẨN</div>
+                            <h2 style="font-size: 22px; font-weight: 800; color: #0f172a; margin: 0 0 10px;">Yêu cầu Đăng nhập để Vào Thi</h2>
+                            <p style="font-size: 14px; line-height: 1.55; color: #64748b; margin: 0 0 26px;">
+                                Để làm bài thi thử THPT Quốc Gia (24 câu trắc nghiệm + 4 câu đúng/sai chuẩn cấu trúc 2025) và lưu kết quả vào Bảng Vàng, bạn cần đăng nhập tài khoản Loci Edu.
+                            </p>
+                            <button type="button" class="btn primary" id="btn-request-exam-login" style="padding: 13px 28px; font-size: 15px; font-weight: 700; border-radius: 12px; border: none; background: #0284c7; color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                                <span>Đăng nhập ngay để mở phòng thi</span> ➔
+                            </button>
+                        </div>
+                    `;
+                    const btnLogin = document.getElementById('btn-request-exam-login');
+                    if (btnLogin) {
+                        btnLogin.onclick = () => {
+                            if (window.self !== window.top) {
+                                window.parent.postMessage({ type: 'LOCI_OPEN_LOGIN' }, '*');
+                            } else {
+                                window.location.href = 'portal_v2.html?need_login=1';
+                            }
+                        };
+                    }
+                }
+            }
+        });
+
             window.addEventListener('DOMContentLoaded', () => {
                 document.body.classList.add('is-embedded');
                 const btnBrand = document.getElementById('btn-topbar-brand');
@@ -1293,7 +1341,7 @@
         </a>
         <div class="topbar-spacer"></div>
         <a href="review.html" id="btn-back-review" class="btn ghost" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600; font-size:13px; padding:7px 14px; border-radius:99px;" title="Về Trung tâm Thẻ ôn tập Đa dạng">
-            <span>🃏</span> <span>Thẻ ôn tập</span>
+            <span>Thẻ ôn tập</span>
         </a>
         <span class="mode-chip" id="mode-chip"></span>
         <div class="timer" id="timer"><span class="dot"></span><span id="timer-txt">50:00</span></div>
