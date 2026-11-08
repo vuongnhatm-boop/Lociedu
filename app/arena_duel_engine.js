@@ -528,6 +528,158 @@
                     background: #f0f9ff;
                     font-weight: 800;
                 }
+
+                /* ═════════════════════════════════════════════════════════════════
+                   RESPONSIVE MOBILE STYLES CHO ĐẤU TRƯỜNG TRI THỨC (PHONES & TABLETS)
+                   ═════════════════════════════════════════════════════════════════ */
+                @media (max-width: 640px) {
+                    .arena-modal-overlay {
+                        padding: 8px !important;
+                    }
+                    .arena-card {
+                        max-height: 96vh !important;
+                        border-radius: 20px !important;
+                        width: 100% !important;
+                    }
+                    .arena-header {
+                        padding: 13px 16px !important;
+                    }
+                    .arena-header-title {
+                        font-size: 16px !important;
+                    }
+                    .arena-header-badge {
+                        font-size: 10px !important;
+                        padding: 2px 7px !important;
+                    }
+                    .arena-close-btn {
+                        width: 32px !important;
+                        height: 32px !important;
+                        font-size: 15px !important;
+                    }
+                    .arena-body {
+                        padding: 14px 14px 20px 14px !important;
+                    }
+                    .arena-mode-grid {
+                        grid-template-columns: repeat(2, 1fr) !important;
+                        gap: 8px !important;
+                    }
+                    .arena-q-chip {
+                        padding: 12px 8px !important;
+                    }
+                    .arena-q-num {
+                        font-size: 20px !important;
+                    }
+                    .arena-scoreboard {
+                        grid-template-columns: 1fr auto 1fr !important;
+                        padding: 10px 10px !important;
+                        gap: 6px !important;
+                        border-radius: 16px !important;
+                        margin-bottom: 12px !important;
+                    }
+                    .player-box {
+                        gap: 7px !important;
+                    }
+                    .player-avatar-wrap {
+                        width: 38px !important;
+                        height: 38px !important;
+                    }
+                    .player-name {
+                        font-size: 12px !important;
+                        max-width: 72px !important;
+                        overflow: hidden !important;
+                        text-overflow: ellipsis !important;
+                        white-space: nowrap !important;
+                    }
+                    .player-score {
+                        font-size: 17px !important;
+                    }
+                    .player-status-badge {
+                        font-size: 9px !important;
+                        padding: 1px 5px !important;
+                    }
+                    .arena-timer-circle {
+                        width: 44px !important;
+                        height: 44px !important;
+                        font-size: 17px !important;
+                    }
+                    .arena-vs-text {
+                        font-size: 9.5px !important;
+                    }
+                    .arena-question-card {
+                        padding: 14px 12px !important;
+                        border-radius: 16px !important;
+                        margin-bottom: 12px !important;
+                    }
+                    .arena-round-badge {
+                        font-size: 10.5px !important;
+                        padding: 3px 9px !important;
+                    }
+                    .arena-question-text {
+                        font-size: 14.5px !important;
+                        line-height: 1.45 !important;
+                        margin-bottom: 12px !important;
+                    }
+                    .arena-model-viewer {
+                        height: 165px !important;
+                    }
+                    .arena-option-list {
+                        gap: 8px !important;
+                    }
+                    .arena-option-btn {
+                        padding: 11px 12px !important;
+                        font-size: 13.5px !important;
+                        border-radius: 12px !important;
+                        gap: 9px !important;
+                        min-height: 44px !important;
+                    }
+                    .arena-option-tag {
+                        width: 24px !important;
+                        height: 24px !important;
+                        font-size: 11px !important;
+                    }
+                    .arena-input-row {
+                        flex-direction: column !important;
+                        gap: 8px !important;
+                    }
+                    .arena-type-input {
+                        font-size: 16px !important;
+                        padding: 11px 13px !important;
+                    }
+                    .arena-type-submit {
+                        padding: 11px !important;
+                        width: 100% !important;
+                    }
+                    .arena-victory-card h2 {
+                        font-size: 20px !important;
+                    }
+                    .arena-victory-score-row {
+                        gap: 16px !important;
+                        padding: 14px 18px !important;
+                    }
+                    .arena-victory-actions {
+                        flex-direction: column !important;
+                        width: 100% !important;
+                    }
+                    .arena-victory-actions button {
+                        width: 100% !important;
+                        justify-content: center !important;
+                    }
+                }
+                @media (max-width: 400px) {
+                    .player-name {
+                        max-width: 58px !important;
+                        font-size: 11px !important;
+                    }
+                    .player-score {
+                        font-size: 15px !important;
+                    }
+                    .arena-timer-circle {
+                        width: 40px !important;
+                        height: 40px !important;
+                        font-size: 15px !important;
+                    }
+                }
+
             `;
             document.head.appendChild(style);
         },
@@ -867,7 +1019,7 @@
                             <div style="position: absolute; top: 10px; left: 12px; z-index: 2; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); color: #38bdf8; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; border: 1px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; gap: 5px;">
                                 <span>🏛️ Hiện vật 3D tương tác (Xoay 360°)</span>
                             </div>
-                            <model-viewer src="${q.model3d}" auto-rotate camera-controls shadow-intensity="1" touch-action="pan-y" 
+                            <model-viewer class="arena-model-viewer" src="${q.model3d}" auto-rotate camera-controls shadow-intensity="1" touch-action="pan-y" 
                                 style="width: 100%; height: 230px; background: radial-gradient(circle at center, #ffffff 0%, #f0f9ff 100%); display: block;" 
                                 alt="Hiện vật 3D Loci"></model-viewer>
                         </div>
@@ -1041,7 +1193,7 @@
                     </p>
 
                     <!-- SCORE COMPARISON -->
-                    <div style="display: flex; justify-content: center; align-items: center; gap: 32px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 20px 32px; max-width: 480px; margin: 0 auto 24px auto;">
+                    <div class="arena-victory-score-row" style="display: flex; justify-content: center; align-items: center; gap: 32px; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 20px; padding: 20px 32px; max-width: 480px; margin: 0 auto 24px auto;">
                         <div style="text-align: center;">
                             <div style="font-size: 13.5px; font-weight: 800; color: #0284c7;">BẠN</div>
                             <div style="font-size: 32px; font-weight: 900; color: #0f172a;">${p1}</div>
@@ -1064,7 +1216,7 @@
                     </div>
 
                     <!-- ACTIONS -->
-                    <div style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
+                    <div class="arena-victory-actions" style="display: flex; justify-content: center; gap: 14px; flex-wrap: wrap;">
                         <button type="button" onclick="window.ArenaDuelEngine.startMatchmaking()"
                             style="padding: 14px 28px; background: #0284c7; color: #ffffff; border: none; border-radius: 14px; font-size: 15px; font-weight: 800; cursor: pointer; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
                             Tái Đấu Trận Mới ➔

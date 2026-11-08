@@ -13336,7 +13336,7 @@
                         <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0; line-height: 1.45;">Chuyển hóa dữ kiện Lịch sử thành tọa độ đồ vật không gian 3D sống động theo cơ chế định vị tự nhiên của não bộ.</p>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <div class="overview-loci-strip-actions" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
                     <a href="trinh_chieu_loci.html" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 13px; font-weight: 700; color: #0f172a; text-decoration: none; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                         <span>Trình Chiếu Slide Loci ↗</span>
                     </a>
@@ -13382,7 +13382,7 @@
                     <div style="display: grid; grid-template-columns: 1.25fr 1fr; gap: 32px; align-items: center;"
                         class="mascot-dash-grid">
                         <!-- Cột Trái: Cú Tím Cử Nhân + Đại Hội Thần Tốc + Chips + Nút Tiếp tục học -->
-                        <div style="display: flex; gap: 24px; align-items: center;">
+                        <div class="mascot-left-col" style="display: flex; gap: 24px; align-items: center;">
                             <!-- Linh thú Tri Thức 3D (Đồng hành học tập) -->
                             <div style="flex-shrink: 0; width: 145px; height: 165px; display: grid; place-items: center; position: relative;" class="mascot-img-wrap">
                                 <img id="active-mascot-img" src="assets/images/pets/owl_scholar.png" alt="Linh thú Tri thức"
@@ -13405,7 +13405,7 @@
                                 <p id="active-mascot-desc" style="font-size: 13.5px; color: #64748b; margin: 0 0 14px 0; line-height: 1.45;">Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 20% phản xạ truy xuất sự kiện.</p>
 
                                 <!-- 3 Chips / Thẻ tính năng -->
-                                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+                                <div class="mascot-chips-row" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
                                     <span
                                         style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
@@ -13430,7 +13430,7 @@
                                 </div>
 
                                 <!-- Nút Tiếp tục học -->
-                                <button type="button"
+                                <button type="button" class="mascot-action-btn"
                                     onclick="window.switchPortalTab('spaces')"
                                     style="background: #2563eb; color: #ffffff; border: none; border-radius: 12px; padding: 10px 22px; font-size: 14px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25); transition: all 0.2s;">
                                     <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
@@ -13442,7 +13442,7 @@
                         </div>
 
                         <!-- Cột Phải: Tiến độ học tập & Thống kê cá nhân -->
-                        <div style="border-left: 1px solid #f1f5f9; padding-left: 28px;">
+                        <div class="mascot-right-col" style="border-left: 1px solid #f1f5f9; padding-left: 28px;">
                             <div
                                 style="display: flex; align-items: center; gap: 8px; font-size: 14.5px; font-weight: 700; color: #0f172a; margin-bottom: 12px;">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
@@ -14197,7 +14197,7 @@
 
                 <!-- LOGO LOCI EDU CHÍNH HÃNG & TIÊU ĐỀ -->
                 <div style="text-align: center; margin-bottom: 16px;">
-                    <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU Logo"
+                    <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU Logo" class="auth-modal-logo"
                         style="width: 68px; height: 68px; border-radius: 16px; object-fit: contain; box-shadow: 0 4px 14px rgba(2,132,199,0.22); border: 2px solid #bfdbfe; margin: 0 auto 8px; display: block;">
                     <h3 id="auth-modal-main-title"
                         style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0 0 5px; letter-spacing: -0.3px;">
@@ -19045,6 +19045,248 @@
         }
 
 
+        
+        /* =========================================================
+           ADVANCED MOBILE ERGONOMICS & RESPONSIVE POLISH (LOCI EDU)
+           ========================================================= */
+        html, body {
+            max-width: 100vw !important;
+            overflow-x: hidden !important;
+        }
+
+        @media (max-width: 768px) {
+            #view-overview,
+            #view-pet {
+                padding: 12px 14px 80px 14px !important;
+            }
+
+            #view-frame-container {
+                padding: 0 !important;
+            }
+
+            .app-frame {
+                border-radius: 0 !important;
+                border: none !important;
+            }
+
+            /* Mascot Dashboard & Pet View */
+            .mascot-dash-grid {
+                grid-template-columns: 1fr !important;
+                gap: 20px !important;
+            }
+
+            .mascot-left-col {
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+            }
+
+            .mascot-img-wrap {
+                margin: 0 auto 10px auto !important;
+            }
+
+            .mascot-chips-row {
+                justify-content: center !important;
+            }
+
+            .mascot-action-btn {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            .mascot-right-col {
+                border-left: none !important;
+                border-top: 1px solid #f1f5f9 !important;
+                padding-left: 0 !important;
+                padding-top: 18px !important;
+            }
+
+            /* Overview Loci Compact Strip */
+            .overview-loci-compact-strip {
+                padding: 14px 14px !important;
+                flex-direction: column !important;
+                align-items: stretch !important;
+                gap: 14px !important;
+            }
+
+            .overview-loci-strip-actions {
+                width: 100% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 8px !important;
+            }
+
+            .overview-loci-strip-actions a,
+            .overview-loci-strip-actions button {
+                width: 100% !important;
+                justify-content: center !important;
+            }
+
+            /* Floating AI Mascot & Feedback Button Ergonomics */
+            #loci-floating-ai-mascot {
+                bottom: 74px !important;
+                right: 16px !important;
+                padding: 0 !important;
+                width: 46px !important;
+                height: 46px !important;
+                border-radius: 50% !important;
+                justify-content: center !important;
+                box-shadow: 0 4px 16px rgba(2, 132, 199, 0.35) !important;
+            }
+
+            #loci-floating-ai-mascot .floating-ai-text {
+                display: none !important;
+            }
+
+            #floating-feedback-btn {
+                bottom: 18px !important;
+                right: 16px !important;
+                width: 46px !important;
+                height: 46px !important;
+                padding: 0 !important;
+                border-radius: 50% !important;
+                justify-content: center !important;
+                font-size: 16px !important;
+            }
+
+            #floating-feedback-btn .floating-feedback-text {
+                display: none !important;
+            }
+
+            /* Hero Landing Gate Mobile Polish */
+            #hero-landing-gate {
+                padding: 16px 16px 36px 16px !important;
+                overflow-y: auto !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+
+            .hero-gate-nav {
+                gap: 8px !important;
+            }
+
+            .hero-gate-right-actions {
+                gap: 8px !important;
+            }
+
+            .hero-gate-login-link {
+                font-size: 13px !important;
+                padding: 5px 8px !important;
+            }
+
+            .hero-gate-register-btn {
+                font-size: 13px !important;
+                padding: 6px 14px !important;
+            }
+
+            .hero-gate-headline {
+                font-size: 25px !important;
+                margin-bottom: 20px !important;
+                line-height: 1.3 !important;
+            }
+
+            .hero-gate-start-btn {
+                padding: 12px 30px !important;
+                font-size: 15.5px !important;
+                width: 100% !important;
+                max-width: 280px !important;
+            }
+
+            /* Student Auth & Passport Modal */
+            .cloud-modal-overlay {
+                padding: 10px !important;
+            }
+
+            .cloud-modal-card {
+                width: 100% !important;
+                max-width: 100% !important;
+                max-height: 94vh !important;
+                border-radius: 20px !important;
+                margin: auto !important;
+            }
+
+            #auth-panel-guest {
+                padding: 20px 16px 18px !important;
+                border-radius: 20px !important;
+            }
+
+            #auth-panel-guest .auth-modal-logo {
+                width: 50px !important;
+                height: 50px !important;
+                margin-bottom: 6px !important;
+            }
+
+            #auth-modal-main-title {
+                font-size: 18px !important;
+            }
+
+            #auth-modal-main-desc {
+                font-size: 12px !important;
+            }
+
+            .student-passport-layout {
+                padding: 14px 12px !important;
+                gap: 14px !important;
+            }
+
+            .user-panel-tabs {
+                gap: 12px !important;
+                overflow-x: auto !important;
+                white-space: nowrap !important;
+                -webkit-overflow-scrolling: touch !important;
+            }
+
+            .tier-stones-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+
+            /* Mentor Card & Other Sections */
+            .mentor-card {
+                padding: 16px 14px !important;
+                border-radius: 18px !important;
+            }
+
+            /* Pet Selection Modal */
+            #pet-selection-modal {
+                padding: 10px !important;
+            }
+
+            #pet-selection-modal > div {
+                padding: 20px 16px !important;
+                border-radius: 20px !important;
+                max-height: 94vh !important;
+            }
+
+            #pet-selection-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 8px !important;
+            }
+
+            .pet-choice-card {
+                padding: 12px 8px !important;
+            }
+        }
+
+        @media (max-width: 480px) {
+            #view-overview,
+            #view-pet {
+                padding: 8px 10px 80px 10px !important;
+            }
+
+            .hero-gate-headline {
+                font-size: 22px !important;
+            }
+
+            .hero-gate-logo {
+                font-size: 17px !important;
+            }
+        }
+
+        body.gate-active #loci-floating-ai-mascot,
+        body.gate-active #floating-feedback-btn {
+            display: none !important;
+        }
+
         /* Prevent iOS Safari auto-zoom on form inputs */
         @media (max-width: 768px) {
 
@@ -21141,7 +21383,7 @@
 
 
     <!-- FLOATING AI COMPANION LAUNCHER (NHẤP TRÒ CHUYỆN GIA SƯ AI NGAY TỪ BẤT CỨ ĐÂU) -->
-    <div id="loci-floating-ai-mascot"
+    <div id="loci-floating-ai-mascot" class="loci-floating-ai-btn"
         onclick="window.switchPortalTab('ai')"
         title="Trò chuyện cùng Gia Sư AI Loci"
         style="position: fixed; bottom: 84px; right: 24px; z-index: 9999; display: flex; align-items: center; gap: 10px; background: #ffffff; padding: 6px 14px 6px 8px; border-radius: 99px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(37, 99, 235, 0.2); border: 2px solid #38bdf8; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
@@ -21149,7 +21391,7 @@
             <img src="assets/images/loci_avatar.jpg" alt="Gia Sư AI Robot" style="width: 36px; height: 36px; object-fit: cover; border-radius: 50%; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
             <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
         </div>
-        <div style="text-align: left;">
+        <div style="text-align: left;" class="floating-ai-text">
             <div style="font-size: 13px; font-weight: 800; color: #0369a1; line-height: 1.2;">Gia Sư AI Loci</div>
             <div style="font-size: 11px; font-weight: 700; color: #10b981; line-height: 1.2;">Hỗ trợ 24/7 💬</div>
         </div>
