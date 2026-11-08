@@ -127,6 +127,8 @@
         progressPct: lvlInfo.progressPct,
         xpNeeded: lvlInfo.xpNeeded,
         streak: parseInt(src.streak || (src.stats && src.stats.streak) || 1, 10),
+        hasCustomNickname: !!(src.hasCustomNickname),
+        lastNicknameChangeDate: src.lastNicknameChangeDate || null,
         stats: {
           answered: parseInt((src.stats && src.stats.answered) || 0, 10),
           correct: parseInt((src.stats && src.stats.correct) || 0, 10),
@@ -238,6 +240,77 @@
       if (global.LociFirebase && typeof global.LociFirebase.logout === 'function') {
         try { global.LociFirebase.logout(); } catch (_) {}
       }
+    },
+
+    /**
+     * Kiểm tra điều kiện đổi biệt danh (14 ngày / 1 lần, lần đầu được đổi tự do)
+     */
+    canChangeNickname() {
+      const u = this.getUser();
+      if (!u) return { canChange: false, reason: 'Chưa đăng nhập' };
+      if (!u.lastNicknameChangeDate) {
+        return {
+          canChange: true,
+          isFirstTime: !u.hasCustomNickname,
+          daysRemaining: 0,
+          nextEligibleDate: null
+        };
+      }
+      const lastChange = new Date(u.lastNicknameChangeDate).getTime();
+      const now = Date.now();
+      const fourteenDaysMs = 14 * 24 * 60 * 60 * 1000;
+      const diffMs = now - lastChange;
+      if (diffMs >= fourteenDaysMs) {
+        return {
+          canChange: true,
+          isFirstTime: false,
+          daysRemaining: 0,
+          nextEligibleDate: null
+        };
+      }
+      const remainingMs = fourteenDaysMs - diffMs;
+      const daysRemaining = Math.ceil(remainingMs / (24 * 60 * 60 * 1000));
+      const nextEligibleDate = new Date(lastChange + fourteenDaysMs);
+      return {
+        canChange: false,
+        isFirstTime: false,
+        daysRemaining: daysRemaining,
+        nextEligibleDate: nextEligibleDate
+      };
+    },
+
+    /**
+     * Đổi biệt danh học sinh theo quy định 14 ngày
+     */
+    changeNickname(newNickname) {
+      if (!this.isLoggedIn()) {
+        throw new Error('Vui lòng đăng nhập để thực hiện đổi tên.');
+      }
+      const check = this.canChangeNickname();
+      if (!check.canChange) {
+        const dateStr = check.nextEligibleDate ? check.nextEligibleDate.toLocaleDateString('vi-VN') : '';
+        throw new Error(`Quy định học thuật: Mỗi tài khoản chỉ được đổi tên 14 ngày một lần. Vui lòng quay lại sau ${check.daysRemaining} ngày nữa (sau ngày ${dateStr}).`);
+      }
+
+      const clean = String(newNickname || '').trim().replace(/<[^>]*>/g, '');
+      if (!clean || clean.length < 2 || clean.length > 32) {
+        throw new Error('Biệt danh phải có độ dài từ 2 đến 32 ký tự.');
+      }
+
+      const u = this.getUser();
+      u.displayName = clean;
+      u.hasCustomNickname = true;
+      u.lastNicknameChangeDate = new Date().toISOString();
+      u.updatedAt = new Date().toISOString();
+
+      this._persistAll(u);
+      this._notify(u);
+
+      return {
+        success: true,
+        displayName: clean,
+        nextEligibleDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000)
+      };
     },
 
     addXP(amount, reason) {

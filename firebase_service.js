@@ -29,6 +29,8 @@ import {
 import { 
     getAuth, 
     signInWithPopup, 
+    signInWithRedirect,
+    getRedirectResult,
     GoogleAuthProvider, 
     signOut, 
     onAuthStateChanged,
@@ -118,7 +120,7 @@ export const LociFirebase = {
     },
 
     // Hàm timeout an toàn tránh bị treo giao diện
-    _withTimeout(promise, ms = 1200) {
+    _withTimeout(promise, ms = 8000) {
         return Promise.race([
             promise,
             new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
@@ -223,7 +225,7 @@ export const LociFirebase = {
 
         // 2. Thử đăng nhập qua Firebase Auth hoặc Firestore
         try {
-            const cred = await this._withTimeout(signInWithEmailAndPassword(auth, email, password), 2000);
+            const cred = await this._withTimeout(signInWithEmailAndPassword(auth, email, password), 8000);
             this.currentUser = cred.user;
             localStorage.setItem('loci_current_user', JSON.stringify({
                 uid: cred.user.uid,
@@ -235,7 +237,7 @@ export const LociFirebase = {
         } catch (error) {
             // Kiểm tra qua Firestore
             try {
-                const snap = await this._withTimeout(getDoc(doc(db, 'users', 'loci_' + cleanName)), 2000);
+                const snap = await this._withTimeout(getDoc(doc(db, 'users', 'loci_' + cleanName)), 8000);
                 if (snap.exists()) {
                     const cloudUser = snap.data();
                     if (cloudUser.password === btoa(password)) {
@@ -264,32 +266,69 @@ export const LociFirebase = {
     async loginWithGoogle() {
         try {
             const result = await signInWithPopup(auth, googleProvider);
-            this.currentUser = result.user;
-            
-            // Đảm bảo hồ sơ học sinh tồn tại trên Firestore
-            const userRef = doc(db, 'users', result.user.uid);
+            return await this._handleGoogleAuthResult(result.user);
+        } catch (error) {
+            console.warn('[Firebase Auth] Popup error:', error);
+            // Nếu trình duyệt (Cốc Cốc, Safari, Chrome) chặn Popup, tự động chuyển hướng sang Redirect
+            if (error.code === 'auth/popup-blocked' || (error.message && error.message.includes('popup-blocked'))) {
+                console.log('[Firebase Auth] Pop-up bị chặn, tự động chuyển hướng sang signInWithRedirect...');
+                await signInWithRedirect(auth, googleProvider);
+                return null;
+            }
+            throw error;
+        }
+    },
+
+    async loginWithGoogleRedirect() {
+        try {
+            console.log('[Firebase Auth] Khởi động signInWithRedirect...');
+            await signInWithRedirect(auth, googleProvider);
+        } catch (error) {
+            console.error('[Firebase Auth] Redirect error:', error);
+            throw error;
+        }
+    },
+
+    async _handleGoogleAuthResult(user) {
+        if (!user) return null;
+        this.currentUser = user;
+        try {
+            const userRef = doc(db, 'users', user.uid);
             await setDoc(userRef, {
-                uid: result.user.uid,
-                displayName: result.user.displayName || '',
-                email: result.user.email || '',
-                photoURL: result.user.photoURL || '',
+                uid: user.uid,
+                displayName: user.displayName || '',
+                email: user.email || '',
+                photoURL: user.photoURL || '',
                 role: 'student',
                 lastLogin: serverTimestamp()
             }, { merge: true });
-
-            localStorage.setItem('loci_current_user', JSON.stringify({
-                uid: result.user.uid,
-                displayName: result.user.displayName,
-                email: result.user.email,
-                photoURL: result.user.photoURL
-            }));
-            this._notifyAuth(result.user);
-            console.log('[Firebase Auth] Logged in with Google:', result.user.displayName);
-            return result.user;
-        } catch (error) {
-            console.error('[Firebase Auth] Login error:', error);
-            throw error;
+        } catch (e) {
+            console.warn('[Firebase Auth] Không thể lưu Firestore:', e.message);
         }
+
+        const localData = {
+            uid: user.uid,
+            displayName: user.displayName || (user.email ? user.email.split('@')[0] : 'Học sinh Loci'),
+            email: user.email || '',
+            photoURL: user.photoURL || ''
+        };
+        localStorage.setItem('loci_current_user', JSON.stringify(localData));
+        this._notifyAuth(user);
+        console.log('[Firebase Auth] Google Auth hoàn tất:', user.displayName);
+        return user;
+    },
+
+    async checkRedirectResult() {
+        try {
+            const result = await getRedirectResult(auth);
+            if (result && result.user) {
+                console.log('[Firebase Auth] Bắt được kết quả đăng nhập sau Redirect Google:', result.user.displayName);
+                return await this._handleGoogleAuthResult(result.user);
+            }
+        } catch (e) {
+            console.warn('[Firebase Auth] Lỗi getRedirectResult:', e);
+        }
+        return null;
     },
 
     async logout() {
