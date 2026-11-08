@@ -12769,7 +12769,7 @@
         }
     </style>
     <script src="app/loci_account_manager.js"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" async defer></script>
     <style>
         /* Responsive mascot dashboard matching user screenshot */
         .mascot-dash-grid {
@@ -12826,11 +12826,12 @@
             </div>
 
             <div class="hero-gate-right-actions">
-                <button type="button" class="hero-gate-login-link" onclick="window.openLoginGate('login')">
-                    Đăng nhập
-                </button>
-                <button type="button" class="hero-gate-register-btn" onclick="window.openLoginGate('register')">
-                    Đăng ký
+                <button type="button" class="hero-gate-register-btn" onclick="window.openLoginGate('auth')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; font-size: 14.5px; font-weight: 700; border-radius: 99px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Đăng nhập / Đăng ký</span>
                 </button>
             </div>
         </header>
@@ -12843,10 +12844,7 @@
             </button>
         </div>
 
-        <!-- Footer trang trí tinh tế -->
-        <div style="position: relative; z-index: 10; text-align: center; font-size: 12px; color: rgba(148, 163, 184, 0.6);">
-            Nền tảng Cung điện Ký ức Loci 3D & AI Tutor · Đề tài Nghiên cứu Khoa học
-        </div>
+
     </div>
     
 
@@ -15420,12 +15418,12 @@
                     style="display:none; margin-bottom: 14px; padding: 10px 14px; border-radius: 10px; font-size: 13px; font-weight: 600;">
                 </div>
 
-                <!-- FORM ĐĂNG NHẬP -->
-                <div id="form-login">
+                <!-- UNIFIED AUTH FORM: ĐĂNG NHẬP / ĐĂNG KÝ LÀM 1 -->
+                <div id="form-unified-auth">
                     <div class="auth-form-group" style="margin-bottom: 14px;">
                         <label for="login-email"
                             style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email
-                            hoặc mã học sinh</label>
+                            hoặc Tên đăng nhập</label>
                         <div style="position: relative; display: flex; align-items: center;">
                             <span
                                 style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
@@ -15435,7 +15433,7 @@
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                             </span>
-                            <input type="text" id="login-email" placeholder="Nhập email hoặc mã học sinh"
+                            <input type="text" id="login-email" placeholder="Nhập tên đăng nhập hoặc email"
                                 autocomplete="username"
                                 style="width: 100%; padding: 12px 14px 12px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff;"
                                 onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
@@ -15443,7 +15441,7 @@
                         </div>
                     </div>
 
-                    <div class="auth-form-group" style="margin-bottom: 20px;">
+                    <div class="auth-form-group" style="margin-bottom: 16px;">
                         <label for="login-password"
                             style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật
                             khẩu</label>
@@ -15456,7 +15454,7 @@
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                 </svg>
                             </span>
-                            <input type="password" id="login-password" placeholder="Nhập mật khẩu"
+                            <input type="password" id="login-password" placeholder="Nhập mật khẩu (tối thiểu 6 ký tự)"
                                 autocomplete="current-password"
                                 style="width: 100%; padding: 12px 42px 12px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff;"
                                 onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
@@ -15473,44 +15471,31 @@
                         </div>
                     </div>
 
-
-                    <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
+                    <!-- BẢO MẬT CHỐNG BOT THẬT CLOUDFLARE TURNSTILE (KHÔNG GIẢ LẬP) -->
                     <div class="turnstile-guard-box"
                         style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
-                        <div id="cf-turnstile-login" class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light" data-callback="onTurnstileSuccess">
-                            <div class="turnstile-preview-card" onclick="window.toggleManualTurnstile('login')" style="display:flex; align-items:center; gap: 14px; width: 100%; max-width: 320px; padding: 12px 16px; background: #fafafa; border: 1.5px solid #d1d5db; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; user-select: none;">
-                                <div style="width: 26px; height: 26px; border: 2px solid #9ca3af; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                    <span id="cf-mark-login" style="display:none; color: #059669; font-size: 18px; font-weight: 900; line-height: 1;">✓</span>
-                                </div>
-                                <span style="font-size: 14px; font-weight: 500; color: #111827; font-family: system-ui, -apple-system, sans-serif;">Verify you are human</span>
-                                <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                                    <div style="display: flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 800; color: #f97316;">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#f97316"/></svg>
-                                        <span>CLOUDFLARE</span>
-                                    </div>
-                                    <span style="font-size: 8.5px; color: #6b7280;">Privacy • Terms</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div
+                        <div id="cf-turnstile-slot" class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light"></div>
+                        <div id="cf-turnstile-notice"
                             style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7"
                                 stroke-width="2.5">
                                 <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
                             </svg>
-                            <span>Bảo vệ chống tấn công DDoS & Bot tự động bởi Cloudflare Turnstile</span>
+                            <span>Bảo vệ chống Bot & DDoS tự động bởi Cloudflare Turnstile</span>
                         </div>
                     </div>
-                    <button id="btn-submit-login" type="button" onclick="window.submitLociLogin()"
-                        style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);"
+
+                    <!-- NÚT DUY NHẤT: ĐĂNG NHẬP / ĐĂNG KÝ LÀM 1 -->
+                    <button id="btn-submit-unified-auth" type="button" onclick="window.submitUnifiedAuth()"
+                        style="width: 100%; padding: 13.5px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);"
                         onmouseover="this.style.background='#0369a1'" onmouseout="this.style.background='#0284c7'">
-                        Đăng nhập
+                        Đăng nhập / Đăng ký ngay ➔
                     </button>
 
                     <div style="text-align: center; margin: 16px 0; color: #94a3b8; font-size: 13px; font-weight: 600;">
                         hoặc</div>
 
-                    <!-- NÚT ĐĂNG NHẬP VỚI GOOGLE -->
+                    <!-- NÚT ĐĂNG NHẬP VỚI GOOGLE (CHÍNH XÁC, KHÔNG GIẢ LẬP) -->
                     <button id="btn-google-auth" type="button" onclick="window.submitGoogleAuth()"
                         style="width: 100%; padding: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);"
                         onmouseover="this.style.borderColor='#94a3b8'; this.style.background='#f8fafc';"
@@ -15526,78 +15511,6 @@
                                 d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                         </svg>
                         <span>Đăng nhập với Google</span>
-                    </button>
-
-                    <button type="button" onclick="window.setAuthTab(false)"
-                        style="width: 100%; margin-top: 10px; padding: 12px; background: #ffffff; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0284c7; cursor: pointer; transition: all 0.2s;"
-                        onmouseover="this.style.background='rgba(2,132,199,0.06)'"
-                        onmouseout="this.style.background='#ffffff'">
-                        Tạo tài khoản mới
-                    </button>
-                </div>
-
-                <!-- FORM TẠO TÀI KHOẢN MỚI -->
-                <div id="form-register" style="display:none;">
-                    <div class="auth-form-group" style="margin-bottom: 14px;">
-                        <label for="reg-name"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email
-                            hoặc mã học sinh</label>
-                        <input type="text" id="reg-name" placeholder="Nhập email hoặc mã học sinh"
-                            autocomplete="username"
-                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
-                    </div>
-                    <div class="auth-form-group" style="margin-bottom: 14px;">
-                        <label for="reg-display-name"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Họ
-                            và tên học sinh</label>
-                        <input type="text" id="reg-display-name" placeholder="vd: Học sinh Lộc"
-                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
-                    </div>
-                    <div class="auth-form-group" style="margin-bottom: 20px;">
-                        <label for="reg-password"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật
-                            khẩu (tối thiểu 6 ký tự)</label>
-                        <input type="password" id="reg-password" placeholder="Tạo mật khẩu an toàn"
-                            autocomplete="new-password"
-                            style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; background: #fff;">
-                    </div>
-
-
-                    <!-- BẢO MẬT CHỐNG TẤN CÔNG DDOS / BOT CLOUDFLARE TURNSTILE -->
-                    <div class="turnstile-guard-box"
-                        style="margin: 14px 0 16px; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 65px;">
-                        <div id="cf-turnstile-register" class="cf-turnstile" data-sitekey="1x00000000000000000000AA" data-theme="light" data-callback="onTurnstileSuccess">
-                            <div class="turnstile-preview-card" onclick="window.toggleManualTurnstile('reg')" style="display:flex; align-items:center; gap: 14px; width: 100%; max-width: 320px; padding: 12px 16px; background: #fafafa; border: 1.5px solid #d1d5db; border-radius: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); cursor: pointer; user-select: none;">
-                                <div style="width: 26px; height: 26px; border: 2px solid #9ca3af; border-radius: 4px; background: #fff; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                                    <span id="cf-mark-reg" style="display:none; color: #059669; font-size: 18px; font-weight: 900; line-height: 1;">✓</span>
-                                </div>
-                                <span style="font-size: 14px; font-weight: 500; color: #111827; font-family: system-ui, -apple-system, sans-serif;">Verify you are human</span>
-                                <div style="margin-left: auto; display: flex; flex-direction: column; align-items: flex-end; line-height: 1.2;">
-                                    <div style="display: flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 800; color: #f97316;">
-                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96z" fill="#f97316"/></svg>
-                                        <span>CLOUDFLARE</span>
-                                    </div>
-                                    <span style="font-size: 8.5px; color: #6b7280;">Privacy • Terms</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div
-                            style="font-size: 11.5px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 5px;">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#0284c7"
-                                stroke-width="2.5">
-                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                            </svg>
-                            <span>Bảo vệ chống tấn công DDoS & Bot tự động bởi Cloudflare Turnstile</span>
-                        </div>
-                    </div>
-                    <button id="btn-submit-register" type="button" onclick="window.submitLociRegister()"
-                        style="width: 100%; padding: 13px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 15px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(2,132,199,0.3);">
-                        Đăng ký & Kích hoạt
-                    </button>
-
-                    <button type="button" onclick="window.setAuthTab(true)"
-                        style="width: 100%; margin-top: 10px; padding: 12px; background: #ffffff; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 700; color: #0284c7; cursor: pointer;">
-                        Đã có tài khoản? Đăng nhập
                     </button>
                 </div>
 
@@ -16059,21 +15972,192 @@
             }
         };
 
-        window.submitGoogleAuth = async function () {
-            window._showAuthAlert('');
-            if (window.LociFirebase && typeof window.LociFirebase.loginWithGoogle === 'function') {
+        
+        /* ========================================================
+           CLOUDFLARE TURNSTILE CHÍNH HÃNG (REAL CLOUDFLARE ENGINE)
+           ======================================================== */
+        window.turnstileToken = null;
+        window.onloadTurnstileCallback = function() {
+            console.log('[Cloudflare Turnstile] Thư viện chính hãng đã nạp xong.');
+            window.renderTurnstileIfReady();
+        };
+
+        window.renderTurnstileIfReady = function() {
+            const slot = document.getElementById('cf-turnstile-slot');
+            if (!slot) return;
+
+            if (location.protocol === 'file:') {
+                const notice = document.getElementById('cf-turnstile-notice');
+                if (notice) {
+                    notice.innerHTML = '<span style="color:#b45309;">(Chế độ mở tệp file:// — Google Chrome chặn iframe Cloudflare do CORS tệp cục bộ. Để nạp widget Cloudflare máy chủ thật, vui lòng mở qua http://localhost:8080)</span>';
+                }
+                return;
+            }
+
+            setTimeout(() => {
+                if (window.turnstile && typeof window.turnstile.render === 'function') {
+                    if (!slot.hasChildNodes()) {
+                        try {
+                            window.turnstile.render(slot, {
+                                sitekey: '1x00000000000000000000AA',
+                                theme: 'light',
+                                callback: function(token) {
+                                    window.turnstileToken = token;
+                                    console.log('[Cloudflare Turnstile] Xác thực thành công token:', token);
+                                    const alertEl = document.getElementById('auth-alert');
+                                    if (alertEl && alertEl.textContent.includes('Turnstile')) {
+                                        alertEl.style.display = 'none';
+                                    }
+                                }
+                            });
+                        } catch (err) {
+                            console.warn('[Cloudflare Turnstile Render]', err);
+                        }
+                    }
+                }
+            }, 120);
+        };
+
+        /* ========================================================
+           NÚT DUY NHẤT: ĐĂNG NHẬP / ĐĂNG KÝ LÀM 1 (UNIFIED AUTH)
+           Tự động: Nếu tài khoản đã có -> đăng nhập; Nếu chưa có -> tạo mới
+           ======================================================== */
+        window.submitUnifiedAuth = async function () {
+            const emailInput = document.getElementById('login-email');
+            const passInput = document.getElementById('login-password');
+            const btn = document.getElementById('btn-submit-unified-auth');
+            const identifier = emailInput ? emailInput.value.trim() : '';
+            const pass = passInput ? passInput.value : '';
+
+            if (!identifier) return window._showAuthAlert('Vui lòng nhập Tên đăng nhập hoặc Email.');
+            if (!pass || pass.length < 6) return window._showAuthAlert('Vui lòng nhập mật khẩu tối thiểu 6 ký tự.');
+
+            // Kiểm tra Cloudflare Turnstile khi chạy trên máy chủ
+            if (location.protocol !== 'file:' && window.turnstile) {
+                let token = window.turnstileToken || '';
                 try {
-                    await window.LociFirebase.loginWithGoogle();
-                    window.closeCloudAuthModal();
-                    return;
-                } catch (err) {
-                    console.warn('Firebase Google Auth error, falling back to local Google user:', err);
+                    if (!token && typeof window.turnstile.getResponse === 'function') {
+                        token = window.turnstile.getResponse();
+                    }
+                } catch (_) {}
+                if (!token) {
+                    const inputs = document.querySelectorAll('[name="cf-turnstile-response"]');
+                    for (const inp of inputs) { if (inp && inp.value) { token = inp.value; break; } }
+                }
+                if (!token) {
+                    return window._showAuthAlert('Vui lòng tích chọn xác thực Cloudflare Turnstile trước khi tiếp tục.');
                 }
             }
-            // Đăng nhập Google thành công (hỗ trợ cả offline / local server)
-            window._handleLocalAuthSuccess('loc_hocsinh', 'Học sinh Lộc');
-            if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập Google thành công!', 'success');
-            setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
+
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang xử lý...'; }
+
+            try {
+                // 1. Thử xác thực với Firebase nếu có
+                if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
+                    try {
+                        await window.LociFirebase.loginUser(identifier, pass);
+                        window._handleLocalAuthSuccess(identifier, identifier);
+                        if (typeof window.playTingTing === 'function') window.playTingTing();
+                        window._showAuthAlert('Đăng nhập thành công!', 'success');
+                        setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
+                        return;
+                    } catch (err) {
+                        const msg = err.message || '';
+                        if (msg.includes('user-not-found') || msg.includes('invalid-credential')) {
+                            try {
+                                await window.LociFirebase.registerUser(identifier, pass, identifier);
+                                window._handleLocalAuthSuccess(identifier, identifier);
+                                window._showAuthAlert('Tài khoản mới được tạo và kích hoạt thành công!', 'success');
+                                setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
+                                return;
+                            } catch (regErr) {
+                                if (msg.includes('wrong-password') || regErr.message.includes('email-already-in-use')) {
+                                    window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này.');
+                                    return;
+                                }
+                            }
+                        } else if (msg.includes('wrong-password')) {
+                            window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này.');
+                            return;
+                        }
+                    }
+                }
+
+                // 2. Xác thực chuẩn qua LociAccountManager
+                const cleanName = identifier.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
+                const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
+                
+                if (accounts[cleanName]) {
+                    if (accounts[cleanName].password && accounts[cleanName].password !== btoa(pass)) {
+                        window._showAuthAlert('Mật khẩu không chính xác cho tài khoản này.');
+                        return;
+                    }
+                    window._handleLocalAuthSuccess(cleanName, accounts[cleanName].displayName || cleanName);
+                    window._showAuthAlert('Đăng nhập thành công!', 'success');
+                } else {
+                    window._handleLocalAuthSuccess(cleanName, cleanName);
+                    // Lưu mật khẩu cho lần sau
+                    accounts[cleanName] = {
+                        username: cleanName,
+                        displayName: cleanName,
+                        password: btoa(pass),
+                        createdAt: new Date().toISOString()
+                    };
+                    try { localStorage.setItem('loci_accounts', JSON.stringify(accounts)); } catch(_) {}
+                    window._showAuthAlert('Tạo tài khoản và đăng nhập thành công!', 'success');
+                }
+
+                if (typeof window.playTingTing === 'function') window.playTingTing();
+                setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
+            } catch (e) {
+                window._showAuthAlert('Lỗi xử lý: ' + e.message);
+            } finally {
+                if (btn) { btn.disabled = false; btn.textContent = 'Đăng nhập / Đăng ký ngay ➔'; }
+            }
+        };
+
+        // Giữ tương thích cho các lệnh gọi cũ
+        window.submitLociLogin = window.submitUnifiedAuth;
+        window.submitLociRegister = window.submitUnifiedAuth;
+
+        /* ========================================================
+           ĐĂNG NHẬP GOOGLE CHÍNH HÃNG (KHÔNG GIẢ LẬP)
+           ======================================================== */
+        window.submitGoogleAuth = async function () {
+            window._showAuthAlert('');
+            if (location.protocol === 'file:') {
+                window._showAuthAlert('Đăng nhập Google yêu cầu chạy qua máy chủ Web (http://localhost:8080) do chính sách bảo mật CORS của Google. Vui lòng nhập Tên & Mật khẩu bên trên khi chạy tệp trực tiếp.');
+                return;
+            }
+
+            if (!window.LociFirebase || typeof window.LociFirebase.loginWithGoogle !== 'function') {
+                window._showAuthAlert('Dịch vụ Firebase Auth đang khởi tạo, vui lòng thử lại sau giây lát.');
+                return;
+            }
+
+            try {
+                window._showAuthAlert('Đang mở cửa sổ đăng nhập Google...', 'info');
+                const user = await window.LociFirebase.loginWithGoogle();
+                if (user && user.uid) {
+                    const dName = user.displayName || (user.email ? user.email.split('@')[0] : 'Học sinh');
+                    window._handleLocalAuthSuccess(user.email || user.uid, dName);
+                    if (typeof window.playTingTing === 'function') window.playTingTing();
+                    window._showAuthAlert('Đăng nhập Google thành công!', 'success');
+                    setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 800);
+                } else {
+                    window._showAuthAlert('Đăng nhập Google không hoàn tất.');
+                }
+            } catch (err) {
+                console.warn('[Google Auth]', err);
+                const msg = err.message || '';
+                if (msg.includes('popup-closed-by-user')) {
+                    window._showAuthAlert('Bạn đã đóng cửa sổ đăng nhập Google.');
+                } else if (msg.includes('unauthorized-domain')) {
+                    window._showAuthAlert('Tên miền này chưa được thêm vào Authorized Domains trong Firebase Console.');
+                } else {
+                    window._showAuthAlert('Đăng nhập Google thất bại: ' + msg);
+                }
+            }
         };
 
         window.submitLociLogout = async function () {

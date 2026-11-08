@@ -321,3 +321,4 @@
   global.LociAccountManager = LociAccountManager;
 
 })(typeof window !== 'undefined' ? window : this);
+
