@@ -195,6 +195,112 @@
       return this._currentUser;
     },
 
+    register(usernameOrEmail, password, displayName) {
+      const username = usernameOrEmail.includes('@') ? usernameOrEmail.split('@')[0] : usernameOrEmail.trim();
+      const cleanName = username.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
+      const realDisplayName = (displayName && displayName.trim()) ? displayName.trim() : username;
+      const uid = 'loci_' + cleanName;
+
+      // Lưu mật khẩu vào danh mục accounts
+      const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
+      accounts[cleanName] = {
+        uid: uid,
+        username: cleanName,
+        displayName: realDisplayName,
+        email: cleanName + '@loci.edu.vn',
+        password: password ? (typeof global.btoa === 'function' ? global.btoa(password) : password) : '',
+        hasCustomNickname: true,
+        lastNicknameChangeDate: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      };
+      try {
+        localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+      } catch (_) {}
+
+      const profile = this._normalizeProfile({
+        uid: uid,
+        username: cleanName,
+        displayName: realDisplayName,
+        email: cleanName + '@loci.edu.vn',
+        hasCustomNickname: true,
+        lastNicknameChangeDate: new Date().toISOString(),
+        xp: 50,
+        level: 1,
+        tierName: 'Tập sự Loci'
+      });
+
+      this._currentUser = profile;
+      this._persistAll(profile);
+      this._notify(profile);
+
+      return profile;
+    },
+
+    linkGoogle(googleUser) {
+      if (!this._currentUser) return null;
+      if (!googleUser) return this._currentUser;
+
+      const email = googleUser.email || (this._currentUser.username + '@loci.edu.vn');
+      const googleUid = googleUser.uid;
+      const photoURL = googleUser.photoURL || this._currentUser.avatarUrl;
+
+      this._currentUser.googleLinked = true;
+      this._currentUser.googleEmail = email;
+      this._currentUser.googleUid = googleUid;
+      if (photoURL && !this._currentUser.avatarUrl) {
+        this._currentUser.avatarUrl = photoURL;
+      }
+      this._currentUser.updatedAt = new Date().toISOString();
+
+      try {
+        const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
+        if (accounts[this._currentUser.username]) {
+          accounts[this._currentUser.username].googleLinked = true;
+          accounts[this._currentUser.username].googleEmail = email;
+          accounts[this._currentUser.username].googleUid = googleUid;
+          accounts[this._currentUser.username].updatedAt = this._currentUser.updatedAt;
+          localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+        }
+      } catch (_) {}
+
+      this._persistAll(this._currentUser);
+      this._notify(this._currentUser);
+
+      return this._currentUser;
+    },
+
+    exportBackupData() {
+      const u = this.getUser();
+      if (!u) return null;
+      return JSON.stringify({
+        version: 'LOCI_EDU_V2',
+        exportedAt: new Date().toISOString(),
+        student: u,
+        spaces: JSON.parse(localStorage.getItem('loci360_spaces_meta_v2') || '[]'),
+        accounts: JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}')
+      }, null, 2);
+    },
+
+    downloadBackupFile() {
+      const jsonStr = this.exportBackupData();
+      if (!jsonStr) throw new Error('Chưa đăng nhập để tải sao lưu.');
+      const u = this.getUser();
+      const filename = `loci_can_cuoc_${u ? u.username : 'hocsinh'}_${new Date().toISOString().slice(0, 10)}.json`;
+      if (typeof Blob !== 'undefined' && typeof document !== 'undefined') {
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+      return filename;
+    },
+
     login(usernameOrEmail, password, displayName) {
       const username = usernameOrEmail.includes('@') ? usernameOrEmail.split('@')[0] : usernameOrEmail.trim();
       const cleanName = username.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
