@@ -260,8 +260,8 @@
 
         toast.innerHTML = `
             <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div style="font-weight:800; font-size:14.5px; color:#4f46e5; display:flex; align-items:center; gap:6px;">
-                    <span>⏰</span> ${title}
+                <div style="font-weight:800; font-size:14.5px; color:#0284c7; display:flex; align-items:center; gap:6px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ${title}
                 </div>
                 <button class="toast-close" style="background:none; border:none; color:#94a3b8; font-size:16px; cursor:pointer; padding:2px;">✕</button>
             </div>
@@ -270,7 +270,7 @@
             </div>
             ${actionText ? `
             <div style="display:flex; justify-content:flex-end; margin-top:4px;">
-                <button class="toast-action" style="padding:6px 14px; border-radius:99px; background:#4f46e5; color:#fff; border:none; font-size:12.5px; font-weight:700; cursor:pointer; transition:all 0.2s;">
+                <button class="toast-action" style="padding:6px 14px; border-radius:99px; background:#0284c7; color:#fff; border:none; font-size:12.5px; font-weight:700; cursor:pointer; transition:all 0.2s;">
                     ${actionText}
                 </button>
             </div>` : ''}
@@ -639,7 +639,7 @@
                                 }).join('')}
                             </div>
                             <div style="background: rgba(2, 132, 199, 0.06); border: 1px solid rgba(2, 132, 199, 0.16); border-radius: 12px; padding: 10px 12px; font-size: 11.5px; color: #0369a1; line-height: 1.5; margin-top: auto;">
-                                💡 <b>Thuật toán Ebbinghaus:</b> Ôn lại sau <b>24h</b>, <b>3 ngày</b> và <b>7 ngày</b> giúp khắc phục 80% độ dốc lãng quên tự nhiên, neo giữ kiến thức Lịch sử vào trí nhớ dài hạn.
+                                <b>Thuật toán Ebbinghaus:</b> Ôn lại sau <b>24h</b>, <b>3 ngày</b> và <b>7 ngày</b> giúp khắc phục 80% độ dốc lãng quên tự nhiên, neo giữ kiến thức Lịch sử vào trí nhớ dài hạn.
                             </div>
                         </div>
                     </div>

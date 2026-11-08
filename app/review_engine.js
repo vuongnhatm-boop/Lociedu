@@ -283,7 +283,7 @@ ${contentContext}
             if (currentIndex >= allQuestions.length) {
                 overlay.innerHTML = `
                     <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
-                        <h2 style="font-size: 24px; color: #4ade80; margin-bottom: 20px;">🎉 Hoàn thành xuất sắc!</h2>
+                        <h2 style="font-size: 24px; color: #10b981; margin-bottom: 20px;">Hoàn thành xuất sắc!</h2>
                         <p style="margin-bottom: 30px;">Bạn đã ôn tập xong các mốc kiến thức này.</p>
                         <button id="rv-close-btn" style="padding: 12px 24px; border-radius: 99px; border: none; background: #3b82f6; color: white; cursor: pointer; font-weight: bold;">Đóng</button>
                     </div>
@@ -447,10 +447,10 @@ ${contentContext}
                     const correctAns = q.data.answer.toLowerCase();
                     
                     if (userAns === correctAns || correctAns.includes(userAns) && userAns.length > 2) {
-                        resultDiv.innerHTML = '<span style="color:#10b981;">✅ Chính xác!</span> (' + q.data.answer + ')';
+                        resultDiv.innerHTML = '<span style="color:#10b981; font-weight:700;">Chính xác!</span> (' + q.data.answer + ')';
                         this.processReview(q.id, 5);
                     } else {
-                        resultDiv.innerHTML = '<span style="color:#ef4444;">❌ Sai.</span> Đáp án đúng: <b>' + q.data.answer + '</b>';
+                        resultDiv.innerHTML = '<span style="color:#ef4444; font-weight:700;">Sai.</span> Đáp án đúng: <b>' + q.data.answer + '</b>';
                         this.processReview(q.id, 1);
                     }
                     

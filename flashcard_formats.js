@@ -417,7 +417,7 @@
       return {
         score: 100,
         status: 'exact',
-        title: '🎯 Chính xác 100%!',
+        title: 'Chính xác 100%!',
         typed: typed,
         target: target,
         recommendedGrade: 5
@@ -448,7 +448,7 @@
         return {
           score: dateMatchScore,
           status: 'exact',
-          title: dateMatchScore === 100 ? '🎯 Chính xác 100%!' : '🎯 Rất chính xác (Đúng ngày tháng)!',
+          title: dateMatchScore === 100 ? 'Chính xác 100%!' : 'Rất chính xác (Đúng ngày tháng)!',
           typed: typed,
           target: target,
           recommendedGrade: 5
@@ -467,7 +467,7 @@
       return {
         score: 100,
         status: 'exact',
-        title: '🎯 Chính xác 100%!',
+        title: 'Chính xác 100%!',
         typed: typed,
         target: target,
         recommendedGrade: 5
@@ -499,7 +499,7 @@
           return {
             score: 100,
             status: 'exact',
-            title: '🎯 Chính xác 100%!',
+            title: 'Chính xác 100%!',
             typed: typed,
             target: target,
             recommendedGrade: 5
@@ -508,7 +508,7 @@
           return {
             score: 90,
             status: 'close',
-            title: '⚡ Nắm rất vững ý chính!',
+            title: 'Nắm rất vững ý chính!',
             typed: typed,
             target: target,
             recommendedGrade: 5
@@ -528,7 +528,7 @@
           return {
             score: 85,
             status: 'close',
-            title: '⚡ Nắm rất vững ý chính!',
+            title: 'Nắm rất vững ý chính!',
             typed: typed,
             target: target,
             recommendedGrade: 5
@@ -546,7 +546,7 @@
       return {
         score: 0,
         status: 'wrong',
-        title: '❌ Chưa chính xác',
+        title: 'Chưa chính xác',
         typed: typed,
         target: target,
         recommendedGrade: 1
@@ -577,7 +577,7 @@
       return {
         score: 90,
         status: 'close',
-        title: '⚡ Nắm rất vững ý chính!',
+        title: 'Nắm rất vững ý chính!',
         typed: typed,
         target: target,
         recommendedGrade: 5
@@ -588,7 +588,7 @@
       return {
         score: 75,
         status: 'close',
-        title: '⚡ Nắm được ý chính cốt lõi!',
+        title: 'Nắm được ý chính cốt lõi!',
         typed: typed,
         target: target,
         recommendedGrade: 4
@@ -599,7 +599,7 @@
       return {
         score: 55,
         status: 'vague',
-        title: '⚠️ Có ý đúng nhưng chưa đầy đủ',
+        title: 'Có ý đúng nhưng chưa đầy đủ',
         typed: typed,
         target: target,
         recommendedGrade: 3
@@ -609,7 +609,7 @@
     return {
       score: Math.min(25, Math.round(targetRecall * userPrecision * 100)),
       status: 'wrong',
-      title: '❌ Chưa chính xác',
+      title: 'Chưa chính xác',
       typed: typed,
       target: target,
       recommendedGrade: 1
@@ -749,19 +749,19 @@
     let feedback = '';
 
     if (finalScore >= 85) {
-      grade = 'Xuất sắc — Vượt qua phần này! 🌟';
+      grade = 'Xuất sắc — Vượt qua phần này!';
       gradeColor = '#10b981';
       feedback = 'Bạn nhớ rất chính xác các chi tiết lịch sử cốt lõi của phần này!';
     } else if (finalScore >= 70) {
-      grade = 'Tốt — Đủ điểm qua phần này! 👍';
+      grade = 'Tốt — Đủ điểm qua phần này!';
       gradeColor = '#06b6d4';
       feedback = 'Nắm vững các ý chính. Đã đủ điều kiện mở khóa phần tiếp theo!';
     } else if (finalScore >= 50) {
-      grade = 'Đạt yêu cầu qua phần này ⚠️';
+      grade = 'Đạt yêu cầu qua phần này';
       gradeColor = '#eab308';
       feedback = 'Đã nắm được ý khái quát, hãy ôn lại để nhớ sâu hơn mốc thời gian và chi tiết.';
     } else {
-      grade = 'Chưa đủ điểm để qua (Cần >= 50%) ❌';
+      grade = 'Chưa đủ điểm để qua (Cần >= 50%)';
       gradeColor = '#ef4444';
       feedback = 'Thiếu các mốc thời gian hoặc sự kiện then chốt. Hãy nhìn lại ảnh tư liệu để ghi nhớ!';
     }
