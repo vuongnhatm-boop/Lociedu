@@ -1681,6 +1681,49 @@
             }
         }
 
+                .format-subcard.model3d-subcard {
+            border-color: #bae6fd;
+            background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+            box-shadow: 0 2px 10px rgba(2, 132, 199, 0.08);
+            position: relative;
+        }
+
+        .format-subcard.model3d-subcard:hover {
+            border-color: #0284c7;
+            background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
+            box-shadow: 0 8px 22px -6px rgba(2, 132, 199, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .format-subcard.model3d-subcard .format-subcard-icon {
+            background: #e0f2fe;
+            color: #0284c7;
+        }
+
+        .btn-hero-m3d {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 22px;
+            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+            color: #ffffff;
+            font-size: 15px;
+            font-weight: 700;
+            border-radius: 14px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            text-decoration: none;
+        }
+
+        .btn-hero-m3d:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 22px rgba(2, 132, 199, 0.35);
+            filter: brightness(1.05);
+        }
+
         .format-subcard.exam-subcard {
             border-color: #a7f3d0;
             background: linear-gradient(135deg, #ffffff 0%, #ecfdf5 100%);
@@ -2806,6 +2849,9 @@
     <script src="app/flashcard_formats.js" onerror="this.onerror=null;this.src='flashcard_formats.js'"></script>
     <script src="app/review_engine.js" onerror="this.onerror=null;this.src='review_engine.js'"></script>
     <script src="app/reminder_137.js?v=2.2" onerror="this.onerror=null;this.src='reminder_137.js?v=2.2'"></script>
+    <!-- 3D Model Viewer & Interactive 3D Model Examination Engine -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+    <script src="app/model3d_exam_engine.js" onerror="this.onerror=null;this.src='model3d_exam_engine.js'"></script>
     <script>
                 window.goBackToPortal = function () {
             if (window.top && window.top !== window.self) {
@@ -3139,6 +3185,20 @@
                                 </span>
                                 <span class="format-subcard-count" style="background:#ecfdf5; color:#059669; font-weight:700; border:1px solid #a7f3d0;">28 câu · 50'</span>
                             </div>
+                            <div class="format-subcard model3d-subcard" data-action="model3d" title="Khám phá hiện vật 3D không gian và làm bài tập (Gõ đáp án, Trắc nghiệm, Đúng/Sai)">
+                                <span class="format-subcard-icon">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                                        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                                        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                                    </svg>
+                                </span>
+                                <span class="format-subcard-text">
+                                    <span class="format-subcard-name" style="color:#0284c7;">Kiểm tra Mô hình 3D</span>
+                                    <span class="format-subcard-desc">Hiện vật 3D · Gõ, TN, Đúng/Sai</span>
+                                </span>
+                                <span class="format-subcard-count" style="background:#e0f2fe; color:#0369a1; font-weight:700; border:1px solid #bae6fd;">9 Trạm 3D</span>
+                            </div>
                         </div>
                     </div>
 
@@ -3148,6 +3208,9 @@
                         <button class="btn-hero-primary" data-action="all" title="Luyện toàn bộ ${currentData.qs.length} câu của bài">
                             Luyện toàn bài (${currentData.qs.length} câu)
                         </button>
+                        <button class="btn-hero-m3d" data-action="model3d" title="Khám phá và làm bài tập trên 9 mô hình 3D không gian của bài học">
+                            Kiểm tra Mô hình 3D ➔
+                        </button>
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT (28 câu) ➔
                         </button>
@@ -3156,6 +3219,9 @@
                     <div class="formats-panel-actions">
                         <button class="btn-hero-primary" data-action="due" title="Ôn toàn bộ ${currentData.qs.length} câu đến hạn hôm nay">
                             Ôn ${currentData.qs.length} câu hôm nay
+                        </button>
+                        <button class="btn-hero-m3d" data-action="model3d" title="Khám phá và làm bài tập trên 9 mô hình 3D không gian của bài học">
+                            Kiểm tra Mô hình 3D ➔
                         </button>
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT (28 câu) ➔
@@ -3167,6 +3233,9 @@
                         </button>
                         <button class="btn-hero-secondary" data-action="all" title="Luyện toàn bộ ${currentData.qs.length} câu của bài">
                             Luyện toàn bài (${currentData.qs.length} câu)
+                        </button>
+                        <button class="btn-hero-m3d" data-action="model3d" title="Khám phá và làm bài tập trên 9 mô hình 3D không gian của bài học">
+                            Kiểm tra Mô hình 3D ➔
                         </button>
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT ➔
@@ -3214,6 +3283,15 @@
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         const action = btn.dataset.action;
+                        if (action === 'model3d') {
+                            const curLesson = (currentData && currentData.lesson && currentData.lesson.id) || activeLessonFilter || 'bai_6';
+                            if (window.LociModel3DExam) {
+                                window.LociModel3DExam.start(curLesson, root, () => home());
+                            } else {
+                                alert('Đang tải mô-đun Kiểm tra Mô hình 3D, vui lòng thử lại sau giây lát!');
+                            }
+                            return;
+                        }
                         if (action === 'exam') {
                             const curLesson = (currentData && currentData.lesson && currentData.lesson.id) || activeLessonFilter || 'all';
                             const param = curLesson && curLesson !== 'all' ? `?lesson=${encodeURIComponent(curLesson)}` : '';
