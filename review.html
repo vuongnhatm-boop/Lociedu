@@ -2852,6 +2852,7 @@
     <!-- 3D Model Viewer & Interactive 3D Model Examination Engine -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     <script src="app/model3d_exam_engine.js" onerror="this.onerror=null;this.src='model3d_exam_engine.js'"></script>
+    <script src="app/arena_duel_engine.js" onerror="this.onerror=null;this.src='arena_duel_engine.js'"></script>
     <script src="app/loci_account_manager.js" onerror="this.onerror=null;this.src='loci_account_manager.js'"></script>
     <script>
                 window.goBackToPortal = function () {
@@ -3247,6 +3248,16 @@
                                 </span>
                                 <span class="format-subcard-count" style="background:#e0f2fe; color:#0369a1; font-weight:700; border:1px solid #bae6fd;">9 Trạm 3D</span>
                             </div>
+                            <div class="format-subcard arena-subcard" data-action="arena" title="Đấu Trường Tri Thức 1v1 - Ghép trận online trả lời câu hỏi 30s" style="border: 2px solid #38bdf8; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);">
+                                <span class="format-subcard-icon" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; font-size: 18px; display: grid; place-items: center; border-radius: 12px; width: 38px; height: 38px;">
+                                    ⚔️
+                                </span>
+                                <span class="format-subcard-text">
+                                    <span class="format-subcard-name" style="color:#0284c7; font-weight: 800;">Đấu Trường Tri Thức</span>
+                                    <span class="format-subcard-desc">Ghép trận 1v1 Online · 30s/câu</span>
+                                </span>
+                                <span class="format-subcard-count" style="background:#e0f2fe; color:#0284c7; font-weight:800; border:1px solid #bae6fd;">5-20 câu</span>
+                            </div>
                         </div>
                     </div>
 
@@ -3262,6 +3273,9 @@
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT (28 câu) ➔
                         </button>
+                        <button class="btn-hero-arena" data-action="arena" title="Ghép trận online đối kháng 1v1 trả lời câu hỏi 30s" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
+                            ⚔️ Đấu Trường Tri Thức (1v1) ➔
+                        </button>
                     </div>
                     <div class="rv-cta-hint">Hôm nay không còn câu đến hạn — lịch 1-3-7 đã hoàn thành.</div>` : due.length === currentData.qs.length ? `
                     <div class="formats-panel-actions">
@@ -3273,6 +3287,9 @@
                         </button>
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT (28 câu) ➔
+                        </button>
+                        <button class="btn-hero-arena" data-action="arena" title="Ghép trận online đối kháng 1v1 trả lời câu hỏi 30s" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
+                            ⚔️ Đấu Trường Tri Thức (1v1) ➔
                         </button>
                     </div>` : `
                     <div class="formats-panel-actions">
@@ -3287,6 +3304,9 @@
                         </button>
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT ➔
+                        </button>
+                        <button class="btn-hero-arena" data-action="arena" title="Ghép trận online đối kháng 1v1 trả lời câu hỏi 30s" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
+                            ⚔️ Đấu Trường Tri Thức (1v1) ➔
                         </button>
                     </div>`}
                 </div>
@@ -3331,6 +3351,14 @@
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         const action = btn.dataset.action;
+                        if (action === 'arena') {
+                            if (window.ArenaDuelEngine) {
+                                window.ArenaDuelEngine.open();
+                            } else {
+                                alert('Đang khởi tạo Đấu Trường Tri Thức, vui lòng thử lại sau giây lát!');
+                            }
+                            return;
+                        }
                         if (action === 'model3d') {
                             const curLesson = (currentData && currentData.lesson && currentData.lesson.id) || activeLessonFilter || 'bai_6';
                             if (window.LociModel3DExam) {

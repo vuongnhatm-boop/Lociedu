@@ -12914,6 +12914,9 @@
                         <button class="topbar-dropdown-item nav-item" data-tab="pet">
                             <span>Linh Thú Tri Thức</span>
                         </button>
+                        <button class="topbar-dropdown-item" onclick="window.ArenaDuelEngine && window.ArenaDuelEngine.open()">
+                            <span>⚔️ Đấu Trường Tri Thức (1v1)</span>
+                        </button>
                     </div>
                 </div>
 
@@ -13318,70 +13321,6 @@
                 </div>
             </section>
 
-            <!-- COURSES -->
-            <h2 class="section-title">Tiện ích học tập</h2>
-            <div class="course-grid">
-
-                <!-- Card 1: Thẻ Ôn Tập Flashcard & Trắc Nghiệm Loci (Calm Blue EdTech Theme) -->
-                <div class="glass-card course-card card-flashcard" style="border-top: 4px solid #0284c7;">
-                    <div class="ai-badge"
-                        style="background: linear-gradient(135deg, #e0f2fe, #dbeafe); color: #0284c7; border-color: #bae6fd;">
-                        SM-2 TỰ ĐỘNG
-                    </div>
-                    <div class="course-icon-wrap"
-                        style="background: linear-gradient(135deg, #e0f2fe, #f0fdf4); color: #0284c7; width: 100%; height: 140px; border-radius: 16px; display: flex; align-items: center; justify-content: center; box-shadow: inset 0 2px 6px rgba(2, 132, 199, 0.08);">
-                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                            <polyline points="2 17 12 22 22 17"></polyline>
-                            <polyline points="2 12 12 17 22 12"></polyline>
-                        </svg>
-                    </div>
-                    <div>
-                        <h3>Thẻ Ôn Tập &amp; Flashcard Loci</h3>
-                        <p>Luyện 6 hình thức ghi nhớ: Flashcard Loci, Trắc nghiệm, Gõ đáp án, Điền khuyết, Đảo chiều và
-                            Thi thử THPT theo đường cong lãng quên Ebbinghaus.</p>
-                    </div>
-                    <a href="javascript:void(0)" onclick="window.switchPortalTab('review')" class="btn-enter"
-                        style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; text-decoration: none; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);">
-                        Vào Luyện Thẻ Ngay ➔
-                    </a>
-                </div>
-
-                <!-- Card 2: Gia sư AI (Soft Green Theme) -->
-                <div class="glass-card course-card card-mentor">
-                    <div class="ai-badge">AI POWERED</div>
-                    <div class="course-icon-wrap"
-                        style="background: url('assets/images/loci_avatar.jpg') center/cover; width: 100%; height: 140px; border-radius: 16px;">
-                    </div>
-                    <div>
-                        <h3>Gia sư AI Loci</h3>
-                        <p>Theo dõi sát sao tiến độ học tập, phân tích điểm mạnh yếu và tư vấn lộ trình xây dựng cung
-                            điện kí ức hiệu quả nhất cho riêng bạn.</p>
-                    </div>
-                    <a href="javascript:void(0)" onclick="window.switchPortalTab('ai')" class="btn-enter btn-secondary"
-                        style="border-color: #a7f3d0; color: #047857; background: #ecfdf5;">Nhận đánh giá tiến độ</a>
-                </div>
-
-
-
-                <!-- Card 4: Phòng 360 tự chụp (Calm Blue Theme) -->
-                <div class="glass-card course-card card-vr">
-                    <div class="ai-badge"
-                        style="background:linear-gradient(135deg,#e0f2fe,#d1fae5);color:#0369a1;border-color:#7dd3fc">
-                        360° Đa Chiều</div>
-                    <div class="course-icon-wrap"
-                        style="background: linear-gradient(135deg, #e0f2fe, #ecfdf5); color: #0284c7;">📸</div>
-                    <div>
-                        <h3>Phòng 360° tự chụp</h3>
-                        <p>Chụp căn phòng quen thuộc bằng điện thoại, tạo cung điện kí ức cá nhân hóa và gắn mốc lịch
-                            sử.</p>
-                    </div>
-                    <a href="javascript:void(0)" onclick="window.switchPortalTab('spaces')" class="btn-enter"
-                        style="background:linear-gradient(135deg, var(--primary), var(--accent-dark))">Chụp & Khám phá
-                        ➔</a>
-                </div>
-
-            </div>
             <!-- ========================================================================= -->
             <!-- PHƯƠNG PHÁP CUNG ĐIỆN KÝ ỨC (METHOD OF LOCI) - TÍCH HỢP TRỰC TIẾP VÀO TỔNG QUAN -->
             <!-- ========================================================================= -->
@@ -13405,7 +13344,7 @@
                     <button type="button" onclick="window.switchPortalTab('ai')" title="Trò chuyện ngay với Gia Sư AI Loci"
                         style="display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 8px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #93c5fd; border-radius: 99px; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);">
                         <div style="position: relative; width: 38px; height: 38px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: visible;">
-                            <img src="assets/images/pets/owl_scholar.png" alt="Gia sư AI" style="width: 32px; height: 32px; object-fit: contain; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
+                            <img src="assets/images/loci_avatar.jpg" alt="Gia sư AI Robot" style="width: 34px; height: 34px; object-fit: cover; border-radius: 50%; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
                             <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
                         </div>
                         <div style="text-align: left;">
@@ -14748,17 +14687,15 @@
                 localStorage.setItem('loci_active_student_uid', localUser.uid);
             } catch (_) {}
 
-            // 1. PHÁ HỦY HOÀN TOÀN HERO GATE KHỎI DOM (ĐẢM BẢO 100% VÀO THẲNG BÊN TRONG)
+            // 1. ẨN HERO GATE (GIỮ NGUYÊN DOM ĐỂ KHI ĐĂNG XUẤT CÓ THỂ HIỂN THỊ LẠI)
             document.body.classList.remove('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
-                try {
-                    gate.remove();
-                } catch (_) {
-                    gate.style.setProperty('display', 'none', 'important');
-                    gate.style.setProperty('visibility', 'hidden', 'important');
-                    gate.style.setProperty('z-index', '-99999', 'important');
-                }
+                gate.classList.add('gate-hidden');
+                gate.style.setProperty('display', 'none', 'important');
+                gate.style.setProperty('visibility', 'hidden', 'important');
+                gate.style.setProperty('pointer-events', 'none', 'important');
+                gate.style.setProperty('z-index', '-99999', 'important');
             }
 
             // 2. ĐÓNG MODAL ĐĂNG NHẬP NGAY
@@ -15409,6 +15346,9 @@
             } catch (_) {}
             window._handleLocalLogout();
             window.closeCloudAuthModal();
+            if (typeof window.showHeroGate === 'function') {
+                window.showHeroGate();
+            }
             if (typeof showToast === 'function') {
                 showToast('Đã đăng xuất tài khoản thành công.', 'info', 2500);
             }
@@ -17209,6 +17149,7 @@
 
     <!-- HỆ THỐNG NHẮC HẸN ÔN TẬP WEB 1-3-7 (EBBINGHAUS) -->
     <script src="app/reminder_137.js?v=2.2"></script>
+    <script src="app/arena_duel_engine.js" onerror="this.onerror=null;this.src='arena_duel_engine.js'"></script>
 
     <!-- CORE PORTAL NAVIGATION & LEADERBOARD SCRIPT (CHẠY ĐỒNG BỘ 100% OFFLINE) -->
     <script>
@@ -17230,19 +17171,9 @@
         const appFrame = document.getElementById('app-frame');
 
         function switchPortalTab(tabName, skipAuthCheck) {
-            // Kiểm tra bảo mật: Bắt buộc người dùng phải đăng nhập trước khi thao tác các tab trong Portal
-            if (!skipAuthCheck && !window.isUserLoggedIn()) {
-                if (typeof window.showHeroGate === 'function') {
-                    window.showHeroGate();
-                }
-                if (typeof showToast === 'function') {
-                    showToast('Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để tiếp tục.', 'warning', 3500);
-                }
-                if (typeof window.openLoginGate === 'function') {
-                    window.openLoginGate('login');
-                }
-                return;
-            }
+            // Tự động đóng dropdown topbar khi chọn tab
+            document.querySelectorAll('.topbar-dropdown-menu').forEach(m => m.classList.remove('show'));
+            document.querySelectorAll('.topbar-nav-pill-btn').forEach(b => b.classList.remove('dropdown-open'));
 
             if (tabName === 'leaderboard') tabName = 'connect';
             // Khi chọn hoặc gọi đến Bảng Vàng -> tự động chuyển sang tab thống nhất Bảng Vàng & Kết Nối
@@ -20977,9 +20908,15 @@
             document.body.classList.add('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
-                gate.style.display = 'flex';
-                void gate.offsetWidth;
                 gate.classList.remove('gate-hidden');
+                gate.style.removeProperty('display');
+                gate.style.removeProperty('visibility');
+                gate.style.removeProperty('pointer-events');
+                gate.style.removeProperty('z-index');
+                gate.style.display = 'flex';
+                gate.style.visibility = 'visible';
+                gate.style.pointerEvents = 'auto';
+                gate.style.zIndex = '99999';
             }
         };
 
@@ -21189,9 +21126,9 @@
     <div id="loci-floating-ai-mascot"
         onclick="window.switchPortalTab('ai')"
         title="Trò chuyện cùng Gia Sư AI Loci"
-        style="position: fixed; bottom: 24px; right: 28px; z-index: 9999; display: flex; align-items: center; gap: 10px; background: #ffffff; padding: 6px 14px 6px 8px; border-radius: 99px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(37, 99, 235, 0.2); border: 2px solid #38bdf8; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
+        style="position: fixed; bottom: 84px; right: 24px; z-index: 9999; display: flex; align-items: center; gap: 10px; background: #ffffff; padding: 6px 14px 6px 8px; border-radius: 99px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.16), 0 2px 6px rgba(37, 99, 235, 0.2); border: 2px solid #38bdf8; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
         <div style="position: relative; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #eff6ff, #dbeafe); display: grid; place-items: center;">
-            <img src="assets/images/pets/owl_scholar.png" alt="Gia Sư AI" style="width: 34px; height: 34px; object-fit: contain; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
+            <img src="assets/images/loci_avatar.jpg" alt="Gia Sư AI Robot" style="width: 36px; height: 36px; object-fit: cover; border-radius: 50%; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
             <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
         </div>
         <div style="text-align: left;">
