@@ -2853,6 +2853,7 @@
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     <script src="app/model3d_exam_engine.js" onerror="this.onerror=null;this.src='model3d_exam_engine.js'"></script>
     <script src="app/arena_duel_engine.js" onerror="this.onerror=null;this.src='arena_duel_engine.js'"></script>
+    <script src="app/olympia_loci_engine.js" onerror="this.onerror=null;this.src='olympia_loci_engine.js'"></script>
     <script src="app/loci_account_manager.js" onerror="this.onerror=null;this.src='loci_account_manager.js'"></script>
     <script>
                 window.goBackToPortal = function () {
@@ -3248,7 +3249,17 @@
                                 </span>
                                 <span class="format-subcard-count" style="background:#e0f2fe; color:#0369a1; font-weight:700; border:1px solid #bae6fd;">9 Trạm 3D</span>
                             </div>
-                            <div class="format-subcard arena-subcard" data-action="arena" title="Đấu Trường Tri Thức 1v1 - Ghép trận online trả lời câu hỏi 30s" style="border: 2px solid #38bdf8; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);">
+                                                        <div class="format-subcard olympia-subcard" data-action="olympia" title="Đường Lên Đỉnh Loci - Đấu trường 4 thí sinh chuẩn format Olympia (Khởi động, Vượt CNV, Tăng tốc, Về đích)" style="border: 2px solid #facc15; background: linear-gradient(135deg, #fefce8 0%, #ffffff 100%);">
+                                <span class="format-subcard-icon" style="background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; font-size: 18px; display: grid; place-items: center; border-radius: 12px; width: 38px; height: 38px; box-shadow: 0 4px 12px rgba(234, 179, 8, 0.35);">
+                                    🌿
+                                </span>
+                                <span class="format-subcard-text">
+                                    <span class="format-subcard-name" style="color:#b45309; font-weight: 800;">Đường Lên Đỉnh Loci</span>
+                                    <span class="format-subcard-desc">Thi đấu 4 người · Chuẩn Olympia</span>
+                                </span>
+                                <span class="format-subcard-count" style="background:#fef08a; color:#854d0e; font-weight:800; border:1px solid #fde047;">4 Thí sinh</span>
+                            </div>
+<div class="format-subcard arena-subcard" data-action="arena" title="Đấu Trường Tri Thức 1v1 - Ghép trận online trả lời câu hỏi 30s" style="border: 2px solid #38bdf8; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);">
                                 <span class="format-subcard-icon" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; font-size: 18px; display: grid; place-items: center; border-radius: 12px; width: 38px; height: 38px;">
                                     ⚔️
                                 </span>
@@ -3273,6 +3284,9 @@
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT (28 câu) ➔
                         </button>
+                                                <button class="btn-hero-olympia" data-action="olympia" title="Đường Lên Đỉnh Loci: Tranh tài 4 thí sinh chuẩn format Olympia" style="background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.35);">
+                            🌿 Đường Lên Đỉnh Loci (4 Thí Sinh) ➔
+                        </button>
                         <button class="btn-hero-arena" data-action="arena" title="Ghép trận online đối kháng 1v1 trả lời câu hỏi 30s" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
                             ⚔️ Đấu Trường Tri Thức (1v1) ➔
                         </button>
@@ -3287,6 +3301,9 @@
                         </button>
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT (28 câu) ➔
+                        </button>
+                                                <button class="btn-hero-olympia" data-action="olympia" title="Đường Lên Đỉnh Loci: Tranh tài 4 thí sinh chuẩn format Olympia" style="background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.35);">
+                            🌿 Đường Lên Đỉnh Loci (4 Thí Sinh) ➔
                         </button>
                         <button class="btn-hero-arena" data-action="arena" title="Ghép trận online đối kháng 1v1 trả lời câu hỏi 30s" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
                             ⚔️ Đấu Trường Tri Thức (1v1) ➔
@@ -3305,11 +3322,118 @@
                         <button class="btn-hero-exam" data-action="exam" title="Vào phòng thi thử tốt nghiệp THPT Quốc Gia (28 câu - 50 phút)">
                             Làm Đề ôn tập THPT ➔
                         </button>
+                                                <button class="btn-hero-olympia" data-action="olympia" title="Đường Lên Đỉnh Loci: Tranh tài 4 thí sinh chuẩn format Olympia" style="background: linear-gradient(135deg, #eab308 0%, #ca8a04 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.35);">
+                            🌿 Đường Lên Đỉnh Loci (4 Thí Sinh) ➔
+                        </button>
                         <button class="btn-hero-arena" data-action="arena" title="Ghép trận online đối kháng 1v1 trả lời câu hỏi 30s" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: #ffffff; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.3);">
                             ⚔️ Đấu Trường Tri Thức (1v1) ➔
                         </button>
                     </div>`}
                 </div>
+
+                <!-- KHU VỰC ĐẤU TRƯỜNG & GAME LỊCH SỬ 3D (CHƠI ONLINE & OLYMPIA 4 NGƯỜI) -->
+                <div class="loci-game-arcade-section" style="margin-top: 32px; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 24px; padding: 26px 28px; box-shadow: 0 4px 20px rgba(0,0,0,0.04);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <div style="display: inline-flex; align-items: center; gap: 8px; background: #fef3c7; color: #b45309; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; margin-bottom: 6px;">
+                                <span>🎮 Đấu Trường & Game Học Tập 3D</span>
+                            </div>
+                            <h3 style="font-size: 21px; font-weight: 800; color: #0f172a; margin: 0;">Đấu Trường Tri Thức & Games Lịch Sử 3D</h3>
+                            <p style="font-size: 13.5px; color: #64748b; margin: 4px 0 0 0;">Thi đấu đối kháng thời gian thực, leo núi Olympia 4 thí sinh và trải nghiệm các game nhập vai 3D.</p>
+                        </div>
+                    </div>
+
+                    <!-- GRID 5 GAMES -->
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+                        <!-- GAME 1: ĐƯỜNG LÊN ĐỈNH LOCI (4 THÍ SINH - OLYMPIA) -->
+                        <div class="arcade-game-card" style="background: linear-gradient(135deg, #fefce8 0%, #ffffff 100%); border: 2px solid #facc15; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(234, 179, 8, 0.15);">
+                            <div style="position: absolute; top: 12px; right: 12px; background: #eab308; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
+                                4 THÍ SINH · OLYMPIA
+                            </div>
+                            <div>
+                                <div style="font-size: 38px; margin-bottom: 8px;">🌿</div>
+                                <h4 style="font-size: 17px; font-weight: 800; color: #854d0e; margin: 0 0 6px 0;">Đường Lên Đỉnh Loci</h4>
+                                <p style="font-size: 13px; color: #713f12; line-height: 1.45; margin: 0 0 16px 0;">
+                                    Tranh tài cùng 3 bạn học xuất sắc qua 4 vòng thi Olympia: Khởi động, Vượt chướng ngại vật, Tăng tốc, Về đích & Trao Vòng Nguyệt Quế!
+                                </p>
+                            </div>
+                            <button type="button" class="btn-game-play" data-action="olympia"
+                                style="background: linear-gradient(135deg, #eab308, #ca8a04); color: #fff; border: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(202, 138, 4, 0.35);">
+                                <span>Vào Thi Đấu 4 Người Ngay ➔</span>
+                            </button>
+                        </div>
+
+                        <!-- GAME 2: ĐẤU TRƯỜNG TRI THỨC 1v1 -->
+                        <div class="arcade-game-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);">
+                            <div style="position: absolute; top: 12px; right: 12px; background: #0284c7; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
+                                1v1 REALTIME · 30S
+                            </div>
+                            <div>
+                                <div style="font-size: 38px; margin-bottom: 8px;">⚔️</div>
+                                <h4 style="font-size: 17px; font-weight: 800; color: #0369a1; margin: 0 0 6px 0;">Đấu Trường Tri Thức (1v1)</h4>
+                                <p style="font-size: 13px; color: #075985; line-height: 1.45; margin: 0 0 16px 0;">
+                                    Ghép trận online 1v1 đối kháng, cùng chiếu 1 câu hỏi trong 30s, tích lũy điểm thắng mở khóa 5 cấp Huy Hiệu Trí Nhớ và Bảng Vàng.
+                                </p>
+                            </div>
+                            <button type="button" class="btn-game-play" data-action="arena"
+                                style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
+                                <span>Ghép Trận 1v1 Ngay ➔</span>
+                            </button>
+                        </div>
+
+                        <!-- GAME 3: MỤC TIÊU TRI THỨC 3D -->
+                        <div class="arcade-game-card" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: 12px; right: 12px; background: #64748b; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
+                                RUNNER 3D
+                            </div>
+                            <div>
+                                <div style="font-size: 38px; margin-bottom: 8px;">🎯</div>
+                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Mục Tiêu Tri Thức 3D</h4>
+                                <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0 0 16px 0;">
+                                    Game hành động đường chạy vô tận, né chướng ngại vật và bắn hạ các mục tiêu câu hỏi Lịch sử tiếp năng lượng.
+                                </p>
+                            </div>
+                            <a href="game_muc_tieu_tri_thuc.html" style="background: #0f172a; color: #fff; text-decoration: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>Vào Chơi Game ➔</span>
+                            </a>
+                        </div>
+
+                        <!-- GAME 4: TRƯỜNG SƠN ĐỔ LỬA 3D -->
+                        <div class="arcade-game-card" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: 12px; right: 12px; background: #b45309; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
+                                LÁI XE VẬN TẢI 3D
+                            </div>
+                            <div>
+                                <div style="font-size: 38px; margin-bottom: 8px;">🚛</div>
+                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Trường Sơn Đổ Lửa 3D</h4>
+                                <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0 0 16px 0;">
+                                    Lái đoàn xe vận tải quân sự vượt đèo đá hiểm trở trên tuyến đường Trường Sơn, mở tọa độ trạm kiểm soát lịch sử.
+                                </p>
+                            </div>
+                            <a href="game_truong_son_do_lua.html" style="background: #0f172a; color: #fff; text-decoration: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>Vào Chơi Game ➔</span>
+                            </a>
+                        </div>
+
+                        <!-- GAME 5: CHIẾN HÀO LỊCH SỬ 3D -->
+                        <div class="arcade-game-card" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
+                            <div style="position: absolute; top: 12px; right: 12px; background: #047857; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
+                                MÊ CUNG 3D
+                            </div>
+                            <div>
+                                <div style="font-size: 38px; margin-bottom: 8px;">💣</div>
+                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Chiến Hào Lịch Sử 3D</h4>
+                                <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0 0 16px 0;">
+                                    Nhập vai chiến sĩ vượt mê cung chiến hào hầm ngầm cứ điểm Điện Biên Phủ, giải đố mật mã lịch sử để chiến thắng.
+                                </p>
+                            </div>
+                            <a href="game_chien_hao_3d.html" style="background: #0f172a; color: #fff; text-decoration: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>Vào Chơi Game ➔</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
             `;
 
                 // Chọn bài: chỉ phản hồi khi click (không re-render theo hover)
@@ -3351,6 +3475,14 @@
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         const action = btn.dataset.action;
+                                                if (action === 'olympia') {
+                            if (window.OlympiaLociEngine) {
+                                window.OlympiaLociEngine.open();
+                            } else {
+                                window.location.href = 'game_duong_len_dinh_loci.html';
+                            }
+                            return;
+                        }
                         if (action === 'arena') {
                             if (window.ArenaDuelEngine) {
                                 window.ArenaDuelEngine.open();

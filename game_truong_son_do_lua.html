@@ -1,0 +1,2811 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trường Sơn Đổ Lửa 3D - Đèo Đá Tử Thần</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sky: #8ea7b5; --soil: #9d5c31; --soil-dark: #6e3b1f; --leaf: #314f2f;
+            --olive: #58653d; --gold: #f1d08a; --ink: #1a120d; --panel: rgba(24, 18, 12, 0.84);
+            --border: rgba(241, 208, 138, 0.38); --danger: #ff5f4d; --success: #8be08b;
+        }
+        * { box-sizing: border-box; font-family: 'Be Vietnam Pro', sans-serif; }
+        html, body { margin: 0; height: 100%; overflow: hidden; font-family: 'Be Vietnam Pro', sans-serif; background: #181e1a; color: #f4ead3; }
+        #game-container { position: relative; width: 100vw; height: 100vh; overflow: hidden; }
+        canvas { display: block; width: 100%; height: 100%; }
+        #vignette { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at center, rgba(0, 0, 0, 0) 44%, rgba(0, 0, 0, 0.16) 72%, rgba(0, 0, 0, 0.6) 100%); z-index: 2; }
+        #flash { position: absolute; inset: 0; background: rgba(255, 84, 62, 0.45); opacity: 0; pointer-events: none; transition: opacity 0.18s ease; z-index: 22; }
+        #flash.active { opacity: 1; }
+        #mist { position: absolute; inset: 0; pointer-events: none; z-index: 3; opacity: 0.75; background: radial-gradient(circle at 20% 30%, rgba(210, 225, 214, 0.14), transparent 28%), linear-gradient(180deg, rgba(186, 196, 191, 0.12), rgba(20, 26, 24, 0.02) 42%, rgba(7, 10, 9, 0.36) 100%); mix-blend-mode: screen; animation: mist-drift 18s ease-in-out infinite alternate; }
+        #flare-glow { position: absolute; inset: 0; pointer-events: none; z-index: 21; opacity: 0; background: radial-gradient(circle at 50% 18%, rgba(255, 246, 212, 0.92), rgba(255, 210, 118, 0.34) 18%, rgba(255, 170, 82, 0.12) 32%, transparent 48%), linear-gradient(180deg, rgba(255, 235, 182, 0.22), transparent 32%); transition: opacity 0.14s linear; }
+        @keyframes mist-drift { from { transform: translate3d(-1.5%, 0, 0) scale(1); } to { transform: translate3d(1.5%, -1.2%, 0) scale(1.04); } }
+        #hud { position: absolute; top: 18px; left: 18px; right: 18px; display: grid; grid-template-columns: repeat(6, minmax(110px, 1fr)); gap: 12px; z-index: 10; pointer-events: none; }
+        .hud-card { padding: 12px 14px; border: 1px solid var(--border); border-radius: 18px; background: linear-gradient(180deg, rgba(35, 26, 18, 0.9), rgba(17, 13, 9, 0.78)); box-shadow: 0 12px 25px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 230, 182, 0.12); backdrop-filter: blur(10px); }
+        .hud-label { display: block; margin-bottom: 4px; font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(241, 208, 138, 0.76); }
+        .hud-value { font-size: 22px; font-weight: 700; color: #fff3d0; }
+        #life-value { color: #ff8a78; letter-spacing: 0.12em; }
+        #banner { position: absolute; top: 108px; left: 50%; transform: translateX(-50%); z-index: 12; min-width: min(92vw, 420px); padding: 12px 18px; border-radius: 999px; border: 1px solid rgba(255, 228, 164, 0.28); background: rgba(20, 14, 10, 0.72); color: #ffe7b2; text-align: center; letter-spacing: 0.04em; box-shadow: 0 12px 24px rgba(0, 0, 0, 0.24); opacity: 0; transition: opacity 0.2s ease; pointer-events: none; }
+        #banner.visible { opacity: 1; }
+        .overlay { position: absolute; inset: 0; z-index: 30; display: flex; align-items: center; justify-content: center; padding: 20px; background: rgba(6, 7, 8, 0.52); backdrop-filter: blur(10px); }
+        .overlay.hidden { display: none; }
+        .panel { width: min(980px, 94vw); border-radius: 28px; border: 1px solid rgba(255, 218, 150, 0.28); background: linear-gradient(180deg, rgba(34, 24, 16, 0.96), rgba(14, 10, 8, 0.94)); box-shadow: 0 28px 80px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 231, 189, 0.12); overflow: hidden; }
+        .panel-head { padding: 22px 26px 18px; border-bottom: 1px solid rgba(255, 219, 156, 0.12); background: linear-gradient(180deg, rgba(74, 47, 26, 0.45), rgba(22, 15, 11, 0)); }
+        .panel-title { margin: 0; font-size: clamp(1.6rem, 2.8vw, 2.5rem); color: #ffe0a0; letter-spacing: 0.04em; }
+        .panel-subtitle { margin: 10px 0 0; color: rgba(255, 235, 198, 0.8); line-height: 1.6; }
+        .panel-body { padding: 24px 26px 28px; }
+        .start-grid { display: grid; grid-template-columns: 1.2fr 0.9fr; gap: 20px; align-items: start; }
+        .info-card { padding: 16px 18px; border-radius: 18px; border: 1px solid rgba(255, 221, 165, 0.14); background: rgba(255, 213, 138, 0.05); color: #f9ebc9; line-height: 1.65; }
+        .info-card strong { color: #ffe0a0; }
+        .stat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+        .stat-box { padding: 14px 16px; border-radius: 16px; background: rgba(255, 208, 132, 0.08); border: 1px solid rgba(255, 208, 132, 0.16); }
+        .stat-box span { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(255, 226, 179, 0.66); }
+        .stat-box b { display: block; margin-top: 6px; font-size: 24px; color: #fff3cf; }
+        .action-row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 20px; }
+        .btn { border: 0; border-radius: 999px; padding: 14px 26px; font: inherit; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease; }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { background: linear-gradient(180deg, #f3d18f, #d6a862); color: #24170e; box-shadow: 0 10px 24px rgba(214, 168, 98, 0.28); }
+        #quiz-panel .panel { width: min(820px, 94vw); }
+        #quiz-meta { margin-bottom: 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.14em; color: rgba(255, 225, 170, 0.72); }
+        #question-text { margin: 0 0 18px; font-size: clamp(1.12rem, 2vw, 1.5rem); line-height: 1.6; color: #fff3d4; }
+        #question-options { display: grid; gap: 12px; }
+        .option-btn { width: 100%; padding: 15px 18px; border: 1px solid rgba(255, 221, 164, 0.16); border-radius: 16px; background: rgba(255, 221, 164, 0.06); color: #fff1d0; text-align: left; font: inherit; font-size: 1rem; line-height: 1.45; cursor: pointer; transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease; }
+        .option-btn:hover:not(:disabled) { transform: translateY(-1px); background: rgba(255, 221, 164, 0.12); border-color: rgba(255, 225, 170, 0.3); }
+        .option-btn:disabled { cursor: default; opacity: 0.74; }
+        .option-btn.correct { border-color: rgba(139, 224, 139, 0.6); background: rgba(97, 168, 97, 0.18); }
+        .option-btn.wrong { border-color: rgba(255, 112, 94, 0.62); background: rgba(171, 68, 56, 0.2); }
+        #quiz-feedback { min-height: 72px; margin-top: 18px; padding: 14px 16px; border-radius: 16px; background: rgba(255, 221, 164, 0.06); border: 1px solid rgba(255, 221, 164, 0.08); line-height: 1.6; color: #f7ead1; }
+        #quiz-feedback strong { display: inline-block; margin-bottom: 6px; }
+        #review-timer { margin-top: 12px; font-weight: 700; color: #ffe199; }
+        #summary-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 16px; }
+        .summary-card { padding: 16px; border-radius: 18px; background: rgba(255, 223, 162, 0.07); border: 1px solid rgba(255, 223, 162, 0.14); }
+        .summary-card span { display: block; font-size: 12px; color: rgba(255, 231, 191, 0.72); text-transform: uppercase; letter-spacing: 0.12em; }
+        .summary-card b { display: block; margin-top: 8px; font-size: 30px; color: #fff4d6; }
+        #summary-note { margin-top: 18px; padding: 16px 18px; border-radius: 18px; background: rgba(255, 223, 162, 0.06); border: 1px solid rgba(255, 223, 162, 0.1); line-height: 1.6; color: #f7ebcf; }
+    </style>
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+</head>
+<body>
+
+<!-- LOCI EDU TOP RETURN NAVIGATION BAR -->
+<div id="loci-game-nav-bar" style="position: fixed; top: 12px; left: 16px; z-index: 99999; display: flex; align-items: center; gap: 10px;">
+    <a href="review.html" style="display: inline-flex; align-items: center; gap: 8px; background: rgba(15, 23, 42, 0.88); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #ffffff; text-decoration: none; padding: 8px 16px; border-radius: 99px; font-family: system-ui, sans-serif; font-size: 13px; font-weight: 700; border: 1.5px solid rgba(56, 189, 248, 0.5); box-shadow: 0 4px 16px rgba(0,0,0,0.4); transition: all 0.2s;"
+       onmouseover="this.style.background='#0284c7'; this.style.transform='translateY(-1px)';"
+       onmouseout="this.style.background='rgba(15, 23, 42, 0.88)'; this.style.transform='none';">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        <span>Về Trang Ôn Tập Loci</span>
+    </a>
+</div>
+
+
+    <!-- NÚT QUAY LẠI ĐÃ ĐƯỢC GỠ BỎ ĐỂ TRÁNH TRÙNG LẠP VỚI HỆ THỐNG CHÍNH -->
+    <div id="game-container">
+        <!-- HUD & Giao diện -->
+        <div id="hud">
+            <div class="hud-card"><span class="hud-label">Quãng đường</span><div class="hud-value" id="distance-value">0 / 20000m</div></div>
+            <div class="hud-card"><span class="hud-label">Chặng kế tiếp</span><div class="hud-value" id="checkpoint-distance">1000m</div></div>
+            <div class="hud-card"><span class="hud-label">Chặng đã qua</span><div class="hud-value" id="progress-value">0 / 20</div></div>
+            <div class="hud-card"><span class="hud-label">Máu</span><div class="hud-value" id="life-value">❤❤❤</div></div>
+            <div class="hud-card"><span class="hud-label">Đúng</span><div class="hud-value" id="correct-value">0</div></div>
+            <div class="hud-card"><span class="hud-label">Sai</span><div class="hud-value" id="wrong-value">0</div></div>
+        </div>
+
+        <div id="banner"></div>
+        <div id="flash"></div>
+        <div id="flare-glow"></div>
+        <div id="mist"></div>
+        <div id="vignette"></div>
+
+        <!-- Màn hình bắt đầu -->
+        <div id="start-screen" class="overlay">
+            <div class="panel">
+                <div class="panel-head">
+                    <h1 class="panel-title">Trường Sơn 3D: Đèo Đá Quanh Co</h1>
+                    <p class="panel-subtitle">
+                        Lái xe vận tải qua 10.000m đèo dốc hiểm trở. Vách đá bên phải, vực sâu vạn trượng bên trái. 
+                        Cẩn thận với những khúc cua tay áo và bom đạn quân thù.
+                    </p>
+                </div>
+                <div class="panel-body">
+                    <div class="start-grid">
+                        <div class="info-card">
+                            <strong>Nhiệm vụ</strong><br>
+                            Vượt quãng đường 10.000m qua <strong>20 chặng</strong>. 
+                            Mỗi 500m mở một chốt tri thức lịch sử. Trả lời sai mất 1 máu.<br><br>
+                            <strong>Cảnh báo Tử thần</strong><br>
+                            - Đâm vào vách núi (Bên phải): Dội ngược, mất máu.<br>
+                            - Lệch mép đường (Bên trái): <b>Rơi thẳng xuống vực. Kết thúc game!</b><br>
+                            - Trúng bom: Rung chấn, mất máu.
+                        </div>
+                        <div class="stat-grid">
+                            <div class="stat-box"><span>Chiều dài</span><b>10.000m</b></div>
+                            <div class="stat-box"><span>Tốc độ tối đa</span><b>20m/s</b></div>
+                            <div class="stat-box"><span>Số chặng</span><b>20</b></div>
+                            <div class="stat-box"><span>Máu</span><b>3</b></div>
+                        </div>
+                    </div>
+                    <div class="action-row"><button class="btn btn-primary" id="start-btn">Bắt đầu hành quân</button></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Màn hình trắc nghiệm -->
+        <div id="quiz-panel" class="overlay hidden">
+            <div class="panel">
+                <div class="panel-head">
+                    <h2 class="panel-title">Chốt Tri Thức Lịch Sử</h2>
+                    <p class="panel-subtitle">Trả lời để xe được phép tiếp tục tiến lên.</p>
+                </div>
+                <div class="panel-body">
+                    <div id="quiz-meta"></div><p id="question-text"></p><div id="question-options"></div>
+                    <div id="quiz-feedback"></div><div id="review-timer"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Màn hình tổng kết -->
+        <div id="summary-panel" class="overlay hidden">
+            <div class="panel">
+                <div class="panel-head"><h2 class="panel-title" id="summary-title">Tổng Kết Hành Trình</h2><p class="panel-subtitle" id="summary-subtitle"></p></div>
+                <div class="panel-body">
+                    <div id="summary-grid">
+                        <div class="summary-card"><span>Quãng đường</span><b id="summary-distance"></b></div>
+                        <div class="summary-card"><span>Đúng</span><b id="summary-correct"></b></div>
+                        <div class="summary-card"><span>Sai</span><b id="summary-wrong"></b></div>
+                        <div class="summary-card"><span>Máu còn lại</span><b id="summary-life"></b></div>
+                    </div>
+                    <div id="summary-note"></div>
+                    <div id="answer-report"></div>
+                    <div class="action-row">
+                        <button class="btn btn-primary" id="restart-btn">Chơi lại hành trình</button>
+                        <button class="btn btn-primary" id="back-btn" style="background: #e74c3c; color: #fff;">Quay lại bản đồ</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="questions_data.js"></script>
+    <script type="module">
+        import * as THREE from 'three';
+        import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
+
+        // Khai báo hàm quay lại bản đồ
+        window.goBackToMap = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const openLevel = urlParams.get('openLevel') || "";
+            const levelName = urlParams.get('levelName') || "";
+            const system = urlParams.get('system') || "";
+            
+            // Tính toán điểm số (tỷ lệ câu đúng)
+            // Trong game này, state.correct và state.wrong lưu số câu
+            let finalScore = 0;
+            if (typeof state !== 'undefined') {
+                const totalQs = state.correct + state.wrong;
+                finalScore = totalQs > 0 ? Math.round((state.correct / totalQs) * 100) : 0;
+            }
+            
+            window.location.href = `giao diện web.html?skipIntro=true&openLevel=${openLevel}&levelName=${levelName}&system=${system}&gameScore=${finalScore}&mode=game`;
+        };
+
+        const TRACK_LENGTH = 10000;
+        const CHECKPOINT_INTERVAL = 500; 
+        const TOTAL_CHECKPOINTS = TRACK_LENGTH / CHECKPOINT_INTERVAL;
+        const MAX_SPEED = 20;
+        const MAX_LIVES = 3;
+        const ROAD_WIDTH = 24; // Mở rộng đường từ 18 lên 24
+        const ROAD_HALF_WIDTH = ROAD_WIDTH * 0.5;
+        const SHOULDER_WIDTH = 3.2; 
+        const TERRAIN_HALF_WIDTH = 200;
+        const SEGMENT_LENGTH = 18; 
+        const VISIBLE_SEGMENTS = 80; // Tăng từ 65 lên 80 để không còn ô trống ở cuối đường
+        const CURVE_SAMPLE_STEP = 1;
+        const CAR_MODEL_YAW_OFFSET = Math.PI / 2;
+        const CAR_MODEL_GROUND_CLEARANCE = 0.08;
+
+        const keys = { left: false, right: false, up: false, down: false };
+
+        const distanceValueEl = document.getElementById('distance-value');
+        const checkpointDistanceEl = document.getElementById('checkpoint-distance');
+        const progressValueEl = document.getElementById('progress-value');
+        const lifeValueEl = document.getElementById('life-value');
+        const correctValueEl = document.getElementById('correct-value');
+        const wrongValueEl = document.getElementById('wrong-value');
+        const bannerEl = document.getElementById('banner');
+        const flashEl = document.getElementById('flash');
+        const flareGlowEl = document.getElementById('flare-glow');
+        const quizPanelEl = document.getElementById('quiz-panel');
+        const quizMetaEl = document.getElementById('quiz-meta');
+        const questionTextEl = document.getElementById('question-text');
+        const questionOptionsEl = document.getElementById('question-options');
+        const quizFeedbackEl = document.getElementById('quiz-feedback');
+        const reviewTimerEl = document.getElementById('review-timer');
+        const summaryPanelEl = document.getElementById('summary-panel');
+        const summaryTitleEl = document.getElementById('summary-title');
+        const summarySubtitleEl = document.getElementById('summary-subtitle');
+        const summaryDistanceEl = document.getElementById('summary-distance');
+        const summaryCorrectEl = document.getElementById('summary-correct');
+        const summaryWrongEl = document.getElementById('summary-wrong');
+        const summaryLifeEl = document.getElementById('summary-life');
+        const summaryNoteEl = document.getElementById('summary-note');
+
+        function sampleRoadProfile(distance) {
+            const winding = Math.sin(distance * 0.006) * 42 + Math.sin(distance * 0.018) * 14 + Math.sin(distance * 0.0019) * 21;
+            const elevation = distance * 0.08 + Math.cos(distance * 0.004) * 14 + Math.sin(distance * 0.011) * 3.8;
+            return { x: winding, y: elevation };
+        }
+
+        function getRoadCurve(distance) {
+            const current = sampleRoadProfile(distance);
+            const prev = sampleRoadProfile(distance - CURVE_SAMPLE_STEP);
+            const next = sampleRoadProfile(distance + CURVE_SAMPLE_STEP);
+            const dx = next.x - prev.x;
+            const dy = next.y - prev.y;
+            const dz = CURVE_SAMPLE_STEP * 2;
+            const rotationY = Math.atan2(dx, dz);
+            const pitch = Math.atan2(dy, Math.hypot(dx, dz));
+            return { x: current.x, y: current.y, rotationY, pitch };
+        }
+
+        function seededValue(seed, offset = 0) {
+            const value = Math.sin(seed * 127.1 + offset * 311.7) * 43758.5453123;
+            return value - Math.floor(value);
+        }
+
+        function terrainHeightAtLocal(x, z, type = 'normal') {
+            // Hiệu ứng nhiễu đa tầng (Fractal Noise) để tạo núi gồ ghề
+            const fbm = (px, pz) => {
+                return Math.sin(px * 0.08) * Math.cos(pz * 0.08) * 4.0 +
+                       Math.sin(px * 0.2) * Math.sin(pz * 0.2) * 2.0 +
+                       Math.cos(px * 0.5) * Math.sin(pz * 0.5) * 0.8 +
+                       Math.sin(px * 1.2) * 0.3;
+            };
+
+            const noise = fbm(x, z);
+
+            // Nếu là Hầm, khoét rỗng núi
+            if (type === 'tunnel' && Math.abs(x) < ROAD_HALF_WIDTH + 6) {
+                return -8; 
+            }
+
+            if (x > ROAD_HALF_WIDTH) {
+                const wall = x - ROAD_HALF_WIDTH;
+                // Tạo vách đá dựng đứng với các bậc đá (terraces)
+                const steps = Math.floor(wall / 8) * 2.5;
+                const cliff = Math.pow(wall * 0.8, 1.3) * 1.5;
+                return 0.5 + cliff + steps + noise * 1.5;
+            }
+
+            if (x < -ROAD_HALF_WIDTH) {
+                const drop = Math.abs(x) - ROAD_HALF_WIDTH;
+                // Vực sâu với các gờ đá hiểm trở
+                const ravine = -Math.pow(drop * 0.9, 1.2) * 2.0;
+                return ravine + noise * 0.8;
+            }
+
+            // Mặt đường hơi gồ ghề nhẹ
+            return 0.1 + noise * 0.05;
+        }
+
+        function roadSurfaceHeight(x, z) {
+            const crown = 0.075 - Math.abs(x / ROAD_HALF_WIDTH) * 0.085;
+            const ripple = Math.sin(z * 0.34 + x * 0.3) * 0.01;
+            return crown + ripple;
+        }
+
+        const container = document.getElementById('game-container');
+        const scene = new THREE.Scene();
+        const textureLoader = new THREE.TextureLoader();
+        const backgroundTex = textureLoader.load('./Ảnh/toàn cảnh Trường SƠn - Copy.png');
+        backgroundTex.colorSpace = THREE.SRGBColorSpace;
+        scene.background = backgroundTex;
+        scene.fog = new THREE.FogExp2(0x5a6d7a, 0.0055); // Giảm nhẹ sương mù để nhìn xa hơn nhưng vẫn che được chân trời
+
+        const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 800); // Tăng tầm nhìn camera lên 800m
+        const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+        renderer.outputColorSpace = THREE.SRGBColorSpace;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.06;
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        container.appendChild(renderer.domElement);
+
+        const maxAnisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
+
+        const ambientLight = new THREE.AmbientLight(0xaab3b8, 0.26);
+        scene.add(ambientLight);
+
+        const hemiLight = new THREE.HemisphereLight(0xb6cad7, 0x3a2a1f, 1.12);
+        scene.add(hemiLight);
+
+        const sunLight = new THREE.DirectionalLight(0xffefc8, 1.85); // Giảm cường độ
+        sunLight.position.set(62, 78, -28);
+        sunLight.castShadow = true;
+        sunLight.shadow.mapSize.set(1024, 1024); // Giảm từ 2048 để mượt hơn
+        sunLight.shadow.camera.near = 1;
+        sunLight.shadow.camera.far = 200;
+        sunLight.shadow.bias = -0.0005;
+        scene.add(sunLight);
+
+        // Loại bỏ shadow cho các đèn phụ để tăng FPS
+        const rimLight = new THREE.DirectionalLight(0x8eb2c6, 0.4);
+        rimLight.position.set(-38, 28, -42);
+        scene.add(rimLight);
+
+        function createCanvasTexture(width, height, painter, options = {}) {
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            painter(ctx, width, height);
+            const texture = new THREE.CanvasTexture(canvas);
+            if (options.repeatX || options.repeatY) {
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.repeat.set(options.repeatX ?? 1, options.repeatY ?? 1);
+            } else {
+                texture.wrapS = texture.wrapT = THREE.ClampToEdgeWrapping;
+            }
+            if (options.srgb !== false) texture.colorSpace = THREE.SRGBColorSpace;
+            texture.anisotropy = maxAnisotropy;
+            return texture;
+        }
+
+        const roadTex = createCanvasTexture(768, 768, (ctx, width, height) => {
+            const base = ctx.createLinearGradient(0, 0, 0, height);
+            base.addColorStop(0, '#775036');
+            base.addColorStop(0.55, '#5f3d2b');
+            base.addColorStop(1, '#472b1e');
+            ctx.fillStyle = base;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalAlpha = 0.16;
+            ctx.strokeStyle = '#2b180f';
+            ctx.lineWidth = 18;
+            [0.34, 0.66].forEach((ratio, index) => {
+                ctx.beginPath();
+                ctx.moveTo(width * ratio, 0);
+                for (let y = 0; y <= height; y += 48) {
+                    ctx.lineTo(width * ratio + Math.sin(y * 0.015 + index) * 12, y);
+                }
+                ctx.stroke();
+            });
+
+            ctx.globalAlpha = 0.08;
+            for (let i = 0; i < 180; i++) {
+                ctx.fillStyle = i % 2 === 0 ? '#8d6a45' : '#1f120d';
+                ctx.beginPath();
+                const radius = 4 + Math.random() * 9;
+                ctx.ellipse(Math.random() * width, Math.random() * height, radius, radius * 0.42, Math.random() * Math.PI, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 0.05;
+            ctx.fillStyle = '#e8c48f';
+            for (let i = 0; i < 900; i++) {
+                ctx.fillRect(Math.random() * width, Math.random() * height, 1, 1);
+            }
+
+            ctx.globalAlpha = 1;
+        }, { repeatX: 1.35, repeatY: 3.6 });
+
+        const rockTex = createCanvasTexture(768, 768, (ctx, width, height) => {
+            // Nền đá xám sẫm
+            const base = ctx.createLinearGradient(0, 0, width, height);
+            base.addColorStop(0, '#4e4741');
+            base.addColorStop(0.5, '#3a3532');
+            base.addColorStop(1, '#2b2724');
+            ctx.fillStyle = base;
+            ctx.fillRect(0, 0, width, height);
+
+            // Các mảng rêu/đất (mossy patches)
+            for (let i = 0; i < 40; i++) {
+                ctx.globalAlpha = 0.3;
+                ctx.fillStyle = Math.random() > 0.6 ? '#3d4a34' : '#5a4d3b';
+                ctx.beginPath();
+                ctx.ellipse(Math.random() * width, Math.random() * height, 40+Math.random()*80, 20+Math.random()*40, Math.random()*Math.PI, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            // Chi tiết đá vỡ và nứt nẻ
+            for (let i = 0; i < 2800; i++) {
+                ctx.globalAlpha = 0.1 + Math.random() * 0.15;
+                ctx.fillStyle = Math.random() > 0.5 ? '#8f8680' : '#1a1816';
+                const size = 1 + Math.random() * 12;
+                ctx.fillRect(Math.random() * width, Math.random() * height, size, size * 0.4);
+            }
+
+            ctx.globalAlpha = 1;
+        }, { repeatX: 2.0, repeatY: 2.0 });
+
+        const shoulderTex = createCanvasTexture(512, 512, (ctx, width, height) => {
+            const base = ctx.createLinearGradient(0, 0, width, height);
+            base.addColorStop(0, '#806045');
+            base.addColorStop(1, '#463126');
+            ctx.fillStyle = base;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalAlpha = 0.14;
+            for (let i = 0; i < 1200; i++) {
+                ctx.fillStyle = i % 3 === 0 ? '#927557' : '#281a13';
+                const radius = 1 + Math.random() * 4;
+                ctx.beginPath();
+                ctx.arc(Math.random() * width, Math.random() * height, radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            ctx.globalAlpha = 1;
+        }, { repeatX: 1.4, repeatY: 3.4 });
+
+        const craterTex = createCanvasTexture(512, 512, (ctx, width, height) => {
+            const gradient = ctx.createRadialGradient(width * 0.5, height * 0.5, 24, width * 0.5, height * 0.5, width * 0.46);
+            gradient.addColorStop(0, '#090909');
+            gradient.addColorStop(0.55, '#1d1410');
+            gradient.addColorStop(1, '#4b3425');
+            ctx.fillStyle = gradient;
+            ctx.fillRect(0, 0, width, height);
+
+            ctx.globalAlpha = 0.12;
+            ctx.fillStyle = '#85614b';
+            for (let i = 0; i < 1000; i++) {
+                ctx.fillRect(Math.random() * width, Math.random() * height, 2, 2);
+            }
+            ctx.globalAlpha = 1;
+        }, { repeatX: 1, repeatY: 1 });
+
+        const roadMaterial = new THREE.MeshStandardMaterial({
+            map: roadTex,
+            roughness: 0.97,
+            metalness: 0.02
+        });
+
+        const rockMaterial = new THREE.MeshStandardMaterial({
+            map: rockTex,
+            roughness: 0.94,
+            flatShading: true
+        });
+
+        const shoulderMaterial = new THREE.MeshStandardMaterial({
+            map: shoulderTex,
+            roughness: 1
+        });
+
+        const treeTrunkMaterial = new THREE.MeshStandardMaterial({ color: 0x5a3a24, roughness: 1 });
+        const treeLeafMaterial = new THREE.MeshStandardMaterial({ color: 0x334a2f, roughness: 1 });
+        const shrubMaterial = new THREE.MeshStandardMaterial({ color: 0x617046, roughness: 1 });
+        const burntWoodMaterial = new THREE.MeshStandardMaterial({ color: 0x1f1d1b, roughness: 1, flatShading: true });
+        const boulderMaterial = new THREE.MeshStandardMaterial({ color: 0x58514b, roughness: 1, flatShading: true });
+
+        const bombMaterial = new THREE.MeshStandardMaterial({ color: 0x3a3d40, metalness: 0.22, roughness: 0.7 });
+        const planeBodyMaterial = new THREE.MeshStandardMaterial({ color: 0x67717a, metalness: 0.22, roughness: 0.68 });
+        const planeDarkMaterial = new THREE.MeshStandardMaterial({ color: 0x2b3136, metalness: 0.32, roughness: 0.72 });
+        const planeGlassMaterial = new THREE.MeshStandardMaterial({ color: 0x8ca0ab, metalness: 0.3, roughness: 0.2, transparent: true, opacity: 0.85 });
+        const guidePostMaterial = new THREE.MeshStandardMaterial({ color: 0xcdb694, roughness: 1 });
+        const guideCapMaterial = new THREE.MeshStandardMaterial({ color: 0x7f1d13, roughness: 0.9 });
+        const shadowMaterial = new THREE.MeshBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.18, depthWrite: false });
+        const explosionMaterial = new THREE.MeshBasicMaterial({ color: 0xffb269, transparent: true, opacity: 0.85, side: THREE.DoubleSide, depthWrite: false });
+        const craterMaterial = new THREE.MeshStandardMaterial({ map: craterTex, roughness: 1 });
+
+        const mudTex = createCanvasTexture(512, 512, (ctx, width, height) => {
+            const base = ctx.createLinearGradient(0, 0, width, height);
+            base.addColorStop(0, '#4a3222');
+            base.addColorStop(0.5, '#3a2518');
+            base.addColorStop(1, '#2a1a10');
+            ctx.fillStyle = base;
+            ctx.fillRect(0, 0, width, height);
+            ctx.globalAlpha = 0.2;
+            for (let i = 0; i < 400; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#1a100a' : '#5a4232';
+                ctx.fillRect(Math.random() * width, Math.random() * height, 2+Math.random()*8, 2+Math.random()*8);
+            }
+        }, { repeatX: 1.5, repeatY: 3.5 });
+
+        const mudMaterial = new THREE.MeshStandardMaterial({ map: mudTex, roughness: 1, metalness: 0.1 });
+        const woodMaterial = new THREE.MeshStandardMaterial({ color: 0x4a321d, roughness: 0.9 });
+        const tunnelMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1c1a, roughness: 1, flatShading: true });
+        const torchLightMaterial = new THREE.MeshBasicMaterial({ color: 0xffaa44 });
+
+        function createSkyDome() {
+            const material = new THREE.ShaderMaterial({
+                side: THREE.BackSide,
+                depthWrite: false,
+                uniforms: {
+                    topColor: { value: new THREE.Color(0xa4bcc8) },
+                    horizonColor: { value: new THREE.Color(0xf2d7b2) },
+                    groundColor: { value: new THREE.Color(0x2f3a31) },
+                    offset: { value: 18 },
+                    exponent: { value: 0.78 }
+                },
+                vertexShader: `
+                    varying vec3 vWorldPosition;
+                    void main() {
+                        vec4 worldPosition = modelMatrix * vec4(position, 1.0);
+                        vWorldPosition = worldPosition.xyz;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 topColor;
+                    uniform vec3 horizonColor;
+                    uniform vec3 groundColor;
+                    uniform float offset;
+                    uniform float exponent;
+                    varying vec3 vWorldPosition;
+                    void main() {
+                        float h = normalize(vWorldPosition + vec3(0.0, offset, 0.0)).y;
+                        float skyMix = max(pow(max(h, 0.0), exponent), 0.0);
+                        float groundMix = max(pow(max(-h, 0.0), 1.35), 0.0);
+                        vec3 color = mix(horizonColor, topColor, skyMix);
+                        color = mix(color, groundColor, groundMix * 0.65);
+                        gl_FragColor = vec4(color, 1.0);
+                    }
+                `
+            });
+            const dome = new THREE.Mesh(new THREE.SphereGeometry(340, 40, 24), material);
+            dome.renderOrder = -20;
+            dome.frustumCulled = false;
+            scene.add(dome);
+            return dome;
+        }
+
+        function generateMountainTexture(topColor, bottomColor, seed) {
+            return createCanvasTexture(1024, 512, (ctx, width, height) => {
+                ctx.clearRect(0, 0, width, height);
+                const horizonY = height * 0.72;
+                const gradient = ctx.createLinearGradient(0, height * 0.1, 0, height);
+                gradient.addColorStop(0, topColor);
+                gradient.addColorStop(1, bottomColor);
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.moveTo(0, height);
+                ctx.lineTo(0, horizonY);
+                for (let x = 0; x <= width; x += width / 16) {
+                    const normalized = x / width;
+                    const ridge =
+                        horizonY -
+                        (Math.sin(normalized * 7.2 + seed) * 34 + Math.sin(normalized * 17.5 + seed * 1.9) * 16 + Math.cos(normalized * 10.4 + seed * 0.7) * 12) -
+                        seededValue(seed + x, 3) * 14;
+                    ctx.lineTo(x, ridge);
+                }
+                ctx.lineTo(width, height);
+                ctx.closePath();
+                ctx.fill();
+
+                ctx.globalAlpha = 0.18;
+                ctx.fillStyle = '#000000';
+                for (let i = 0; i < 4; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, height);
+                    ctx.lineTo(0, horizonY + 12 + i * 10);
+                    for (let x = 0; x <= width; x += width / 12) {
+                        const normalized = x / width;
+                        const shadowLine = horizonY + 20 + i * 12 - (Math.sin(normalized * (6 + i) + seed * 1.4 + i) * (16 + i * 6));
+                        ctx.lineTo(x, shadowLine);
+                    }
+                    ctx.lineTo(width, height);
+                    ctx.closePath();
+                    ctx.fill();
+                }
+                ctx.globalAlpha = 1;
+            }, { srgb: true });
+        }
+
+        function generateCloudTexture() {
+            return createCanvasTexture(512, 256, (ctx, width, height) => {
+                ctx.clearRect(0, 0, width, height);
+                for (let i = 0; i < 18; i++) {
+                    const x = width * (0.1 + Math.random() * 0.8);
+                    const y = height * (0.22 + Math.random() * 0.45);
+                    const radiusX = 34 + Math.random() * 78;
+                    const radiusY = 14 + Math.random() * 30;
+                    const gradient = ctx.createRadialGradient(x, y, radiusY * 0.2, x, y, radiusX);
+                    gradient.addColorStop(0, 'rgba(255,255,255,0.42)');
+                    gradient.addColorStop(0.45, 'rgba(255,255,255,0.22)');
+                    gradient.addColorStop(1, 'rgba(255,255,255,0)');
+                    ctx.fillStyle = gradient;
+                    ctx.beginPath();
+                    ctx.ellipse(x, y, radiusX, radiusY, Math.random() * Math.PI, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }, { srgb: true });
+        }
+
+        function generateMistTexture() {
+            return createCanvasTexture(512, 256, (ctx, width, height) => {
+                ctx.clearRect(0, 0, width, height);
+                const gradient = ctx.createLinearGradient(0, 0, width, 0);
+                gradient.addColorStop(0, 'rgba(255,255,255,0)');
+                gradient.addColorStop(0.25, 'rgba(232,238,237,0.28)');
+                gradient.addColorStop(0.75, 'rgba(205,218,214,0.34)');
+                gradient.addColorStop(1, 'rgba(255,255,255,0)');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(0, height * 0.2, width, height * 0.6);
+
+                for (let i = 0; i < 12; i++) {
+                    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+                    ctx.beginPath();
+                    ctx.ellipse(Math.random() * width, height * (0.3 + Math.random() * 0.35), 40 + Math.random() * 90, 18 + Math.random() * 22, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }, { srgb: true });
+        }
+
+        function createBackdropPlane(width, height, texture, options = {}) {
+            const material = new THREE.MeshBasicMaterial({
+                map: texture,
+                color: options.color ?? 0xffffff,
+                transparent: true,
+                opacity: options.opacity ?? 1,
+                depthWrite: false,
+                fog: false,
+                side: THREE.DoubleSide
+            });
+            const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+            mesh.renderOrder = options.renderOrder ?? 0;
+            scene.add(mesh);
+            return mesh;
+        }
+
+        const skyDome = createSkyDome();
+
+        const ridgeLayers = [
+            { mesh: createBackdropPlane(420, 160, generateMountainTexture('#647882', '#44535b', 1.2), { opacity: 0.95, renderOrder: -8 }), distance: 150, sideOffset: -120, heightOffset: 18 },
+            { mesh: createBackdropPlane(520, 185, generateMountainTexture('#5e6d77', '#3f4a52', 4.6), { opacity: 0.82, renderOrder: -7 }), distance: 215, sideOffset: 85, heightOffset: 28 },
+            { mesh: createBackdropPlane(620, 220, generateMountainTexture('#8395a0', '#57666e', 8.1), { opacity: 0.68, renderOrder: -6 }), distance: 295, sideOffset: -35, heightOffset: 46 }
+        ];
+
+        const cloudTexture = generateCloudTexture();
+        const cloudLayers = Array.from({ length: 5 }, (_, index) => ({
+            mesh: createBackdropPlane(120 + index * 18, 54 + index * 6, cloudTexture, { opacity: 0.26 - index * 0.02, renderOrder: -5 }),
+            baseDistance: 70 + index * 52,
+            sideOffset: -110 + index * 58,
+            heightOffset: 62 + index * 10,
+            phase: index * 1.8,
+            driftSpeed: 6 + index * 1.2
+        }));
+
+        const mistTexture = generateMistTexture();
+        const valleyMistLayers = Array.from({ length: 5 }, (_, index) => ({
+            mesh: createBackdropPlane(78 + index * 18, 22 + index * 4, mistTexture, { opacity: 0.18, renderOrder: 2 }),
+            distance: 30 + index * 18,
+            sideOffset: -30 - index * 9,
+            depthJitter: index * 0.9,
+            heightOffset: -9 - index * 2.4,
+            phase: index * 1.17
+        }));
+
+        function updateBackdrop(time) {
+            skyDome.position.set(car.position.x, car.position.y + 18, 12);
+
+            ridgeLayers.forEach(layer => {
+                const curve = getRoadCurve(state.distance + layer.distance);
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                layer.mesh.position.set(
+                    curve.x + layer.sideOffset * cos,
+                    curve.y + layer.heightOffset,
+                    layer.distance - layer.sideOffset * sin
+                );
+                layer.mesh.rotation.y = curve.rotationY;
+            });
+
+            cloudLayers.forEach(layer => {
+                const relativeDistance = ((layer.baseDistance - time * layer.driftSpeed) % 320 + 320) % 320 + 40;
+                const curve = getRoadCurve(state.distance + relativeDistance);
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                const cloudOffset = layer.sideOffset + Math.sin(time * 0.18 + layer.phase) * 18;
+                layer.mesh.position.set(
+                    curve.x + cloudOffset * cos,
+                    curve.y + layer.heightOffset + Math.sin(time * 0.3 + layer.phase) * 2.2,
+                    relativeDistance - cloudOffset * sin
+                );
+                layer.mesh.rotation.y = curve.rotationY;
+                layer.mesh.material.opacity = 0.14 + Math.sin(time * 0.25 + layer.phase) * 0.03 + 0.12;
+            });
+
+            valleyMistLayers.forEach(layer => {
+                const relativeDistance = layer.distance + ((time * (2.2 + layer.depthJitter)) % 18);
+                const curve = getRoadCurve(state.distance + relativeDistance);
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                const offset = layer.sideOffset - Math.sin(time * 0.22 + layer.phase) * 6;
+                layer.mesh.position.set(
+                    curve.x + offset * cos,
+                    curve.y + layer.heightOffset + Math.sin(time * 0.42 + layer.phase) * 0.8,
+                    relativeDistance - offset * sin
+                );
+                layer.mesh.rotation.y = curve.rotationY - 0.1;
+                layer.mesh.material.opacity = 0.11 + 0.05 * (1 + Math.sin(time * 0.35 + layer.phase));
+            });
+        }
+
+        function createRoadsideProp() {
+            const prop = new THREE.Group();
+
+            const tree = new THREE.Group();
+            const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.26, 0.44, 2.8, 7), treeTrunkMaterial);
+            trunk.position.y = 1.35;
+            const crownA = new THREE.Mesh(new THREE.ConeGeometry(1.8, 3.6, 8), treeLeafMaterial);
+            crownA.position.y = 3.55;
+            const crownB = new THREE.Mesh(new THREE.ConeGeometry(1.35, 2.5, 8), treeLeafMaterial);
+            crownB.position.y = 4.95;
+            tree.add(trunk, crownA, crownB);
+
+            const burnt = new THREE.Group();
+            const burntTrunk = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.34, 4.2, 6), burntWoodMaterial);
+            burntTrunk.position.y = 2.05;
+            const branchA = new THREE.Mesh(new THREE.BoxGeometry(0.16, 1.4, 0.16), burntWoodMaterial);
+            branchA.position.set(0.32, 3.1, 0);
+            branchA.rotation.z = -0.7;
+            const branchB = new THREE.Mesh(new THREE.BoxGeometry(0.14, 1.1, 0.14), burntWoodMaterial);
+            branchB.position.set(-0.28, 2.7, 0.2);
+            branchB.rotation.z = 0.9;
+            burnt.add(burntTrunk, branchA, branchB);
+
+            const boulder = new THREE.Mesh(new THREE.DodecahedronGeometry(1.1, 0), boulderMaterial);
+            boulder.scale.set(1.25, 0.85, 1.45);
+            boulder.position.y = 0.8;
+
+            const shrub = new THREE.Group();
+            const shrubA = new THREE.Mesh(new THREE.SphereGeometry(0.72, 8, 7), shrubMaterial);
+            shrubA.scale.set(1.4, 0.82, 1.1);
+            shrubA.position.set(0, 0.58, 0);
+            const shrubB = new THREE.Mesh(new THREE.SphereGeometry(0.42, 8, 7), shrubMaterial);
+            shrubB.position.set(0.65, 0.46, -0.1);
+            const shrubC = new THREE.Mesh(new THREE.SphereGeometry(0.38, 8, 7), shrubMaterial);
+            shrubC.position.set(-0.58, 0.4, 0.16);
+            shrub.add(shrubA, shrubB, shrubC);
+
+            prop.add(tree, burnt, boulder, shrub);
+            prop.traverse(child => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
+            prop.userData = {
+                tree,
+                burnt,
+                boulder,
+                shrub,
+                type: 'tree',
+                collisionRadius: 1.2,
+                solid: true
+            };
+            return prop;
+        }
+
+        function createGuideMarker() {
+            const marker = new THREE.Group();
+            const post = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 1.4, 6), guidePostMaterial);
+            post.position.y = 0.7;
+            const cap = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.18, 0.16), guideCapMaterial);
+            cap.position.set(0, 1.18, 0);
+            marker.add(post, cap);
+            marker.traverse(child => {
+                if (child.isMesh) child.castShadow = true;
+            });
+            return marker;
+        }
+
+        function buildRoadGeometry(width, length) {
+            const geometry = new THREE.PlaneGeometry(width, length, 24, 10);
+            const position = geometry.attributes.position;
+            for (let i = 0; i < position.count; i++) {
+                const x = position.getX(i);
+                const z = position.getY(i);
+                position.setZ(i, roadSurfaceHeight(x, z));
+            }
+            geometry.computeVertexNormals();
+            return geometry;
+        }
+
+        function buildRoadEdgeGeometry(side, length) {
+            const width = SHOULDER_WIDTH;
+            const geometry = new THREE.PlaneGeometry(width, length, 12, 10);
+            const position = geometry.attributes.position;
+            for (let i = 0; i < position.count; i++) {
+                const x = position.getX(i);
+                const z = position.getY(i);
+                const t = (x / width) + 0.5;
+                const outward = side === 'right' ? t : 1 - t;
+                const slope = side === 'right' ? outward * 0.28 : -outward * 0.18;
+                position.setZ(i, 0.02 + slope + Math.sin(z * 0.3 + outward * 4.5) * 0.02);
+            }
+            geometry.computeVertexNormals();
+            return geometry;
+        }
+
+        function createSegment() {
+            const group = new THREE.Group();
+
+            // Tăng Overlap (19.5 thay vì 18) để xóa bỏ triệt để các khe hở (ô trống)
+            const OVERLAP = 1.5; 
+            const geomLength = SEGMENT_LENGTH + OVERLAP;
+
+            // 1. Normal Ground - Optimized Geometry with Overlap
+            const groundGeo = new THREE.PlaneGeometry(TERRAIN_HALF_WIDTH * 2, geomLength, 80, 8);
+            const groundPos = groundGeo.attributes.position;
+            for (let i = 0; i < groundPos.count; i++) {
+                const x = groundPos.getX(i);
+                const z = groundPos.getY(i);
+                groundPos.setZ(i, terrainHeightAtLocal(x, z));
+            }
+            groundGeo.computeVertexNormals();
+            const ground = new THREE.Mesh(groundGeo, rockMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            group.add(ground);
+
+            // 2. Road with Overlap
+            const roadGeo = buildRoadGeometry(ROAD_WIDTH, geomLength);
+            const road = new THREE.Mesh(roadGeo, roadMaterial);
+            road.rotation.x = -Math.PI / 2;
+            road.position.y = 0.12;
+            road.receiveShadow = true;
+            group.add(road);
+
+            // 3. Edges with Overlap
+            const leftEdge = new THREE.Mesh(buildRoadEdgeGeometry('left', geomLength), shoulderMaterial);
+            leftEdge.rotation.x = -Math.PI / 2;
+            leftEdge.position.set(-(ROAD_HALF_WIDTH + SHOULDER_WIDTH * 0.5), 0.08, 0);
+            leftEdge.receiveShadow = true;
+
+            const rightEdge = new THREE.Mesh(buildRoadEdgeGeometry('right', geomLength), shoulderMaterial);
+            rightEdge.rotation.x = -Math.PI / 2;
+            rightEdge.position.set(ROAD_HALF_WIDTH + SHOULDER_WIDTH * 0.5, 0.08, 0);
+            rightEdge.receiveShadow = true;
+            group.add(leftEdge, rightEdge);
+
+            // 4. Bridge Parts
+            const bridgeRailings = new THREE.Group();
+            for (let side of [-1, 1]) {
+                const rail = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.8, geomLength), woodMaterial);
+                rail.position.set(side * (ROAD_HALF_WIDTH + 0.5), 0.5, 0);
+                bridgeRailings.add(rail);
+                for (let j = 0; j < 3; j++) {
+                    const post = new THREE.Mesh(new THREE.BoxGeometry(0.4, 1.4, 0.4), woodMaterial);
+                    post.position.set(side * (ROAD_HALF_WIDTH + 0.5), 0.2, -SEGMENT_LENGTH*0.5 + j * (SEGMENT_LENGTH/2));
+                    bridgeRailings.add(post);
+                }
+            }
+            bridgeRailings.visible = false;
+            group.add(bridgeRailings);
+
+            // 5. Tunnel Parts
+            const tunnelCeiling = new THREE.Mesh(new THREE.CylinderGeometry(ROAD_WIDTH * 0.72, ROAD_WIDTH * 0.72, geomLength, 10, 1, true, Math.PI, Math.PI), tunnelMaterial);
+            tunnelCeiling.rotation.z = Math.PI / 2;
+            tunnelCeiling.rotation.y = Math.PI / 2;
+            tunnelCeiling.position.y = 2.5;
+            tunnelCeiling.visible = false;
+            group.add(tunnelCeiling);
+
+            const torch = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.5, 0.2), woodMaterial);
+            torch.position.set(ROAD_HALF_WIDTH - 0.5, 2.5, 0);
+            const torchGlow = new THREE.PointLight(0xffaa44, 1.5, 12);
+            torchGlow.position.set(ROAD_HALF_WIDTH - 1, 3.2, 0);
+            const torchVisual = new THREE.Mesh(new THREE.SphereGeometry(0.2, 5, 5), torchLightMaterial);
+            torchVisual.position.copy(torchGlow.position);
+            const tunnelProps = new THREE.Group();
+            tunnelProps.add(torch, torchGlow, torchVisual);
+            tunnelProps.visible = false;
+            group.add(tunnelProps);
+
+            const props = [];
+            for (let i = 0; i < 4; i++) {
+                const prop = createRoadsideProp();
+                props.push(prop);
+                group.add(prop);
+            }
+
+            const markers = [];
+            for (let i = 0; i < 2; i++) {
+                const marker = createGuideMarker();
+                markers.push(marker);
+                group.add(marker);
+            }
+
+            scene.add(group);
+            return { group, ground, road, leftEdge, rightEdge, bridgeRailings, tunnelCeiling, tunnelProps, props, markers, assignedIndex: null, type: 'normal' };
+        }
+
+        function getSegmentType(index) {
+            if (index < 5) return 'normal'; // Giảm đoạn đường trống ban đầu
+            const cycle = 80;
+            const pos = index % cycle;
+            
+            // Sắp xếp lại để Hầm xuất hiện sớm hơn
+            if (pos >= 15 && pos < 25) return 'tunnel'; // Xuất hiện hầm từ segment 15
+            if (pos >= 35 && pos < 50) return 'muddy';  // Đường bùn
+            if (pos >= 60 && pos < 75) return 'bridge'; // Cầu
+            
+            return 'normal';
+        }
+
+        function decorateSegment(segment, absoluteIndex) {
+            if (segment.assignedIndex === absoluteIndex) return;
+            segment.assignedIndex = absoluteIndex;
+            
+            const type = getSegmentType(absoluteIndex);
+            const prevType = getSegmentType(absoluteIndex - 1);
+            segment.type = type;
+
+            // Reset visibility and materials
+            segment.ground.visible = true;
+            segment.road.material = roadMaterial;
+            segment.leftEdge.visible = true;
+            segment.rightEdge.visible = true;
+            segment.bridgeRailings.visible = false;
+            segment.tunnelCeiling.visible = false;
+            segment.tunnelProps.visible = false;
+
+            // Cập nhật lại hình dạng địa hình cho từng segment dựa trên loại (fix lỗi lấp hầm)
+            const groundPos = segment.ground.geometry.attributes.position;
+            for (let i = 0; i < groundPos.count; i++) {
+                const x = groundPos.getX(i);
+                const z = groundPos.getY(i);
+                groundPos.setZ(i, terrainHeightAtLocal(x, z, type));
+            }
+            segment.ground.geometry.attributes.position.needsUpdate = true;
+            segment.ground.geometry.computeVertexNormals();
+
+            if (type === 'bridge') {
+                segment.ground.visible = false;
+                segment.leftEdge.visible = false;
+                segment.rightEdge.visible = false;
+                segment.bridgeRailings.visible = true;
+                segment.road.material = woodMaterial;
+                segment.props.forEach(p => p.visible = false);
+                segment.markers.forEach(m => m.visible = false);
+            } else if (type === 'tunnel') {
+                segment.tunnelCeiling.visible = true;
+                segment.tunnelProps.visible = true;
+                segment.props.forEach(p => p.visible = false);
+                
+                // Nâng trần hầm cao hơn một chút để xe tải không bị clip
+                segment.tunnelCeiling.position.y = 3.5;
+            } else if (type === 'muddy') {
+                segment.road.material = mudMaterial;
+                segment.props.forEach(p => p.visible = true);
+                segment.markers.forEach(m => m.visible = true);
+            } else {
+                segment.props.forEach(p => p.visible = true);
+                segment.markers.forEach(m => m.visible = true);
+            }
+
+            if (type !== 'bridge' && type !== 'tunnel') {
+                segment.props.forEach((prop, slot) => {
+                    const seed = absoluteIndex * 13 + slot;
+                    const variantRoll = seededValue(seed, 8);
+                    const localZ = -SEGMENT_LENGTH * 0.5 + seededValue(seed, 4) * SEGMENT_LENGTH;
+                    const scale = 0.75 + seededValue(seed, 2) * 1.55;
+                    const localX = ROAD_HALF_WIDTH + 2.4 + seededValue(seed, 1) * (variantRoll > 0.7 ? 13 : 9);
+                    const localY = terrainHeightAtLocal(localX, localZ);
+
+                    prop.position.set(localX, localY, localZ);
+                    prop.scale.setScalar(scale);
+                    prop.rotation.y = seededValue(seed, 3) * Math.PI * 2;
+
+                    prop.userData.tree.visible = false;
+                    prop.userData.burnt.visible = false;
+                    prop.userData.boulder.visible = false;
+                    prop.userData.shrub.visible = false;
+
+                    if (variantRoll > 0.78) {
+                        prop.userData.boulder.visible = true;
+                        prop.userData.type = 'boulder';
+                        prop.userData.collisionRadius = 1.45 * scale;
+                        prop.position.y += 0.25;
+                    } else if (variantRoll > 0.56) {
+                        prop.userData.burnt.visible = true;
+                        prop.userData.type = 'burnt';
+                        prop.userData.collisionRadius = 1.12 * scale;
+                    } else if (variantRoll > 0.24) {
+                        prop.userData.tree.visible = true;
+                        prop.userData.type = 'tree';
+                        prop.userData.collisionRadius = 1.36 * scale;
+                    } else {
+                        prop.userData.shrub.visible = true;
+                        prop.userData.type = 'shrub';
+                        prop.userData.collisionRadius = 0.95 * scale;
+                        prop.position.y -= 0.12;
+                    }
+                });
+
+                segment.markers.forEach((marker, slot) => {
+                    const seed = absoluteIndex * 17 + slot;
+                    const localZ = -SEGMENT_LENGTH * 0.5 + (slot + 0.5) * (SEGMENT_LENGTH / segment.markers.length);
+                    const localX = -ROAD_HALF_WIDTH - 0.85 - seededValue(seed, 2) * 0.55;
+                    marker.visible = seededValue(seed, 6) > 0.18;
+                    marker.position.set(localX, terrainHeightAtLocal(localX, localZ) + 0.48, localZ);
+                    marker.rotation.y = Math.PI * 0.02 + seededValue(seed, 4) * 0.2;
+                    marker.rotation.z = -0.08 + seededValue(seed, 7) * 0.12;
+                    marker.scale.setScalar(0.88 + seededValue(seed, 5) * 0.22);
+                });
+            }
+        }
+
+        const roadSegments = Array.from({ length: VISIBLE_SEGMENTS }, createSegment);
+
+        function loadTexture(textureLoader, url, colorSpace = null) {
+            const texture = textureLoader.load(url);
+            if (colorSpace) texture.colorSpace = colorSpace;
+            texture.anisotropy = maxAnisotropy;
+            return texture;
+        }
+
+        function createFallbackTruckModel() {
+            const model = new THREE.Group();
+            const wheels = [];
+
+            const chassis = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.5, 6.4), new THREE.MeshStandardMaterial({ color: 0x4d5c43, roughness: 0.9 }));
+            chassis.position.y = 1.0;
+
+            const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.25, 1.7, 2.05), new THREE.MeshStandardMaterial({ color: 0x6d7c5a, roughness: 0.8 }));
+            cabin.position.set(0, 1.95, 2.05);
+
+            const cargo = new THREE.Mesh(new THREE.BoxGeometry(2.45, 1.85, 3.35), new THREE.MeshStandardMaterial({ color: 0x576245, roughness: 0.95 }));
+            cargo.position.set(0, 1.8, -1.05);
+
+            const bumper = new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.22, 0.24), planeDarkMaterial);
+            bumper.position.set(0, 0.7, 3.2);
+
+            const windshield = new THREE.Mesh(new THREE.BoxGeometry(1.95, 0.72, 0.08), planeGlassMaterial);
+            windshield.position.set(0, 2.18, 3.08);
+
+            model.add(chassis, cabin, cargo, bumper, windshield);
+
+            const wheelGeo = new THREE.CylinderGeometry(0.58, 0.58, 0.4, 18);
+            wheelGeo.rotateZ(Math.PI / 2);
+            const wheelMat = new THREE.MeshStandardMaterial({ color: 0x171717, roughness: 1, metalness: 0.12 });
+            [
+                [-1.18, 0.64, 2.15], [1.18, 0.64, 2.15],
+                [-1.18, 0.64, 0.15], [1.18, 0.64, 0.15],
+                [-1.18, 0.64, -2.0], [1.18, 0.64, -2.0]
+            ].forEach(([x, y, z]) => {
+                const wheel = new THREE.Mesh(wheelGeo, wheelMat);
+                wheel.position.set(x, y, z);
+                wheel.castShadow = true;
+                wheels.push(wheel);
+                model.add(wheel);
+            });
+
+            model.traverse(child => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+
+            const box = new THREE.Box3().setFromObject(model);
+            model.position.y -= box.min.y;
+            model.position.y += CAR_MODEL_GROUND_CLEARANCE;
+            return { model, wheels };
+        }
+
+        function createCar() {
+            const group = new THREE.Group();
+            group.userData = { wheels: [], lateralOffset: 0, visualYawOffset: 0 };
+            group.rotation.order = 'YXZ';
+
+            const fallback = createFallbackTruckModel();
+            group.add(fallback.model);
+            group.userData.wheels.push(...fallback.wheels);
+
+            const loader = new FBXLoader();
+            const textureLoader = new THREE.TextureLoader();
+            const basePath = 'assets/mud_hauler/';
+
+            const truckMaps = {
+                map: loadTexture(textureLoader, `${basePath}Meshy_AI_Jungle_Mud_Hauler_0512132430_texture.png`, THREE.SRGBColorSpace),
+                normal: loadTexture(textureLoader, `${basePath}Meshy_AI_Jungle_Mud_Hauler_0512132430_texture_normal.png`),
+                roughness: loadTexture(textureLoader, `${basePath}Meshy_AI_Jungle_Mud_Hauler_0512132430_texture_roughness.png`),
+                metallic: loadTexture(textureLoader, `${basePath}Meshy_AI_Jungle_Mud_Hauler_0512132430_texture_metallic.png`),
+                emissive: loadTexture(textureLoader, `${basePath}Meshy_AI_Jungle_Mud_Hauler_0512132430_texture_emission.png`, THREE.SRGBColorSpace)
+            };
+
+            const bodyMaterial = new THREE.MeshStandardMaterial({
+                map: truckMaps.map,
+                normalMap: truckMaps.normal,
+                roughnessMap: truckMaps.roughness,
+                metalnessMap: truckMaps.metallic,
+                emissiveMap: truckMaps.emissive,
+                emissive: new THREE.Color(0x4a5f4a),
+                emissiveIntensity: 0.18,
+                roughness: 0.95,
+                metalness: 0.16
+            });
+
+            const wheelMaterial = new THREE.MeshStandardMaterial({
+                color: 0x191919,
+                roughness: 1,
+                metalness: 0.08
+            });
+
+            loader.load(`${basePath}Meshy_AI_Jungle_Mud_Hauler_0512132430_texture.fbx`, (fbx) => {
+                group.remove(fallback.model);
+                group.userData.wheels.length = 0;
+
+                fbx.traverse(child => {
+                    if (!child.isMesh) return;
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                    const lowerName = child.name.toLowerCase();
+                    const isWheel = lowerName.includes('wheel') || lowerName.includes('tire');
+                    child.material = isWheel ? wheelMaterial : bodyMaterial;
+                    if (isWheel) group.userData.wheels.push(child);
+                });
+
+                fbx.scale.setScalar(0.045);
+                fbx.rotation.y = CAR_MODEL_YAW_OFFSET;
+                fbx.updateMatrixWorld(true);
+                const box = new THREE.Box3().setFromObject(fbx);
+                fbx.position.y -= box.min.y;
+                fbx.position.y += CAR_MODEL_GROUND_CLEARANCE;
+                group.add(fbx);
+            }, undefined, () => {
+                console.warn('Không tải được model xe tải, dùng fallback low-poly.');
+            });
+
+            scene.add(group);
+            return group;
+        }
+
+        const car = createCar();
+
+        function createPlaneTemplate() {
+            const plane = new THREE.Group();
+
+            const fuselage = new THREE.Mesh(new THREE.CylinderGeometry(0.78, 1.0, 10.4, 18), planeBodyMaterial);
+            fuselage.rotation.z = Math.PI / 2;
+
+            const nose = new THREE.Mesh(new THREE.ConeGeometry(0.8, 1.8, 18), planeDarkMaterial);
+            nose.rotation.z = -Math.PI / 2;
+            nose.position.x = 6.05;
+
+            const tailCone = new THREE.Mesh(new THREE.ConeGeometry(0.95, 1.5, 18), planeBodyMaterial);
+            tailCone.rotation.z = Math.PI / 2;
+            tailCone.position.x = -5.85;
+
+            const cockpit = new THREE.Mesh(new THREE.SphereGeometry(0.75, 16, 12), planeGlassMaterial);
+            cockpit.scale.set(1.55, 0.86, 1.1);
+            cockpit.position.set(1.7, 0.76, 0);
+
+            const wingCenter = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.22, 12.2), planeDarkMaterial);
+            wingCenter.position.x = 0.55;
+            const wingLeft = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.12, 5.4), planeDarkMaterial);
+            wingLeft.position.set(0.9, -0.02, -8.4);
+            wingLeft.rotation.x = -0.05;
+            const wingRight = wingLeft.clone();
+            wingRight.position.z = 8.4;
+            wingRight.rotation.x = 0.05;
+
+            const tailWing = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.12, 4.1), planeDarkMaterial);
+            tailWing.position.set(-4.4, 0.2, 0);
+            const tailFin = new THREE.Mesh(new THREE.BoxGeometry(1.8, 1.95, 0.18), planeDarkMaterial);
+            tailFin.position.set(-4.8, 1.15, 0);
+
+            plane.add(fuselage, nose, tailCone, cockpit, wingCenter, wingLeft, wingRight, tailWing, tailFin);
+
+            [-4.15, 4.15].forEach(sideZ => {
+                const engine = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.6, 1.25, 14), planeDarkMaterial);
+                engine.rotation.z = Math.PI / 2;
+                engine.position.set(2.25, -0.06, sideZ);
+
+                const propHub = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.28, 8), planeBodyMaterial);
+                propHub.rotation.z = Math.PI / 2;
+                propHub.position.set(3.05, -0.06, sideZ);
+
+                const propeller = new THREE.Mesh(new THREE.BoxGeometry(0.08, 3.25, 0.22), planeDarkMaterial);
+                propeller.position.set(3.2, -0.06, sideZ);
+                propeller.userData.isPropeller = true;
+
+                const underBomb = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.2, 0.75, 10), bombMaterial);
+                underBomb.rotation.z = Math.PI / 2;
+                underBomb.position.set(0.9, -0.78, sideZ * 0.75);
+
+                plane.add(engine, propHub, propeller, underBomb);
+            });
+
+            plane.scale.setScalar(1.35);
+            plane.traverse(child => {
+                if (child.isMesh) {
+                    child.castShadow = true;
+                    child.receiveShadow = true;
+                }
+            });
+            return plane;
+        }
+
+        function collectPlaneParts(plane) {
+            const propellers = [];
+            plane.traverse(child => {
+                if (child.userData?.isPropeller) propellers.push(child);
+            });
+            return { propellers };
+        }
+
+        const planeTemplate = createPlaneTemplate();
+        const activePlanes = [];
+        const activeBombs = [];
+        const activeCraters = [];
+        const activeEffects = [];
+        const activeObstacles = [];
+
+        function spawnObstacle() {
+            const type = Math.random() > 0.5 ? 'ROCK_SLIDE' : 'FALLEN_TREE';
+            const z = 150;
+            
+            if (type === 'FALLEN_TREE') {
+                const group = new THREE.Group();
+                // Thêm thân cây
+                const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.5, 14, 8), treeTrunkMaterial);
+                trunk.rotation.z = Math.PI / 2;
+                group.add(trunk);
+                
+                // Thêm một vài tán lá để dễ nhìn thấy (vì thân cây màu nâu dễ lẫn với đường)
+                for(let i=0; i<3; i++) {
+                    const leaf = new THREE.Mesh(new THREE.SphereGeometry(1.2 + Math.random(), 6, 6), treeLeafMaterial);
+                    leaf.position.set(-5 + i*5, 0.5, (Math.random()-0.5)*2);
+                    group.add(leaf);
+                }
+
+                group.position.set((Math.random() - 0.5) * 8, 0.8, z);
+                scene.add(group);
+                activeObstacles.push({ mesh: group, type, x: group.position.x, z, hit: false, width: 14 });
+            } else {
+                const rock = new THREE.Mesh(new THREE.DodecahedronGeometry(2.5), boulderMaterial);
+                rock.position.set(ROAD_HALF_WIDTH + 10, 5, z);
+                scene.add(rock);
+                activeObstacles.push({ mesh: rock, type, x: rock.position.x, z, hit: false, velocityX: -18 - Math.random() * 10, velocityY: 0 });
+                showBanner('Cảnh báo: Đá lở phía trước!', 2000);
+            }
+        }
+
+        function spawnPlane() {
+            const fromLeft = Math.random() > 0.5;
+            const plane = planeTemplate.clone(true);
+            const { propellers } = collectPlaneParts(plane);
+            plane.position.set(fromLeft ? -92 : 92, 56 + Math.random() * 11, 118 + Math.random() * 56);
+            plane.rotation.y = fromLeft ? 0 : Math.PI;
+            plane.rotation.z = fromLeft ? -0.07 : 0.07;
+            plane.rotation.x = 0.04;
+            scene.add(plane);
+
+            activePlanes.push({
+                mesh: plane,
+                propellers,
+                direction: fromLeft ? 1 : -1,
+                crossSpeed: 26 + Math.random() * 5,
+                bombsRemaining: 3,
+                bombInterval: 0.55,
+                bombTimer: 0,
+                targetX: (Math.random() - 0.5) * ROAD_WIDTH * 0.8,
+                dropTriggerX: fromLeft ? -12 : 12,
+                phase: Math.random() * Math.PI * 2,
+                baseBank: fromLeft ? -0.08 : 0.08
+            });
+            state.flareStrength = Math.max(state.flareStrength, 0.16);
+            showBanner('Máy bay địch lao tới thung lũng!');
+        }
+
+        function createBomb(planeData) {
+            const mesh = new THREE.Group();
+            const body = new THREE.Mesh(new THREE.CylinderGeometry(0.34, 0.48, 1.85, 12), bombMaterial);
+            body.rotation.z = Math.PI / 2;
+            const nose = new THREE.Mesh(new THREE.ConeGeometry(0.32, 0.6, 12), bombMaterial);
+            nose.rotation.z = -Math.PI / 2;
+            nose.position.x = 1.12;
+            const finH = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.04, 0.78), planeDarkMaterial);
+            finH.position.x = -0.88;
+            const finV = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.78, 0.04), planeDarkMaterial);
+            finV.position.x = -0.88;
+            mesh.add(body, nose, finH, finV);
+
+            const shadow = new THREE.Mesh(new THREE.CircleGeometry(2.1, 26), shadowMaterial.clone());
+            shadow.rotation.x = -Math.PI / 2;
+            shadow.position.y = 0.08;
+
+            scene.add(mesh);
+            scene.add(shadow);
+
+            activeBombs.push({
+                mesh,
+                shadow,
+                startX: planeData.mesh.position.x,
+                targetX: planeData.targetX,
+                z: planeData.mesh.position.z - 2,
+                y: planeData.mesh.position.y - 1.2,
+                duration: 2.15,
+                progress: 0,
+                spin: (Math.random() > 0.5 ? 1 : -1) * (5 + Math.random() * 2.5)
+            });
+        }
+
+        function createCrater(x, z) {
+            const worldPos = new THREE.Vector3(x, 0.22, z);
+            const curve = getRoadCurve(state.distance + z);
+            const cos = Math.cos(curve.rotationY);
+            const sin = Math.sin(curve.rotationY);
+            const absPos = new THREE.Vector3(curve.x + x * cos, curve.y + 0.22, z - x * sin);
+            
+            gameParticles.spawnExplosion(absPos);
+            if (state.audioInitialized) {
+                sfx.explosion.currentTime = 0;
+                sfx.explosion.play().catch(() => {});
+            }
+
+            const light = new THREE.PointLight(0xffb15d, 2.2, 26, 2.1);
+            light.position.copy(absPos);
+            scene.add(light);
+
+            activeEffects.push({ mesh: null, light, x, z, life: 0.78, maxLife: 0.78 });
+
+            // Cải tiến hố bom: Thêm vành 3D, khói âm ỉ và mảnh vỡ
+            const group = new THREE.Group();
+            
+            // Lớp nền đen sâu
+            const hole = new THREE.Mesh(
+                new THREE.CylinderGeometry(2.3, 1.8, 0.4, 24),
+                new THREE.MeshStandardMaterial({ color: 0x050505, roughness: 1 })
+            );
+            hole.position.y = -0.15;
+            group.add(hole);
+
+            // Vành đất cháy xém nhô cao
+            const rim = new THREE.Mesh(
+                new THREE.TorusGeometry(2.2, 0.45, 8, 32),
+                new THREE.MeshStandardMaterial({ color: 0x1a110a, roughness: 1 })
+            );
+            rim.rotation.x = -Math.PI / 2;
+            rim.position.y = 0.18;
+            group.add(rim);
+
+            // Thêm các mảnh vỡ đất đá xung quanh
+            for (let i = 0; i < 6; i++) {
+                const rock = new THREE.Mesh(
+                    new THREE.DodecahedronGeometry(0.3 + Math.random() * 0.4, 0),
+                    new THREE.MeshStandardMaterial({ color: 0x222222 })
+                );
+                const angle = Math.random() * Math.PI * 2;
+                const dist = 2.5 + Math.random() * 1.5;
+                rock.position.set(Math.cos(angle) * dist, 0.2, Math.sin(angle) * dist);
+                rock.rotation.set(Math.random(), Math.random(), Math.random());
+                group.add(rock);
+            }
+
+            group.position.set(x, 0.1, z);
+            scene.add(group);
+            
+            activeCraters.push({ 
+                mesh: group, 
+                x, 
+                z, 
+                hit: false, 
+                ttl: 15.0,
+                smokeTimer: 0 
+            });
+
+            state.flareStrength = Math.max(state.flareStrength, 0.88);
+            state.cameraShake = Math.max(state.cameraShake, 0.48);
+        }
+
+        // --- HỆ THỐNG VẬT PHẨM (ITEMS) ---
+        const activeItems = [];
+        const itemMaterials = {
+            health: new THREE.MeshStandardMaterial({ color: 0xff3333, emissive: 0xff0000, emissiveIntensity: 0.8 }),
+            shield: new THREE.MeshStandardMaterial({ color: 0x33ccff, emissive: 0x0066ff, emissiveIntensity: 0.8 }),
+            boost: new THREE.MeshStandardMaterial({ color: 0xffff33, emissive: 0xffcc00, emissiveIntensity: 0.8 })
+        };
+
+        function createItem(type, x, z) {
+            const group = new THREE.Group();
+            
+            if (type === 'health') {
+                const box1 = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.5, 0.5), itemMaterials.health);
+                const box2 = new THREE.Mesh(new THREE.BoxGeometry(0.5, 1.4, 0.5), itemMaterials.health);
+                group.add(box1, box2);
+            } else if (type === 'shield') {
+                const mesh = new THREE.Mesh(new THREE.OctahedronGeometry(1.0), itemMaterials.shield);
+                group.add(mesh);
+            } else {
+                const mesh = new THREE.Mesh(new THREE.ConeGeometry(0.7, 1.8, 4), itemMaterials.boost);
+                group.add(mesh);
+            }
+
+            const light = new THREE.PointLight(itemMaterials[type].color, 2, 12);
+            group.add(light);
+
+            // Thêm vòng hào quang phía dưới
+            const ring = new THREE.Mesh(
+                new THREE.RingGeometry(1.2, 1.4, 32),
+                new THREE.MeshBasicMaterial({ color: itemMaterials[type].color, transparent: true, opacity: 0.5, side: THREE.DoubleSide })
+            );
+            ring.rotation.x = -Math.PI / 2;
+            ring.position.y = -1.2;
+            group.add(ring);
+            
+            group.position.set(x, 1.5, z);
+            scene.add(group);
+            
+            activeItems.push({ mesh: group, ring, type, x, z, collected: false });
+        }
+
+        let lastItemDistance = 0;
+        function spawnRandomItem(z) {
+            const types = ['health', 'shield']; // Xóa 'boost'
+            const type = types[Math.floor(Math.random() * types.length)];
+            const x = (Math.random() - 0.5) * ROAD_WIDTH * 0.6; // Đảm bảo nằm trên đường
+            createItem(type, x, z);
+        }
+
+        const state = {
+            started: false,
+            paused: true,
+            over: false,
+            distance: 0,
+            currentSpeed: 0,
+            lives: MAX_LIVES,
+            correct: 0,
+            wrong: 0,
+            bombHits: 0,
+            checkpointIndex: 0,
+            nextCheckpoint: CHECKPOINT_INTERVAL,
+            questionDeck: [],
+            currentQuestion: null,
+            planeSpawnTimer: 4.8,
+            bannerUntil: 0,
+            reviewUntil: 0,
+            afterReview: null,
+            invulnerableUntil: 0,
+            cameraShake: 0,
+            falling: false,
+            flareStrength: 0,
+            audioInitialized: false,
+            answerHistory: [] // Lưu lịch sử câu hỏi
+        };
+
+        // CSS bổ sung cho bảng kết quả
+        const style = document.createElement('style');
+        style.textContent = `
+            #answer-report {
+                margin-top: 20px;
+                max-height: 200px;
+                overflow-y: auto;
+                text-align: left;
+                background: rgba(0,0,0,0.3);
+                padding: 15px;
+                border-radius: 10px;
+                font-size: 14px;
+            }
+            .report-item {
+                margin-bottom: 10px;
+                padding-bottom: 5px;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .report-q { font-weight: bold; color: #ffe0a0; }
+            .report-a { margin-top: 3px; }
+            .report-correct { color: #8be08b; }
+            .report-wrong { color: #ff5f4d; }
+        `;
+        document.head.appendChild(style);
+
+        // --- REALISM UPGRADE: AUDIO ---
+        const sfx = {
+            engine: new Audio('./Âm thanh/xe_tai_idle.mp3'),
+            explosion: new Audio('./Âm thanh/tieng_nem_qua_bom_lu_dan_va_tieng_no-www_tiengdong_com.mp3'),
+            music: new Audio('./Âm thanh/Nhạc đường chạy vinh quang nền.mp3'),
+            crash: new Audio('./Âm thanh/hieu_ung_am_thanh_sup_do_Do_vo-www_tiengdong_com.mp3'),
+            start: new Audio('./Âm thanh/tieng_noi_do_tan_cong_xong_pha_chien_dau_o_chien_truong-www_tiengdong_com.mp3')
+        };
+        sfx.engine.loop = true;
+        sfx.music.loop = true;
+        sfx.music.volume = 0.45;
+
+        function initAudio() {
+            if (state.audioInitialized) return;
+            state.audioInitialized = true;
+            sfx.engine.play().catch(() => {});
+            sfx.music.play().catch(() => {});
+        }
+
+        function updateEngineAudio(speed) {
+            if (!state.audioInitialized) return;
+            const playbackRate = 0.8 + (Math.abs(speed) / MAX_SPEED) * 0.7;
+            sfx.engine.playbackRate = THREE.MathUtils.clamp(playbackRate, 0.5, 1.8);
+            sfx.engine.volume = 0.3 + (Math.abs(speed) / MAX_SPEED) * 0.5;
+        }
+
+        // --- REALISM UPGRADE: PARTICLE SYSTEM (Optimized with Pooling) ---
+        class GameParticleSystem {
+            constructor() {
+                this.particles = [];
+                this.pool = {
+                    dust: [],
+                    fire: [],
+                    smoke: []
+                };
+                this.dustTimer = 0;
+                
+                // Pre-create some geometries/materials to reuse
+                this.geos = {
+                    dust: new THREE.SphereGeometry(1, 5, 5),
+                    fire: new THREE.SphereGeometry(1, 6, 6),
+                    smoke: new THREE.SphereGeometry(1, 6, 6)
+                };
+            }
+
+            getFromPool(type) {
+                if (this.pool[type].length > 0) {
+                    const p = this.pool[type].pop();
+                    p.visible = true;
+                    return p;
+                }
+                const mat = type === 'dust' ? new THREE.MeshBasicMaterial({ color: 0x8a6d4d, transparent: true, opacity: 0.35 }) :
+                            type === 'fire' ? new THREE.MeshBasicMaterial({ color: 0xff4400, transparent: true, opacity: 0.8 }) :
+                            new THREE.MeshBasicMaterial({ color: 0x222222, transparent: true, opacity: 0.5 });
+                const mesh = new THREE.Mesh(this.geos[type], mat);
+                scene.add(mesh);
+                return mesh;
+            }
+
+            spawnDust(pos, velocity) {
+                const size = 0.15 + Math.random() * 0.35;
+                const mesh = this.getFromPool('dust');
+                mesh.position.copy(pos);
+                mesh.scale.setScalar(size);
+                mesh.material.opacity = 0.35;
+                this.particles.push({
+                    mesh,
+                    velocity: velocity.clone().add(new THREE.Vector3((Math.random()-0.5)*1.2, Math.random()*0.6, (Math.random()-0.5)*1.2)),
+                    life: 0.8 + Math.random() * 0.4,
+                    maxLife: 1.2,
+                    type: 'dust'
+                });
+            }
+
+            spawnExplosion(pos) {
+                // Giảm số lượng hạt nổ để mượt hơn
+                for (let i = 0; i < 5; i++) {
+                    const mesh = this.getFromPool('fire');
+                    mesh.position.copy(pos);
+                    mesh.scale.setScalar(0.4 + Math.random() * 0.6);
+                    mesh.material.color.setHex(0xff4400);
+                    mesh.material.opacity = 0.8;
+                    this.particles.push({
+                        mesh,
+                        velocity: new THREE.Vector3((Math.random()-0.5)*8, 2 + Math.random()*8, (Math.random()-0.5)*8),
+                        life: 0.6,
+                        maxLife: 0.6,
+                        type: 'fire'
+                    });
+                }
+                for (let i = 0; i < 6; i++) {
+                    const mesh = this.getFromPool('smoke');
+                    mesh.position.copy(pos);
+                    mesh.scale.setScalar(0.6 + Math.random()*0.8);
+                    mesh.material.opacity = 0.4;
+                    this.particles.push({
+                        mesh,
+                        velocity: new THREE.Vector3((Math.random()-0.5)*4, 1.0 + Math.random()*4, (Math.random()-0.5)*4),
+                        life: 1.5,
+                        maxLife: 1.5,
+                        type: 'smoke'
+                    });
+                }
+            }
+
+            update(dt) {
+                for (let i = this.particles.length - 1; i >= 0; i--) {
+                    const p = this.particles[i];
+                    p.life -= dt;
+                    p.mesh.position.addScaledVector(p.velocity, dt);
+                    
+                    if (p.type === 'smoke') {
+                        p.mesh.scale.multiplyScalar(1 + dt * 0.3);
+                        p.velocity.y += dt * 1.0;
+                        p.mesh.material.opacity = (p.life / p.maxLife) * 0.5;
+                    } else if (p.type === 'fire') {
+                        p.mesh.material.color.lerp(new THREE.Color(0x222222), dt * 1.5);
+                        p.mesh.material.opacity = (p.life / p.maxLife) * 0.8;
+                        p.velocity.y -= dt * 9.8;
+                    } else {
+                        p.mesh.material.opacity = (p.life / p.maxLife) * 0.35;
+                    }
+
+                    if (p.life <= 0) {
+                        p.mesh.visible = false;
+                        this.pool[p.type].push(p.mesh);
+                        this.particles.splice(i, 1);
+                    }
+                }
+            }
+        }
+        const gameParticles = new GameParticleSystem();
+
+        
+    // Tải câu hỏi động dựa trên chủ đề
+    function loadDynamicQuestions() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicId = urlParams.get('openLevel') || "1";
+        const system = urlParams.get('system') || "thpt";
+
+        const lessonKey = (system === 'su12') ? `Su12_${topicId}` : topicId;
+
+        if (typeof ALL_GAME_QUESTIONS !== 'undefined' && ALL_GAME_QUESTIONS[lessonKey]) {
+            const rawQs = ALL_GAME_QUESTIONS[lessonKey];
+            return rawQs.map((q, idx) => ({
+                id: String(idx + 1),
+                prompt: q.q,
+                options: q.options,
+                correct: q.correct,
+                explanation: ''
+            })).sort(() => Math.random() - 0.5);
+        }
+        return null;
+    }
+
+    const dynamicQuestions = loadDynamicQuestions();
+    const questionDB = dynamicQuestions || [
+
+    {
+        "id": "1",
+        "prompt": "Trước Cách mạng tháng Hai năm 1917, nước Nga là nơi tập trung",
+        "options": [
+            "nhiều loại mâu thuẫn chồng chéo cần phải giải quyết.",
+            "nhiều yếu tố giúp cho kinh tế nông nghiệp phát triển.",
+            "mâu thuẫn giữa Chính quyền Xô viết với giai cấp tư sản.",
+            "những điều kiện thuận lợi cho cuộc cách mạng công nghiệp."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "2",
+        "prompt": "Dưới sự lãnh đạo của Đảng Bôn-sê-vích, cuộc Cách mạng tháng Hai năm 1917 đã thực hiện được mục tiêu nào sau đây?",
+        "options": [
+            "Thành lập Chính quyền Xô viết thống nhất trên toàn nước Nga rộng lớn.",
+            "Thành lập được một chính phủ cộng hoà, liên hiệp giữa vô sản với tư sản.",
+            "Lật đổ được chế độ phong kiến Nga hoàng đang là rào cản của đất nước.",
+            "Xoá bỏ Chính phủ lâm thời của giai cấp tư sản liên minh với phong kiến."
+        ],
+        "correct": 2,
+        "explanation": ""
+    },
+    {
+        "id": "3",
+        "prompt": "Các Xô viết ra đời trong Cách mạng tháng Hai (1917) ở Nga là chính quyền của",
+        "options": [
+            "công nhân, nông dân và binh lính.",
+            "công nhân, nông dân và tiểu tư sản.",
+            "vô sản liên minh với tư sản.",
+            "giai cấp tư sản kết hợp với Nga hoàng."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "4",
+        "prompt": "Nội dung nào sau đây phản ánh đúng tình hình nước Nga ngay sau Cách mạng tháng Hai (1917)?",
+        "options": [
+            "Nhà nước Liên Xô được thành lập.",
+            "Giai cấp vô sản nắm quyền tuyệt đối.",
+            "Vấn đề ruộng đất chưa được giải quyết.",
+            "Hiến pháp Liên Xô được thông qua."
+        ],
+        "correct": 2,
+        "explanation": ""
+    },
+    {
+        "id": "5",
+        "prompt": "Nội dung nào sau đây phản ánh đúng “một cục diện chính trị chưa từng có đã xuất hiện ở nước Nga sau Cách mạng tháng Hai năm 1917”?",
+        "options": [
+            "Chính phủ tư sản lật đổ chế độ phong kiến Nga hoàng.",
+            "Chính quyền liên hiệp tư sản và vô sản được thành lập.",
+            "Hai chính quyền của tư sản và các Xô viết cùng tồn tại.",
+            "Nga hoàng liên minh với tư sản chống lại các Xô viết."
+        ],
+        "correct": 2,
+        "explanation": ""
+    },
+    {
+        "id": "6",
+        "prompt": "Nhận xét nào sau đây đúng về tính chất của cuộc Cách mạng tháng Hai (1917) ở Nga?",
+        "options": [
+            "Là cuộc cách mạng dân tộc dân chủ nhân dân.",
+            "Là cuộc cách mạng dân chủ tư sản kiểu mới.",
+            "Là cuộc cách mạng dân chủ tư sản kiểu cũ.",
+            "Là cuộc cách mạng mang màu sắc tôn giáo."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "7",
+        "prompt": "Cách mạng tháng Mười Nga năm 1917 thắng lợi đã trực tiếp đưa tới sự ra đời của",
+        "options": [
+            "hệ thống xã hội chủ nghĩa trên thế giới.",
+            "Đảng Bôn-sê-vích Nga và Đảng Dân tộc.",
+            "Chính quyền Xô viết Nga do Lê-nin đứng đầu.",
+            "Liên bang Cộng hoà xã hội chủ nghĩa Xô viết."
+        ],
+        "correct": 2,
+        "explanation": ""
+    },
+    {
+        "id": "8",
+        "prompt": "Cuộc Cách mạng tháng Mười năm 1917 có ý nghĩa nào sau đây đối với nước Nga?",
+        "options": [
+            "Nhân dân lao động được làm chủ vận mệnh đất nước.",
+            "Dẫn đến tình trạng hai chính quyền song song tồn tại.",
+            "Mở ra con đường giải phóng cho các nước trên thế giới.",
+            "Giúp Nga đẩy lùi được nguy cơ ngoại xâm và nội phản."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "9",
+        "prompt": "Cuộc Cách mạng tháng Mười Nga (1917) mang tính chất là một cuộc cách mạng",
+        "options": [
+            "dân chủ tư sản.",
+            "xã hội chủ nghĩa.",
+            "vô sản kiểu mới.",
+            "dân chủ nhân dân."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "10",
+        "prompt": "Nội dung nào sau đây là sự kiện mở đầu của quá trình hình thành Liên bang Cộng hoà xã hội chủ nghĩa Xô viết?",
+        "options": [
+            "Chính quyền Xô viết chính thức thành lập từ trong Cách mạng tháng Mười (1917).",
+            "Các Xô viết của công – nông – binh ra đời từ trong Cách mạng tháng Hai (1917).",
+            "Tuyên bố thành lập Liên bang Cộng hoà xã hội chủ nghĩa Xô viết (Liên Xô, 1922).",
+            "Thông qua bản hiến pháp đầu tiên của nhà nước liên bang – Liên bang Xô viết (1924)."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "11",
+        "prompt": "Sự kiện nào sau đây đánh dấu hoàn thành quá trình thành lập Nhà nước Liên bang Cộng hoà xã hội chủ nghĩa Xô viết?",
+        "options": [
+            "Bản hiến pháp đầu tiên của Liên Xô được thông qua (1924).",
+            "Sự ra đời của các Xô viết trong Cách mạng tháng Hai (1917).",
+            "Chính quyền Xô viết ra đời trong Cách mạng tháng Mười (1917).",
+            "Thành lập Liên bang Cộng hoà xã hội chủ nghĩa Xô viết (1922)."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "12",
+        "prompt": "Đối với thế giới, sự ra đời của Liên bang Cộng hoà xã hội chủ nghĩa Xô viết có ý nghĩa nào sau đây?",
+        "options": [
+            "Mở ra quan hệ hợp tác với Mỹ và phương Tây.",
+            "Tác động đến địa – chính trị và quan hệ quốc tế.",
+            "Mở đầu quá trình sụp đổ của chủ nghĩa thực dân.",
+            "Mở đầu sự mở rộng của hệ thống xã hội chủ nghĩa."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "13",
+        "prompt": "Bối cảnh nào sau đây đã tạo điều kiện thuận lợi để nhân dân các nước Đông Âu nổi dậy giành chính quyền và thành lập các nhà nước dân chủ nhân dân?",
+        "options": [
+            "Nhật Bản đầu hàng quân Đồng minh vô điều kiện.",
+            "Chiến tranh thế giới thứ hai bùng nổ và đã lan rộng.",
+            "Sự giúp đỡ của Hồng quân Liên Xô để tiêu diệt phát xít.",
+            "Trung Quốc hoàn thành cách mạng dân tộc dân chủ."
+        ],
+        "correct": 2,
+        "explanation": ""
+    },
+    {
+        "id": "14",
+        "prompt": "Nội dung nào sau đây không phải sự phát triển và mở rộng địa bàn của chủ nghĩa xã hội trên thế giới?",
+        "options": [
+            "Cách mạng xã hội chủ nghĩa ở Nga thành công, nước Nga Xô viết ra đời (1917).",
+            "Miền Bắc Việt Nam được giải phóng và tuyên bố đi lên chủ nghĩa xã hội (1954).",
+            "Nước Cộng hoà Nhân dân Trung Hoa thành lập, đi lên chủ nghĩa xã hội (1949).",
+            "Các nước Đông Âu hoàn thành cuộc cách mạng dân chủ nhân dân (1948 – 1949)."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "15",
+        "prompt": "Nội dung nào sau đây là một trong những ý nghĩa về sự hình thành và phát triển của hệ thống chủ nghĩa xã hội trên thế giới?",
+        "options": [
+            "Mở đầu quá trình chủ nghĩa tư bản bị xoá bỏ ở châu Âu.",
+            "Trở thành chỗ dựa của phong trào cách mạng thế giới.",
+            "Làm cho chủ nghĩa xã hội trở thành hiện thực trên thế giới.",
+            "Mở đầu cho một khuynh hướng cách mạng mới ở châu Á."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "16",
+        "prompt": "Đến đầu những năm 60 của thế kỉ XX, chủ nghĩa xã hội trên thế giới không ngừng được củng cố và mở rộng sang những địa bàn nào sau đây?",
+        "options": [
+            "Từ châu Âu nối sang châu Á, lan rộng sang Tây Phi và Nam Phi.",
+            "Từ châu Á nối sang châu Phi và mở rộng ở khu vực Mỹ La-tinh.",
+            "Chủ nghĩa xã hội được xác lập và trở thành hệ thống ở châu Á.",
+            "Nối liền từ châu Âu sang châu Á, lan sang khu vực Mỹ La-tinh."
+        ],
+        "correct": 3,
+        "explanation": ""
+    },
+    {
+        "id": "17",
+        "prompt": "Một trong những biểu hiện về sự hợp tác và mở rộng của chủ nghĩa xã hội sau Chiến tranh thế giới thứ hai là",
+        "options": [
+            "Chủ nghĩa xã hội trở thành hệ thống duy nhất trên thế giới.",
+            "Liên Xô đã ngăn chặn được Mỹ tiến hành Chiến tranh lạnh.",
+            "sự ra đời và mở rộng của Hội đồng tương trợ kinh tế (SEV).",
+            "các nước Đông Âu hoàn thành cuộc cách mạng giải phóng."
+        ],
+        "correct": 2,
+        "explanation": ""
+    },
+    {
+        "id": "18",
+        "prompt": "Nội dung nào sau đây không phải là nguyên nhân dẫn đến sự sụp đổ của chủ nghĩa xã hội ở Liên Xô và Đông Âu?",
+        "options": [
+            "Không có đóng góp cho quá trình phát triển của văn minh nhân loại.",
+            "Nhiều nhà lãnh đạo tha hoá về phẩm chất, mất uy tín với nhân dân.",
+            "Đã xây dựng mô hình chủ nghĩa xã hội chưa khoa học, khách quan.",
+            "Sự chống phá của các thế lực thù địch đối với chế độ xã hội mới."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "19",
+        "prompt": "Nội dung nào sau đây là một trong những nguyên nhân khách quan dẫn tới sự tan rã nhanh chóng của chế độ xã hội chủ nghĩa ở Liên Xô và Đông Âu (1985 –1991)?",
+        "options": [
+            "Không tham gia các tổ chức quốc tế để nhận sự hỗ trợ.",
+            "Đường lối lãnh đạo có sự nóng vội, chủ quan, duy ý chí.",
+            "Tiến hành cải tổ nhưng từ bỏ vai trò lãnh đạo của Đảng.",
+            "Do sự chống phá của các thế lực thù địch từ bên ngoài."
+        ],
+        "correct": 3,
+        "explanation": ""
+    },
+    {
+        "id": "20",
+        "prompt": "Nội dung nào sau đây không phải là nguyên nhân dẫn tới sự sụp đổ của chủ nghĩa xã hội ở Liên Xô và Đông Âu (1989 – 1991)?",
+        "options": [
+            "Học thuyết Mác – Lê-nin không được vận dụng ở các nước.",
+            "Công cuộc cải tổ đã mắc nhiều sai lầm, chủ quan và nóng vội.",
+            "Chậm sửa chữa trước những biến động của tình hình thế giới.",
+            "Các thế lực chống phá chủ nghĩa xã hội trong và ngoài nước."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "21",
+        "prompt": "Từ sự khủng hoảng rồi sụp đổ của hệ thống chủ nghĩa xã hội ở châu Âu (1989 – 1991) đã cho thấy",
+        "options": [
+            "nhiều bài học kinh nghiệm trong xây dựng đất nước.",
+            "chế độ xã hội chủ nghĩa hiện thực không còn.",
+            "Mỹ đã thành công trong chiến lược toàn cầu.",
+            "Mỹ đã thắng lợi trong cuộc Chiến tranh lạnh."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "22",
+        "prompt": "Sau sự sụp đổ của chủ nghĩa xã hội ở Đông Âu và Liên Xô, xu thế chung của nhiều nước xã hội chủ nghĩa còn lại là",
+        "options": [
+            "đổi mới, cải cách, mở cửa, kiên định con đường xã hội chủ nghĩa.",
+            "quay lại nền kinh tế kế hoạch hoá tập trung để phân công lao động.",
+            "tăng cường chạy đua vũ trang để nâng cao sức mạnh quốc phòng.",
+            "đổi mới đất nước toàn diện, trọng tâm là đổi mới hệ thống chính trị."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "23",
+        "prompt": "Sau khi chủ nghĩa xã hội ở Đông Âu và Liên Xô sụp đổ, công cuộc xây dựng chủ nghĩa xã hội tiếp tục được duy trì và đẩy mạnh ở",
+        "options": [
+            "Trung Quốc, Ấn Độ, Lào, Việt Nam.",
+            "Trung Quốc, Việt Nam, Lào, Cu-ba.",
+            "Mê-hi-cô, Xin-ga-po, Việt Nam, Cu-ba.",
+            "Việt Nam, Lào, Ấn Độ, Nam Phi."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "24",
+        "prompt": "Đường lối chung trong Đại hội XII (1982) và Đại hội XIII (1987) của Đảng Cộng sản Trung Quốc đã xác định",
+        "options": [
+            "đổi mới đất nước toàn diện, đồng bộ theo kế hoạch hoá tập trung.",
+            "đổi mới đất nước, chính trị là nền tảng để đổi mới kinh tế, văn hoá.",
+            "lấy phát triển về kinh tế là trung tâm, đẩy mạnh cải cách, mở cửa.",
+            "cải tổ hệ thống chính trị, thực hiện đa đảng và quan hệ đa phương."
+        ],
+        "correct": 2,
+        "explanation": ""
+    },
+    {
+        "id": "25",
+        "prompt": "Nội dung nào sau đây không phải là thành tựu trong xây dựng chủ nghĩa xã hội ở Trung Quốc, Việt Nam và Lào (từ những năm 80 của thế kỉ XX)?",
+        "options": [
+            "Từng bước xoá đói, giảm các hộ nghèo.",
+            "Cải thiện chỉ số phát triển về con người.",
+            "Ổn định về chính trị, kinh tế và xã hội.",
+            "Trở thành các nước công nghiệp mới."
+        ],
+        "correct": 3,
+        "explanation": ""
+    },
+    {
+        "id": "26",
+        "prompt": "Nội dung nào sau đây là một trong những rào cản, khó khăn lớn của Cu-ba trong công cuộc xây dựng chủ nghĩa xã hội (từ năm 1991)?",
+        "options": [
+            "Bị Mỹ và các nước bao vây, cấm vận từ bên ngoài.",
+            "Đảng Cộng sản Cu-ba không còn lãnh đạo đất nước.",
+            "Các nước xã hội chủ nghĩa không còn viện trợ kinh tế.",
+            "Không nhận được sự quan tâm từ cộng đồng quốc tế."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "27",
+        "prompt": "Từ những thành tựu trong công cuộc xây dựng chủ nghĩa xã hội ở Trung Quốc, Việt Nam, Lào và Cu-ba (từ năm 1991) cho thấy",
+        "options": [
+            "sức sống của chủ nghĩa xã hội trong một thế giới đang biến động.",
+            "chủ nghĩa xã hội gắn liền với kinh tế thị trường do tư nhân quản lí.",
+            "chủ nghĩa tư bản đã không còn là hệ thống trên phạm vi toàn thế giới.",
+            "chủ nghĩa xã hội vẫn phát triển mạnh, đã mở rộng không gian địa lí."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "28",
+        "prompt": "Về chính trị, trong công cuộc cải cách, mở cửa (từ năm 1978), chủ nghĩa xã hội ở Trung Quốc đã đạt được thành tựu nổi bật nào sau đây?",
+        "options": [
+            "Đề ra và xây dựng được hệ thống lí luận về chủ nghĩa xã hội mang đặc sắc Trung Quốc.",
+            "Hoàn thành mục tiêu đưa Trung Quốc trở thành cường quốc kinh tế số 1 thế giới.",
+            "Thay đổi hiến pháp, thực hiện đa đảng để phù hợp với bối cảnh, tình hình quốc tế.",
+            "Đảng Cộng sản Trung Quốc vươn lên, trở thành đảng cầm quyền lãnh đạo đất nước."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "29",
+        "prompt": "Từ năm 2010, nền kinh tế Trung Quốc đạt được thành tựu nổi bật nào sau đây?",
+        "options": [
+            "Vượt qua Mỹ, trở thành nền kinh tế lớn nhất thế giới.",
+            "Vượt qua Nhật Bản và duy trì vị trí thứ hai thế giới.",
+            "Vươn lên trở thành nền kinh tế lớn thứ hai châu Á.",
+            "Bước đầu có tích luỹ, có dự trữ vàng và các ngoại tệ."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "30",
+        "prompt": "Nội dung nào sau đây là một trong những biểu hiện cho sự phát triển nhanh chóng về khoa học – kĩ thuật của Trung Quốc (từ khi tiến hành cải cách, mở cửa)?",
+        "options": [
+            "Trở thành quốc gia có trình độ công nghệ số 1 thế giới.",
+            "Có hệ thống tàu cao tốc hiện đại, không ngừng mở rộng.",
+            "Là quốc gia duy nhất ở châu Á phóng vệ tinh nhân tạo.",
+            "Là quốc gia duy nhất ở châu Á sở hữu vũ khí hạt nhân."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "31",
+        "prompt": "Nội dung nào sau đây không phải là ý nghĩa của những thành tựu trong công cuộc cải cách, mở cửa ở Trung Quốc?",
+        "options": [
+            "Đường lối cải cách, mở cửa của Đảng Cộng sản Trung Quốc là đúng đắn.",
+            "Từng bước khẳng định, nâng cao vị thế của Trung Quốc trên trường quốc tế.",
+            "Không ngừng cải thiện chất lượng cuộc sống, đem lại phúc lợi cho nhân dân.",
+            "Xoá bỏ được tình trạng lạc hậu và những mâu thuẫn trong xã hội Trung Quốc."
+        ],
+        "correct": 3,
+        "explanation": ""
+    },
+    {
+        "id": "32",
+        "prompt": "Với cuộc cải cách, mở cửa (từ năm 1978), Trung Quốc đã đạt được thành tựu nổi bật nào sau đây?",
+        "options": [
+            "Vươn lên trở thành cường quốc kinh tế, quân sự số 1 trên thế giới.",
+            "Trở thành nền kinh tế lớn thứ hai thế giới, sau Mỹ (từ năm 2010).",
+            "Là nước tiên phong trong các cuộc cách mạng khoa học – kĩ thuật.",
+            "Trở thành quốc gia duy nhất trên thế giới có dự trữ vàng, ngoại tệ."
+        ],
+        "correct": 1,
+        "explanation": ""
+    },
+    {
+        "id": "33",
+        "prompt": "Về đối ngoại, công cuộc cải cách, mở cửa (từ năm 1978) của Trung Quốc đã đem lại kết quả nào sau đây?",
+        "options": [
+            "Mở rộng quan hệ và không ngừng nâng cao vị thế trên thế giới.",
+            "Buộc Mỹ phải thừa nhận Đài Loan là một phần của Trung Quốc.",
+            "Buộc các nước láng giềng phải thiết lập trở lại quan hệ ngoại giao.",
+            "Được thừa nhận là trung tâm kinh tế – tài chính duy nhất ở châu Á."
+        ],
+        "correct": 0,
+        "explanation": ""
+    },
+    {
+        "id": "34",
+        "prompt": "Cách mạng tháng Mười Nga (1917) có tác động nào sau đây đến quá trình hoạt động yêu nước và cách mạng của Nguyễn Ái Quốc?",
+        "options": [
+            "Đoàn kết nhân dân Việt Nam với phong trào cộng sản và công nhân quốc tế.",
+            "Lựa chọn con đường giải phóng dân tộc theo khuynh hướng cách mạng vô sản.",
+            "Xác định được hai nhiệm vụ cho cách mạng Việt Nam là dân tộc và dân chủ.",
+            "Xây dựng khối đoàn kết dân tộc trên nền tảng liên minh công – nông – binh."
+        ],
+        "correct": 1,
+        "explanation": ""
+    }
+
+    ];
+
+        function buildQuestionDeck() {
+            const arr = [...questionDB].sort(() => Math.random() - 0.5);
+            return arr.map(question => {
+                const options = question.options
+                    .map((label, index) => ({ label, correct: index === question.correct }))
+                    .sort(() => Math.random() - 0.5);
+                return {
+                    text: question.prompt,
+                    options: options.map(option => option.label),
+                    correct: options.findIndex(option => option.correct),
+                    explanation: question.explanation
+                };
+            });
+        }
+
+        let reviewTimerHandle = null;
+
+        function clearReviewTimer() {
+            if (reviewTimerHandle) {
+                window.clearInterval(reviewTimerHandle);
+                reviewTimerHandle = null;
+            }
+            state.reviewUntil = 0;
+            state.afterReview = null;
+            reviewTimerEl.textContent = '';
+        }
+
+        function startReviewCountdown(durationMs, callback) {
+            clearReviewTimer();
+            state.reviewUntil = performance.now() + durationMs;
+            state.afterReview = callback;
+
+            const tick = () => {
+                const remaining = Math.max(0, Math.ceil((state.reviewUntil - performance.now()) / 1000));
+                reviewTimerEl.textContent = remaining > 0 ? `Tiếp tục sau ${remaining}s` : '';
+                if (remaining <= 0) {
+                    clearReviewTimer();
+                    callback();
+                }
+            };
+
+            tick();
+            reviewTimerHandle = window.setInterval(tick, 100);
+        }
+
+        function showBanner(text, duration = 1600) {
+            bannerEl.textContent = text;
+            bannerEl.classList.add('visible');
+            state.bannerUntil = performance.now() + duration;
+        }
+
+        function updateHud() {
+            distanceValueEl.textContent = `${Math.floor(state.distance)} / ${TRACK_LENGTH}m`;
+            progressValueEl.textContent = `${state.checkpointIndex} / ${TOTAL_CHECKPOINTS}`;
+            lifeValueEl.textContent = state.lives > 0 ? '❤'.repeat(state.lives) : '☠️';
+            correctValueEl.textContent = state.correct;
+            wrongValueEl.textContent = state.wrong;
+
+            if (state.checkpointIndex >= TOTAL_CHECKPOINTS) {
+                checkpointDistanceEl.textContent = state.over ? 'Hoàn tất' : 'Đích đến';
+            } else {
+                const remaining = Math.max(0, Math.ceil(state.nextCheckpoint - state.distance));
+                checkpointDistanceEl.textContent = `${remaining}m`;
+            }
+        }
+
+        function pulseDamageFlash() {
+            flashEl.classList.add('active');
+            window.setTimeout(() => flashEl.classList.remove('active'), 220);
+        }
+
+        function damagePlayer(reason, options = {}) {
+            const { fromBomb = false, bypassInvulnerability = false } = options;
+            if (state.over) return false;
+            if (!bypassInvulnerability && performance.now() < state.invulnerableUntil) return false;
+
+            state.lives -= 1;
+            state.invulnerableUntil = performance.now() + 1000;
+            if (fromBomb) {
+                state.bombHits += 1;
+                state.cameraShake = Math.max(state.cameraShake, 0.55);
+            }
+
+            pulseDamageFlash();
+            state.flareStrength = Math.max(state.flareStrength, fromBomb ? 0.75 : 0.28);
+            showBanner(reason, 1700);
+            updateHud();
+
+            if (state.lives <= 0) finishGame(false, reason);
+            return true;
+        }
+
+        function absorbImpact(reason) {
+            state.currentSpeed = state.currentSpeed > 0 ? -state.currentSpeed * 0.45 : Math.abs(state.currentSpeed) * 0.45;
+            state.cameraShake = Math.max(state.cameraShake, 0.45);
+            damagePlayer(reason);
+        }
+
+        function finishGame(won, reason) {
+            if (state.over && !state.falling) return;
+
+            clearReviewTimer();
+            state.over = true;
+            state.paused = true;
+            state.currentSpeed = 0;
+
+            quizPanelEl.classList.add('hidden');
+            summaryPanelEl.classList.remove('hidden');
+            summaryTitleEl.textContent = won ? 'Hoàn Thành Tuyến Đường' : 'Nhiệm Vụ Thất Bại';
+            summarySubtitleEl.textContent = won
+                ? 'Đoàn xe đã vượt qua trọn tuyến đèo lửa giữa khói bom và vực sâu.'
+                : 'Chuyến xe bị chặn lại giữa núi đá, bom rơi và khúc cua tử thần.';
+            summaryDistanceEl.textContent = `${Math.floor(state.distance)}m`;
+            summaryCorrectEl.textContent = state.correct;
+            summaryWrongEl.textContent = state.wrong;
+            summaryLifeEl.textContent = Math.max(state.lives, 0);
+            summaryNoteEl.innerHTML = `Lý do: <b>${reason}</b>`;
+            
+            // Tạo bảng báo cáo đúng sai
+            const reportEl = document.getElementById('answer-report');
+            if (state.answerHistory.length > 0) {
+                let reportHTML = '<h3 style="margin-bottom:10px; color:#f1d08a;">LỊCH SỬ CÂU HỎI:</h3>';
+                state.answerHistory.forEach((item, idx) => {
+                    reportHTML += `
+                        <div class="report-item">
+                            <div class="report-q">${idx + 1}. ${item.text}</div>
+                            <div class="report-a">
+                                Bạn chọn: <span class="${item.isCorrect ? 'report-correct' : 'report-wrong'}">${item.userAnswer}</span>
+                                ${!item.isCorrect ? ` | Đáp án: <span class="report-correct">${item.correctAnswer}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                reportEl.innerHTML = reportHTML;
+                reportEl.style.display = 'block';
+            } else {
+                reportEl.style.display = 'none';
+            }
+
+            flareGlowEl.style.opacity = won ? '0.36' : '0.22';
+            updateHud();
+        }
+
+        function closeQuizAndResume() {
+            if (state.over) return;
+            quizPanelEl.classList.add('hidden');
+            state.paused = false;
+            state.checkpointIndex += 1;
+            state.nextCheckpoint += CHECKPOINT_INTERVAL;
+            updateHud();
+        }
+
+        function openQuiz() {
+            if (!state.questionDeck.length) return;
+
+            state.paused = true;
+            clearReviewTimer();
+            state.currentQuestion = state.questionDeck[state.checkpointIndex % state.questionDeck.length];
+            quizMetaEl.textContent = `Chặng ${state.checkpointIndex + 1} / ${TOTAL_CHECKPOINTS} • Mốc ${state.nextCheckpoint}m`;
+            questionTextEl.textContent = state.currentQuestion.text;
+            questionOptionsEl.innerHTML = '';
+            quizFeedbackEl.innerHTML = '';
+            reviewTimerEl.textContent = '';
+
+            state.currentQuestion.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option-btn';
+                button.textContent = option;
+                button.onclick = () => {
+                    const isCorrect = index === state.currentQuestion.correct;
+                    const buttons = Array.from(questionOptionsEl.children);
+                    buttons.forEach(btn => { btn.disabled = true; });
+                    buttons[state.currentQuestion.correct]?.classList.add('correct');
+
+                    if (isCorrect) {
+                        button.classList.add('correct');
+                        state.correct += 1;
+                        state.answerHistory.push({
+                            text: state.currentQuestion.text,
+                            userAnswer: option,
+                            correctAnswer: option,
+                            isCorrect: true
+                        });
+                        quizFeedbackEl.innerHTML = `<strong style="color:var(--success)">Đúng.</strong> ${state.currentQuestion.explanation}`;
+                        startReviewCountdown(2200, closeQuizAndResume);
+                    } else {
+                        button.classList.add('wrong');
+                        state.wrong += 1;
+                        const correctText = state.currentQuestion.options[state.currentQuestion.correct];
+                        state.answerHistory.push({
+                            text: state.currentQuestion.text,
+                            userAnswer: option,
+                            correctAnswer: correctText,
+                            isCorrect: false
+                        });
+                        quizFeedbackEl.innerHTML = `<strong style="color:var(--danger)">Sai! Mất 1 máu.</strong> Đáp án đúng là: ${correctText}. ${state.currentQuestion.explanation}`;
+                        damagePlayer('Trả lời sai!', { bypassInvulnerability: true });
+                        startReviewCountdown(3400, () => {
+                            if (!state.over && state.lives > 0) closeQuizAndResume();
+                        });
+                    }
+
+                    updateHud();
+                };
+                questionOptionsEl.appendChild(button);
+            });
+
+            quizPanelEl.classList.remove('hidden');
+        }
+
+        function updateGame(dt) {
+            const time = performance.now() * 0.001;
+            const currentTerrain = getSegmentType(Math.floor(state.distance / SEGMENT_LENGTH));
+            
+            let terrainMaxSpeed = MAX_SPEED;
+            let terrainAccel = 17;
+            if (currentTerrain === 'muddy') {
+                terrainMaxSpeed = MAX_SPEED * 0.6;
+                terrainAccel = 7;
+                car.userData.lateralOffset += Math.sin(time * 2) * 3 * (state.currentSpeed / MAX_SPEED) * dt;
+            }
+
+            if (keys.up) {
+                state.currentSpeed = Math.min(terrainMaxSpeed, state.currentSpeed + terrainAccel * dt);
+            } else if (keys.down) {
+                state.currentSpeed = Math.max(-MAX_SPEED * 0.4, state.currentSpeed - 30 * dt);
+            } else {
+                state.currentSpeed = THREE.MathUtils.damp(state.currentSpeed, 0, 3.2, dt);
+            }
+
+            state.distance = THREE.MathUtils.clamp(state.distance + state.currentSpeed * dt, 0, TRACK_LENGTH);
+            if (state.distance === 0 && state.currentSpeed < 0) state.currentSpeed = 0;
+
+            const lateralSpeed = currentTerrain === 'muddy' ? 10 : 16; 
+            if (keys.left) car.userData.lateralOffset += lateralSpeed * dt;
+            if (keys.right) car.userData.lateralOffset -= lateralSpeed * dt;
+
+            // Obstacle Spawning
+            if (state.distance > 500 && Math.random() < 0.005) {
+                if (activeObstacles.length < 2) spawnObstacle();
+            }
+
+            for (let i = activeObstacles.length - 1; i >= 0; i--) {
+                const obs = activeObstacles[i];
+                obs.z -= state.currentSpeed * dt;
+                
+                if (obs.type === 'ROCK_SLIDE') {
+                    obs.x += obs.velocityX * dt;
+                    obs.velocityY -= 25 * dt;
+                    obs.mesh.position.y = Math.max(0.5, obs.mesh.position.y + obs.velocityY * dt);
+                    if (obs.mesh.position.y <= 0.5) obs.velocityY = Math.abs(obs.velocityY) * 0.4;
+                    obs.mesh.rotation.x += 5 * dt;
+                    obs.mesh.rotation.z += 5 * dt;
+                }
+
+                const curve = getRoadCurve(state.distance + obs.z);
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                
+                // Cập nhật Y dựa trên độ cao mặt đường (curve.y) để không bị lấp dưới núi
+                const worldY = curve.y + (obs.type === 'FALLEN_TREE' ? 0.8 : obs.mesh.position.y);
+                
+                obs.mesh.position.set(
+                    curve.x + obs.x * cos,
+                    worldY,
+                    obs.z - obs.x * sin
+                );
+                obs.mesh.rotation.y = curve.rotationY;
+
+                // Collision
+                if (!obs.hit && Math.abs(obs.z) < 3 && Math.abs(obs.x - car.userData.lateralOffset) < (obs.width ? obs.width/2 + 1.5 : 3)) {
+                    obs.hit = true;
+                    damagePlayer(obs.type === 'ROCK_SLIDE' ? 'Bị đá lở đè trúng!' : 'Đâm vào cây đổ!');
+                    state.currentSpeed *= 0.2;
+                }
+
+                if (obs.z < -20 || Math.abs(obs.x) > 100) {
+                    scene.remove(obs.mesh);
+                    activeObstacles.splice(i, 1);
+                }
+            }
+
+            const rightLimit = ROAD_HALF_WIDTH + 0.8;
+            const leftLimit = -(ROAD_HALF_WIDTH + 0.7);
+
+            if (car.userData.lateralOffset > rightLimit) {
+                car.userData.lateralOffset = rightLimit;
+                absorbImpact('Tông vào vách đá');
+            } else if (car.userData.lateralOffset < leftLimit && !state.over) {
+                state.lives = 0;
+                state.currentSpeed = 0;
+                state.falling = true;
+                pulseDamageFlash();
+                lifeValueEl.textContent = '☠️ TỬ NẠN';
+                finishGame(false, 'Xe lật khỏi mép đèo, rơi xuống vực!');
+                return;
+            }
+
+            state.planeSpawnTimer -= dt;
+            if (state.planeSpawnTimer <= 0) {
+                spawnPlane();
+                state.planeSpawnTimer = 4.2 + Math.random() * 4.6;
+            }
+
+            for (let i = activePlanes.length - 1; i >= 0; i -= 1) {
+                const plane = activePlanes[i];
+                plane.mesh.position.x += plane.direction * plane.crossSpeed * dt;
+                plane.mesh.position.z -= state.currentSpeed * dt * 0.72;
+                plane.mesh.position.y += Math.sin(time * 2.1 + plane.phase) * dt * 0.65;
+                plane.mesh.rotation.z = THREE.MathUtils.damp(
+                    plane.mesh.rotation.z,
+                    plane.baseBank + Math.sin(time * 2.8 + plane.phase) * 0.05,
+                    4,
+                    dt
+                );
+                plane.propellers.forEach(propeller => {
+                    propeller.rotation.x += 34 * dt;
+                });
+
+                const overRoad = plane.direction === 1
+                    ? plane.mesh.position.x >= plane.dropTriggerX
+                    : plane.mesh.position.x <= plane.dropTriggerX;
+
+                if (overRoad && plane.bombsRemaining > 0) {
+                    plane.bombTimer -= dt;
+                    if (plane.bombTimer <= 0) {
+                        plane.bombsRemaining -= 1;
+                        plane.bombTimer = plane.bombInterval;
+                        plane.targetX = (Math.random() - 0.5) * ROAD_WIDTH * 0.82;
+                        createBomb(plane);
+                    }
+                }
+
+                if (Math.abs(plane.mesh.position.x) > 115 || plane.mesh.position.z < -80) {
+                    scene.remove(plane.mesh);
+                    activePlanes.splice(i, 1);
+                }
+            }
+
+            for (let i = activeBombs.length - 1; i >= 0; i -= 1) {
+                const bomb = activeBombs[i];
+                bomb.progress += dt / bomb.duration;
+                bomb.z -= state.currentSpeed * dt;
+                const eased = Math.min(1, bomb.progress);
+                const curve = getRoadCurve(state.distance + bomb.z);
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                const lateral = THREE.MathUtils.lerp(bomb.startX, bomb.targetX, eased);
+                const groundY = curve.y + terrainHeightAtLocal(bomb.targetX, 0);
+
+                bomb.mesh.position.set(
+                    curve.x + lateral * cos,
+                    THREE.MathUtils.lerp(bomb.y, groundY + 0.8, eased),
+                    bomb.z - lateral * sin
+                );
+                bomb.mesh.rotation.z += bomb.spin * dt;
+                bomb.mesh.rotation.y += 1.6 * dt;
+
+                bomb.shadow.position.set(
+                    curve.x + bomb.targetX * cos,
+                    curve.y + 0.1,
+                    bomb.z - bomb.targetX * sin
+                );
+                const shadowScale = THREE.MathUtils.lerp(0.35, 1.45, eased);
+                bomb.shadow.scale.setScalar(shadowScale);
+                bomb.shadow.material.opacity = 0.06 + eased * 0.18;
+
+                if (bomb.progress >= 1 || bomb.z < -18) {
+                    createCrater(bomb.targetX, bomb.z);
+                    scene.remove(bomb.mesh);
+                    scene.remove(bomb.shadow);
+                    activeBombs.splice(i, 1);
+                }
+            }
+
+            for (let i = activeCraters.length - 1; i >= 0; i -= 1) {
+                const crater = activeCraters[i];
+                crater.z -= state.currentSpeed * dt;
+                crater.ttl -= dt;
+                const curve = getRoadCurve(state.distance + crater.z);
+                crater.mesh.position.set(
+                    curve.x + crater.x * Math.cos(curve.rotationY),
+                    curve.y + 0.1,
+                    crater.z - crater.x * Math.sin(curve.rotationY)
+                );
+                crater.mesh.rotation.y = curve.rotationY;
+
+                // Thêm khói âm ỉ sau khi nổ
+                crater.smokeTimer -= dt;
+                if (crater.smokeTimer <= 0 && crater.ttl > 5) {
+                    const smokePos = new THREE.Vector3();
+                    crater.mesh.getWorldPosition(smokePos);
+                    gameParticles.spawnDust(smokePos, new THREE.Vector3(0, 2, 0));
+                    crater.smokeTimer = 0.4 + Math.random() * 0.6;
+                }
+
+                if (!crater.hit && Math.abs(crater.z) < 2.8 && Math.abs(crater.x - car.userData.lateralOffset) < 2.6) {
+                    crater.hit = true;
+                    damagePlayer('Xe sập hố bom', { fromBomb: true });
+                }
+
+                if (crater.ttl <= 0 || crater.z < -34) {
+                    scene.remove(crater.mesh);
+                    activeCraters.splice(i, 1);
+                }
+            }
+
+            // --- LOGIC VẬT PHẨM (ITEMS) ---
+            if (state.distance - lastItemDistance > 250) { // Mỗi ~250m xuất hiện 1 cái chắc chắn
+                spawnRandomItem(140);
+                lastItemDistance = state.distance;
+            }
+
+            for (let i = activeItems.length - 1; i >= 0; i -= 1) {
+                const item = activeItems[i];
+                item.z -= state.currentSpeed * dt;
+                const curve = getRoadCurve(state.distance + item.z);
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                
+                item.mesh.position.set(
+                    curve.x + item.x * cos,
+                    curve.y + 2.0 + Math.sin(time * 3.5) * 0.6, // Bay lơ lửng cao hơn
+                    item.z - item.x * sin
+                );
+                item.mesh.rotation.y += 2.5 * dt;
+                if (item.ring) item.ring.rotation.z += 1.5 * dt;
+
+                // Va chạm với vật phẩm
+                if (!item.collected && Math.abs(item.z) < 2.8 && Math.abs(item.x - car.userData.lateralOffset) < 2.5) {
+                    item.collected = true;
+                    item.mesh.visible = false; // Ẩn ngay lập tức thay vì remove ngay
+                    
+                    // Chỉ remove sau khi frame này kết thúc hoặc dùng pool
+                    setTimeout(() => scene.remove(item.mesh), 100);
+                    
+                    if (item.type === 'health') {
+                        state.lives = Math.min(MAX_LIVES, state.lives + 1);
+                        showBanner('Nhận túi cứu thương! +1 Máu', 2000);
+                    } else if (item.type === 'shield') {
+                        state.invulnerableUntil = performance.now() + 8000;
+                        showBanner('Kích hoạt Giáp Thép! (8s)', 3000);
+                    } else if (item.type === 'boost') {
+                        state.currentSpeed = Math.min(MAX_SPEED * 1.5, state.currentSpeed + 12);
+                        showBanner('Tăng tốc hành quân!', 2000);
+                    }
+                    updateHud();
+                }
+
+                if (item.z < -25) {
+                    scene.remove(item.mesh);
+                    activeItems.splice(i, 1);
+                }
+            }
+
+            for (let i = activeEffects.length - 1; i >= 0; i -= 1) {
+                const effect = activeEffects[i];
+                effect.life -= dt;
+                effect.z -= state.currentSpeed * dt;
+                const curve = getRoadCurve(state.distance + effect.z);
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                const worldX = curve.x + effect.x * cos;
+                const worldZ = effect.z - effect.x * sin;
+                const worldY = curve.y + 0.22;
+
+                const lifeRatio = Math.max(0, effect.life / effect.maxLife);
+                effect.light.position.set(worldX, worldY + 2.8, worldZ);
+                effect.light.intensity = 2.2 * lifeRatio;
+
+                if (effect.life <= 0) {
+                    scene.remove(effect.light);
+                    activeEffects.splice(i, 1);
+                }
+            }
+
+            if (state.checkpointIndex < TOTAL_CHECKPOINTS && state.distance >= state.nextCheckpoint) {
+                openQuiz();
+                return;
+            }
+
+            if (!state.over && state.distance >= TRACK_LENGTH && state.checkpointIndex >= TOTAL_CHECKPOINTS) {
+                finishGame(true, 'Đoàn xe đã vượt qua trọn tuyến Trường Sơn và tới đích an toàn.');
+            }
+        }
+
+        function renderFrame(dt, now) {
+            if (state.started && !state.paused && !state.over) {
+                updateGame(dt);
+                updateEngineAudio(state.currentSpeed);
+                gameParticles.update(dt);
+
+                // Throttled dust spawning to fix lag
+                if (Math.abs(state.currentSpeed) > 3) {
+                    gameParticles.dustTimer -= dt;
+                    if (gameParticles.dustTimer <= 0) {
+                        const dustRate = Math.max(0.05, 0.15 - (Math.abs(state.currentSpeed) / MAX_SPEED) * 0.1);
+                        gameParticles.dustTimer = dustRate;
+                        car.userData.wheels.forEach((wheel, idx) => {
+                            // Only spawn for rear wheels or some wheels to save performance
+                            if (idx >= 2 || Math.random() > 0.6) {
+                                const wheelWorldPos = new THREE.Vector3();
+                                wheel.getWorldPosition(wheelWorldPos);
+                                gameParticles.spawnDust(wheelWorldPos, new THREE.Vector3(0, 0.8, 0));
+                            }
+                        });
+                    }
+                }
+            }
+
+            const curve = getRoadCurve(state.distance);
+            const lookAheadCurve = getRoadCurve(state.distance + 34);
+            const roadBounce = roadSurfaceHeight(car.userData.lateralOffset * 0.25, state.distance * 0.08);
+
+            if (state.falling) {
+                car.position.y -= 24 * dt;
+                car.rotation.z -= 3.2 * dt;
+                car.rotation.x += 1.15 * dt;
+            } else {
+                const cos = Math.cos(curve.rotationY);
+                const sin = Math.sin(curve.rotationY);
+                car.position.x = curve.x + car.userData.lateralOffset * cos;
+                car.position.z = -car.userData.lateralOffset * sin;
+                car.position.y = curve.y + roadBounce + Math.sin(state.distance * 0.16) * 0.035;
+                car.rotation.y = curve.rotationY + (keys.left ? 0.08 : (keys.right ? -0.08 : 0)); // Giảm nhẹ visual yaw
+                car.rotation.x = -curve.pitch + Math.min(state.currentSpeed / MAX_SPEED, 1) * 0.012;
+                car.rotation.z = THREE.MathUtils.damp(
+                    car.rotation.z,
+                    (keys.left ? 0.12 : (keys.right ? -0.12 : 0)) + Math.sin(state.distance * 0.014) * 0.02,
+                    5,
+                    dt
+                );
+                car.userData.wheels.forEach(wheel => {
+                    wheel.rotation.x -= state.currentSpeed * dt * 1.32;
+                });
+            }
+
+            const baseIndex = Math.floor(state.distance / SEGMENT_LENGTH);
+            roadSegments.forEach((segment, index) => {
+                const absoluteIndex = baseIndex + index - 10; // Đẩy lùi index xa hơn để load sớm
+                const centerDistance = (absoluteIndex + 0.5) * SEGMENT_LENGTH;
+                const segCurve = getRoadCurve(centerDistance);
+                segment.group.position.set(segCurve.x, segCurve.y, centerDistance - state.distance);
+                segment.group.rotation.set(-segCurve.pitch, segCurve.rotationY, 0, 'YXZ');
+                decorateSegment(segment, absoluteIndex);
+            });
+
+            const camOffset = new THREE.Vector3(0, 8.5, -20);
+            camOffset.applyAxisAngle(new THREE.Vector3(0, 1, 0), curve.rotationY);
+            const targetCameraPosition = state.falling
+                ? new THREE.Vector3(car.position.x - 8, car.position.y + 12, -16)
+                : new THREE.Vector3(car.position.x + camOffset.x, car.position.y + camOffset.y, car.position.z + camOffset.z);
+            camera.position.lerp(targetCameraPosition, state.falling ? 0.05 : 0.09);
+
+            camera.lookAt(
+                lookAheadCurve.x + car.userData.lateralOffset * 0.12,
+                lookAheadCurve.y + 2.8,
+                34 - car.userData.lateralOffset * Math.sin(lookAheadCurve.rotationY)
+            );
+
+            if (state.cameraShake > 0 && !state.falling) {
+                camera.position.x += (Math.random() - 0.5) * state.cameraShake;
+                camera.position.y += (Math.random() - 0.5) * state.cameraShake;
+                state.cameraShake = Math.max(0, state.cameraShake - dt * 1.2);
+            }
+
+            // Smoother FOV transition
+            const targetFov = 65 + Math.min(MAX_SPEED, Math.abs(state.currentSpeed)) * 0.35;
+            camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 2.2, dt);
+            camera.updateProjectionMatrix();
+
+            updateBackdrop(now * 0.001);
+
+            if (bannerEl.classList.contains('visible') && now >= state.bannerUntil) {
+                bannerEl.classList.remove('visible');
+            }
+
+            state.flareStrength = Math.max(0, state.flareStrength - dt * 1.45);
+            flareGlowEl.style.opacity = `${Math.min(0.9, 0.16 + state.flareStrength * 0.55)}`;
+
+            updateHud();
+            renderer.render(scene, camera);
+        }
+
+        window.addEventListener('keydown', event => {
+            if (event.key === 'Enter') {
+                if (state.reviewUntil > 0 && state.afterReview) {
+                    const callback = state.afterReview;
+                    clearReviewTimer();
+                    callback();
+                } else if (!state.started) {
+                    document.getElementById('start-btn').click();
+                } else if (state.over) {
+                    document.getElementById('restart-btn').click();
+                }
+            }
+            if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') keys.left = true;
+            if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') keys.right = true;
+            if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') keys.up = true;
+            if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') keys.down = true;
+        });
+
+        window.addEventListener('keyup', event => {
+            if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') keys.left = false;
+            if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') keys.right = false;
+            if (event.key === 'ArrowUp' || event.key.toLowerCase() === 'w') keys.up = false;
+            if (event.key === 'ArrowDown' || event.key.toLowerCase() === 's') keys.down = false;
+        });
+
+        document.getElementById('start-btn').addEventListener('click', () => {
+            initAudio();
+            if (state.audioInitialized) sfx.start.play().catch(() => {});
+            
+            document.getElementById('start-screen').classList.add('hidden');
+            state.started = true;
+            state.paused = false;
+            state.questionDeck = buildQuestionDeck();
+            state.flareStrength = 0.18;
+            showBanner('Hành quân bắt đầu!');
+            updateHud();
+        });
+
+        document.getElementById('restart-btn').addEventListener('click', () => window.location.reload());
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+        });
+
+        updateHud();
+
+        let previousTime = performance.now();
+        function animate(now) {
+            const dt = Math.min((now - previousTime) / 1000, 0.05);
+            previousTime = now;
+            renderFrame(dt, now);
+            requestAnimationFrame(animate);
+        }
+        requestAnimationFrame(animate);
+    </script>
+    <script src="mobile-controls.js"></script>
+
+<!-- EVALUATION MODAL -->
+<style>
+    #eval-modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(15px);
+        display: none; justify-content: center; align-items: center;
+        z-index: 999999; font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    #eval-modal-box {
+        background: linear-gradient(135deg, #1e293b, #0f172a);
+        padding: 40px; border-radius: 24px; text-align: center;
+        color: white; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255,255,255,0.1);
+        width: 90%; max-width: 400px;
+        animation: evalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    @keyframes evalPop { from { transform: scale(0.8) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+    
+    .eval-circle {
+        width: 150px; height: 150px; border-radius: 50%;
+        background: conic-gradient(#3b82f6 var(--p), #334155 0deg);
+        display: flex; justify-content: center; align-items: center;
+        margin: 0 auto 20px; position: relative;
+    }
+    .eval-circle::after {
+        content: ""; position: absolute; inset: 10px;
+        background: #0f172a; border-radius: 50%;
+    }
+    .eval-percent { position: relative; z-index: 10; font-size: 36px; font-weight: bold; color: #60a5fa; }
+    
+    .eval-title { font-size: 24px; font-weight: bold; margin-bottom: 10px; color: #f8fafc; }
+    .eval-desc { font-size: 16px; color: #cbd5e1; margin-bottom: 25px; line-height: 1.5; }
+    
+    .eval-btn {
+        background: #3b82f6; color: white; border: none; padding: 12px 30px;
+        border-radius: 99px; font-size: 16px; font-weight: 600; cursor: pointer;
+        transition: 0.2s;
+    }
+    .eval-btn:hover { background: #2563eb; transform: scale(1.05); }
+    
+    .eval-icon { font-size: 40px; margin-bottom: -15px; position: relative; z-index: 20; }
+</style>
+<div id="eval-modal-overlay">
+    <div id="eval-modal-box">
+        <div class="eval-icon" id="eval-icon">👑</div>
+        <div class="eval-circle" id="eval-circle" style="--p: 0%">
+            <div class="eval-percent" id="eval-percent">0%</div>
+        </div>
+        <div class="eval-title" id="eval-title">Đánh Giá Hoàn Thành</div>
+        <div class="eval-desc" id="eval-desc">Bạn đã hoàn thành xuất sắc bài học!</div>
+        <button class="eval-btn" onclick="document.getElementById('eval-modal-overlay').style.display='none'">Đóng</button>
+    </div>
+</div>
+<script>
+    window.showEvaluation = function(correct, total) {
+        if(total === 0) total = 1;
+        let percent = Math.round((correct / total) * 100);
+        if(percent > 100) percent = 100;
+        
+        let icon = "👑";
+        let title = "Tuyệt Vời!";
+        let desc = `Bạn đã hoàn thành xuất sắc!<br>Đúng ${correct}/${total}`;
+        let color = "#3b82f6";
+        
+        if (percent < 50) {
+            icon = "📚"; title = "Cố gắng lên!"; desc = `Hãy ôn tập thêm nhé!<br>Đúng ${correct}/${total}`; color = "#ef4444";
+        } else if (percent < 80) {
+            icon = "🏅"; title = "Khá Lắm!"; desc = `Bạn làm rất tốt!<br>Đúng ${correct}/${total}`; color = "#eab308";
+        }
+        
+        const overlay = document.getElementById('eval-modal-overlay');
+        overlay.style.display = 'flex';
+        
+        document.getElementById('eval-icon').innerHTML = icon;
+        document.getElementById('eval-title').innerText = title;
+        document.getElementById('eval-desc').innerHTML = desc;
+        document.getElementById('eval-percent').innerText = percent + "%";
+        document.getElementById('eval-percent').style.color = color;
+        
+        // Animate circle
+        let currentP = 0;
+        const circle = document.getElementById('eval-circle');
+        const interval = setInterval(() => {
+            currentP += 2;
+            if(currentP >= percent) { currentP = percent; clearInterval(interval); }
+            circle.style.setProperty('--p', currentP + '%');
+            circle.style.background = `conic-gradient(${color} var(--p), #334155 0deg)`;
+        }, 20);
+    };
+</script>
+<!-- END EVALUATION MODAL -->
+</body>
+
+</html>

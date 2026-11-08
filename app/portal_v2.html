@@ -12914,6 +12914,9 @@
                         <button class="topbar-dropdown-item nav-item" data-tab="pet">
                             <span>Linh Thú Tri Thức</span>
                         </button>
+                                                <button class="topbar-dropdown-item" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'">
+                            <span>🌿 Đường Lên Đỉnh Loci (4 Thí Sinh)</span>
+                        </button>
                         <button class="topbar-dropdown-item" onclick="window.ArenaDuelEngine && window.ArenaDuelEngine.open()">
                             <span>⚔️ Đấu Trường Tri Thức (1v1)</span>
                         </button>
@@ -13318,6 +13321,31 @@
                 <div>
                     <div class="m-sub">Mốc cần củng cố</div>
                     <div class="weak-list" id="weak-list"></div>
+                </div>
+            </section>
+
+            
+            <!-- BANNER NỔI BẬT: ĐƯỜNG LÊN ĐỈNH LOCI & ĐẤU TRƯỜNG OLYMPIA 4 NGƯỜI -->
+            <section style="margin-top: 24px; margin-bottom: 24px; background: linear-gradient(135deg, #fefce8 0%, #ffffff 50%, #fffbeb 100%); border: 2px solid #facc15; border-radius: 20px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(234, 179, 8, 0.12); display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 260px;">
+                    <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.4);">🌿</div>
+                    <div>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 11px; font-weight: 800; color: #854d0e; background: #fef08a; padding: 2px 8px; border-radius: 99px; text-transform: uppercase;">4 Thí Sinh · Olympia</span>
+                            <span style="font-size: 16px; font-weight: 800; color: #713f12;">Đường Lên Đỉnh Loci</span>
+                        </div>
+                        <p style="font-size: 13px; color: #854d0e; margin: 4px 0 0 0; line-height: 1.45;">Tranh tài 4 thí sinh chuẩn format Olympia (Khởi động, Vượt chướng ngại vật, Tăng tốc, Về đích & Trao vòng nguyệt quế).</p>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+                    <button type="button" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'"
+                        style="background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; border: none; border-radius: 12px; padding: 10px 22px; font-size: 14px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(202, 138, 4, 0.35);">
+                        <span>Vào Đấu Trường 4 Người ➔</span>
+                    </button>
+                    <button type="button" onclick="window.switchPortalTab('review')"
+                        style="background: #ffffff; color: #0f172a; border: 1.5px solid #cbd5e1; border-radius: 12px; padding: 10px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer;">
+                        <span>Xem Khu Game 3D 🎮</span>
+                    </button>
                 </div>
             </section>
 
@@ -17150,6 +17178,7 @@
     <!-- HỆ THỐNG NHẮC HẸN ÔN TẬP WEB 1-3-7 (EBBINGHAUS) -->
     <script src="app/reminder_137.js?v=2.2"></script>
     <script src="app/arena_duel_engine.js" onerror="this.onerror=null;this.src='arena_duel_engine.js'"></script>
+    <script src="app/olympia_loci_engine.js" onerror="this.onerror=null;this.src='olympia_loci_engine.js'"></script>
 
     <!-- CORE PORTAL NAVIGATION & LEADERBOARD SCRIPT (CHẠY ĐỒNG BỘ 100% OFFLINE) -->
     <script>
