@@ -116,7 +116,7 @@
             this.petData.fullness = Math.min(100, this.petData.fullness + 15);
             this.addExp(10, 'Được cho ăn Năng lượng Tri thức');
             window.playTingTing();
-            this.showFloatingEffect('🍖 +15 No');
+            this.showFloatingEffect('+15 Điểm No');
         }
 
         play() {
@@ -124,7 +124,7 @@
             this.petData.happiness = Math.min(100, this.petData.happiness + 20);
             this.addExp(15, 'Cùng chơi đùa và kích hoạt tư duy');
             window.playTingTing();
-            this.showFloatingEffect('💖 +20 Hạnh phúc');
+            this.showFloatingEffect('+20 Hạnh Phúc');
         }
 
         trainWithStudy(studyExp) {
@@ -150,7 +150,7 @@
                 this.petData.level += 1;
                 this.petData.maxExp = Math.round(this.petData.maxExp * 1.5);
                 window.playTingTing();
-                this.showFloatingEffect(`⭐ THĂNG CẤP ${this.petData.level}!`);
+                this.showFloatingEffect(`THĂNG CẤP ${this.petData.level}!`);
             }
             this.saveData();
         }
@@ -330,7 +330,7 @@
                                 </div>
 
                                 <div style="margin-top: 14px; font-size: 12px; color: #94a3b8; line-height: 1.4;">
-                                    💡 <i>Mẹo: Mỗi khi bạn hoàn thành 1 câu trắc nghiệm hoặc học 1 trạm Loci, Linh thú sẽ tự động nhận thêm XP để nhanh chóng thức tỉnh hình thái Thần Thoại!</i>
+                                    <i>Gợi ý: Mỗi khi bạn hoàn thành 1 câu trắc nghiệm hoặc học 1 trạm Loci, Linh thú sẽ tự động nhận thêm XP để nhanh chóng thức tỉnh hình thái Thần Thoại!</i>
                                 </div>
                             </div>
 

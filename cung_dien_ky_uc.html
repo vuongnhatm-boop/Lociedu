@@ -2716,12 +2716,12 @@ function _decodeGeminiKey(s) {
   <div id="carousel-screen" style="display: none;">
     <div class="carousel-top-bar">
       <div class="carousel-brand">
-        <span>🏛️ CUNG ĐIỆN KÝ ỨC</span>
+        <span>CUNG ĐIỆN KÝ ỨC</span>
         <span class="carousel-badge">LỊCH SỬ 12 • 3D CAROUSEL</span>
       </div>
       <button class="action-btn" id="carousel-direct-enter"
         style="pointer-events:auto; border-color:var(--primary); background:rgba(0,242,254,0.15);">
-        <span>🚀</span> Vào phòng Loft 13 ngay
+        <span>Vào không gian Loci ngay</span>
       </button>
     </div>
 
@@ -2747,14 +2747,14 @@ function _decodeGeminiKey(s) {
   <!-- Start & Controls Overlay -->
   <div id="start-overlay" class="hidden">
     <div class="hero-card">
-      <div class="badge">🧠 Khoa Học Kỹ Thuật • Method of Loci</div>
+      <div class="badge">Khoa Học Kỹ Thuật • Phương Pháp Loci</div>
       <h1>Cung Điện Ký Ức Lịch Sử 12</h1>
       <p>Khám phá không gian phòng Loft 3D góc nhìn thứ nhất (FPS). Tích hợp Trợ lý Trí tuệ Nhân tạo <b>Loci</b> tương
         tác trực tiếp bằng giọng nói tiếng Việt.</p>
 
       <!-- Microphone & Voice Assistant Banner -->
       <div class="mic-permission-banner">
-        <div class="mic-banner-pulse">🎙️</div>
+        <div class="mic-banner-pulse"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
         <div>
           <div class="mic-banner-title">
             <span>Kích hoạt Micro Gọi Trợ lý AI</span>
@@ -2778,7 +2778,7 @@ function _decodeGeminiKey(s) {
 
       <div class="start-btn-group">
         <button class="primary-btn" id="start-exploration-btn">
-          🎙️ Cho phép Micro & Bắt đầu gọi Loci
+          Cho phép Micro & Bắt đầu gọi Loci
         </button>
         <button class="secondary-btn" id="start-no-mic-btn">
           Tiếp tục mà không dùng micro
@@ -2797,7 +2797,7 @@ function _decodeGeminiKey(s) {
   <div id="top-hud">
     <div class="hud-chip">
       <div class="hud-title">
-        <span>🏛️ Loft Room 13</span>
+        <span> Loft Room 13</span>
       </div>
       <div style="height: 16px; width: 1px; background: rgba(255,255,255,0.15)"></div>
       <div style="display:flex; flex-direction:column; gap:3px;">
@@ -2816,7 +2816,7 @@ function _decodeGeminiKey(s) {
         <span>➕</span> Tạo mốc [F]
       </button>
       <button class="action-btn" id="hud-mic-btn" title="Trạng thái micro và Trợ lý Loci (Nói: Loci ơi)">
-        <span id="hud-mic-icon">🎙️</span>
+        <span id="hud-mic-icon"></span>
         <span id="hud-mic-label">Bật Micro gọi Loci</span>
         <span class="hud-mic-dot" id="hud-mic-dot"></span>
       </button>
@@ -2858,7 +2858,7 @@ function _decodeGeminiKey(s) {
        onmouseover="this.style.transform='scale(1.06)'; this.style.borderColor='#00f2fe';"
        onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(0, 242, 254, 0.6)';">
     <div class="ai-pulse-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #00f2fe; box-shadow: 0 0 12px #00f2fe;"></div>
-    <span style="font-size: 17px;">✨</span>
+    <span style="font-size: 17px;"></span>
     <span>Trợ lý ảo AI [B]</span>
   </div>
 
@@ -2893,7 +2893,7 @@ function _decodeGeminiKey(s) {
       flex-shrink: 0;
     ">
       <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 18px;">✨</span>
+        <span style="font-size: 18px;"></span>
         <span style="font-size: 14px; font-weight: 800; color: #38bdf8; letter-spacing: 0.2px;">Gia Sư AI Loci</span>
       </div>
       <button id="ai-close-btn" title="Đóng trợ lý (Phím ESC hoặc B)"
@@ -2928,12 +2928,12 @@ function _decodeGeminiKey(s) {
     <!-- VÙNG ẨN CHỨA TOÀN BỘ PHẦN TỬ LEGACY ĐỂ CHỐNG LỖI JS (100% ẨN) -->
     <div style="display: none !important;">
       <div class="ai-header-actions">
-        <button class="ai-btn-icon" id="ai-clear-btn">🗑️</button>
-        <button class="ai-btn-icon" id="ai-settings-btn">⚙️</button>
+        <button class="ai-btn-icon" id="ai-clear-btn" title="Xóa lịch sử"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
+        <button class="ai-btn-icon" id="ai-settings-btn" title="Cài đặt"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
       </div>
       <div class="ai-depth-bar" id="ai-depth-bar">
         <button class="ai-depth-btn" id="drawer-notebook-btn">📚</button>
-        <button class="ai-depth-btn" id="start-spatial-quiz-drawer-btn">🧠</button>
+        <button class="ai-depth-btn" id="start-spatial-quiz-drawer-btn"></button>
         <button class="ai-depth-btn" id="view-user-progress-drawer-btn">📊</button>
       </div>
       <div class="ai-messages" id="ai-messages-list"></div>
@@ -2957,8 +2957,8 @@ function _decodeGeminiKey(s) {
         </div>
       </div>
       <div class="ai-header-actions">
-        <button class="ai-btn-icon" id="ai-clear-btn" title="Xóa đoạn chat làm mới">🗑️</button>
-        <button class="ai-btn-icon" id="ai-settings-btn" title="Cài đặt trợ lý">⚙️</button>
+        <button class="ai-btn-icon" id="ai-clear-btn" title="Xóa đoạn chat làm mới"></button>
+        <button class="ai-btn-icon" id="ai-settings-btn" title="Cài đặt trợ lý"></button>
         <button class="ai-btn-icon" id="ai-close-btn" title="Thu nhỏ trợ lý">✕</button>
       </div>
     </div>
@@ -2967,10 +2967,10 @@ function _decodeGeminiKey(s) {
     <div class="ai-depth-bar">
       <button class="ai-depth-btn" id="ai-depth-short" data-depth="short">⚡ Ngắn</button>
       <button class="ai-depth-btn" id="ai-depth-standard" data-depth="standard">📘 Tiêu chuẩn</button>
-      <button class="ai-depth-btn active" id="ai-depth-detailed" data-depth="detailed">🏛️ Giảng sâu</button>
+      <button class="ai-depth-btn active" id="ai-depth-detailed" data-depth="detailed"> Giảng sâu</button>
       <button class="ai-depth-btn" id="start-spatial-quiz-drawer-btn"
         style="background:rgba(0,242,254,0.18); border-color:rgba(0,242,254,0.45); color:#00f2fe; font-weight:800;"
-        title="Bắt đầu khảo thí kiến thức không gian Loci">🧠 Khảo thí</button>
+        title="Bắt đầu khảo thí kiến thức không gian Loci"> Khảo thí</button>
       <button class="ai-depth-btn" id="view-user-progress-drawer-btn"
         style="background:rgba(16,185,129,0.18); border-color:rgba(16,185,129,0.45); color:#10b981; font-weight:800;"
         title="Xem báo cáo tiến trình học & mốc còn yếu">📊 Tiến trình</button>
@@ -2982,7 +2982,7 @@ function _decodeGeminiKey(s) {
         <div class="ai-avatar">✦</div>
         <div class="ai-msg-box">
           <div class="ai-msg-box-header">
-            <span>✨ TRỢ LÝ LOCI LỊCH SỬ 12</span>
+            <span> TRỢ LÝ LOCI LỊCH SỬ 12</span>
             <div class="ai-msg-actions">
               <button class="ai-bubble-btn" onclick="window.speakBubble(this)">🔊 Nghe</button>
               <button class="ai-bubble-btn" onclick="window.copyBubble(this)">📋 Chép</button>
@@ -3006,7 +3006,7 @@ function _decodeGeminiKey(s) {
 
     <!-- Quick Suggestions -->
     <div class="ai-suggestions">
-      <button class="ai-chip" data-query="Khảo bài kiểm tra kiến thức không gian cho tôi">🧠 Khảo thí không
+      <button class="ai-chip" data-query="Khảo bài kiểm tra kiến thức không gian cho tôi"> Khảo thí không
         gian</button>
       <button class="ai-chip" data-query="Báo cáo tiến trình học tập các mốc trong phòng và điểm yếu của tôi">📊 Tiến
         trình & Mốc yếu</button>
@@ -3021,7 +3021,7 @@ function _decodeGeminiKey(s) {
     <!-- Bottom Capsule Dock -->
     <div class="ai-dock">
       <div class="ai-capsule-box">
-        <button class="ai-dock-mic" id="ai-voice-btn" title="Bật/Tắt Micro giọng nói tiếng Việt">🎙️</button>
+        <button class="ai-dock-mic" id="ai-voice-btn" title="Bật/Tắt Micro giọng nói tiếng Việt"></button>
         <input type="text" class="ai-dock-input" id="ai-text-input"
           placeholder="Hỏi AI bất kỳ kiến thức Lịch Sử 12 nào..." autocomplete="off" />
         <button class="ai-dock-send" id="ai-send-btn">
@@ -3035,7 +3035,7 @@ function _decodeGeminiKey(s) {
   <!-- AI Gemini API Settings Modal -->
   <div id="ai-settings-modal">
     <div class="settings-card">
-      <h3>⚙️ Cài đặt Trí tuệ Nhân tạo & Giọng nói</h3>
+      <h3> Cài đặt Trí tuệ Nhân tạo & Giọng nói</h3>
       <p>Cấu hình mô hình Google Gemini và giọng nói tiếng Việt để tối ưu hoá trải nghiệm ôn thi Lịch Sử 12.</p>
 
       <div class="settings-form-group">
@@ -3057,11 +3057,11 @@ function _decodeGeminiKey(s) {
       </div>
 
       <div class="settings-form-group">
-        <label class="settings-form-label">🎙️ Giọng đọc tiếng Việt (TTS):</label>
+        <label class="settings-form-label"> Giọng đọc tiếng Việt (TTS):</label>
         <select id="ai-voice-select" class="settings-select">
           <option value="">Giọng đọc mặc định thiết bị</option>
         </select>
-        <div style="margin-top:6px; font-size:10px; color:#94a3b8;">💡 Google Vi = rõ nhất · Microsoft HoaiMy = ấm nhất
+        <div style="margin-top:6px; font-size:10px; color:#94a3b8;"> Google Vi = rõ nhất · Microsoft HoaiMy = ấm nhất
         </div>
       </div>
 
@@ -3114,13 +3114,13 @@ function _decodeGeminiKey(s) {
       <div class="knowledge-header">
         <div class="knowledge-header-top">
           <div class="knowledge-title-wrap">
-            <span class="knowledge-icon" id="modal-icon">🏛️</span>
+            <span class="knowledge-icon" id="modal-icon"></span>
             <div style="flex:1;">
               <h2 class="knowledge-title" id="modal-view-title">Chiến dịch Điện Biên Phủ</h2>
               <input type="text" id="modal-title-input" class="knowledge-edit-input hidden"
                 placeholder="Nhập tên mốc ký ức..." />
               <div class="knowledge-meta-row">
-                <span class="knowledge-tag loc" id="modal-furniture-loc">📍 Bàn trà</span>
+                <span class="knowledge-tag loc" id="modal-furniture-loc"> Bàn trà</span>
                 <span class="knowledge-tag time" id="modal-view-time">⏳ Năm 1954</span>
                 <input type="text" id="modal-time-input" class="knowledge-edit-input inline hidden"
                   placeholder="Năm / Thời điểm..." />
@@ -3149,7 +3149,7 @@ function _decodeGeminiKey(s) {
         <!-- Section 2: Method of Loci Memory Hook -->
         <div class="knowledge-section mnemonic-box">
           <div class="section-title mnemonic">
-            <span>💡</span> MẸO NHỚ CUNG ĐIỆN KÝ ỨC (LOCI)
+            <span></span> MẸO NHỚ CUNG ĐIỆN KÝ ỨC (LOCI)
           </div>
           <div class="knowledge-text-display mnemonic" id="modal-view-mnemonic">
             Hình ảnh liên tưởng gắn với vị trí này...
@@ -3175,7 +3175,7 @@ function _decodeGeminiKey(s) {
 
         <div class="footer-right">
           <button class="k-btn danger" id="modal-delete-btn" title="Xóa mốc này khỏi Cung điện">
-            <span>🗑️</span>
+            <span></span>
           </button>
           <button class="k-btn close" id="modal-cancel-btn">
             Đóng
@@ -3214,7 +3214,7 @@ function _decodeGeminiKey(s) {
 
       <div
         style="font-size:20px;font-weight:800;color:#fff;margin-bottom:6px;display:flex;align-items:center;gap:10px;">
-        <span style="font-size:22px">📍</span> Đặt Mốc Ký Ức
+        <span style="font-size:22px"></span> Đặt Mốc Ký Ức
       </div>
       <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:22px;">
         Mốc sẽ được đặt tại điểm bạn đang nhìn
@@ -3283,7 +3283,7 @@ function _decodeGeminiKey(s) {
     style="display:none; position:fixed; inset:0; z-index:220; align-items:center; justify-content:center; background:rgba(5,8,16,0.72); backdrop-filter:blur(18px);">
     <div
       style="position:relative; background:rgba(15,23,42,0.95); border:1px solid rgba(255,255,255,0.18); border-radius:24px; padding:28px; width:min(90vw, 420px); box-shadow:0 20px 50px rgba(0,0,0,0.6); text-align:center; font-family:'Plus Jakarta Sans',sans-serif;">
-      <div style="font-size:32px; margin-bottom:10px;">🗑️</div>
+      <div style="font-size:32px; margin-bottom:10px;"></div>
       <h3 style="font-size:18px; font-weight:800; color:#fff; margin-bottom:8px;">Quản Lý & Đặt Lại Mốc Ký Ức</h3>
       <p style="font-size:13px; color:rgba(255,255,255,0.7); margin-bottom:20px; line-height:1.5;">Bạn muốn khôi phục
         lại 5 mốc chuẩn SGK Lịch Sử 12 theo lộ trình chuẩn hay xóa sạch để tự tạo mốc?</p>
@@ -3295,7 +3295,7 @@ function _decodeGeminiKey(s) {
         </button>
         <button id="clear-all-loci-btn"
           style="background:rgba(255,82,82,0.15); border:1px solid rgba(255,82,82,0.5); color:#ff5252; padding:12px; border-radius:14px; font-weight:700; cursor:pointer; font-size:13px; transition:0.2s;">
-          🗑️ Xóa toàn bộ các mốc (Phòng trống)
+           Xóa toàn bộ các mốc (Phòng trống)
         </button>
       </div>
 
@@ -3325,7 +3325,7 @@ function _decodeGeminiKey(s) {
         <div style="display:flex; align-items:center; gap:10px;">
           <div
             style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #00f2fe, #4facfe); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 15px rgba(0,242,254,0.4);">
-            🧠
+            
           </div>
           <div>
             <div style="font-weight:800; font-size:16px; letter-spacing:0.3px; color:#fff;">KHẢO THÍ KHÔNG GIAN LOCI
@@ -3337,7 +3337,7 @@ function _decodeGeminiKey(s) {
         <div style="display:flex; align-items:center; gap:8px;">
           <div
             style="background:rgba(255,153,0,0.15); border:1px solid rgba(255,153,0,0.4); border-radius:20px; padding:4px 10px; font-size:12px; font-weight:800; color:#ffb300; display:flex; align-items:center; gap:4px;">
-            <span>🔥</span><span id="quiz-streak-badge">Chuỗi: 0</span>
+            <span></span><span id="quiz-streak-badge">Chuỗi: 0</span>
           </div>
           <button id="close-spatial-quiz-btn"
             style="background:rgba(255,255,255,0.08); border:none; color:rgba(255,255,255,0.7); width:32px; height:32px; border-radius:50%; font-size:16px; cursor:pointer; display:flex; align-items:center; justify-content:center; transition:0.2s;">✕</button>
@@ -3350,7 +3350,7 @@ function _decodeGeminiKey(s) {
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
           <span id="quiz-tag-pill"
             style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; padding:3px 8px; border-radius:8px; background:rgba(0,242,254,0.15); color:#00f2fe; border:1px solid rgba(0,242,254,0.3);">
-            📍 Vị trí khảo thí
+             Vị trí khảo thí
           </span>
           <button id="quiz-glide-preview-btn"
             style="background:transparent; border:none; color:#00f2fe; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px;">
@@ -3379,7 +3379,7 @@ function _decodeGeminiKey(s) {
         <div style="display:flex; gap:10px;">
           <button id="quiz-glide-to-locus-btn"
             style="flex:1; padding:10px 14px; border-radius:12px; background:rgba(255,255,255,0.08); border:1px solid rgba(255,255,255,0.15); color:#fff; font-size:12px; font-weight:700; cursor:pointer; font-family:inherit;">
-            🚀 Bay đến mốc này
+            Bay đến mốc này
           </button>
           <button id="quiz-next-question-btn"
             style="flex:1.5; padding:10px 14px; border-radius:12px; background:linear-gradient(135deg,#00f2fe,#0099ff); border:none; color:#0a1020; font-size:13px; font-weight:800; cursor:pointer; font-family:inherit; box-shadow:0 4px 15px rgba(0,242,254,0.3);">
@@ -3434,7 +3434,7 @@ function _decodeGeminiKey(s) {
         </div>
         <div
           style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:16px; padding:12px; text-align:center;">
-          <div style="font-size:20px; font-weight:800; color:#ff9900;" id="prog-stat-streak">0 🔥</div>
+          <div style="font-size:20px; font-weight:800; color:#ff9900;" id="prog-stat-streak">0 </div>
           <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px;">Chuỗi đúng</div>
         </div>
         <div
@@ -3470,7 +3470,7 @@ function _decodeGeminiKey(s) {
         </button>
         <button id="prog-start-all-btn"
           style="flex:1.5; padding:12px; border-radius:14px; background:linear-gradient(135deg, #10b981, #06b6d4); border:none; color:#0a1020; font-weight:800; cursor:pointer; font-size:13px; font-family:inherit; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
-          🧠 Bắt đầu khảo thí
+           Bắt đầu khảo thí
         </button>
         <button id="prog-reset-btn" title="Đặt lại toàn bộ tiến trình học"
           style="padding:12px 16px; border-radius:14px; background:rgba(255,82,82,0.12); border:1px solid rgba(255,82,82,0.3); color:#ff5252; font-weight:700; cursor:pointer; font-size:12px; font-family:inherit;">
@@ -3741,7 +3741,7 @@ function _decodeGeminiKey(s) {
       ctx.textBaseline = 'middle';
       const displayName = locus.name || 'Mốc Ký Ức';
       const labelText = displayName.length > 20 ? displayName.slice(0, 18) + '…' : displayName;
-      ctx.fillText(`📍 ${labelText}`, 256, 64);
+      ctx.fillText(` ${labelText}`, 256, 64);
 
       const texture = new THREE.CanvasTexture(canvas);
       texture.minFilter = THREE.LinearFilter;
@@ -4274,7 +4274,7 @@ function _decodeGeminiKey(s) {
         try {
           ai.startWakeWordListening();
           updateHudMicStatus(true);
-          showToast('🎙️ Micro đã sẵn sàng! Bạn hãy gọi "Loci ơi" bất cứ lúc nào.', 'success');
+          showToast(' Micro đã sẵn sàng! Bạn hãy gọi "Loci ơi" bất cứ lúc nào.', 'success');
 
           setTimeout(() => {
             ai.speak('Xin chào! Tôi là Trợ lý AI Loci. Micro đã được kết nối, bạn hãy gọi "Loci ơi" bất cứ lúc nào để tôi hỗ trợ nhé!');
@@ -4424,7 +4424,7 @@ function _decodeGeminiKey(s) {
       const editText = document.getElementById('modal-edit-text');
       const saveBtn = document.getElementById('modal-save-btn');
 
-      if (locTag) locTag.textContent = `📍 ${currentActiveLocus.locName || 'Không gian 3D'}`;
+      if (locTag) locTag.textContent = ` ${currentActiveLocus.locName || 'Không gian 3D'}`;
       if (viewTitle) viewTitle.textContent = currentActiveLocus.name || 'Mốc Ký Ức';
       if (viewTime) viewTime.textContent = currentActiveLocus.year ? `⏳ Năm ${currentActiveLocus.year}` : '⏳ Lịch Sử 12';
       if (viewDetails) viewDetails.textContent = currentActiveLocus.details || 'Chưa có nội dung chi tiết. Bạn có thể nhấn [Sửa] để bổ sung.';
@@ -4552,7 +4552,7 @@ function _decodeGeminiKey(s) {
       saveLociData();
       refresh3DMarkers();
       closeLocusModal(e);
-      showToast(`🗑️ Đã xóa mốc "${delName}"`, 'warning');
+      showToast(` Đã xóa mốc "${delName}"`, 'warning');
       if (typeof ai !== 'undefined') ai.speak(`Đã xóa mốc ${delName}.`);
       if (currentJourneyIndex >= lociList.length) {
         currentJourneyIndex = Math.max(0, lociList.length - 1);
@@ -4654,7 +4654,7 @@ function _decodeGeminiKey(s) {
       // Icon
       ctx.font = '28px sans-serif';
       ctx.textBaseline = 'middle';
-      ctx.fillText('📍', 16, H / 2);
+      ctx.fillText('', 16, H / 2);
 
       // Name text
       ctx.font = 'bold 15px "Plus Jakarta Sans", sans-serif';
@@ -4769,7 +4769,7 @@ function _decodeGeminiKey(s) {
         saveLociData();
         refresh3DMarkers();
         openLocusModal(newLocus);
-        showToast(`🎉 Đã tạo thành công mốc: "${name}"`, 'success');
+        showToast(` Đã tạo thành công mốc: "${name}"`, 'success');
         if (typeof ai !== 'undefined') ai.speak(`Đã tạo mốc mới: ${name}. Bạn có thể chỉnh sửa nội dung chi tiết.`);
       });
     }
@@ -5248,7 +5248,7 @@ function _decodeGeminiKey(s) {
           { id: 'name', label: '🏷️ Tên mốc', x: 40, w: 220 },
           { id: 'year', label: '📅 Năm/Thời gian', x: 275, w: 220 },
           { id: 'details', label: '📝 Nội dung cốt lõi', x: 510, w: 250 },
-          { id: 'mnemonic', label: '💡 Mẹo Loci', x: 775, w: 209 }
+          { id: 'mnemonic', label: ' Mẹo Loci', x: 775, w: 209 }
         ];
         fields.forEach(f => {
           const isActive = vrEditActiveField === f.id;
@@ -5424,7 +5424,7 @@ function _decodeGeminiKey(s) {
         ctx.fillStyle = '#00f2fe';
         ctx.font = 'bold 26px sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText('🏛️ CUNG ĐIỆN KÝ ỨC • LỊCH SỬ 12 (VR MODE)', 50, 70);
+        ctx.fillText('CUNG ĐIỆN KÝ ỨC • LỊCH SỬ 12 (VR MODE)', 50, 70);
 
         ctx.fillStyle = '#ffffff';
         ctx.font = 'bold 42px sans-serif';
@@ -5432,7 +5432,7 @@ function _decodeGeminiKey(s) {
 
         ctx.fillStyle = '#ffd54f';
         ctx.font = 'bold 28px sans-serif';
-        ctx.fillText(`📍 Điểm neo: ${locus.locName}`, 50, 175);
+        ctx.fillText(` Điểm neo: ${locus.locName}`, 50, 175);
 
         ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
         ctx.lineWidth = 2;
@@ -5451,7 +5451,7 @@ function _decodeGeminiKey(s) {
 
         ctx.fillStyle = '#ffab00';
         ctx.font = 'bold 24px sans-serif';
-        ctx.fillText('💡 Mẹo liên tưởng không gian Loci:', 50, 430);
+        ctx.fillText(' Mẹo liên tưởng không gian Loci:', 50, 430);
 
         ctx.fillStyle = '#e2e8f0';
         ctx.font = 'italic 25px sans-serif';
@@ -5497,7 +5497,7 @@ function _decodeGeminiKey(s) {
         ctx.fillStyle = '#ff5252';
         ctx.font = 'bold 24px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('🗑️ XÓA MỐC', 520 + 110, 626);
+        ctx.fillText(' XÓA MỐC', 520 + 110, 626);
         buttonsConfig.push({ x: 520, y: 580, w: 220, h: 72, action: 'delete_locus' });
 
         // Button 4: ĐÓNG (Phải 1)
@@ -5918,16 +5918,16 @@ function _decodeGeminiKey(s) {
         // Tiêu đề gợi ý trò chuyện
         ctx.fillStyle = '#94a3b8';
         ctx.font = 'bold 18px sans-serif';
-        ctx.fillText('💡 Chọn chủ đề để trò chuyện hoặc bấm Micro để nói:', 40, 410);
+        ctx.fillText(' Chọn chủ đề để trò chuyện hoặc bấm Micro để nói:', 40, 410);
 
         // 6 Nút gợi ý trò chuyện nhanh
         const chatPrompts = [
           { label: '🏔️ Hỏi: Ý nghĩa Điện Biên Phủ 1954?', action: 'ask_dien_bien_phu', x: 40, y: 426, w: 460, h: 54, color: '#00f2fe' },
           { label: '📜 Hỏi: So sánh Giơ-ne-vơ và Paris?', action: 'ask_geneve', x: 524, y: 426, w: 460, h: 54, color: '#00f2fe' },
           { label: '🎖️ Hỏi: Chiến dịch Hồ Chí Minh 1975?', action: 'ask_hcm', x: 40, y: 492, w: 460, h: 54, color: '#00f2fe' },
-          { label: '💡 Hỏi: Mẹo nhớ Loci trong phòng?', action: 'ask_loci_method', x: 524, y: 492, w: 460, h: 54, color: '#ffd54f' },
+          { label: ' Hỏi: Mẹo nhớ Loci trong phòng?', action: 'ask_loci_method', x: 524, y: 492, w: 460, h: 54, color: '#ffd54f' },
           { label: '🎯 Đố tôi 1 câu trắc nghiệm ôn thi THPT', action: 'action_quiz', x: 40, y: 558, w: 460, h: 54, color: '#00e676' },
-          { label: '🎙️ Bật Micro nói chuyện trực tiếp', action: 'action_voice', x: 524, y: 558, w: 460, h: 54, color: '#ff3366' }
+          { label: ' Bật Micro nói chuyện trực tiếp', action: 'action_voice', x: 524, y: 558, w: 460, h: 54, color: '#ff3366' }
         ];
 
         chatPrompts.forEach(p => {
@@ -5975,7 +5975,7 @@ function _decodeGeminiKey(s) {
         ctx.fillStyle = '#00f2fe';
         ctx.font = 'bold 21px sans-serif';
         ctx.textAlign = 'left';
-        ctx.fillText('✨ Thanh điều khiển Loci AI (Đã thu gọn tab):', 60, 182);
+        ctx.fillText(' Thanh điều khiển Loci AI (Đã thu gọn tab):', 60, 182);
 
         ctx.fillStyle = '#e2e8f0';
         ctx.font = '20px sans-serif';
@@ -5987,7 +5987,7 @@ function _decodeGeminiKey(s) {
           { label: '💬 MỞ TAB CHAT TRÒ CHUYỆN', action: 'switch_tab_chat', x: 40, y: 280, w: 460, h: 70, color: '#00f2fe', textColor: '#00f2fe' },
           { label: '🚩 XEM 5 MỐC KÝ ỨC (Bay tới)', action: 'switch_tab_places', x: 524, y: 280, w: 460, h: 70, color: '#00f2fe', textColor: '#ffffff' },
           { label: '🎯 KHẢO BÀI TRẮC NGHIỆM 3D', action: 'action_quiz', x: 40, y: 370, w: 460, h: 70, color: '#00e676', textColor: '#ffffff' },
-          { label: '💡 THUYẾT MINH TOÀN BỘ PHÒNG', action: 'explain_room', x: 524, y: 370, w: 460, h: 70, color: '#ffd54f', textColor: '#ffffff' }
+          { label: ' THUYẾT MINH TOÀN BỘ PHÒNG', action: 'explain_room', x: 524, y: 370, w: 460, h: 70, color: '#ffd54f', textColor: '#ffffff' }
         ];
 
         compactButtons.forEach(b => {
@@ -6038,7 +6038,7 @@ function _decodeGeminiKey(s) {
           ctx.fillStyle = '#94a3b8';
           ctx.font = '19px sans-serif';
           ctx.textAlign = 'right';
-          ctx.fillText(`📍 ${item.posName} ➔`, w - 65, item.y + 37);
+          ctx.fillText(` ${item.posName} ➔`, w - 65, item.y + 37);
           buttonsConfig.push({ x: 40, y: item.y, w: w - 80, h: 60, action: item.action });
         });
 
@@ -6053,7 +6053,7 @@ function _decodeGeminiKey(s) {
         ctx.fillStyle = '#ffd54f';
         ctx.font = 'bold 20px sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('💡 Thuyết minh toàn bộ 5 mốc', 270, 590);
+        ctx.fillText(' Thuyết minh toàn bộ 5 mốc', 270, 590);
         buttonsConfig.push({ x: 40, y: 555, w: 460, h: 56, action: 'explain_room' });
 
         ctx.fillStyle = 'rgba(0, 242, 254, 0.15)';
@@ -6361,7 +6361,7 @@ function _decodeGeminiKey(s) {
         bCtx.fillStyle = '#ffffff';
         bCtx.font = 'bold 30px sans-serif';
         bCtx.textAlign = 'center';
-        bCtx.fillText(i === 1 ? '✨ [B] Gọi Loci AI' : '✨ [Y] Gọi Loci AI', 180, 58);
+        bCtx.fillText(i === 1 ? ' [B] Gọi Loci AI' : ' [Y] Gọi Loci AI', 180, 58);
 
         const badgeTex = new THREE.CanvasTexture(badgeCanvas);
         badgeTex.colorSpace = THREE.SRGBColorSpace;
@@ -6608,7 +6608,7 @@ function _decodeGeminiKey(s) {
       ctx.fillStyle = '#00f2fe';
       ctx.font = 'bold 36px sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('📍 Danh Sách Mốc Ký Ức', W / 2, 60);
+      ctx.fillText(' Danh Sách Mốc Ký Ức', W / 2, 60);
 
       ctx.fillStyle = 'rgba(255,255,255,0.5)';
       ctx.font = '22px sans-serif';
@@ -7084,12 +7084,12 @@ function _decodeGeminiKey(s) {
         const targetId = m[1];
         const locus = lociList.find(l => l.id.toLowerCase() === targetId.toLowerCase() || l.name.toLowerCase().includes(targetId.toLowerCase()));
         const displayName = locus ? locus.name : targetId;
-        actionPillsHtml += `<button class="ai-action-chip" onclick="window.teleportToLocus('${locus ? locus.id : targetId}')">🚀 Bay đến mốc: <b>${displayName}</b> ➔</button>`;
+        actionPillsHtml += `<button class="ai-action-chip" onclick="window.teleportToLocus('${locus ? locus.id : targetId}')">Bay đến mốc: <b>${displayName}</b> ➔</button>`;
       }
 
       // Match [ACTION:QUIZ_START]
       if (/\[ACTION:QUIZ_START\]/i.test(text)) {
-        actionPillsHtml += `<button class="ai-action-chip" style="background:linear-gradient(135deg,rgba(0,242,254,0.25),rgba(147,51,234,0.3)); border-color:rgba(0,242,254,0.6);" onclick="window.startSpatialQuiz()">🧠 Bắt đầu Khảo thí Không gian ➔</button>`;
+        actionPillsHtml += `<button class="ai-action-chip" style="background:linear-gradient(135deg,rgba(0,242,254,0.25),rgba(147,51,234,0.3)); border-color:rgba(0,242,254,0.6);" onclick="window.startSpatialQuiz()"> Bắt đầu Khảo thí Không gian ➔</button>`;
       }
 
       // Match [ACTION:PROGRESS_OPEN]
@@ -7149,7 +7149,7 @@ function _decodeGeminiKey(s) {
         const header = document.createElement('div');
         header.className = 'ai-msg-box-header';
         header.innerHTML = `
-          <span>✨ TRỢ LÝ LOCI LỊCH SỬ 12</span>
+          <span> TRỢ LÝ LOCI LỊCH SỬ 12</span>
           <div class="ai-msg-actions">
             <button class="ai-bubble-btn" onclick="window.speakBubble(this)">🔊 Nghe</button>
             <button class="ai-bubble-btn" onclick="window.copyBubble(this)">📋 Chép</button>
@@ -7181,7 +7181,7 @@ function _decodeGeminiKey(s) {
         <div class="ai-avatar">✦</div>
         <div class="ai-msg-box">
           <div class="ai-msg-box-header">
-            <span>✨ TRỢ LÝ LOCI LỊCH SỬ 12</span>
+            <span> TRỢ LÝ LOCI LỊCH SỬ 12</span>
           </div>
           <div class="ai-msg-text" style="display:flex; align-items:center; gap:8px; color:rgba(255,255,255,0.7);">
             <div class="ai-eq-bars active" style="display:inline-flex;">
@@ -7364,7 +7364,7 @@ function _decodeGeminiKey(s) {
             <div class="ai-avatar">✦</div>
             <div class="ai-msg-box">
               <div class="ai-msg-box-header">
-                <span>✨ TRỢ LÝ LOCI LỊCH SỬ 12</span>
+                <span> TRỢ LÝ LOCI LỊCH SỬ 12</span>
                 <div class="ai-msg-actions">
                   <button class="ai-bubble-btn" onclick="window.speakBubble(this)">🔊 Nghe</button>
                   <button class="ai-bubble-btn" onclick="window.copyBubble(this)">📋 Chép</button>
@@ -7588,7 +7588,7 @@ function _decodeGeminiKey(s) {
       showToast('Giọng AI Loci đã được cập nhật! Nhấn ▶ Thử giọng để kiểm tra.', 'success', 3000);
     });
 
-    /* --- 🧠 KHẢO THÍ KHÔNG GIAN LOCI & 📊 BÁO CÁO TIẾN TRÌNH --- */
+    /* ---  KHẢO THÍ KHÔNG GIAN LOCI & 📊 BÁO CÁO TIẾN TRÌNH --- */
     const spatialQuizModal = document.getElementById('spatial-quiz-modal');
     const closeSpatialQuizBtn = document.getElementById('close-spatial-quiz-btn');
     const quizTagPill = document.getElementById('quiz-tag-pill');
@@ -7689,13 +7689,13 @@ function _decodeGeminiKey(s) {
       quizStreakBadge.textContent = `Chuỗi: ${stats.currentStreak}`;
 
       if (q.type === 'loc_to_event') {
-        quizTagPill.textContent = `📍 Khảo thí vị trí ➔ Sự kiện`;
+        quizTagPill.textContent = ` Khảo thí vị trí ➔ Sự kiện`;
         quizTagPill.style.background = 'rgba(0,242,254,0.15)';
         quizTagPill.style.color = '#00f2fe';
         quizTagPill.style.borderColor = 'rgba(0,242,254,0.3)';
         quizModeSubtitle.textContent = `Tại "${q.targetLocus.locName}", bạn đã neo giữ sự kiện gì?`;
       } else {
-        quizTagPill.textContent = `🏛️ Khảo thí sự kiện ➔ Vị trí`;
+        quizTagPill.textContent = ` Khảo thí sự kiện ➔ Vị trí`;
         quizTagPill.style.background = 'rgba(255,153,0,0.15)';
         quizTagPill.style.color = '#ffb300';
         quizTagPill.style.borderColor = 'rgba(255,153,0,0.3)';
@@ -7768,7 +7768,7 @@ function _decodeGeminiKey(s) {
 
       quizFeedbackBox.style.display = 'block';
       if (isCorrect) {
-        quizFeedbackTitle.innerHTML = `<span style="color:#10b981; font-size:18px;">✓ CHÍNH XÁC XUẤT SẮC!</span> <span style="color:#ffb300; font-size:12px;">(+1 Chuỗi đúng 🔥)</span>`;
+        quizFeedbackTitle.innerHTML = `<span style="color:#10b981; font-size:18px;">✓ CHÍNH XÁC XUẤT SẮC!</span> <span style="color:#ffb300; font-size:12px;">(+1 Chuỗi đúng )</span>`;
         quizFeedbackBox.style.borderColor = 'rgba(16,185,129,0.4)';
         quizFeedbackBox.style.background = 'rgba(16,185,129,0.08)';
       } else {
@@ -7779,7 +7779,7 @@ function _decodeGeminiKey(s) {
 
       quizFeedbackDesc.innerHTML = `
         <div style="margin-bottom:6px;"><b>Đồ vật:</b> ${q.targetLocus.locName} ➔ <b>Sự kiện:</b> ${q.targetLocus.name} (${q.targetLocus.year})</div>
-        <div style="color:rgba(0,242,254,0.9); font-size:12px;">💡 <b>Mẹo nhớ Loci:</b> ${q.targetLocus.mnemonic || 'Hãy tưởng tượng chi tiết sự kiện gắn vào bề mặt đồ vật để khắc sâu trí nhớ.'}</div>
+        <div style="color:rgba(0,242,254,0.9); font-size:12px;"> <b>Mẹo nhớ Loci:</b> ${q.targetLocus.mnemonic || 'Hãy tưởng tượng chi tiết sự kiện gắn vào bề mặt đồ vật để khắc sâu trí nhớ.'}</div>
       `;
     }
 
@@ -7811,7 +7811,7 @@ function _decodeGeminiKey(s) {
       const stats = ai.progressManager.getStatsSummary(lociList);
 
       progStatAcc.textContent = `${stats.accuracy}%`;
-      progStatStreak.textContent = `${stats.currentStreak} 🔥`;
+      progStatStreak.textContent = `${stats.currentStreak} `;
       progStatMastered.textContent = `${stats.masteredCount}/${stats.totalLoci}`;
       progStatTotal.textContent = stats.totalAnswered;
 
@@ -7839,7 +7839,7 @@ function _decodeGeminiKey(s) {
           item.innerHTML = `
             <div>
               <div style="font-weight:700; color:#fff;">${locus.name} <span style="font-size:11px; color:#ffab00;">(${locus.year})</span></div>
-              <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px;">📍 ${locus.locName} • Đúng: ${st.correct}/${st.attempts} (${acc}%)</div>
+              <div style="font-size:11px; color:rgba(255,255,255,0.6); margin-top:2px;"> ${locus.locName} • Đúng: ${st.correct}/${st.attempts} (${acc}%)</div>
             </div>
             <div style="display:flex; align-items:center; gap:8px;">
               <span class="prog-status-badge ${badgeClass}">${badgeText}</span>
@@ -7913,7 +7913,7 @@ function _decodeGeminiKey(s) {
     const CAROUSEL_SPACES = [
       {
         id: "loft_13",
-        title: "🏛️ Loft Living Room",
+        title: " Loft Living Room",
         badge: "Không gian 1",
         desc: "Phòng nghiên cứu hiện đại gắn 5 mốc Lịch sử 12 trọng tâm",
         src: "https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/e60dd7f7-a44f-40a7-df62-095b19cd8700/w=800"
@@ -7941,7 +7941,7 @@ function _decodeGeminiKey(s) {
       },
       {
         id: "dong_khoi",
-        title: "🔥 Phong Trào Đồng Khởi",
+        title: " Phong Trào Đồng Khởi",
         badge: "1959 - 1960",
         desc: "Chuyển cách mạng miền Nam sang thế tiến công",
         src: "https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/7d4d2641-d6a8-4fef-e85c-b12ed100d500/w=800"
@@ -7962,7 +7962,7 @@ function _decodeGeminiKey(s) {
       },
       {
         id: "ai_tutor",
-        title: "🧠 Trợ Lý AI Google Gemini",
+        title: " Trợ Lý AI Google Gemini",
         badge: "Trí tuệ nhân tạo",
         desc: "Tương tác giọng nói như Siri, cá nhân hóa tiến trình",
         src: "https://imagedelivery.net/IEUjvl3YUlxY-MrTpOAWDQ/bd541261-75be-469c-7dc0-dae0ce81c400/w=800"

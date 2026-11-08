@@ -164,7 +164,7 @@ function _decodeGeminiKey(s) {
                 if (btn) {
                     btn.style.backgroundImage = '';
                     btn.style.border = 'none';
-                    btn.textContent = '🏠';
+                    btn.textContent = '';
                     btn.title = 'Trang chủ';
                 }
                 if (authWdgBtn) authWdgBtn.style.display = 'flex';
@@ -2102,7 +2102,7 @@ function _decodeGeminiKey(s) {
             <!-- DANH SÁCH CỦA TÔI (LOCAL TRÊN MÁY NÀY) -->
             <div class="saved" id="saved" style="display:none; margin-bottom:20px;"></div>
 
-            <p class="note">💡 <b>Mẹo chụp 360° đẹp:</b> Đứng ở tâm phòng, cầm điện thoại theo chiều dọc ngang tầm mắt,
+            <p class="note"> <b>Mẹo chụp 360° đẹp:</b> Đứng ở tâm phòng, cầm điện thoại theo chiều dọc ngang tầm mắt,
                 giữ nguyên gót chân và xoay quanh một trục cố định. Chụp qua HTTPS sẽ mượt mà nhất.</p>
         </div>
     </main>
@@ -2136,7 +2136,7 @@ function _decodeGeminiKey(s) {
             <div class="shutter-wrap">
                 <button class="shutter" id="shutter" aria-label="Chụp góc này"><span></span></button>
             </div>
-            <button class="btn p cap-btn-sub" id="cap-done" disabled>Ghép ảnh ✨</button>
+            <button class="btn p cap-btn-sub" id="cap-done" disabled>Ghép ảnh </button>
         </div>
 
         <!-- Hộp thoại hướng dẫn trước khi chụp -->
@@ -2195,7 +2195,7 @@ function _decodeGeminiKey(s) {
 
     <!-- 3. MÀN HÌNH ĐANG GHÉP ẢNH (BUSY) -->
     <section class="screen" id="busy">
-        <div style="font-size:36px;margin-bottom:6px">⚙️</div>
+        <div style="font-size:36px;margin-bottom:6px"></div>
         <div id="busy-t" style="font-size:17px;font-weight:700">Đang xử lý ghép ảnh toàn cảnh…</div>
         <div class="bar"><i id="busy-bar"></i></div>
         <p style="font-size:13px;opacity:0.75;max-width:260px">Thuật toán AI căn chỉnh hình cầu equirectangular…</p>
@@ -2219,12 +2219,12 @@ function _decodeGeminiKey(s) {
         </div>
 
         <div class="vtop">
-            <button class="icon-btn" id="v-home" title="Trang chủ">🏠</button>
+            <button class="icon-btn" id="v-home" title="Trang chủ"></button>
             <input id="v-name" aria-label="Tên không gian" placeholder="Đặt tên không gian…">
 
             <div class="desktop-loci-tools" id="desktop-loci-tools">
                 <button class="dt-tool-btn" id="dt-btn-place" onclick="window.triggerDesktopPlaceMarker()" title="Đặt mốc vị trí mới vào không gian 360">
-                    📍 <span>Đặt mốc</span>
+                     <span>Đặt mốc</span>
                 </button>
                 <button class="dt-tool-btn" id="dt-btn-move" onclick="window.triggerDesktopMoveMarker()" title="Bật/Tắt chế độ kéo di chuyển mốc trong phòng">
                     🔄 <span>Di chuyển mốc</span>
@@ -2248,18 +2248,18 @@ function _decodeGeminiKey(s) {
             <button class="icon-btn" id="v-walk-mode" title="Chế độ đi bộ 3D (W-A-S-D)"
                 style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px;">🚶<span class="icon-btn-label"> 3D</span></button>
             <button class="icon-btn" id="v-sharpen" title="Làm nét ảnh 360° (HD Clarity)"
-                style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.25)); border: 1.5px solid #10b981; color: #ecfdf5;">✨<span class="icon-btn-label"> Nét HD</span></button>
+                style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.25), rgba(6, 182, 212, 0.25)); border: 1.5px solid #10b981; color: #ecfdf5;"><span class="icon-btn-label"> Nét HD</span></button>
             <button class="icon-btn" id="v-api-key" title="Cài đặt Gemini AI">🔑</button>
             <button class="icon-btn" id="v-gyro" title="Bật cảm biến xoay (VR Gyro)">🧭</button>
             <button class="icon-btn" id="v-ar" title="Mốc trong không gian thật (AR + mã neo QR)"
                 style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, rgba(79, 70, 229, 0.92), rgba(14, 165, 233, 0.92)); color: #fff; border: none; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35); cursor: pointer;">📷<span class="icon-btn-label"> AR</span></button>
-            <button class="icon-btn" id="v-3d-dock-btn" title="Kho Mô hình 3D Lịch Sử — Chọn mô hình & Học trực tiếp trong không gian 360" style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #10b981, #0d9488); color: #fff; border: none; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); cursor: pointer;">🏛️<span class="icon-btn-label"> Chọn 3D</span></button>
+            <button class="icon-btn" id="v-3d-dock-btn" title="Kho Mô hình 3D Lịch Sử — Chọn mô hình & Học trực tiếp trong không gian 360" style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #10b981, #0d9488); color: #fff; border: none; box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); cursor: pointer;"><span class="icon-btn-label"> Chọn 3D</span></button>
             <button class="icon-btn" id="v-model-ar" title="Đặt mô hình 3D vào không gian thật (world tracking)"
                 style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #2563eb, #06b6d4); color: #fff; border: none; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35); cursor: pointer;">🧊<span class="icon-btn-label"> Mô hình</span></button>
             <button class="icon-btn" id="v-ar-tap" title="Chạm vào khung hình camera để đặt mốc thực tế"
                 style="width: auto; padding: 0 12px; font-weight: 700; font-size: 13px; display: inline-flex; align-items: center; gap: 5px; background: linear-gradient(135deg, rgba(245, 158, 11, 0.95), rgba(217, 119, 6, 0.95)); color: #fff; border: none; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.35); cursor: pointer;">📌<span class="icon-btn-label"> Đặt mốc</span></button>
             <button class="icon-btn" id="v-addnode" title="Thêm điểm chụp để di chuyển trong không gian">➕</button>
-            <button class="icon-btn" id="v-panel-toggle" title="Danh sách mốc">📍</button>
+            <button class="icon-btn" id="v-panel-toggle" title="Danh sách mốc"></button>
             <button class="icon-btn" id="v-minimap" title="Bản đồ lối đi — chạm một điểm để được dẫn tuyến" style="display:none">🗺️</button>
         </div>
 
@@ -2285,11 +2285,11 @@ function _decodeGeminiKey(s) {
                 ⚡ Tự động bố trí 9 mốc tuần tự 360°
             </button>
             <div style="display:flex;gap:8px;margin-top:4px">
-                <button class="btn p" id="place" style="flex:1">📍 Đặt thủ công mốc</button>
+                <button class="btn p" id="place" style="flex:1"> Đặt thủ công mốc</button>
                 <button class="btn s" id="dl" style="padding:10px 14px" title="Tải ảnh 360 về máy">⬇</button>
             </div>
             <button class="btn s" id="btn-panel-sharpen"
-                style="width:100%; margin-top:8px; padding:10px; font-weight:600; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; background:rgba(16,185,129,0.12); border:1px solid #10b981; color:#059669; border-radius:12px; cursor:pointer;">✨
+                style="width:100%; margin-top:8px; padding:10px; font-weight:600; font-size:13px; display:flex; align-items:center; justify-content:center; gap:6px; background:rgba(16,185,129,0.12); border:1px solid #10b981; color:#059669; border-radius:12px; cursor:pointer;">
                 Làm nét ảnh không gian này</button>
         </aside>
 
@@ -2354,7 +2354,7 @@ function _decodeGeminiKey(s) {
                 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
                     <h3
                         style="font-size: 18px; font-weight: 800; color: #0f172a; display: flex; align-items: center; gap: 8px;">
-                        <span>✨</span> Làm nét ảnh 360° (HD Clarity)
+                        <span></span> Làm nét ảnh 360° (HD Clarity)
                     </h3>
                     <span id="sharpen-status-badge"
                         style="font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 12px; background: #e0f2fe; color: #0284c7;">HD
@@ -2468,11 +2468,11 @@ function _decodeGeminiKey(s) {
             <div id="share-generate-box">
                 <button id="btn-generate-share-link" class="btn p"
                     style="width: 100%; padding: 12px; font-size: 14.5px; font-weight: 700; background: linear-gradient(135deg, #0284c7, #10b981); color:#fff; border: none; border-radius: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(2,132,199,0.3);">
-                    <span>✨</span> Tạo liên kết chia sẻ đám mây
+                    <span></span> Tạo liên kết chia sẻ đám mây
                 </button>
                 <div id="share-status-spinner"
                     style="display:none; text-align: center; padding: 14px; color: #0284c7; font-size: 13.5px; font-weight: 600;">
-                    <span style="display:inline-block; animation: spin 1s linear infinite; margin-right: 6px;">⚙️</span>
+                    <span style="display:inline-block; animation: spin 1s linear infinite; margin-right: 6px;"></span>
                     Đang đồng bộ không gian lên đám mây...
                 </div>
             </div>
@@ -2505,7 +2505,7 @@ function _decodeGeminiKey(s) {
 
                 <div
                     style="margin-top: 14px; padding: 10px 12px; background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 12px; font-size: 12px; color: #065f46; display: flex; align-items: center; gap: 8px;">
-                    <span>💡</span> Người nhận có thể xoay 360°, đi dạo 3D, mở thẻ flashcard và bấm <b>"Lưu bản sao"</b>
+                    <span></span> Người nhận có thể xoay 360°, đi dạo 3D, mở thẻ flashcard và bấm <b>"Lưu bản sao"</b>
                     để ôn bài riêng.
                 </div>
             </div>
@@ -2884,7 +2884,7 @@ function _decodeGeminiKey(s) {
 
             return {
                 id: SAMPLE_SPACE_ID,
-                name: '🏛️ Không gian mẫu 360° • Lịch sử Bài 6',
+                name: ' Không gian mẫu 360° • Lịch sử Bài 6',
                 created: 1730000000000,
                 lesson: 'bai_6',
                 image: 'assets/images/sample_360_room.jpg',
@@ -3189,7 +3189,7 @@ function _decodeGeminiKey(s) {
 
                 cloneBtn.innerHTML = '✅ Đã lưu vào máy!';
                 cloneBtn.style.background = '#475569';
-                toast('🎉 Đã lưu bản sao vào danh sách phòng của bạn! Bạn có thể tự do chỉnh sửa mốc.');
+                toast(' Đã lưu bản sao vào danh sách phòng của bạn! Bạn có thể tự do chỉnh sửa mốc.');
                 renderSaved();
             };
         };
@@ -3421,7 +3421,7 @@ function _decodeGeminiKey(s) {
                     const img = await imgFromFile(f);
                     await newSpaceFromImage(img, f.name.replace(/\.[^.]+$/, '') || 'Phòng tải lên', rawDataUrl);
                     setTimeout(() => {
-                        toast('✨ Ảnh 360° đã được nạp với độ nét gốc cao nhất!');
+                        toast(' Ảnh 360° đã được nạp với độ nét gốc cao nhất!');
                     }, 1200);
                 };
                 reader.readAsDataURL(f);
@@ -4163,7 +4163,7 @@ function _decodeGeminiKey(s) {
             if (isRetake) {
                 if (cap.targets[savedIdx]) cap.targets[savedIdx].done = true;
                 toast(`Đã chụp lại thành công: ${STEP_ANGLES[savedIdx % STEP_ANGLES.length]?.name || `Góc ${savedIdx + 1}`}!`);
-                $('cap-hint').textContent = '✨ Đã chụp lại xong! Bấm "Ghép ảnh ✨" để tiếp tục.';
+                $('cap-hint').textContent = ' Đã chụp lại xong! Bấm "Ghép ảnh " để tiếp tục.';
                 updateCount();
                 updateRadar();
                 return;
@@ -4193,7 +4193,7 @@ function _decodeGeminiKey(s) {
             if (cap.currentStepIdx < STEP_ANGLES.length) {
                 $('cap-hint').textContent = `Đã chụp! Tiếp theo: ${STEP_ANGLES[cap.currentStepIdx].name}`;
             } else {
-                $('cap-hint').textContent = '✨ Đã đủ góc! Hãy bấm "Ghép ảnh"';
+                $('cap-hint').textContent = ' Đã đủ góc! Hãy bấm "Ghép ảnh"';
             }
 
             cap.capturing = false;
@@ -6389,7 +6389,7 @@ function _decodeGeminiKey(s) {
                     applyClarityBoost(data, OW, OH, STITCHING_CONFIG.clarityStrength || 0.16);
 
                     outCtx.putImageData(imgData, 0, 0);
-                    onProgress(100, '✨ Đã ghép xong không gian 360° sắc nét hoàn hảo!');
+                    onProgress(100, ' Đã ghép xong không gian 360° sắc nét hoàn hảo!');
                     console.timeEnd('UltraFastStitchingV9');
 
                     return outCanvas;
@@ -6749,7 +6749,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                             });
                         }
 
-                        $('walk-room-info').innerHTML = `🧠 <b>AI Suy luận:</b> Đang tính toán chiều sâu không gian (Depth Map)...`;
+                        $('walk-room-info').innerHTML = ` <b>AI Suy luận:</b> Đang tính toán chiều sâu không gian (Depth Map)...`;
 
                         // Thu nhỏ ảnh để AI xử lý không bị đứng máy
                         const img = new Image();
@@ -7101,7 +7101,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                     if (isNew) {
                         await persistCurrentSpace();
-                        toast('🎉 Đã tạo không gian 360! Hãy bấm "Đặt mốc" để gắn kiến thức vào góc phòng.');
+                        toast(' Đã tạo không gian 360! Hãy bấm "Đặt mốc" để gắn kiến thức vào góc phòng.');
                     }
 
                     // --- GIA SƯ LOCI: đồng hành trong không gian 360 ---
@@ -7171,7 +7171,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     const total = anchorsOfLesson().length;
                     const placed = anchorsOfLesson().filter(a => space.markers && space.markers[a.id]).length;
                     if (placing) {
-                        $('help').textContent = '📍 Bấm vào vị trí trên ảnh 360 để gắn mốc đang chọn.';
+                        $('help').textContent = ' Bấm vào vị trí trên ảnh 360 để gắn mốc đang chọn.';
                     } else {
                         $('help').textContent = `Đã gắn ${placed}/${total} mốc. Xoay góc nhìn để khám phá.`;
                     }
@@ -7179,7 +7179,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                 function setPlacing(active) {
                     placing = active;
-                    $('place').textContent = active ? '✓ Đang chọn vị trí…' : '📍 Đặt vị trí mốc';
+                    $('place').textContent = active ? '✓ Đang chọn vị trí…' : ' Đặt vị trí mốc';
                     $('pano').classList.toggle('place', active);
                     updateHelpText();
                 }
@@ -7201,7 +7201,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     persistCurrentSpace();
                 };
 
-                // Đóng mở Panel mốc: nút 📍, nút ✕ trong sheet, hoặc kéo xuống
+                // Đóng mở Panel mốc: nút , nút ✕ trong sheet, hoặc kéo xuống
                 const panelEl = $('panel');
                 const setPanelOpen = open => panelEl.classList.toggle('hide', !open);
                 $('v-panel-toggle').onclick = () => setPanelOpen(panelEl.classList.contains('hide'));
@@ -7248,7 +7248,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         id: customId,
                         title: title.trim(),
                         targetKnowledge: (knowledge && knowledge.trim()) ? knowledge.trim() : title.trim(),
-                        order: '⭐',
+                        order: '',
                         summary: (knowledge && knowledge.trim()) ? ('Gắn với kiến thức: ' + knowledge.trim()) : 'Điểm neo tự do do bạn tạo ra.',
                         keyPoints: (knowledge && knowledge.trim()) ? [knowledge.trim()] : [],
                         flashcards: []
@@ -7262,7 +7262,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     selId = customId;
                     setPlacing(true);
                     renderAnchorsList();
-                    toast('📍 Hãy bấm vào không gian 360 để thả điểm neo: ' + title);
+                    toast(' Hãy bấm vào không gian 360 để thả điểm neo: ' + title);
                 };
 
                 // Thoát về trang chủ hoặc Portal
@@ -7368,7 +7368,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     } else {
                         selId = null;
                         setPlacing(false);
-                        toast('🎉 Đã gắn đủ tất cả mốc của bài học này!');
+                        toast(' Đã gắn đủ tất cả mốc của bài học này!');
                     }
                     renderAnchorsList();
                 }
@@ -8064,8 +8064,8 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     const kept = Object.keys(node.markers).length;
                     const keptTxt = kept ? `, đã giữ ${kept} mốc từ điểm trước` : '';
                     toast(stepped
-                        ? `🎉 Đã thêm điểm mới cách điểm cũ ~${(distCm / 100).toFixed(1)}m — lối đi tự nối 2 chiều${keptTxt}.`
-                        : `🎉 Đã thêm điểm mới (cách ~2m) — lối đi tự nối 2 chiều${keptTxt}.`);
+                        ? ` Đã thêm điểm mới cách điểm cũ ~${(distCm / 100).toFixed(1)}m — lối đi tự nối 2 chiều${keptTxt}.`
+                        : ` Đã thêm điểm mới (cách ~2m) — lối đi tự nối 2 chiều${keptTxt}.`);
                 }
 
                 function renderNodeBar() {
@@ -8183,7 +8183,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                     info.innerHTML = `
         <div class="info-header">
-            <div class="info-badge">📍 MỐC SỐ ${(a.order || '')}: ${esc(a.title)}</div>
+            <div class="info-badge"> MỐC SỐ ${(a.order || '')}: ${esc(a.title)}</div>
             <button class="x" id="info-x" aria-label="Đóng">✕</button>
         </div>
         <h3 style="margin-top:8px;">${esc(a.title)}</h3>
@@ -8205,7 +8205,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
         ` : ''}
         ${a.mnemonic ? `
             <div class="mn">
-                <div class="mn-header">💡 MẸO GHI NHỚ LOCI</div>
+                <div class="mn-header"> MẸO GHI NHỚ LOCI</div>
                 <div class="mn-body">${esc(a.mnemonic)}</div>
             </div>
         ` : ''}
@@ -8222,8 +8222,8 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             ` : '';
         })()}
         <div style="display:flex; gap:8px; margin-top:16px;">
-            <button class="btn s" id="btn-reposition-marker" style="flex:1; font-size:12px; padding:10px;">📍 Đặt lại vị trí</button>
-            <button class="info-rm-btn" id="rm-marker" style="flex:1; font-size:12px; padding:10px; margin:0;">🗑️ Gỡ mốc</button>
+            <button class="btn s" id="btn-reposition-marker" style="flex:1; font-size:12px; padding:10px;"> Đặt lại vị trí</button>
+            <button class="info-rm-btn" id="rm-marker" style="flex:1; font-size:12px; padding:10px; margin:0;"> Gỡ mốc</button>
         </div>
     `;
                     info.classList.add('on');
@@ -8552,7 +8552,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         space._isSharpened = true;
                         toast('Đang lưu ảnh siêu nét vào bộ nhớ không gian…');
                         await persistCurrentSpace();
-                        toast(`✨ Đã lưu phiên bản siêu nét (+${amt}%) cho phòng này!`);
+                        toast(` Đã lưu phiên bản siêu nét (+${amt}%) cho phòng này!`);
                     }
                     $('dlg-sharpen').style.display = 'none';
                 };
@@ -8713,9 +8713,9 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                             // Tự động copy vào clipboard
                             try {
                                 await navigator.clipboard.writeText(res.shareUrl);
-                                toast('🎉 Đã tạo liên kết trực tuyến và tự động sao chép!');
+                                toast(' Đã tạo liên kết trực tuyến và tự động sao chép!');
                             } catch (_) {
-                                toast('🎉 Đã tạo liên kết chia sẻ!');
+                                toast(' Đã tạo liên kết chia sẻ!');
                             }
 
                             // Tải lại danh sách Cloud spaces
@@ -8875,10 +8875,10 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                             cloneBtn.innerHTML = '✅ Đã lưu vào máy!';
                             cloneBtn.style.background = '#475569';
-                            toast('🎉 Đã lưu bản sao vào danh sách phòng của bạn! Bạn có thể tự do chỉnh sửa mốc.');
+                            toast(' Đã lưu bản sao vào danh sách phòng của bạn! Bạn có thể tự do chỉnh sửa mốc.');
                         };
 
-                        toast(`✨ Đã mở không gian chia sẻ: ${sharedData.name || 'Phòng 360'}`);
+                        toast(` Đã mở không gian chia sẻ: ${sharedData.name || 'Phòng 360'}`);
                     } catch (err) {
                         if (typeof timeoutId !== 'undefined') clearTimeout(timeoutId);
                         console.error('Lỗi khi mở không gian chia sẻ:', err);
@@ -10647,7 +10647,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
     <!-- Floating Loci Home Button for Mobile & Desktop -->
     <a href="portal_v2.html" id="floating-loci-home" class="floating-loci-home-btn" title="Quay lại Cổng Tổng quan Portal">
-        <span>🏠</span> <span>Cổng Loci</span>
+        <span></span> <span>Cổng Loci</span>
     </a>
 
     <!-- Exit Pseudo Fullscreen Button (iOS Safari Fallback) -->
@@ -10673,7 +10673,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             
             <div class="card-mini-actions">
                 <button type="button" class="mini-btn pri" onclick="window.saveMarkerDetails()">💾 Lưu mốc</button>
-                <button type="button" class="mini-btn sec" onclick="window.toggleRecallTest()">🧠 Ôn tập ngay</button>
+                <button type="button" class="mini-btn sec" onclick="window.toggleRecallTest()"> Ôn tập ngay</button>
             </div>
             
             <!-- Recall Test Drawer -->
@@ -10775,7 +10775,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             const isMatch = (event && event.includes(answer)) || (keywords && keywords.includes(answer)) || answer.includes(event);
             if (isMatch) {
                 fb.style.color = '#34d399';
-                fb.textContent = '🎉 Chính xác! Bạn đã ghi nhớ xuất sắc mốc sự kiện này!';
+                fb.textContent = ' Chính xác! Bạn đã ghi nhớ xuất sắc mốc sự kiện này!';
             } else {
                 fb.style.color = '#f87171';
                 fb.textContent = 'Chưa chính xác. Gợi ý sự kiện: ' + (document.getElementById('input-marker-event').value || 'Ôn lại sự kiện gắn với mốc');
