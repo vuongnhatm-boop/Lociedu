@@ -17388,36 +17388,54 @@
         // 5. THUẬT TOÁN SPACED REPETITION (1-3-7) & RENDER UI
         // ==========================================
 
+        // HÀM KIỂM TRA CHỈ TÍNH TOÁN BÀI ĐÃ THỰC SỰ HỌC (ĐÃ LÀM BÀI / HOÀN THÀNH MỐC)
+        function isLessonLearned(lessonId) {
+            try {
+                // 1. Dữ liệu chu kỳ 1-3-7
+                const cycles = JSON.parse(localStorage.getItem('loci_reminder_137_cycles') || '{}');
+                if (cycles[lessonId] && cycles[lessonId].lastCompletedAt > 0) return true;
+
+                // 2. Dữ liệu thẻ ôn tập SM-2
+                const sm2 = JSON.parse(localStorage.getItem('loci_sm2_progress') || '{}');
+                const hasSm2 = Object.keys(sm2).some(k => (k.startsWith(lessonId) || k.includes(lessonId)) && (sm2[k].totalAttempts > 0));
+                if (hasSm2) return true;
+
+                // 3. Danh sách bài đã hoàn thành
+                const learned = JSON.parse(localStorage.getItem('loci_learned_lessons') || '[]');
+                if (learned.includes(lessonId)) return true;
+            } catch (_) {}
+            return false;
+        }
+
         function generateMockSpacedRepetitionData() {
             const metaSpaces = JSON.parse(localStorage.getItem('loci360_spaces_meta_v2') || '[]');
             const tasks = [];
             const today = new Date();
 
-            // Mặc định luôn có lộ trình chuẩn cho 3 bài Lịch sử Chủ đề 3 & Đề thi thử THPT
-            // 1. Bài 6: Quá hạn 2 ngày (Mốc 1 ngày - Trí nhớ giảm còn 45%)
-            const d1 = new Date(today); d1.setDate(today.getDate() - 2);
-            tasks.push({
-                id: 'sr_b6', lessonId: 'bai_6', name: 'Bài 6: Cách mạng tháng Tám (1945) — 9 trạm Loci',
-                dueDate: d1, level: 1, status: 'overdue', memory: 45
-            });
+            // CHỈ TÍNH VÀ HIỂN THỊ CÁC BÀI HỌC SINH ĐÃ THỰC SỰ HỌC
+            const availableLessons = [
+                { id: 'bai_6', name: 'Bài 6: Cách mạng tháng Tám (1945) — 9 trạm Loci' },
+                { id: 'bai_7', name: 'Bài 7: Kháng chiến chống Pháp (1945 - 1954) — 10 trạm Loci' },
+                { id: 'bai_8', name: 'Bài 8: Kháng chiến chống Mỹ (1954 - 1975) — 10 trạm Loci' }
+            ];
 
-            // 2. Bài 7: Đến hạn hôm nay (Mốc 3 ngày - Trí nhớ 80%)
-            tasks.push({
-                id: 'sr_b7', lessonId: 'bai_7', name: 'Bài 7: Kháng chiến chống Pháp (1945 - 1954) — 10 trạm Loci',
-                dueDate: new Date(today), level: 2, status: 'today', memory: 80
-            });
-
-            // 3. Bài 8: Sắp tới 4 ngày (Mốc 7 ngày - Trí nhớ 100%)
-            const d3 = new Date(today); d3.setDate(today.getDate() + 4);
-            tasks.push({
-                id: 'sr_b8', lessonId: 'bai_8', name: 'Bài 8: Kháng chiến chống Mỹ (1954 - 1975) — 10 trạm Loci',
-                dueDate: d3, level: 3, status: 'upcoming', memory: 100
-            });
-
-            // 4. Đề thi thử tốt nghiệp THPT Quốc Gia (28 câu)
-            tasks.push({
-                id: 'sr_exam', isExam: true, name: 'Phòng thi thử THPT Quốc Gia môn Lịch sử (28 câu · 50 phút)',
-                dueDate: new Date(today), level: 2, status: 'today', memory: 85
+            availableLessons.forEach(l => {
+                if (isLessonLearned(l.id)) {
+                    let stat = null;
+                    if (window.LociReminder137 && typeof window.LociReminder137.getLessonCycleStatus === 'function') {
+                        stat = window.LociReminder137.getLessonCycleStatus(l.id);
+                    }
+                    const isDue = stat ? stat.isAnyDue : false;
+                    tasks.push({
+                        id: 'sr_' + l.id,
+                        lessonId: l.id,
+                        name: l.name,
+                        dueDate: isDue ? new Date(today) : new Date(today.getTime() + 86400000 * 2),
+                        level: stat ? stat.currentMilestone : 1,
+                        status: isDue ? 'today' : 'upcoming',
+                        memory: isDue ? 60 : 100
+                    });
+                }
             });
 
             // Bổ sung các không gian 360 cá nhân nếu người dùng đã tạo

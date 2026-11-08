@@ -385,7 +385,8 @@
             const dueLessons = [];
             for (const lid of lessons) {
                 const stat = getLessonCycleStatus(lid);
-                if (stat && stat.isAnyDue) {
+                // CHỈ TÍNH VÀ HIỆN THÔNG BÁO CHO BÀI ĐÃ HỌC (hasStarted === true)
+                if (stat && stat.hasStarted && stat.isAnyDue) {
                     if (!settings.notifiedLessons[todayStr][lid]) {
                         dueLessons.push({ id: lid, name: lessonNames[lid], stat });
                     }

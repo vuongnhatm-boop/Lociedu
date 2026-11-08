@@ -861,11 +861,26 @@
                     
                     <div class="arena-question-text">${q.questionText}</div>
 
-                    ${q.image ? `
-                        <div style="text-align: center; margin-bottom: 16px;">
-                            <img src="${q.image}" style="max-height: 180px; border-radius: 12px; border: 1.5px solid #e2e8f0; object-fit: contain;">
+                    <!-- HIỆN VẬT / MÔ HÌNH 3D TRỰC TIẾP TRONG ĐẤU TRƯỜNG -->
+                    ${q.model3d ? `
+                        <div style="position: relative; margin-bottom: 16px; border-radius: 18px; overflow: hidden; border: 2px solid #38bdf8; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.15);">
+                            <div style="position: absolute; top: 10px; left: 12px; z-index: 2; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); color: #38bdf8; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px; border: 1px solid rgba(56, 189, 248, 0.4); display: flex; align-items: center; gap: 5px;">
+                                <span>🏛️ Hiện vật 3D tương tác (Xoay 360°)</span>
+                            </div>
+                            <model-viewer src="${q.model3d}" auto-rotate camera-controls shadow-intensity="1" touch-action="pan-y" 
+                                style="width: 100%; height: 230px; background: radial-gradient(circle at center, #ffffff 0%, #f0f9ff 100%); display: block;" 
+                                alt="Hiện vật 3D Loci"></model-viewer>
                         </div>
-                    ` : ''}
+                    ` : (q.image ? `
+                        <div style="text-align: center; margin-bottom: 16px; position: relative;">
+                            <div style="display: inline-block; position: relative; border-radius: 16px; overflow: hidden; border: 1.5px solid #cbd5e1; box-shadow: 0 4px 18px rgba(0,0,0,0.08);">
+                                <img src="${q.image}" style="max-height: 200px; max-width: 100%; object-fit: contain; display: block;" onerror="this.parentElement.style.display='none'">
+                                <div style="position: absolute; bottom: 8px; right: 10px; background: rgba(0,0,0,0.65); color: #fff; font-size: 10.5px; font-weight: 700; padding: 2px 8px; border-radius: 99px;">
+                                    Tư liệu hiện vật
+                                </div>
+                            </div>
+                        </div>
+                    ` : '')}
 
                     <!-- Options Area -->
                     ${q.type === 'multiple_choice' ? `
@@ -1134,6 +1149,56 @@
         prepareQuestions(count) {
             const raw = [];
 
+            // 0. BỘ CÂU HỎI HIỆN VẬT & MÔ HÌNH 3D ĐẶC SẮC (MODEL 3D BATTLE)
+            const model3dQuestions = [
+                {
+                    type: 'multiple_choice',
+                    typeLabel: 'Nhận diện Hiện vật 3D',
+                    questionText: 'Mô hình 3D dưới đây tái hiện khí tài lịch sử huyền thoại nào tiến vào Dinh Độc Lập trưa ngày 30/4/1975?',
+                    model3d: 'assets/models/bai8/tram9/xe_tang_giai_phong_390.glb',
+                    image: 'assets/images/bai6_chuan/b6_t4_giai_phong_thai_nguyen.png',
+                    options: ['Xe tăng 390 húc đổ cổng Dinh Độc Lập', 'Xe tăng T-34 chiến dịch Biên giới', 'Xe bọc thép M113', 'Xe tăng 843'],
+                    correctAnswer: 'Xe tăng 390 húc đổ cổng Dinh Độc Lập'
+                },
+                {
+                    type: 'multiple_choice',
+                    typeLabel: 'Hiện vật Không gian 3D',
+                    questionText: 'Mô hình không gian dưới đây tái hiện địa danh lịch sử nào - nơi đồng chí Võ Nguyên Giáp đọc Quân lệnh số 1 xuất quân ngày 16/8/1945?',
+                    model3d: 'assets/models/tram4/cay_da.glb',
+                    image: 'assets/images/bai6_chuan/b6_t3_dinh_tan_trao.png',
+                    options: ['Cây đa Tân Trào (Tuyên Quang)', 'Lán Nà Nưa', 'Đình Tân Trào', 'Đường Thái Nguyên'],
+                    correctAnswer: 'Cây đa Tân Trào (Tuyên Quang)'
+                },
+                {
+                    type: 'multiple_choice',
+                    typeLabel: 'Nhận diện Hiện vật 3D',
+                    questionText: 'Phương tiện vận tải thô sơ nhưng là "vũ khí bí mật" lập nên kỳ tích tiếp tế cho chiến dịch Điện Biên Phủ 1954 là gì?',
+                    model3d: 'assets/models/bai7/tram7/xe_dap_tho.glb',
+                    image: 'assets/images/bai7/tram7.jpg',
+                    options: ['Xe đạp thồ Điện Biên Phủ', 'Xe trâu kéo lương thảo', 'Thuyền mảng vượt sông Nậm Rốm', 'Xe cút kít gỗ'],
+                    correctAnswer: 'Xe đạp thồ Điện Biên Phủ'
+                },
+                {
+                    type: 'multiple_choice',
+                    typeLabel: 'Hiện vật & Nhân vật Lịch sử',
+                    questionText: 'Mô hình 3D dưới đây tái hiện sự kiện lịch sử vang dội chiều ngày 7/5/1954 tại lòng chảo Mường Thanh:',
+                    model3d: 'assets/models/bai7/tram9/do_cat_bi_bat.glb',
+                    image: 'assets/images/bai7/tram9.jpg',
+                    options: ['Tướng De Castries và toàn bộ Bộ chỉ huy Pháp bị bắt sống', 'Ký kết Hiệp định Genève', 'Bắn rơi máy bay Pháp', 'Đại tướng Võ Nguyên Giáp duyệt binh'],
+                    correctAnswer: 'Tướng De Castries và toàn bộ Bộ chỉ huy Pháp bị bắt sống'
+                },
+                {
+                    type: 'multiple_choice',
+                    typeLabel: 'Hiện vật Không gian 3D',
+                    questionText: 'Mô hình địa danh lịch sử dưới đây tại Hà Nội là nơi diễn ra cuộc mít tinh biến thành khởi nghĩa giành chính quyền ngày 19/8/1945:',
+                    model3d: 'assets/models/tram5/mit_tinh_nha_hat_lon.glb',
+                    image: 'assets/images/bai6_chuan/b6_t5_mit_tinh_nha_hat_lon.png',
+                    options: ['Nhà hát Lớn Hà Nội', 'Bắc Bộ Phủ', 'Quảng trường Ba Đình', 'Tòa Thị chính'],
+                    correctAnswer: 'Nhà hát Lớn Hà Nội'
+                }
+            ];
+            model3dQuestions.forEach(mq => raw.push(mq));
+
             // 1. Lấy dữ liệu từ LOCI_ANCHORS (Bài 6, 7, 8)
             const anchorsObj = window.LOCI_ANCHORS || {};
             Object.keys(anchorsObj).forEach(k => {
@@ -1147,6 +1212,7 @@
                                     type: 'multiple_choice',
                                     typeLabel: 'Trắc nghiệm 4 lựa chọn',
                                     questionText: qz.q || qz.question,
+                                    image: a.img || (a.photos && a.photos[0]) || null,
                                     options: qz.options || ['Đáp án A', 'Đáp án B', 'Đáp án C', 'Đáp án D'],
                                     correctAnswer: qz.options ? qz.options[qz.answerIndex || 0] : 'Đáp án A'
                                 });
@@ -1171,6 +1237,7 @@
                                     type: 'typein',
                                     typeLabel: 'Nhận diện hiện vật & Không gian',
                                     questionText: tp.q || `Hiện vật tại trạm: ${a.title}`,
+                                    image: a.img || (a.photos && a.photos[0]) || null,
                                     correctAnswer: tp.target || a.title,
                                     alternatives: tp.acceptedAlternatives || []
                                 });
@@ -1317,3 +1384,4 @@
     });
 
 })(typeof window !== 'undefined' ? window : globalThis);
+
