@@ -12749,7 +12749,7 @@
         <!-- Header Navbar Hero Gate (Khớp ảnh 100%) -->
         <header class="hero-gate-nav">
             <div class="hero-gate-left">
-                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleHeroStartClick()">
+                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleGateNavClick('home')">
                     <!-- Biểu tượng ngôi đền Hy Lạp / Bảo tàng tri thức màu xanh cyan -->
                     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                         <line x1="3" y1="21" x2="21" y2="21"></line>
@@ -12764,10 +12764,10 @@
             </div>
 
             <div class="hero-gate-center-pills">
-                <button type="button" class="hero-gate-pill-btn" onclick="window.handleHeroStartClick()">
+                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('home')" title="Yêu cầu đăng nhập">
                     <span>Trang chủ</span> <span>▾</span>
                 </button>
-                <button type="button" class="hero-gate-pill-btn" onclick="window.switchPortalTab && window.switchPortalTab('connect'); window.dismissHeroGate();">
+                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('community')" title="Yêu cầu đăng nhập">
                     <span>Cộng đồng</span> <span>▾</span>
                 </button>
             </div>
@@ -15659,9 +15659,16 @@
 
         window.closeCloudAuthModal = function () {
             const modal = document.getElementById('cloud-modal');
-            if (!modal) return;
-            modal.classList.remove('open');
-            modal.style.display = 'none';
+            if (modal) {
+                modal.classList.remove('open');
+                modal.style.display = 'none';
+            }
+            // Nếu người dùng đóng popup mà vẫn chưa đăng nhập thành công, giữ nguyên khóa Hero Gate
+            if (!window.isUserLoggedIn()) {
+                if (typeof window.showHeroGate === 'function') {
+                    window.showHeroGate();
+                }
+            }
         };
 
         window.togglePasswordVisibility = function (inputId, btn) {
@@ -15862,12 +15869,14 @@
                 if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
                     try {
                         await window.LociFirebase.loginUser(identifier, pass);
+                        window._handleLocalAuthSuccess(identifier, identifier);
                         if (typeof window.playTingTing === 'function') window.playTingTing(); window._showAuthAlert('Đăng nhập thành công!', 'success');
                         setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
                         return;
                     } catch (err) {
                         try {
                             await window.LociFirebase.registerUser(identifier, pass, identifier);
+                            window._handleLocalAuthSuccess(identifier, identifier);
                             window._showAuthAlert('Tài khoản mới được tạo và đăng nhập thành công!', 'success');
                             setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
                             return;
@@ -15904,7 +15913,7 @@
             if (username.length < 3) return window._showAuthAlert('Tên đăng nhập phải có ít nhất 3 ký tự.');
             if (!pass || pass.length < 6) return window._showAuthAlert('Mật khẩu phải có ít nhất 6 ký tự.');
 
-            if (btn) { btn.disabled = true; btn.textContent = '⏳ Đang tạo tài khoản...'; }
+            if (btn) { btn.disabled = true; btn.textContent = 'Đang tạo tài khoản...'; }
 
             try {
                 if (window.LociFirebase && typeof window.LociFirebase.registerUser === 'function') {
@@ -15973,14 +15982,20 @@
             window.closeCloudAuthModal();
         };
 
-        // Tự động khôi phục tài khoản local nếu đã lưu
+        // Tự động khôi phục tài khoản local nếu phiên đăng nhập hợp lệ
         document.addEventListener('DOMContentLoaded', () => {
             try {
+                const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
                 const saved = localStorage.getItem('loci_local_user');
-                if (saved) {
+                if (sessionActive && saved) {
                     const u = JSON.parse(saved);
-                    if (u && u.displayName) {
-                        window._handleLocalAuthSuccess(u.displayName, u.displayName);
+                    if (u && (u.displayName || u.username || u.uid)) {
+                        window._handleLocalAuthSuccess(u.username || u.displayName, u.displayName || u.username);
+                    }
+                } else if (!sessionActive) {
+                    // Nếu không có phiên active, bảo đảm hiện Hero Gate
+                    if (typeof window.showHeroGate === 'function') {
+                        window.showHeroGate();
                     }
                 }
             } catch (_) { }
@@ -17435,7 +17450,7 @@
             if (!pass || pass.length < 6) return showAlert('Mật khẩu phải có ít nhất 6 ký tự.');
 
             btnSubmitRegister.disabled = true;
-            btnSubmitRegister.textContent = '⏳ Đang tạo tài khoản...';
+            btnSubmitRegister.textContent = 'Đang tạo tài khoản...';
             try {
                 await LociFirebase.registerUser(username, pass, displayName);
                 showAlert('Tạo tài khoản thành công! Dữ liệu của bạn đã được lưu riêng biệt.', 'success');
@@ -17458,7 +17473,7 @@
             if (!pass) return showAlert('Vui lòng nhập mật khẩu.');
 
             btnSubmitLogin.disabled = true;
-            btnSubmitLogin.textContent = '⏳ Đang kiểm tra...';
+            btnSubmitLogin.textContent = 'Đang kiểm tra...';
             try {
                 await LociFirebase.loginUser(identifier, pass);
                 showAlert('Đăng nhập thành công!', 'success');
@@ -17601,7 +17616,7 @@
             if (!currentUser) return alert('Vui lòng đăng nhập để lưu cài đặt.');
 
             btnSaveSettings.disabled = true;
-            btnSaveSettings.textContent = '⏳ Đang lưu...';
+            btnSaveSettings.textContent = 'Đang lưu...';
 
             try {
                 const newName = settingDisplayName.value.trim();
@@ -17615,7 +17630,7 @@
                 // Nếu người dùng chọn ảnh mới, đẩy lên máy chủ trung chuyển ImgBB
                 if (selectedSettingsAvatar) {
                     try {
-                        btnSaveSettings.textContent = '⏳ Đang tải ảnh lên máy chủ...';
+                        btnSaveSettings.textContent = 'Đang tải ảnh lên máy chủ...';
 
                         // Đẩy lên ImgBB lấy link trực tiếp
                         const imgUrl = await LociFirebase.uploadImageToImgBB(selectedSettingsAvatar);
@@ -17639,7 +17654,7 @@
                 // Cập nhật Firebase Auth nếu có phiên Auth hợp lệ
                 const authUser = getAuth(LociFirebase.app).currentUser;
                 if (authUser && Object.keys(updateData).length > 0) {
-                    btnSaveSettings.textContent = '⏳ Đang cập nhật hồ sơ...';
+                    btnSaveSettings.textContent = 'Đang cập nhật hồ sơ...';
                     try {
                         await updateProfile(authUser, updateData);
                     } catch (pErr) {
@@ -17814,6 +17829,20 @@
         const appFrame = document.getElementById('app-frame');
 
         function switchPortalTab(tabName) {
+            // Kiểm tra bảo mật: Bắt buộc người dùng phải đăng nhập trước khi thao tác các tab trong Portal
+            if (!window.isUserLoggedIn()) {
+                if (typeof window.showHeroGate === 'function') {
+                    window.showHeroGate();
+                }
+                if (typeof showToast === 'function') {
+                    showToast('Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để tiếp tục.', 'warning', 3500);
+                }
+                if (typeof window.openLoginGate === 'function') {
+                    window.openLoginGate('login');
+                }
+                return;
+            }
+
             if (tabName === 'leaderboard') tabName = 'connect';
             // Khi chọn hoặc gọi đến Bảng Vàng -> tự động chuyển sang tab thống nhất Bảng Vàng & Kết Nối
             if (tabName === 'leaderboard') {
@@ -19773,7 +19802,7 @@
                     <tbody id="admin-users-tbody">
                         <tr>
                             <td colspan="5" style="text-align:center; padding: 40px; color: #64748b;">
-                                ⏳ Đang tải danh sách người dùng từ Cloud Firestore...
+                                Đang tải danh sách người dùng từ Cloud Firestore...
                             </td>
                         </tr>
                     </tbody>
@@ -19916,7 +19945,7 @@
         window.loadAdminUsersList = async function () {
             const tbody = document.getElementById('admin-users-tbody');
             if (!tbody) return;
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 36px; color: #64748b;">⏳ Đang đồng bộ danh sách từ Cloud Firestore...</td></tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding: 36px; color: #64748b;">Đang đồng bộ danh sách từ Cloud Firestore...</td></tr>`;
 
             try {
                 if (!window.LociFirebase || !window.LociFirebase.db) {
@@ -20805,7 +20834,7 @@
                 // Hiển thị trạng thái đang gửi
                 if (submitBtn) {
                     submitBtn.disabled = true;
-                    submitBtn.textContent = '⏳ Đang gửi góp ý...';
+                    submitBtn.textContent = 'Đang gửi góp ý...';
                 }
 
                 // Chuẩn bị thông điệp Telegram an toàn (HTML mode tránh lỗi parse ký tự đặc biệt)
@@ -21513,39 +21542,70 @@
             }
         };
 
-        // Bỏ ẩn Hero Gate để vào bảng điều khiển (sau khi đăng nhập hoặc xem trước)
-        window.dismissHeroGate = function() {
+        // Bỏ ẩn Hero Gate để vào bảng điều khiển (CHỈ KHI ĐÃ ĐĂNG NHẬP THỰC TẾ)
+        window.dismissHeroGate = function(force) {
+            if (!force && !window.isUserLoggedIn()) {
+                console.warn('[HeroGate] Chặn mở cổng vì người dùng chưa đăng nhập');
+                if (typeof showToast === 'function') {
+                    showToast('Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để tiếp tục.', 'warning', 3500);
+                }
+                window.openLoginGate('login');
+                return false;
+            }
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
                 gate.classList.add('gate-hidden');
                 setTimeout(() => { gate.style.display = 'none'; }, 450);
             }
+            return true;
         };
 
-        // Hiện lại Hero Gate
+        // Hiện lại Hero Gate (Khóa giao diện khi chưa đăng nhập)
         window.showHeroGate = function() {
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
                 gate.style.display = 'flex';
-                // Trigger reflow
                 void gate.offsetWidth;
                 gate.classList.remove('gate-hidden');
             }
         };
 
-        // Xử lý nút START trên Hero Gate
-        window.handleHeroStartClick = function() {
-            if (window.isUserLoggedIn()) {
-                window.dismissHeroGate();
-                const target = document.getElementById('spaces-section') || document.getElementById('space-grid');
-                if (target) target.scrollIntoView({ behavior: 'smooth' });
-            } else {
-                // Người dùng chưa đăng nhập -> Mở popup đăng nhập kèm thông báo
+        // Xử lý khi nhấn nút Trang chủ / Cộng đồng trên Hero Gate
+        window.handleGateNavClick = function(target) {
+            if (!window.isUserLoggedIn()) {
+                const targetName = (target === 'community') ? 'Cộng đồng' : 'Trang chủ';
                 if (typeof showToast === 'function') {
-                    showToast('Chào mừng bạn! Hãy Đăng nhập hoặc Đăng ký để bắt đầu bước vào Cung điện Ký ức Loci.', 'info', 3500);
+                    showToast(`Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để truy cập ${targetName}.`, 'warning', 3500);
+                } else {
+                    alert(`Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký để truy cập ${targetName}.`);
                 }
                 window.openLoginGate('login');
+                return false;
             }
+            window.dismissHeroGate(true);
+            if (target === 'community') {
+                if (typeof window.switchPortalTab === 'function') window.switchPortalTab('connect');
+            } else {
+                if (typeof window.switchPortalTab === 'function') window.switchPortalTab('overview');
+            }
+            return true;
+        };
+
+        // Xử lý nút START trên Hero Gate (Chỉ cho phép khi đã đăng nhập)
+        window.handleHeroStartClick = function() {
+            if (!window.isUserLoggedIn()) {
+                if (typeof showToast === 'function') {
+                    showToast('Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký tài khoản để bắt đầu trải nghiệm Cung điện Ký ức Loci.', 'warning', 3500);
+                } else {
+                    alert('Bạn chưa đăng nhập! Vui lòng Đăng nhập hoặc Đăng ký tài khoản để bắt đầu trải nghiệm Cung điện Ký ức Loci.');
+                }
+                window.openLoginGate('login');
+                return false;
+            }
+            window.dismissHeroGate(true);
+            const target = document.getElementById('spaces-section') || document.getElementById('space-grid');
+            if (target) target.scrollIntoView({ behavior: 'smooth' });
+            return true;
         };
 
         // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO
