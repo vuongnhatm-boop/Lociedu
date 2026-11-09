@@ -9,6 +9,7 @@
     <script id="desktop-scale-meta-controller">
     (function enforceDesktopProportionOnMobile() {
         try {
+            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
             var screenW = window.screen.width;
             var targetW = 1200; // Layout chuẩn máy tính (PC)
             if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {

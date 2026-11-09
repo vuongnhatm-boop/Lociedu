@@ -79,8 +79,29 @@
             try {
                 const raw = localStorage.getItem(STORAGE_KEY);
                 if (raw) return JSON.parse(raw);
+                const sel = localStorage.getItem('loci_selected_pet') || 'tiger';
+                const sp = PET_SPECIES[sel] || PET_SPECIES.tiger || PET_SPECIES.owl;
+                if (sp) {
+                    const defaultPet = {
+                        speciesId: sp.id,
+                        name: sp.name,
+                        level: 1,
+                        exp: 25,
+                        maxExp: 100,
+                        fullness: 80,
+                        happiness: 85,
+                        roomCode: 'LOCI-PET-2027',
+                        lastFed: Date.now(),
+                        coCareMembers: ['Bạn (Trưởng nhóm)'],
+                        history: [
+                            { time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}), act: 'Đồng hành cùng bạn ôn tập' }
+                        ]
+                    };
+                    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(defaultPet)); } catch (_) {}
+                    return defaultPet;
+                }
             } catch (_) {}
-            return null; // Chưa có pet -> mở modal chọn
+            return null;
         }
 
         saveData() {
@@ -207,17 +228,24 @@
                 .pet-svg-container:active { transform: scale(0.95); }
                 .phx-wings { animation: petFloat 2s ease-in-out infinite; transform-origin: 100px 110px; }
 
-                /* MODAL OVERLAYS */
+                /* MODAL OVERLAYS - FLUID, RESPONSIVE & ALWAYS SCROLLABLE */
                 .loci-pet-modal-overlay {
-                    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
-                    backdrop-filter: blur(8px); z-index: 100050; display: none;
-                    place-items: center; padding: 20px;
+                    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7);
+                    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+                    z-index: 100050; display: none;
+                    align-items: center; justify-content: center;
+                    padding: 16px; overflow-y: auto; -webkit-overflow-scrolling: touch;
+                    box-sizing: border-box;
                 }
-                .loci-pet-modal-overlay.open { display: grid !important; }
+                .loci-pet-modal-overlay.open { display: flex !important; }
                 .loci-pet-modal-card {
                     background: #ffffff; border-radius: 24px; width: 100%; max-width: 680px;
+                    max-height: 88vh; max-height: 88dvh;
+                    display: flex; flex-direction: column;
                     box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25); border: 1px solid #e2e8f0;
-                    overflow: hidden; animation: petPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+                    overflow-y: auto; -webkit-overflow-scrolling: touch;
+                    box-sizing: border-box;
+                    animation: petPopIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
                 }
                 @keyframes petPopIn {
                     from { opacity: 0; transform: scale(0.94); }
@@ -341,6 +369,10 @@
         }
 
         openAdoptionModal() {
+            if (typeof window.openPetSelectionModal === 'function') {
+                window.openPetSelectionModal();
+                return;
+            }
             let modal = document.getElementById('pet-adoption-modal');
             if (!modal) {
                 modal = document.createElement('div');
@@ -385,8 +417,9 @@
                     </div>
                 </div>
             `;
+            modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
             modal.classList.add('open');
-            this.selectedSpeciesId = 'phoenix';
+            this.selectedSpeciesId = 'tiger';
         }
 
         selectSpecies(speciesId, cardEl) {

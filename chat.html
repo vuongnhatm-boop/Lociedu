@@ -15,6 +15,7 @@ function _decodeGeminiKey(s) {
 
     (function enforceDesktopProportionOnMobile() {
         try {
+            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
             var screenW = window.screen.width;
             var targetW = 1200; // Layout chuẩn máy tính (PC)
             if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
@@ -3190,8 +3191,13 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
 
         let typingEl = null;
         function setBusy(b) {
-            busy = b; send.disabled = b || !input.value.trim();
-            statusEl.classList.toggle('busy', b); statusEl.querySelector('span').textContent = b ? 'Đang suy nghĩ…' : 'Sẵn sàng';
+            busy = b; 
+            if (send) send.disabled = b || !input.value.trim();
+            if (statusEl) {
+                statusEl.classList.toggle('busy', b); 
+                const span = statusEl.querySelector('span');
+                if (span) span.textContent = b ? 'Đang suy nghĩ…' : 'Sẵn sàng';
+            }
             if (b && !typingEl) {
                 $('welcome')?.remove();
                 typingEl = document.createElement('div'); typingEl.className = 'msg ai typing-row'; typingEl.style.alignItems = 'center';
@@ -3259,6 +3265,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             }
         }
 
+        window.renderHistory = renderHistory;
         function renderHistory() {
             const list = $('history-list');
             if (!list) return;

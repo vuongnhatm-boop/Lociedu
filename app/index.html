@@ -2,44 +2,44 @@
 <html lang="vi">
 
 <head>
-        <!-- BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO -->
-    <script id="loci-space-auth-guard">
-        (function() {
-            try {
-                var isAuth = false;
-                if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) isAuth = true;
-                var sFlag = localStorage.getItem('loci_auth_session');
-                if (sFlag === 'active' || sFlag === 'true') {
-                    var lu = localStorage.getItem('loci_local_user');
-                    if (lu) {
-                        var p = JSON.parse(lu);
-                        if (p && (p.uid || p.displayName)) isAuth = true;
-                    }
-                }
-                var urlParams = new URLSearchParams(window.location.search);
-                if (urlParams.get('preview') === 'guest') isAuth = true;
+  <!-- BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP MỚI ĐƯỢC VÀO -->
+  <script id="loci-space-auth-guard">
+    (function () {
+      try {
+        var isAuth = false;
+        if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) isAuth = true;
+        var sFlag = localStorage.getItem('loci_auth_session');
+        if (sFlag === 'active' || sFlag === 'true') {
+          var lu = localStorage.getItem('loci_local_user');
+          if (lu) {
+            var p = JSON.parse(lu);
+            if (p && (p.uid || p.displayName)) isAuth = true;
+          }
+        }
+        var urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('preview') === 'guest') isAuth = true;
 
-                if (!isAuth) {
-                    try { sessionStorage.setItem('loci_redirect_after_login', window.location.href); } catch(_) {}
-                    var isInsideAppDir = window.location.pathname.indexOf('/app/') !== -1;
-                    var portalUrl = isInsideAppDir ? '../portal_v2.html?need_login=1' : 'portal_v2.html?need_login=1';
-                    window.location.replace(portalUrl);
-                }
-            } catch(err) {
-                console.warn('[Loci Auth Guard] Error:', err);
-            }
-        })();
-    </script>
+        if (!isAuth) {
+          try { sessionStorage.setItem('loci_redirect_after_login', window.location.href); } catch (_) { }
+          var isInsideAppDir = window.location.pathname.indexOf('/app/') !== -1;
+          var portalUrl = isInsideAppDir ? '../portal_v2.html?need_login=1' : 'portal_v2.html?need_login=1';
+          window.location.replace(portalUrl);
+        }
+      } catch (err) {
+        console.warn('[Loci Auth Guard] Error:', err);
+      }
+    })();
+  </script>
 
 
 
   <!-- KHỞI TẠO HỆ THỐNG TRỢ LÝ ẢO AI & PHÍM TẮT B TOÀN CỤC (SẴN SÀNG NGAY KHI TẢI TRANG) -->
   <script>
-    (function() {
-      window.openAIDrawer = function(e) {
+    (function () {
+      window.openAIDrawer = function (e) {
         document.body.classList.add('ai-drawer-active');
-        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) {} }
-        if (document.pointerLockElement) { try { document.exitPointerLock(); } catch (_) {} }
+        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) { } }
+        if (document.pointerLockElement) { try { document.exitPointerLock(); } catch (_) { } }
         var drawer = document.getElementById('ai-drawer');
         if (!drawer) return;
         drawer.classList.add('open');
@@ -47,25 +47,25 @@
         drawer.style.setProperty('display', 'flex', 'important');
         drawer.style.setProperty('visibility', 'visible', 'important');
         drawer.style.setProperty('pointer-events', 'auto', 'important');
-        
+
         var frame = document.getElementById('ai-drawer-frame');
         if (frame && (!frame.src || frame.src === '' || frame.src.endsWith('about:blank') || frame.src.indexOf('chat.html') === -1)) {
           frame.src = 'chat.html?embed=1';
         }
       };
 
-      window.closeAIDrawer = function(e) {
+      window.closeAIDrawer = function (e) {
         document.body.classList.remove('ai-drawer-active');
-        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) {} }
+        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) { } }
         var drawer = document.getElementById('ai-drawer');
         if (!drawer) return;
         drawer.classList.remove('open');
         drawer.style.setProperty('transform', 'translateX(120%)', 'important');
       };
 
-      window.toggleAIDrawer = function(e) {
-        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) {} }
-        if (document.pointerLockElement) { try { document.exitPointerLock(); } catch (_) {} }
+      window.toggleAIDrawer = function (e) {
+        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) { } }
+        if (document.pointerLockElement) { try { document.exitPointerLock(); } catch (_) { } }
         var drawer = document.getElementById('ai-drawer');
         if (!drawer) return;
         var isOpen = drawer.classList.contains('open') || (drawer.style.transform && drawer.style.transform.indexOf('translateX(0') !== -1);
@@ -77,7 +77,7 @@
       };
 
       // Đăng ký phím tắt B và ESC toàn cục ngay lập tức (Capture phase để không bị Three.js chặn)
-      window.addEventListener('keydown', function(e) {
+      window.addEventListener('keydown', function (e) {
         if (e.code === 'KeyB' || e.key === 'b' || e.key === 'B' || e.keyCode === 66) {
           var active = document.activeElement;
           if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.isContentEditable)) {
@@ -103,7 +103,7 @@
 
   <script>
     // BẮT MỌI LỖI RUNTIME ĐỂ HIỂN THỊ LÊN MÀN HÌNH CHỈ KHI DEBUG (?debug=1)
-    window.addEventListener('error', function(e) {
+    window.addEventListener('error', function (e) {
       console.error('[GLOBAL ERROR]', e.message, e.filename, e.lineno);
       if (typeof window !== 'undefined' && window.location && window.location.search && window.location.search.includes('debug=1')) {
         const errBox = document.getElementById('debug-err-box') || document.createElement('div');
@@ -125,7 +125,8 @@
   <link rel="preload" href="./backrooms_vr.glb" as="fetch" crossorigin="anonymous">
 
   <title>Cung Điện Ký Ức - Lịch Sử 12 | 3D Loft Living Room</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
 
   <!-- Google Fonts: Be Vietnam Pro & Inter (Chuẩn Tiếng Việt 100%, sắc nét tuyệt đối, không bao giờ lỗi phông) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -494,7 +495,7 @@
     }
 
 
-        /* --- TỐI GIẢN HÓA TUYỆT ĐỐI THEO YÊU CẦU NGƯỜI DÙNG: CHỈ ĐỂ THANH TIẾN ĐỘ & NÚT AI --- */
+    /* --- TỐI GIẢN HÓA TUYỆT ĐỐI THEO YÊU CẦU NGƯỜI DÙNG: CHỈ ĐỂ THANH TIẾN ĐỘ & NÚT AI --- */
     .top-actions,
     .hud-stats,
     #open-lesson-anchors-btn,
@@ -520,9 +521,11 @@
     #progress-container {
       display: flex !important;
     }
+
     #mastery-bar {
       display: block !important;
     }
+
     #mastery-percent {
       display: inline-block !important;
     }
@@ -624,19 +627,21 @@
       font-weight: 600;
     }
 
-    
+
     /* ── GLASS TAB STYLE ── */
     .lesson-tab-btn {
       cursor: pointer;
       transition: all 0.2s ease !important;
     }
+
     .lesson-tab-btn:hover {
-      background: rgba(255,255,255,0.22) !important;
-      border-color: rgba(255,255,255,0.5) !important;
+      background: rgba(255, 255, 255, 0.22) !important;
+      border-color: rgba(255, 255, 255, 0.5) !important;
       color: #fff !important;
       transform: translateY(-1px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
     }
+
     /* ── ENSURE ANIMATION HTML ELEMENTS ARE ABOVE CANVAS ── */
     .loci-anim-label,
     .loci-hn-celebration,
@@ -4187,6 +4192,7 @@
     #ai-drawer .ai-depth-bar {
       display: none !important;
     }
+
     #ai-drawer {
       border: 1px solid rgba(0, 242, 254, 0.3) !important;
       box-shadow: -10px 0 40px rgba(0, 0, 0, 0.6) !important;
@@ -4204,6 +4210,7 @@
       visibility: hidden !important;
       pointer-events: none !important;
     }
+
     #ai-drawer {
       width: 440px !important;
       max-width: calc(100vw - 28px) !important;
@@ -4234,6 +4241,7 @@
       pointer-events: none !important;
       visibility: hidden !important;
     }
+
     #ai-drawer.open {
       transform: translateX(0) !important;
       pointer-events: auto !important;
@@ -4262,6 +4270,7 @@
       pointer-events: none !important;
       visibility: hidden !important;
     }
+
     #ai-drawer.open {
       transform: translateX(0) !important;
       pointer-events: auto !important;
@@ -4270,20 +4279,21 @@
 
     /* Khi AI Drawer mở: Tự động ẩn thanh tiến độ đáy và nút trigger để không bị đè nhau */
     body.ai-drawer-active #progress-container,
-    #ai-drawer.open ~ #progress-container {
+    #ai-drawer.open~#progress-container {
       opacity: 0 !important;
       pointer-events: none !important;
       transform: translate(-50%, 40px) !important;
       transition: opacity 0.25s, transform 0.25s !important;
     }
+
     body.ai-drawer-active #ai-orb-trigger,
-    #ai-drawer.open ~ #ai-orb-trigger {
+    #ai-drawer.open~#ai-orb-trigger {
       opacity: 0 !important;
       pointer-events: none !important;
       transform: scale(0.8) !important;
       transition: opacity 0.25s, transform 0.25s !important;
     }
-</style>
+  </style>
 
   <style>
     body.spatial-recall-active #bdt-keyword-box,
@@ -4309,6 +4319,7 @@
       box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45), 0 0 1px 1px rgba(255, 255, 255, 0.08) inset !important;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
     }
+
     .lesson-tab-btn:hover,
     .hud-back-btn:hover,
     #ai-orb-trigger:hover {
@@ -4317,6 +4328,7 @@
       box-shadow: 0 14px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(56, 189, 248, 0.25) !important;
       transform: translateY(-2px) scale(1.02) !important;
     }
+
     .lesson-tab-btn.active {
       background: rgba(2, 132, 199, 0.45) !important;
       border-color: #38bdf8 !important;
@@ -4338,25 +4350,31 @@
       box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55) !important;
     }
   </style>
-<style>
-  /* ── FROSTED GLASS TABS & UI ── */
-  .lesson-tab-btn, .hud-back-btn, #progress-container, #ai-orb-trigger {
-    background: rgba(15, 23, 42, 0.94) !important;
-    border: 1px solid rgba(255, 255, 255, 0.15) !important;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
-  }
-  .lesson-tab-btn:hover {
-    background: rgba(30, 41, 59, 0.95) !important;
-    border-color: rgba(56, 189, 248, 0.6) !important;
-    color: #fff !important;
-  }
-  .lesson-tab-btn.active {
-    background: linear-gradient(135deg, rgba(2, 132, 199, 0.85), rgba(14, 165, 233, 0.85)) !important;
-    border-color: #38bdf8 !important;
-    color: #fff !important;
-    box-shadow: 0 4px 20px rgba(2, 132, 199, 0.5) !important;
-  }
-</style>  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+  <style>
+    /* ── FROSTED GLASS TABS & UI ── */
+    .lesson-tab-btn,
+    .hud-back-btn,
+    #progress-container,
+    #ai-orb-trigger {
+      background: rgba(15, 23, 42, 0.94) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5) !important;
+    }
+
+    .lesson-tab-btn:hover {
+      background: rgba(30, 41, 59, 0.95) !important;
+      border-color: rgba(56, 189, 248, 0.6) !important;
+      color: #fff !important;
+    }
+
+    .lesson-tab-btn.active {
+      background: linear-gradient(135deg, rgba(2, 132, 199, 0.85), rgba(14, 165, 233, 0.85)) !important;
+      border-color: #38bdf8 !important;
+      color: #fff !important;
+      box-shadow: 0 4px 20px rgba(2, 132, 199, 0.5) !important;
+    }
+  </style>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 </head>
 
 <body>
@@ -4404,7 +4422,9 @@
   <!-- Start & Controls Overlay (Ẩn mặc định để tự động vào thẳng 3D, mở lại qua phím [H] hoặc nút Trợ giúp) -->
   <div id="start-overlay" class="hidden">
     <div class="hero-card" style="position: relative;">
-      <button onclick="document.getElementById('start-overlay').classList.add('hidden');" style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Đóng hướng dẫn [ESC]">✕</button>
+      <button onclick="document.getElementById('start-overlay').classList.add('hidden');"
+        style="position: absolute; top: 16px; right: 16px; width: 32px; height: 32px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); color: #fff; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s;"
+        title="Đóng hướng dẫn [ESC]">✕</button>
       <div class="badge">Khoa Học Kỹ Thuật • Phương Pháp Loci</div>
       <h1>Cung Điện Ký Ức Lịch Sử 12</h1>
       <p>Khám phá không gian phòng Loft 3D góc nhìn thứ nhất (FPS). Tích hợp Trợ lý Trí tuệ Nhân tạo <b>Loci</b> tương
@@ -4412,7 +4432,12 @@
 
       <!-- Microphone & Voice Assistant Banner -->
       <div class="mic-permission-banner">
-        <div class="mic-banner-pulse"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
+        <div class="mic-banner-pulse"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="22" />
+          </svg></div>
         <div>
           <div class="mic-banner-title">
             <span>Kích hoạt Micro Gọi Trợ lý AI</span>
@@ -4455,14 +4480,10 @@
   <!-- Top Navigation HUD -->
   <!-- Top Navigation HUD (Tối Giản, Đã Xóa Thanh Tiến Độ & Kho Mốc) -->
   <!-- Nút Về Portal Tối Giản Nhỏ Gọn Ở Góc Trái -->
-  <div id="top-hud" style="top:16px; left:16px; position:fixed; z-index:2147483647 !important; pointer-events:auto !important; background:transparent; border:none; box-shadow:none; padding:0;">
-    <a href="javascript:void(0)"
-       id="hud-return-portal-btn"
-       class="hud-back-btn"
-       title="Quay lại Cổng Portal NCKH"
-       onpointerdown="event.stopPropagation();"
-       onmousedown="event.stopPropagation();"
-       onclick="
+  <div id="top-hud"
+    style="top:16px; left:16px; position:fixed; z-index:2147483647 !important; pointer-events:auto !important; background:transparent; border:none; box-shadow:none; padding:0;">
+    <a href="javascript:void(0)" id="hud-return-portal-btn" class="hud-back-btn" title="Quay lại Cổng Portal NCKH"
+      onpointerdown="event.stopPropagation();" onmousedown="event.stopPropagation();" onclick="
          if (document.pointerLockElement) {
            try { document.exitPointerLock(); } catch(_) {}
          }
@@ -4470,8 +4491,7 @@
          const target = isApp ? '../portal_v2.html' : 'portal_v2.html';
          window.location.href = target;
          return false;
-       "
-       style="
+       " style="
          display: inline-flex !important;
          align-items: center !important;
          gap: 8px !important;
@@ -4490,16 +4510,18 @@
          pointer-events: auto !important;
          transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
        "
-       onmouseover="this.style.background='rgba(245, 158, 11, 0.35)'; this.style.borderColor='#f59e0b'; this.style.transform='scale(1.05)';"
-       onmouseout="this.style.background='rgba(15, 23, 42, 0.92)'; this.style.borderColor='rgba(245, 158, 11, 0.6)'; this.style.transform='scale(1)';">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      onmouseover="this.style.background='rgba(245, 158, 11, 0.35)'; this.style.borderColor='#f59e0b'; this.style.transform='scale(1.05)';"
+      onmouseout="this.style.background='rgba(15, 23, 42, 0.92)'; this.style.borderColor='rgba(245, 158, 11, 0.6)'; this.style.transform='scale(1)';">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
     </a>
 
     <!-- Nút Khóa / Mở Khóa Sắp Xếp Mốc (Phím K) -->
     <button id="btn-toggle-anchor-lock"
-            onclick="if (typeof window.toggleAnchorLockMode === 'function') window.toggleAnchorLockMode();"
-            title="Khóa cố định mốc ký ức / Mở khóa sắp xếp mốc (Phím tắt K)"
-            style="
+      onclick="if (typeof window.toggleAnchorLockMode === 'function') window.toggleAnchorLockMode();"
+      title="Khóa cố định mốc ký ức / Mở khóa sắp xếp mốc (Phím tắt K)" style="
               display: inline-flex !important;
               align-items: center !important;
               gap: 6px !important;
@@ -4516,15 +4538,13 @@
               transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
               margin-left: 8px !important;
               user-select: none !important;
-            "
-            onmouseover="this.style.transform='scale(1.05)';"
-            onmouseout="this.style.transform='scale(1)';">
+            " onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
       <span id="anchor-lock-icon">🔒</span>
       <span id="anchor-lock-text">Mốc: Khóa [K]</span>
     </button>
 
     <!-- Realtime THPT 2027 Countdown Chip in Top Navigation -->
-    
+
 
   </div><!-- 1. THANH TIẾN ĐỘ CHÍNH DUY NHẤT Ở ĐÁY GIỮA MÀN HÌNH -->
   <div id="progress-container" style="
@@ -4545,18 +4565,22 @@
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 20px rgba(245, 158, 11, 0.2);
     pointer-events: auto;
   ">
-    <span style="font-size: 13px; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
+    <span
+      style="font-size: 13px; font-weight: 800; color: #fbbf24; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
       <span></span> Tiến độ Loci Bài 6:
     </span>
-    <div style="width: 130px; height: 8px; background: rgba(255, 255, 255, 0.15); border-radius: 99px; overflow: hidden;">
-      <div id="mastery-bar" style="width: 0%; height: 100%; background: linear-gradient(90deg, #f59e0b, #10b981); border-radius: 99px; transition: width 0.4s ease;"></div>
+    <div
+      style="width: 130px; height: 8px; background: rgba(255, 255, 255, 0.15); border-radius: 99px; overflow: hidden;">
+      <div id="mastery-bar"
+        style="width: 0%; height: 100%; background: linear-gradient(90deg, #f59e0b, #10b981); border-radius: 99px; transition: width 0.4s ease;">
+      </div>
     </div>
-    <span id="mastery-percent" style="font-size: 13px; font-weight: 800; color: #38bdf8; min-width: 48px; text-align: right;">0/9 (0%)</span>
-  
+    <span id="mastery-percent"
+      style="font-size: 13px; font-weight: 800; color: #38bdf8; min-width: 48px; text-align: right;">0/9 (0%)</span>
+
     <button id="btn-model-recognition-quiz"
-            onclick="if (typeof window.start3DModelRecognitionQuiz === 'function') window.start3DModelRecognitionQuiz();"
-            title="Ôn tập Nhận diện Mô hình 3D: Nhìn mô hình trong không gian để chọn mốc lịch sử (Phím tắt M)"
-            style="
+      onclick="if (typeof window.start3DModelRecognitionQuiz === 'function') window.start3DModelRecognitionQuiz();"
+      title="Ôn tập Nhận diện Mô hình 3D: Nhìn mô hình trong không gian để chọn mốc lịch sử (Phím tắt M)" style="
               background: linear-gradient(135deg, rgba(217, 119, 6, 0.95), rgba(245, 158, 11, 0.95));
               border: 1.5px solid #fbbf24;
               color: #ffffff;
@@ -4572,16 +4596,14 @@
               transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
               white-space: nowrap;
               user-select: none;
-            "
-            onmouseover="this.style.transform='scale(1.06)'; this.style.filter='brightness(1.15)';"
-            onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';">
+            " onmouseover="this.style.transform='scale(1.06)'; this.style.filter='brightness(1.15)';"
+      onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';">
       <span>Nhìn Model Chọn Mốc [M]</span>
     </button>
 
     <button id="btn-surprise-recall-3d"
-            onclick="if (typeof window.trigger3DModelSurpriseRecall === 'function') window.trigger3DModelSurpriseRecall();"
-            title="Thử thách 3D Bất chợt: Mô hình xuất hiện bất ngờ và bắt buộc gõ đúng mốc lịch sử (Phím tắt T)"
-            style="
+      onclick="if (typeof window.trigger3DModelSurpriseRecall === 'function') window.trigger3DModelSurpriseRecall();"
+      title="Thử thách 3D Bất chợt: Mô hình xuất hiện bất ngờ và bắt buộc gõ đúng mốc lịch sử (Phím tắt T)" style="
               background: linear-gradient(135deg, rgba(236, 72, 153, 0.95), rgba(168, 85, 247, 0.95));
               border: 1.5px solid #f472b6;
               color: #ffffff;
@@ -4597,16 +4619,13 @@
               transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
               white-space: nowrap;
               user-select: none;
-            "
-            onmouseover="this.style.transform='scale(1.06)'; this.style.filter='brightness(1.15)';"
-            onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';">
+            " onmouseover="this.style.transform='scale(1.06)'; this.style.filter='brightness(1.15)';"
+      onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';">
       <span>Thử thách 3D [T]</span>
     </button>
 
-    <button id="btn-spatial-recall-toggle"
-            onclick="if (window.SpatialRecallMode) window.SpatialRecallMode.toggle();"
-            title="Chế độ Ôn tập Ký ức: Chỉ nhìn ảnh và mốc 3D để nhập kiến thức (Phím tắt R)"
-            style="
+    <button id="btn-spatial-recall-toggle" onclick="if (window.SpatialRecallMode) window.SpatialRecallMode.toggle();"
+      title="Chế độ Ôn tập Ký ức: Chỉ nhìn ảnh và mốc 3D để nhập kiến thức (Phím tắt R)" style="
               background: linear-gradient(135deg, rgba(2, 132, 199, 0.95), rgba(6, 182, 212, 0.95));
               border: 1.5px solid #00f2fe;
               color: #ffffff;
@@ -4622,20 +4641,16 @@
               transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
               white-space: nowrap;
               user-select: none;
-            "
-            onmouseover="this.style.transform='scale(1.06)'; this.style.filter='brightness(1.15)';"
-            onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';">
+            " onmouseover="this.style.transform='scale(1.06)'; this.style.filter='brightness(1.15)';"
+      onmouseout="this.style.transform='scale(1)'; this.style.filter='brightness(1)';">
       <span>Ôn tập Ký ức [R]</span>
     </button>
 
-    
+
   </div>
 
-    <!-- 2. NÚT TRỢ LÝ ẢO AI NỔI GÓC DƯỚI BÊN PHẢI (ẤN ĐỂ MỞ HOẶC DÙNG PHÍM B) -->
-  <div id="ai-orb-trigger"
-       onpointerdown="event.stopPropagation();"
-       title="Mở Trợ lý ảo AI Loci (Phím tắt B)"
-       style="
+  <!-- 2. NÚT TRỢ LÝ ẢO AI NỔI GÓC DƯỚI BÊN PHẢI (ẤN ĐỂ MỞ HOẶC DÙNG PHÍM B) -->
+  <div id="ai-orb-trigger" onpointerdown="event.stopPropagation();" title="Mở Trợ lý ảo AI Loci (Phím tắt B)" style="
          position: fixed !important;
          bottom: 22px !important;
          right: 22px !important;
@@ -4657,10 +4672,10 @@
          color: #ffffff !important;
          font-size: 13.5px !important;
          font-weight: 800 !important;
-       "
-       onmouseover="this.style.transform='scale(1.06)'; this.style.borderColor='#00f2fe';"
-       onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(0, 242, 254, 0.6)';">
-    <div class="ai-pulse-dot" style="width: 10px; height: 10px; border-radius: 50%; background: #00f2fe; box-shadow: 0 0 12px #00f2fe;"></div>
+       " onmouseover="this.style.transform='scale(1.06)'; this.style.borderColor='#00f2fe';"
+    onmouseout="this.style.transform='scale(1)'; this.style.borderColor='rgba(0, 242, 254, 0.6)';">
+    <div class="ai-pulse-dot"
+      style="width: 10px; height: 10px; border-radius: 50%; background: #00f2fe; box-shadow: 0 0 12px #00f2fe;"></div>
     <span>Trợ lý AI</span>
   </div>
 
@@ -4698,10 +4713,8 @@
         <span style="font-size: 18px;"></span>
         <span style="font-size: 14px; font-weight: 800; color: #38bdf8; letter-spacing: 0.2px;">Gia Sư AI Loci</span>
       </div>
-      <button id="ai-close-btn" title="Đóng trợ lý (Phím ESC hoặc B)"
-        onclick="window.closeAIDrawer(event);"
-        onpointerdown="event.stopPropagation();"
-        style="
+      <button id="ai-close-btn" title="Đóng trợ lý (Phím ESC hoặc B)" onclick="window.closeAIDrawer(event);"
+        onpointerdown="event.stopPropagation();" style="
           background: rgba(255, 255, 255, 0.08);
           border: none;
           color: #94a3b8;
@@ -4714,7 +4727,8 @@
           align-items: center;
           justify-content: center;
           transition: all 0.2s;
-        " onmouseover="this.style.background='rgba(239,68,68,0.2)';this.style.color='#f87171';" onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='#94a3b8';">✕</button>
+        " onmouseover="this.style.background='rgba(239,68,68,0.2)';this.style.color='#f87171';"
+        onmouseout="this.style.background='rgba(255,255,255,0.08)';this.style.color='#94a3b8';">✕</button>
     </div>
 
     <!-- Khung nhúng Gia sư AI Loci đầy đủ tính năng (chat.html) -->
@@ -4730,8 +4744,18 @@
     <!-- VÙNG ẨN CHỨA TOÀN BỘ PHẦN TỬ LEGACY ĐỂ CHỐNG LỖI JS (100% ẨN) -->
     <div style="display: none !important;">
       <div class="ai-header-actions">
-        <button class="ai-btn-icon" id="ai-clear-btn" title="Xóa lịch sử"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg></button>
-        <button class="ai-btn-icon" id="ai-settings-btn" title="Cài đặt"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg></button>
+        <button class="ai-btn-icon" id="ai-clear-btn" title="Xóa lịch sử"><svg width="15" height="15"
+            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M3 6h18" />
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+          </svg></button>
+        <button class="ai-btn-icon" id="ai-settings-btn" title="Cài đặt"><svg width="15" height="15" viewBox="0 0 24 24"
+            fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3" />
+            <path
+              d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+          </svg></button>
       </div>
       <div class="ai-depth-bar" id="ai-depth-bar">
         <button class="ai-depth-btn" id="drawer-notebook-btn">📚</button>
@@ -4762,8 +4786,7 @@
 
       <div class="settings-form-group">
         <label class="settings-form-label">Google Gemini / OpenRouter API Key:</label>
-        <input type="password" id="gemini-api-key-input" class="settings-input"
-          value="" />
+        <input type="password" id="gemini-api-key-input" class="settings-input" value="" />
       </div>
 
       <div class="settings-form-group">
@@ -5092,7 +5115,7 @@
         </button>
         <button id="clear-all-loci-btn"
           style="background:rgba(255,82,82,0.15); border:1px solid rgba(255,82,82,0.5); color:#ff5252; padding:12px; border-radius:14px; font-weight:700; cursor:pointer; font-size:13px; transition:0.2s;">
-           Xóa toàn bộ các mốc (Phòng trống)
+          Xóa toàn bộ các mốc (Phòng trống)
         </button>
       </div>
 
@@ -5122,7 +5145,7 @@
         <div style="display:flex; align-items:center; gap:10px;">
           <div
             style="width:38px; height:38px; border-radius:12px; background:linear-gradient(135deg, #00f2fe, #4facfe); display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:0 4px 15px rgba(0,242,254,0.4);">
-            
+
           </div>
           <div>
             <div style="font-weight:800; font-size:16px; letter-spacing:0.3px; color:#fff;">KHẢO THÍ KHÔNG GIAN LOCI
@@ -5147,7 +5170,7 @@
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
           <span id="quiz-tag-pill"
             style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; padding:3px 8px; border-radius:8px; background:rgba(0,242,254,0.15); color:#00f2fe; border:1px solid rgba(0,242,254,0.3);">
-             Vị trí khảo thí
+            Vị trí khảo thí
           </span>
           <button id="quiz-glide-preview-btn"
             style="background:transparent; border:none; color:#00f2fe; font-size:12px; font-weight:700; cursor:pointer; display:flex; align-items:center; gap:4px;">
@@ -5267,7 +5290,7 @@
         </button>
         <button id="prog-start-all-btn"
           style="flex:1.5; padding:12px; border-radius:14px; background:linear-gradient(135deg, #10b981, #06b6d4); border:none; color:#0a1020; font-weight:800; cursor:pointer; font-size:13px; font-family:inherit; box-shadow:0 4px 15px rgba(16,185,129,0.3);">
-           Bắt đầu khảo thí
+          Bắt đầu khảo thí
         </button>
         <button id="prog-reset-btn" title="Đặt lại toàn bộ tiến trình học"
           style="padding:12px 16px; border-radius:14px; background:rgba(255,82,82,0.12); border:1px solid rgba(255,82,82,0.3); color:#ff5252; font-weight:700; cursor:pointer; font-size:12px; font-family:inherit;">
@@ -5348,7 +5371,7 @@
                 lõi</label>
               <label class="format-chip"><input type="radio" name="nb-format" value="flashcards"> ❓ Thẻ câu hỏi & Đáp
                 án</label>
-              <label class="format-chip"><input type="radio" name="nb-format" value="loci">  Bản đồ Loci 3D</label>
+              <label class="format-chip"><input type="radio" name="nb-format" value="loci"> Bản đồ Loci 3D</label>
             </div>
           </div>
 
@@ -5503,7 +5526,7 @@
         <div style="display: flex; align-items: center; gap: 12px;">
           <div
             style="width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(135deg, #f59e0b, #ea580c); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: 0 4px 18px rgba(245, 158, 11, 0.4);">
-            </div>
+          </div>
           <div>
             <h3 style="margin: 0; font-size: 1.12rem; color: #fff; font-weight: 800;">Tự Động Tạo Mốc Ký Ức 3D Từ Bài
               Học</h3>
@@ -5763,7 +5786,7 @@
     var lastNotebookSummary = '';
     var vrSession = null;
     var isDragging = false;
-    
+
     // --- CHẾ ĐỘ KHÓA CỐ ĐỊNH MỐC KÝ ỨC (Mặc định: KHÓA CỐ ĐỊNH, nhấn [K] để mở khóa sắp xếp) ---
     var isAnchorsLocked = true;
     try {
@@ -5771,7 +5794,7 @@
       if (savedLock !== null) {
         isAnchorsLocked = (savedLock === 'true');
       }
-    } catch (_) {}
+    } catch (_) { }
 
     function updateAnchorLockUI() {
       var btn = document.getElementById('btn-toggle-anchor-lock');
@@ -5804,7 +5827,7 @@
       }
       try {
         localStorage.setItem('loci_anchors_locked', isAnchorsLocked ? 'true' : 'false');
-      } catch (_) {}
+      } catch (_) { }
 
       updateAnchorLockUI();
 
@@ -5824,7 +5847,7 @@
       }
     }
     window.toggleAnchorLockMode = toggleAnchorLockMode;
-    window.isAnchorsLocked = function() { return isAnchorsLocked; };
+    window.isAnchorsLocked = function () { return isAnchorsLocked; };
     setTimeout(updateAnchorLockUI, 200);
     window.addEventListener('DOMContentLoaded', updateAnchorLockUI);
     window.addEventListener('load', updateAnchorLockUI);
@@ -5840,12 +5863,12 @@
     function triggerStation1AtomicVFX() { if (typeof window !== 'undefined' && window.triggerStation1AtomicVFX) window.triggerStation1AtomicVFX(); }
     function triggerStation2QuanLenhVFX() { if (typeof window !== 'undefined' && window.triggerStation2QuanLenhVFX) window.triggerStation2QuanLenhVFX(); }
     function triggerStation3DaiHoiVFX() { if (typeof window !== 'undefined' && window.triggerStation3DaiHoiVFX) window.triggerStation3DaiHoiVFX(); }
-    
+
     let lociList = [];
     let currentActiveLocus = null;
     let isFPSMode = true;
     let isPointerLocked = false;
-    
+
 
     // Parse URL Params early to separate storage keys per 3D space
     const urlParams = new URLSearchParams(window.location.search);
@@ -5860,7 +5883,7 @@
       customModelUrl.toLowerCase().includes('trien lam') ||
       customModelUrl.toLowerCase().includes('brown')
     )) || galleryParam.includes('brown') || galleryParam.includes('nâu') || galleryParam.includes('triển lãm')
-       || urlParams.get('lesson') === 'bai_6' || urlParams.get('lesson') === 'bai_7' || urlParams.get('lesson') === 'bai_8';
+      || urlParams.get('lesson') === 'bai_6' || urlParams.get('lesson') === 'bai_7' || urlParams.get('lesson') === 'bai_8';
 
     // Không gian 3D riêng biệt cho Bài 7: backrooms_vr.glb
     if (urlParams.get('lesson') === 'bai_7' && !customModelUrl) {
@@ -5984,7 +6007,7 @@
         [1.0, 0.01, 8.5]    // Trạm 9: Điện Biên Phủ (1954), Hiệp định Giơ-ne-vơ
       ];
 
-            const bai8SequentialPositions = [
+      const bai8SequentialPositions = [
         //  9 TRẠM BÀI 8 BỐ TRÍ DƯỚI MẶT ĐẤT (Y = 0.0) CHUẨN SƯ PHẠM NCKH
         [-6.0, 0.0, -3.2], // Trạm 1: Bối cảnh sau 1954 & Đất nước tạm thời chia cắt hai miền
         [-8.2, 0.0, -0.8], // Trạm 2: Phong trào Đồng khởi (1959 - 1960) & Đại hội III
@@ -6054,7 +6077,7 @@
     }
 
     // Load saved loci from LocalStorage if exists
-    
+
     function safeJsonStringify(val, fallback = '[]') {
       try {
         return JSON.stringify(val);
@@ -6102,7 +6125,7 @@
           }
           localStorage.setItem('loci_bai8_layout_ver', BAI8_LAYOUT_VER);
         }
-      } catch (_) {}
+      } catch (_) { }
       const saved = localStorage.getItem(LOCI_STORAGE_KEY);
       let parsed = null;
       try { parsed = saved ? JSON.parse(saved) : null; } catch (e) { parsed = null; }
@@ -6111,7 +6134,7 @@
         // Nạp các mốc chuẩn bài học; KHÔI PHỤC CHÍNH XÁC 100% VỊ TRÍ MÀ NGƯỜI DÙNG TỰ TAY SẮP XẾP
         const presets = getLessonLoci();
         const savedArr = Array.isArray(parsed) ? parsed : [];
-        
+
         let userArrangedMap = {};
         try {
           const userKey = (EFFECTIVE_LESSON_KEY === 'bai_6' || !EFFECTIVE_LESSON_KEY) ? 'loci_user_arranged_bai6' : ('loci_user_arranged_' + EFFECTIVE_LESSON_KEY);
@@ -6141,7 +6164,7 @@
         const extras = savedArr.filter(x => !x.locked && !presets.some(p => p.id === x.id)).map(normalizeLocus);
         lociList = presets.concat(extras);
         lociList.forEach(normalizeLocus);
-        try { localStorage.setItem(LOCI_STORAGE_KEY, safeJsonStringify(lociList.map(cleanLocusForStorage).filter(Boolean), '[]')); } catch (_) {}
+        try { localStorage.setItem(LOCI_STORAGE_KEY, safeJsonStringify(lociList.map(cleanLocusForStorage).filter(Boolean), '[]')); } catch (_) { }
         return;
       }
 
@@ -6384,7 +6407,7 @@
     // ══════════════════════════════════════════════════════════════════════════
     // [SPATIAL VISION: AI QUAN SÁT MÀN HÌNH & GÓC NHÌN 3D THỜI GIAN THỰC]
     // ══════════════════════════════════════════════════════════════════════════
-    window.captureSpatialScreen = function(quality = 0.82) {
+    window.captureSpatialScreen = function (quality = 0.82) {
       try {
         if (renderer && scene && camera) {
           renderer.render(scene, camera);
@@ -6396,13 +6419,13 @@
       return null;
     };
 
-    window.getSpatialVisionContext = function() {
+    window.getSpatialVisionContext = function () {
       const isB8 = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY === 'bai_8') || (window.EFFECTIVE_LESSON_KEY === 'bai_8');
       const isB7 = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY === 'bai_7') || (window.EFFECTIVE_LESSON_KEY === 'bai_7');
       const lessonKey = isB8 ? 'bai_8' : (isB7 ? 'bai_7' : 'bai_6');
       const lessonTitle = isB8 ? 'Bài 8: Kháng chiến chống Mĩ, cứu nước (1954 – 1975)'
         : (isB7 ? 'Bài 7: Kháng chiến chống thực dân Pháp (1945 – 1954)'
-        : 'Bài 6: Phong trào cách mạng và Tổng khởi nghĩa tháng Tám năm 1945');
+          : 'Bài 6: Phong trào cách mạng và Tổng khởi nghĩa tháng Tám năm 1945');
 
       const curLoc = window.currentActiveLocus || (typeof currentActiveLocus !== 'undefined' ? currentActiveLocus : null);
       const stepIdx = (typeof bdtCurrentStep !== 'undefined') ? bdtCurrentStep : 0;
@@ -6500,10 +6523,10 @@
     /* --- ENVIRONMENT MAP (Khử triệt để lỗi model đen/trắng toát, tạo phản chiếu vật liệu) --- */
     try {
       const pmremGenerator = new THREE.PMREMGenerator(renderer);
-          pmremGenerator.compileEquirectangularShader();
-          const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
-          scene.environment = envTexture;
-          pmremGenerator.dispose();
+      pmremGenerator.compileEquirectangularShader();
+      const envTexture = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+      scene.environment = envTexture;
+      pmremGenerator.dispose();
     } catch (eEnv) { console.warn('Bỏ qua PMREM:', eEnv); }
 
     /* --- LIGHTING (Ánh sáng Bảo tàng Điện ảnh: Sáng rõ, Sang trọng & Chiều sâu) --- */
@@ -8227,7 +8250,7 @@
       // Chỉ cập nhật skeletal mixer lính khi người xem ở gần (< 14m)
       if (isNearS1 && vfx.mixers && vfx.mixers.length > 0) {
         vfx.mixers.forEach(m => {
-          try { m.update(delta); } catch (_) {}
+          try { m.update(delta); } catch (_) { }
         });
       }
 
@@ -8754,9 +8777,9 @@
           root.traverse(c => {
             if (c.isMesh) {
               c.castShadow = false;
-            c.receiveShadow = false;
-            c.matrixAutoUpdate = false;
-            c.updateMatrix();
+              c.receiveShadow = false;
+              c.matrixAutoUpdate = false;
+              c.updateMatrix();
               c.receiveShadow = false;
               if (c.material) {
                 if (Array.isArray(c.material)) {
@@ -8826,9 +8849,9 @@
           root.traverse(c => {
             if (c.isMesh) {
               c.castShadow = false;
-            c.receiveShadow = false;
-            c.matrixAutoUpdate = false;
-            c.updateMatrix();
+              c.receiveShadow = false;
+              c.matrixAutoUpdate = false;
+              c.updateMatrix();
               c.receiveShadow = false;
               if (c.material) {
                 if (Array.isArray(c.material)) {
@@ -9032,7 +9055,7 @@
       stationGroup.add(contentGroup);
 
       // Raycast click
-stationGroup.traverse((child) => {
+      stationGroup.traverse((child) => {
         if (child.isMesh || child.isSprite) {
           child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
         }
@@ -9338,7 +9361,7 @@ stationGroup.traverse((child) => {
       const postGeo = new THREE.CylinderGeometry(0.024, 0.028, 0.42, 6);
       [
         [-0.38, 0.21, -0.26], [0, 0.21, -0.26], [0.38, 0.21, -0.26],
-        [-0.38, 0.21, 0.26],  [0, 0.21, 0.26],  [0.38, 0.21, 0.26]
+        [-0.38, 0.21, 0.26], [0, 0.21, 0.26], [0.38, 0.21, 0.26]
       ].forEach(p => {
         const post = new THREE.Mesh(postGeo, woodMat);
         post.position.set(p[0], p[1], p[2]);
@@ -9396,7 +9419,7 @@ stationGroup.traverse((child) => {
       const pillarGeo = new THREE.CylinderGeometry(0.02, 0.02, 0.46, 6);
       [
         [-0.40, 0.65, -0.27], [0.40, 0.65, -0.27],
-        [-0.40, 0.65, 0.27],  [0.40, 0.65, 0.27]
+        [-0.40, 0.65, 0.27], [0.40, 0.65, 0.27]
       ].forEach(p => {
         const pillar = new THREE.Mesh(pillarGeo, woodMat);
         pillar.position.set(p[0], p[1], p[2]);
@@ -9671,8 +9694,8 @@ stationGroup.traverse((child) => {
 
       const rayConfigs = [
         { color: 0xef4444, pos: [-0.55, 1.6, -0.35], rot: [0.35, 0, -0.28] }, // Đỏ - Bắc Kỳ
-        { color: 0xf59e0b, pos: [0, 1.8, -0.65],    rot: [-0.38, 0, 0] },     // Hổ phách - Trung Kỳ
-        { color: 0xfacc15, pos: [0.55, 1.6, -0.35],  rot: [0.35, 0, 0.28] }   // Vàng kim - Nam Kỳ
+        { color: 0xf59e0b, pos: [0, 1.8, -0.65], rot: [-0.38, 0, 0] },     // Hổ phách - Trung Kỳ
+        { color: 0xfacc15, pos: [0.55, 1.6, -0.35], rot: [0.35, 0, 0.28] }   // Vàng kim - Nam Kỳ
       ];
 
       rayConfigs.forEach(rc => {
@@ -9729,9 +9752,9 @@ stationGroup.traverse((child) => {
         if (typeof gltfLoader !== 'undefined') {
           gltfLoader.load(
             fullPath, (gltf) => {
-        if (gltf.scene) {
-          gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
-        }
+              if (gltf.scene) {
+                gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
+              }
               const m = gltf.scene;
               m.position.set(posX, posY, posZ);
               m.scale.set(scaleVal, scaleVal, scaleVal);
@@ -9739,9 +9762,9 @@ stationGroup.traverse((child) => {
               m.traverse((c) => {
                 if (c.isMesh) {
                   c.castShadow = false;
-            c.receiveShadow = false;
-            c.matrixAutoUpdate = false;
-            c.updateMatrix();
+                  c.receiveShadow = false;
+                  c.matrixAutoUpdate = false;
+                  c.updateMatrix();
                   c.receiveShadow = false;
                   if (c.material) {
                     c.material.roughness = Math.max(0.3, c.material.roughness || 0.6);
@@ -9852,7 +9875,7 @@ stationGroup.traverse((child) => {
       stationGroup.add(contentGroup);
 
       // Raycast click
-stationGroup.traverse((child) => {
+      stationGroup.traverse((child) => {
         if (child.isMesh || child.isSprite) {
           child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
         }
@@ -9928,9 +9951,9 @@ stationGroup.traverse((child) => {
         if (typeof gltfLoader !== 'undefined') {
           gltfLoader.load(
             fullPath, (gltf) => {
-        if (gltf.scene) {
-          gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
-        }
+              if (gltf.scene) {
+                gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
+              }
               const m = gltf.scene;
               m.scale.set(scaleVal, scaleVal, scaleVal);
               m.rotation.y = rotY;
@@ -9949,9 +9972,9 @@ stationGroup.traverse((child) => {
               m.traverse((c) => {
                 if (c.isMesh) {
                   c.castShadow = false;
-            c.receiveShadow = false;
-            c.matrixAutoUpdate = false;
-            c.updateMatrix();
+                  c.receiveShadow = false;
+                  c.matrixAutoUpdate = false;
+                  c.updateMatrix();
                   c.receiveShadow = false;
                   if (c.material) {
                     c.material.roughness = Math.max(0.35, c.material.roughness || 0.65);
@@ -10039,7 +10062,7 @@ stationGroup.traverse((child) => {
       stationGroup.add(contentGroup);
 
       // Raycast click
-stationGroup.traverse((child) => {
+      stationGroup.traverse((child) => {
         if (child.isMesh || child.isSprite) {
           child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
         }
@@ -10217,7 +10240,7 @@ stationGroup.traverse((child) => {
       stationGroup.add(contentGroup);
 
       // Raycast click
-stationGroup.traverse((child) => {
+      stationGroup.traverse((child) => {
         if (child.isMesh || child.isSprite) {
           child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
         }
@@ -10393,7 +10416,7 @@ stationGroup.traverse((child) => {
       stationGroup.add(contentGroup);
 
       // Raycast click
-stationGroup.traverse((child) => {
+      stationGroup.traverse((child) => {
         if (child.isMesh || child.isSprite) {
           child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
         }
@@ -10640,9 +10663,9 @@ stationGroup.traverse((child) => {
         const fullPath = resolveStation7AssetPath('assets/models/tram7/vua_bao_dai_thoai_vi.glb');
         gltfLoader.load(
           fullPath, (gltf) => {
-        if (gltf.scene) {
-          gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
-        }
+            if (gltf.scene) {
+              gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
+            }
             const m = gltf.scene;
             const scaleVal = 1.55; // Phóng to mô hình Vua Bảo Đại thoái vị hoành tráng
             m.scale.set(scaleVal, scaleVal, scaleVal);
@@ -10661,9 +10684,9 @@ stationGroup.traverse((child) => {
             m.traverse((c) => {
               if (c.isMesh) {
                 c.castShadow = false;
-            c.receiveShadow = false;
-            c.matrixAutoUpdate = false;
-            c.updateMatrix();
+                c.receiveShadow = false;
+                c.matrixAutoUpdate = false;
+                c.updateMatrix();
                 c.receiveShadow = false;
                 if (c.material) {
                   c.material.roughness = Math.max(0.35, c.material.roughness || 0.65);
@@ -10736,7 +10759,7 @@ stationGroup.traverse((child) => {
       stationGroup.add(contentGroup);
 
       // Raycast click
-stationGroup.traverse((child) => {
+      stationGroup.traverse((child) => {
         if (child.isMesh || child.isSprite) {
           child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
         }
@@ -10809,9 +10832,9 @@ stationGroup.traverse((child) => {
         const fullPath = resolveStation8AssetPath('assets/models/tram8/bac_ho_tuyen_ngon.glb');
         gltfLoader.load(
           fullPath, (gltf) => {
-        if (gltf.scene) {
-          gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
-        }
+            if (gltf.scene) {
+              gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
+            }
             const m = gltf.scene;
             const scaleVal = 1.65; // Phóng to mô hình Lễ đài Ba Đình hoành tráng
             m.scale.set(scaleVal, scaleVal, scaleVal);
@@ -10830,9 +10853,9 @@ stationGroup.traverse((child) => {
             m.traverse((c) => {
               if (c.isMesh) {
                 c.castShadow = false;
-            c.receiveShadow = false;
-            c.matrixAutoUpdate = false;
-            c.updateMatrix();
+                c.receiveShadow = false;
+                c.matrixAutoUpdate = false;
+                c.updateMatrix();
                 c.receiveShadow = false;
                 if (c.material) {
                   c.material.roughness = Math.max(0.35, c.material.roughness || 0.65);
@@ -10905,7 +10928,7 @@ stationGroup.traverse((child) => {
       stationGroup.add(contentGroup);
 
       // Raycast click
-stationGroup.traverse((child) => {
+      stationGroup.traverse((child) => {
         if (child.isMesh || child.isSprite) {
           child.userData = { id: locus.id, order: locus.order, name: locus.name, status: locus.status };
         }
@@ -12813,17 +12836,17 @@ stationGroup.traverse((child) => {
     window.marker3DObjects = marker3DObjects;
     window.openLocusModal = openLocusModal;
     // Hàm khôi phục vị trí mặc định của Bài 6 nếu người dùng muốn làm lại từ đầu
-    window.resetBai6PositionsToDefault = function() {
+    window.resetBai6PositionsToDefault = function () {
       try {
         localStorage.removeItem('loci_user_arranged_bai6');
         localStorage.removeItem('loci_data_S2jDtG5nJTIwZ2lhbiUyMGNodSVFMSVCQSVBOXQvJUM0JTkwJUM2JUExbi90cmklRTElQkIlODNuJTIwbCVDMyVBM20lMjBuJUMzJUEydS5nbGI_lesson_bai_6');
-      } catch(_) {}
+      } catch (_) { }
       initLociData();
       refresh3DMarkers();
       if (typeof drawJourneyRoute === 'function') drawJourneyRoute();
       if (typeof showToast === 'function') showToast('🔄 Đã khôi phục các mốc về vị trí mặc định ban đầu!', 'info', 3000);
     };
-    
+
 
     /* --- 3D MEMORY JOURNEY PATH & SEQUENTIAL ROUTE SYSTEM --- */
     const journeyPathGroup = new THREE.Group();
@@ -13086,9 +13109,9 @@ stationGroup.traverse((child) => {
 
       gltfLoader.load(
         path, (gltf) => {
-        if (gltf.scene) {
-          gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
-        }
+          if (gltf.scene) {
+            gltf.scene.traverse(c => { if (c.isMesh) c.frustumCulled = true; });
+          }
           onModelLoaded(gltf.scene);
         },
         (xhr) => {
@@ -13212,7 +13235,7 @@ stationGroup.traverse((child) => {
           setTimeout(() => {
             try {
               showToast(` <b>${LESSON_DATA.title}</b> — Đã nạp <b>${LESSON_DATA.anchors.length} mốc</b>.<br>Nhấn <b>[WASD]</b> để di chuyển, rê chuột để xoay 360°, click mốc để học!`, 'info', 6000);
-            } catch (_) {}
+            } catch (_) { }
           }, 300);
         }
       } catch (err) {
@@ -13272,10 +13295,10 @@ stationGroup.traverse((child) => {
     // [HÀM BẬT/TẮT TRỢ LÝ AI — KHÔNG DÙNG MIC, MƯỢT MÀ, THOÁT POINTER LOCK]
     function toggleAIDrawer(e) {
       if (e && typeof e.stopPropagation === 'function') {
-        try { e.preventDefault(); e.stopPropagation(); } catch (_) {}
+        try { e.preventDefault(); e.stopPropagation(); } catch (_) { }
       }
       if (document.pointerLockElement) {
-        try { document.exitPointerLock(); } catch (_) {}
+        try { document.exitPointerLock(); } catch (_) { }
       }
       const drawer = document.getElementById('ai-drawer');
       if (!drawer) return;
@@ -13745,7 +13768,7 @@ stationGroup.traverse((child) => {
     let cameraDragMoved = false;
     let lastCamMouseX = 0;
     let lastCamMouseY = 0;
-window.addEventListener('pointermove', (e) => {
+    window.addEventListener('pointermove', (e) => {
       // 1. Đang kéo thả mốc ký ức
       if (draggingMarker) {
         if (Math.abs(e.clientX - canvasClickStartX) > 4 || Math.abs(e.clientY - canvasClickStartY) > 4) dragMoved = true;
@@ -15208,7 +15231,7 @@ window.addEventListener('pointermove', (e) => {
       });
     }
 
-    window.jumpToStationOrder = function(targetOrder) {
+    window.jumpToStationOrder = function (targetOrder) {
       const pickerWrap = document.getElementById('bdt-picker-wrap');
       if (pickerWrap) pickerWrap.classList.remove('open');
       const list = Array.isArray(window.lociList) && window.lociList.length > 0 ? window.lociList : (typeof lociList !== 'undefined' ? lociList : []);
@@ -15455,7 +15478,7 @@ window.addEventListener('pointermove', (e) => {
     // ──────────────────────────────────────────────────────────────────────────
     // [CHẾ ĐỘ ÔN TẬP TỪNG PHẦN 1, 2, 3...]: ẨN NỘI DUNG TỪNG PHẦN, GÕ ĐẠT MỚI SANG PHẦN TIẾP
     // ──────────────────────────────────────────────────────────────────────────
-    
+
     function isSpatialRecallActive() {
       if (typeof document !== 'undefined' && document.body && document.body.classList.contains('spatial-recall-active')) return true;
       if (typeof window !== 'undefined') {
@@ -15466,7 +15489,7 @@ window.addEventListener('pointermove', (e) => {
     }
     window.isSpatialRecallActive = isSpatialRecallActive;
 
-    window.passRecallStepCurrent = function(stepIdx) {
+    window.passRecallStepCurrent = function (stepIdx) {
       if (!currentActiveLocus) return;
       if (typeof stepIdx === 'undefined' || stepIdx === null) stepIdx = (typeof bdtCurrentStep !== 'undefined') ? bdtCurrentStep : 0;
       const history = (window.SpatialRecallMode && window.SpatialRecallMode.getLocusHistory)
@@ -15695,7 +15718,7 @@ window.addEventListener('pointermove', (e) => {
       _cachedPhotoWrapRect = null;
       requestAnimationFrame(updateBrownSpatialLines);
     }
-    
+
     function generateRealHistoricalHint(rawText, locus) {
       if (!rawText) return 'Ghi lại các mốc thời gian và hành động lịch sử chính.';
       // Lấy 2-3 ý chính cốt lõi
@@ -15705,10 +15728,10 @@ window.addEventListener('pointermove', (e) => {
       return '• ' + parts.slice(0, 3).join('<br>• ');
     }
     window.generateRealHistoricalHint = generateRealHistoricalHint;
-  
+
     window.renderRecallInStepCard = renderRecallInStepCard;
 
-    window.retypeRecallStep = function(stepIdx) {
+    window.retypeRecallStep = function (stepIdx) {
       if (!currentActiveLocus) return;
       const history = window.SpatialRecallMode.getLocusHistory(currentActiveLocus.id);
       if (history && history.passedSteps) {
@@ -15861,10 +15884,10 @@ window.addEventListener('pointermove', (e) => {
       }, 450);
     }
     window.submitRecallInStepCard = submitRecallInStepCard;
-  
-    
+
+
     // [ACTIVE RECALL]: Ẩn nội dung khi người học bắt đầu gõ, chỉ hiện khi bật gợi ý
-    window.hideBrownStepContent = function() {
+    window.hideBrownStepContent = function () {
       const textEl = document.getElementById('bdt-step-text');
       if (!textEl || textEl.dataset.isHidden === '1') return;
       textEl.dataset.isHidden = '1';
@@ -15881,7 +15904,7 @@ window.addEventListener('pointermove', (e) => {
       requestAnimationFrame(updateBrownSpatialLines);
     };
 
-    window.showBrownStepContent = function() {
+    window.showBrownStepContent = function () {
       const textEl = document.getElementById('bdt-step-text');
       if (!textEl) return;
       textEl.dataset.isHidden = '0';
@@ -15891,7 +15914,7 @@ window.addEventListener('pointermove', (e) => {
       requestAnimationFrame(updateBrownSpatialLines);
     };
 
-    window.toggleBrownContentHint = function() {
+    window.toggleBrownContentHint = function () {
       const textEl = document.getElementById('bdt-step-text');
       if (!textEl) return;
       if (textEl.dataset.isHidden === '1') {
@@ -15908,7 +15931,7 @@ window.addEventListener('pointermove', (e) => {
         renderRecallInStepCard(window.currentActiveLocus || currentActiveLocus, stepIdx);
         return;
       }
-  
+
       _cachedStepCardRect = null;
       _cachedPhotoWrapRect = null;
       window.renderBrownStep = renderBrownStep;
@@ -15936,26 +15959,26 @@ window.addEventListener('pointermove', (e) => {
           window.Bai7SpatialDirector.onStepChange(order, bdtCurrentStep, curLoc);
         }
 
-      // [BÀI 8 SPATIAL DIRECTOR]: ĐIỀU HƯỚNG MÁY BAY NÉM BOM, BANNER VẠN TƯỜNG, CHIẾU CHỮ DINH ĐỘC LẬP
-      try {
-        if (window.Bai8SpatialDirector && (EFFECTIVE_LESSON_KEY === 'bai_8' || window.EFFECTIVE_LESSON_KEY === 'bai_8')) {
-          const curLoc = window.currentActiveLocus || currentActiveLocus;
-          const order = curLoc ? (curLoc.order || 1) : 1;
-          window.Bai8SpatialDirector.onStepChange(order, bdtCurrentStep, curLoc);
+        // [BÀI 8 SPATIAL DIRECTOR]: ĐIỀU HƯỚNG MÁY BAY NÉM BOM, BANNER VẠN TƯỜNG, CHIẾU CHỮ DINH ĐỘC LẬP
+        try {
+          if (window.Bai8SpatialDirector && (EFFECTIVE_LESSON_KEY === 'bai_8' || window.EFFECTIVE_LESSON_KEY === 'bai_8')) {
+            const curLoc = window.currentActiveLocus || currentActiveLocus;
+            const order = curLoc ? (curLoc.order || 1) : 1;
+            window.Bai8SpatialDirector.onStepChange(order, bdtCurrentStep, curLoc);
+          }
+        } catch (b8DirErr) {
+          console.warn('[Bai8SpatialDirector] Lỗi onStepChange:', b8DirErr);
         }
-      } catch (b8DirErr) {
-        console.warn('[Bai8SpatialDirector] Lỗi onStepChange:', b8DirErr);
-      }
 
-      // [ZOOM CẬN CẢNH MODEL 3D KHI CHỌN KIẾN THỨC]:
-      try {
-        const curLoc = window.currentActiveLocus || currentActiveLocus;
-        if (curLoc && typeof zoomCameraToStepModel === 'function') {
-          zoomCameraToStepModel(curLoc, bdtCurrentStep);
+        // [ZOOM CẬN CẢNH MODEL 3D KHI CHỌN KIẾN THỨC]:
+        try {
+          const curLoc = window.currentActiveLocus || currentActiveLocus;
+          if (curLoc && typeof zoomCameraToStepModel === 'function') {
+            zoomCameraToStepModel(curLoc, bdtCurrentStep);
+          }
+        } catch (zoomErr) {
+          console.warn('[zoomCameraToStepModel] Lỗi:', zoomErr);
         }
-      } catch (zoomErr) {
-        console.warn('[zoomCameraToStepModel] Lỗi:', zoomErr);
-      }
       } catch (dirErr) {
         console.warn('[Bai7SpatialDirector] Lỗi onStepChange:', dirErr);
       }
@@ -16089,467 +16112,467 @@ window.addEventListener('pointermove', (e) => {
         ? src.anchor.photos
         : (locus.photos && locus.photos.length > 0 ? locus.photos : []);
 
-            const stationFallbacksBai7 = {
+      const stationFallbacksBai7 = {
         "1": [
-                {
-                        "title": "Vai trò của Liên Xô – Trung tâm hệ thống XHCN",
-                        "caption": "Hồng quân Liên Xô cắm cờ chiến thắng trên nóc tòa nhà Quốc hội Đức (Reichstag), mở ra thời kỳ hệ thống xã hội chủ nghĩa hình thành và phát triển vững mạnh.",
-                        "localImage": "assets/images/bai7/b7_img01.jpeg",
-                        "url": "assets/images/bai7/b7_img01.jpeg",
-                        "source": "Tư liệu Lịch sử Thế giới 1945"
-                },
-                {
-                        "title": "Nhân dân đi bỏ phiếu bầu Quốc hội khóa I (6/1/1946)",
-                        "caption": "Cử tri Hà Nội và cả nước nô nức đi bỏ phiếu trong cuộc Tổng tuyển cử đầu tiên của nước Việt Nam Dân chủ Cộng hòa, khẳng định quyền làm chủ thiêng liêng.",
-                        "localImage": "assets/images/bai7/b7_img05.jpeg",
-                        "url": "assets/images/bai7/b7_img05.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Quân Anh và Đồng minh tiến vào miền Nam Việt Nam (9/1945)",
-                        "caption": "Quân đội Anh kéo vào Sài Gòn dưới danh nghĩa Đồng minh giải giáp quân Nhật, nhưng thực chất hậu thuẫn cho thực dân Pháp tái chiếm Nam Bộ.",
-                        "localImage": "assets/images/bai7/b7_img06.jpeg",
-                        "url": "assets/images/bai7/b7_img06.jpeg",
-                        "source": "Tư liệu Lịch sử Kháng chiến"
-                },
-                {
-                        "title": "Nạn đói năm 1945 – Tình thế 'ngàn cân treo sợi tóc'",
-                        "caption": "Hậu quả tàn khốc của nạn đói năm 1945 cướp đi hơn 2 triệu sinh mạng đồng bào; kinh tế kiệt quệ, giặc đói, giặc dốt, giặc ngoại xâm cùng lúc đe dọa.",
-                        "localImage": "assets/images/bai7/b7_img09.jpeg",
-                        "url": "assets/images/bai7/b7_img09.jpeg",
-                        "source": "Ảnh tư liệu nghệ sĩ Võ An Ninh"
-                }
+          {
+            "title": "Vai trò của Liên Xô – Trung tâm hệ thống XHCN",
+            "caption": "Hồng quân Liên Xô cắm cờ chiến thắng trên nóc tòa nhà Quốc hội Đức (Reichstag), mở ra thời kỳ hệ thống xã hội chủ nghĩa hình thành và phát triển vững mạnh.",
+            "localImage": "assets/images/bai7/b7_img01.jpeg",
+            "url": "assets/images/bai7/b7_img01.jpeg",
+            "source": "Tư liệu Lịch sử Thế giới 1945"
+          },
+          {
+            "title": "Nhân dân đi bỏ phiếu bầu Quốc hội khóa I (6/1/1946)",
+            "caption": "Cử tri Hà Nội và cả nước nô nức đi bỏ phiếu trong cuộc Tổng tuyển cử đầu tiên của nước Việt Nam Dân chủ Cộng hòa, khẳng định quyền làm chủ thiêng liêng.",
+            "localImage": "assets/images/bai7/b7_img05.jpeg",
+            "url": "assets/images/bai7/b7_img05.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Quân Anh và Đồng minh tiến vào miền Nam Việt Nam (9/1945)",
+            "caption": "Quân đội Anh kéo vào Sài Gòn dưới danh nghĩa Đồng minh giải giáp quân Nhật, nhưng thực chất hậu thuẫn cho thực dân Pháp tái chiếm Nam Bộ.",
+            "localImage": "assets/images/bai7/b7_img06.jpeg",
+            "url": "assets/images/bai7/b7_img06.jpeg",
+            "source": "Tư liệu Lịch sử Kháng chiến"
+          },
+          {
+            "title": "Nạn đói năm 1945 – Tình thế 'ngàn cân treo sợi tóc'",
+            "caption": "Hậu quả tàn khốc của nạn đói năm 1945 cướp đi hơn 2 triệu sinh mạng đồng bào; kinh tế kiệt quệ, giặc đói, giặc dốt, giặc ngoại xâm cùng lúc đe dọa.",
+            "localImage": "assets/images/bai7/b7_img09.jpeg",
+            "url": "assets/images/bai7/b7_img09.jpeg",
+            "source": "Ảnh tư liệu nghệ sĩ Võ An Ninh"
+          }
         ],
         "2": [
-                {
-                        "title": "Chợ Bến Thành trong ngày đầu kháng chiến Nam Bộ (23/9/1945)",
-                        "caption": "Khói lửa ngút trời khu vực Chợ Bến Thành khi thực dân Pháp xả súng gây hấn và đánh úp các cơ quan cách mạng tại Sài Gòn sáng ngày 23/9/1945.",
-                        "localImage": "assets/images/bai7/b7_img11.png",
-                        "url": "assets/images/bai7/b7_img11.png",
-                        "source": "Tư liệu Lịch sử TP. Hồ Chí Minh"
-                },
-                {
-                        "title": "Người dân và tự vệ Nam Bộ bước vào chiến đấu (23/9/1945)",
-                        "caption": "Đáp lời kêu gọi của Ủy ban Kháng chiến Nam Bộ, các tầng lớp nhân dân Nam Bộ anh dũng cầm vũ khí đứng lên kháng chiến chống quân xâm lược Pháp.",
-                        "localImage": "assets/images/bai7/b7_img12.jpeg",
-                        "url": "assets/images/bai7/b7_img12.jpeg",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Đơn vị Nam tiến tại ga Hàng Cỏ chi viện miền Nam (1/10/1945)",
-                        "caption": "Đoàn quân Nam tiến đầu tiên tập hợp tại ga Hàng Cỏ (Hà Nội) trước giờ xuất phát vào Nam, thể hiện tình đoàn kết ruột thịt Bắc - Nam một nhà.",
-                        "localImage": "assets/images/bai7/b7_img13.jpeg",
-                        "url": "assets/images/bai7/b7_img13.jpeg",
-                        "source": "Thông tấn xã Việt Nam (TTXVN)"
-                },
-                {
-                        "title": "Khí thế quật cường của nhân dân Sài Gòn – Thành đồng Tổ quốc",
-                        "caption": "Cuộc chiến đấu anh dũng của quân dân Nam Bộ đã bước đầu làm phá sản âm mưu đánh nhanh thắng nhanh của thực dân Pháp, giữ vững ngọn cờ độc lập.",
-                        "localImage": "assets/images/bai7/b7_img10.jpeg",
-                        "url": "assets/images/bai7/b7_img10.jpeg",
-                        "source": "Tư liệu Lịch sử Cách mạng Việt Nam"
-                }
+          {
+            "title": "Chợ Bến Thành trong ngày đầu kháng chiến Nam Bộ (23/9/1945)",
+            "caption": "Khói lửa ngút trời khu vực Chợ Bến Thành khi thực dân Pháp xả súng gây hấn và đánh úp các cơ quan cách mạng tại Sài Gòn sáng ngày 23/9/1945.",
+            "localImage": "assets/images/bai7/b7_img11.png",
+            "url": "assets/images/bai7/b7_img11.png",
+            "source": "Tư liệu Lịch sử TP. Hồ Chí Minh"
+          },
+          {
+            "title": "Người dân và tự vệ Nam Bộ bước vào chiến đấu (23/9/1945)",
+            "caption": "Đáp lời kêu gọi của Ủy ban Kháng chiến Nam Bộ, các tầng lớp nhân dân Nam Bộ anh dũng cầm vũ khí đứng lên kháng chiến chống quân xâm lược Pháp.",
+            "localImage": "assets/images/bai7/b7_img12.jpeg",
+            "url": "assets/images/bai7/b7_img12.jpeg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Đơn vị Nam tiến tại ga Hàng Cỏ chi viện miền Nam (1/10/1945)",
+            "caption": "Đoàn quân Nam tiến đầu tiên tập hợp tại ga Hàng Cỏ (Hà Nội) trước giờ xuất phát vào Nam, thể hiện tình đoàn kết ruột thịt Bắc - Nam một nhà.",
+            "localImage": "assets/images/bai7/b7_img13.jpeg",
+            "url": "assets/images/bai7/b7_img13.jpeg",
+            "source": "Thông tấn xã Việt Nam (TTXVN)"
+          },
+          {
+            "title": "Khí thế quật cường của nhân dân Sài Gòn – Thành đồng Tổ quốc",
+            "caption": "Cuộc chiến đấu anh dũng của quân dân Nam Bộ đã bước đầu làm phá sản âm mưu đánh nhanh thắng nhanh của thực dân Pháp, giữ vững ngọn cờ độc lập.",
+            "localImage": "assets/images/bai7/b7_img10.jpeg",
+            "url": "assets/images/bai7/b7_img10.jpeg",
+            "source": "Tư liệu Lịch sử Cách mạng Việt Nam"
+          }
         ],
         "3": [
-                {
-                        "title": "Chủ tịch Hồ Chí Minh ký Hiệp định Sơ bộ 6/3/1946",
-                        "caption": "Chủ tịch Hồ Chí Minh cùng đại diện Chính phủ Pháp Jean Sainteny ký Hiệp định Sơ bộ tại 38 phố Lý Thái Tổ (Hà Nội), sách lược khôn khéo 'hòa để tiến'.",
-                        "localImage": "assets/images/bai7/b7_img15.jpeg",
-                        "url": "assets/images/bai7/b7_img15.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Thực dân Pháp bội ước & Gửi tối hậu thư (18/12/1946)",
-                        "caption": "Tàu chiến Pháp gây hấn tại Hải Phòng và tướng Pháp Morlière gửi tối hậu thư đòi ta hạ vũ khí, giải tán lực lượng tự vệ Thủ đô Hà Nội ngày 18/12/1946.",
-                        "localImage": "assets/images/bai7/b7_img17.jpeg",
-                        "url": "assets/images/bai7/b7_img17.jpeg",
-                        "source": "Tư liệu Lịch sử Kháng chiến"
-                },
-                {
-                        "title": "Quân dân Hà Nội chiến đấu đáp Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)",
-                        "caption": "Quân dân Thủ đô biến từng con phố thành chiến hào, ngã ba thành pháo đài vững chắc chặn đứng các mũi tiến công của quân viễn chinh Pháp.",
-                        "localImage": "assets/images/bai7/b7_img18.png",
-                        "url": "assets/images/bai7/b7_img18.png",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Đường lối kháng chiến toàn dân, toàn diện, trường kỳ",
-                        "caption": "Đường lối kháng chiến đúng đắn, sáng tạo nêu rõ trong tác phẩm 'Kháng chiến nhất định thắng lợi' của đồng chí Trường Chinh và Lời kêu gọi của Bác Hồ.",
-                        "localImage": "assets/images/bai7/b7_img18.png",
-                        "url": "assets/images/bai7/b7_img18.png",
-                        "source": "Tư liệu Lịch sử Đảng"
-                }
+          {
+            "title": "Chủ tịch Hồ Chí Minh ký Hiệp định Sơ bộ 6/3/1946",
+            "caption": "Chủ tịch Hồ Chí Minh cùng đại diện Chính phủ Pháp Jean Sainteny ký Hiệp định Sơ bộ tại 38 phố Lý Thái Tổ (Hà Nội), sách lược khôn khéo 'hòa để tiến'.",
+            "localImage": "assets/images/bai7/b7_img15.jpeg",
+            "url": "assets/images/bai7/b7_img15.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Thực dân Pháp bội ước & Gửi tối hậu thư (18/12/1946)",
+            "caption": "Tàu chiến Pháp gây hấn tại Hải Phòng và tướng Pháp Morlière gửi tối hậu thư đòi ta hạ vũ khí, giải tán lực lượng tự vệ Thủ đô Hà Nội ngày 18/12/1946.",
+            "localImage": "assets/images/bai7/b7_img17.jpeg",
+            "url": "assets/images/bai7/b7_img17.jpeg",
+            "source": "Tư liệu Lịch sử Kháng chiến"
+          },
+          {
+            "title": "Quân dân Hà Nội chiến đấu đáp Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)",
+            "caption": "Quân dân Thủ đô biến từng con phố thành chiến hào, ngã ba thành pháo đài vững chắc chặn đứng các mũi tiến công của quân viễn chinh Pháp.",
+            "localImage": "assets/images/bai7/b7_img18.png",
+            "url": "assets/images/bai7/b7_img18.png",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Đường lối kháng chiến toàn dân, toàn diện, trường kỳ",
+            "caption": "Đường lối kháng chiến đúng đắn, sáng tạo nêu rõ trong tác phẩm 'Kháng chiến nhất định thắng lợi' của đồng chí Trường Chinh và Lời kêu gọi của Bác Hồ.",
+            "localImage": "assets/images/bai7/b7_img18.png",
+            "url": "assets/images/bai7/b7_img18.png",
+            "source": "Tư liệu Lịch sử Đảng"
+          }
         ],
         "4": [
-                {
-                        "title": "Quyết tử quân ôm bom ba càng bảo vệ Thủ đô (1946 – 1947)",
-                        "caption": "Chiến sĩ quyết tử Trung đoàn Thủ đô với cây bom ba càng huyền thoại sẵn sàng lao thẳng vào xe tăng giặc Pháp trên đường phố Hà Nội mùa đông 1946.",
-                        "localImage": "assets/images/bai7/b7_img19.jpeg",
-                        "url": "assets/images/bai7/b7_img19.jpeg",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Chiến sự ác liệt tại Bắc Bộ phủ, Chợ Đồng Xuân và Nhà Bưu điện",
-                        "caption": "Quân dân ta đục tường thông nhà, đào chiến hào ngang đường, giằng co quyết liệt từng tấc đất với quân Pháp tại các vị trí trọng yếu ở Hà Nội.",
-                        "localImage": "assets/images/bai7/b7_img19.jpeg",
-                        "url": "assets/images/bai7/b7_img19.jpeg",
-                        "source": "Tư liệu Lịch sử Thủ đô Hà Nội"
-                },
-                {
-                        "title": "Giam chân quân Pháp 60 ngày đêm và cuộc rút quân thần kỳ",
-                        "caption": "Sau 60 ngày đêm giam chân quân địch, đêm 17/2/1947, Trung đoàn Thủ đô bí mật vượt sông Hồng dưới gầm cầu Long Biên rút về căn cứ an toàn.",
-                        "localImage": "assets/images/bai7/b7_img19.jpeg",
-                        "url": "assets/images/bai7/b7_img19.jpeg",
-                        "source": "Tư liệu Trung đoàn Thủ đô"
-                },
-                {
-                        "title": "Làm thất bại một bước kế hoạch 'đánh nhanh, thắng nhanh' của Pháp",
-                        "caption": "Tạo thời gian quý báu để toàn bộ cơ quan đầu não kháng chiến, máy móc nhà máy và kho tàng cơ sở vật chất rút lên chiến khu an toàn.",
-                        "localImage": "assets/images/bai7/b7_img19.jpeg",
-                        "url": "assets/images/bai7/b7_img19.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                }
+          {
+            "title": "Quyết tử quân ôm bom ba càng bảo vệ Thủ đô (1946 – 1947)",
+            "caption": "Chiến sĩ quyết tử Trung đoàn Thủ đô với cây bom ba càng huyền thoại sẵn sàng lao thẳng vào xe tăng giặc Pháp trên đường phố Hà Nội mùa đông 1946.",
+            "localImage": "assets/images/bai7/b7_img19.jpeg",
+            "url": "assets/images/bai7/b7_img19.jpeg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Chiến sự ác liệt tại Bắc Bộ phủ, Chợ Đồng Xuân và Nhà Bưu điện",
+            "caption": "Quân dân ta đục tường thông nhà, đào chiến hào ngang đường, giằng co quyết liệt từng tấc đất với quân Pháp tại các vị trí trọng yếu ở Hà Nội.",
+            "localImage": "assets/images/bai7/b7_img19.jpeg",
+            "url": "assets/images/bai7/b7_img19.jpeg",
+            "source": "Tư liệu Lịch sử Thủ đô Hà Nội"
+          },
+          {
+            "title": "Giam chân quân Pháp 60 ngày đêm và cuộc rút quân thần kỳ",
+            "caption": "Sau 60 ngày đêm giam chân quân địch, đêm 17/2/1947, Trung đoàn Thủ đô bí mật vượt sông Hồng dưới gầm cầu Long Biên rút về căn cứ an toàn.",
+            "localImage": "assets/images/bai7/b7_img19.jpeg",
+            "url": "assets/images/bai7/b7_img19.jpeg",
+            "source": "Tư liệu Trung đoàn Thủ đô"
+          },
+          {
+            "title": "Làm thất bại một bước kế hoạch 'đánh nhanh, thắng nhanh' của Pháp",
+            "caption": "Tạo thời gian quý báu để toàn bộ cơ quan đầu não kháng chiến, máy móc nhà máy và kho tàng cơ sở vật chất rút lên chiến khu an toàn.",
+            "localImage": "assets/images/bai7/b7_img19.jpeg",
+            "url": "assets/images/bai7/b7_img19.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          }
         ],
         "5": [
-                {
-                        "title": "Xác tàu chiến Pháp bị bắn chìm trên sông Lô (Thu – Đông 1947)",
-                        "caption": "Xác tàu chiến L.C.T của giặc Pháp bị pháo binh ta bắn cháy và chìm nghỉm trên sông Lô (Đoan Hùng, Tuyên Quang) trong Chiến dịch Việt Bắc Thu - Đông 1947.",
-                        "localImage": "assets/images/bai7/b7_img20.png",
-                        "url": "assets/images/bai7/b7_img20.png",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Quân Pháp rút chạy khỏi căn cứ địa Việt Bắc",
-                        "caption": "Hai gọng kìm dù và bộ binh của giặc Pháp bị bẻ gãy tại Chợ Đồn, Chợ Rã, Khe Lau; quân địch thương vong nặng nề buộc phải tháo chạy.",
-                        "localImage": "assets/images/bai7/b7_img20.png",
-                        "url": "assets/images/bai7/b7_img20.png",
-                        "source": "Tư liệu Chiến dịch Việt Bắc"
-                },
-                {
-                        "title": "Làm phá sản hoàn toàn kế hoạch 'đánh nhanh, thắng nhanh'",
-                        "caption": "Chiến dịch phản công lớn đầu tiên giành thắng lợi vang dội, bảo vệ tuyệt đối an toàn cơ quan đầu não, buộc Pháp chuyển sang đánh lâu dài.",
-                        "localImage": "assets/images/bai7/b7_img20.png",
-                        "url": "assets/images/bai7/b7_img20.png",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                }
+          {
+            "title": "Xác tàu chiến Pháp bị bắn chìm trên sông Lô (Thu – Đông 1947)",
+            "caption": "Xác tàu chiến L.C.T của giặc Pháp bị pháo binh ta bắn cháy và chìm nghỉm trên sông Lô (Đoan Hùng, Tuyên Quang) trong Chiến dịch Việt Bắc Thu - Đông 1947.",
+            "localImage": "assets/images/bai7/b7_img20.png",
+            "url": "assets/images/bai7/b7_img20.png",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Quân Pháp rút chạy khỏi căn cứ địa Việt Bắc",
+            "caption": "Hai gọng kìm dù và bộ binh của giặc Pháp bị bẻ gãy tại Chợ Đồn, Chợ Rã, Khe Lau; quân địch thương vong nặng nề buộc phải tháo chạy.",
+            "localImage": "assets/images/bai7/b7_img20.png",
+            "url": "assets/images/bai7/b7_img20.png",
+            "source": "Tư liệu Chiến dịch Việt Bắc"
+          },
+          {
+            "title": "Làm phá sản hoàn toàn kế hoạch 'đánh nhanh, thắng nhanh'",
+            "caption": "Chiến dịch phản công lớn đầu tiên giành thắng lợi vang dội, bảo vệ tuyệt đối an toàn cơ quan đầu não, buộc Pháp chuyển sang đánh lâu dài.",
+            "localImage": "assets/images/bai7/b7_img20.png",
+            "url": "assets/images/bai7/b7_img20.png",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          }
         ],
         "6": [
-                {
-                        "title": "Bộ đội ta xung phong đánh chiếm cứ điểm Đông Khê (16-18/9/1950)",
-                        "caption": "Bộ đội xung kích ta đánh chiếm cụm cứ điểm Đông Khê mở màn Chiến dịch Biên giới, chặt đứt mắt xích huyết mạch của địch trên Đường số 4.",
-                        "localImage": "assets/images/bai7/b7_img21.jpg",
-                        "url": "assets/images/bai7/b7_img21.jpg",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Giải phóng dải biên giới Việt – Trung dài 750 km, 35 vạn dân",
-                        "caption": "Chọc thủng tuyến phòng thủ Hành lang Đông - Tây, xóa sổ hệ thống đồn bốt kẹp của địch trên Đường số 4, khai thông đường liên lạc với quốc tế.",
-                        "localImage": "assets/images/bai7/b7_img21.jpg",
-                        "url": "assets/images/bai7/b7_img21.jpg",
-                        "source": "Tư liệu Chiến dịch Biên giới 1950"
-                },
-                {
-                        "title": "Giành quyền chủ động chiến lược trên chiến trường chính Bắc Bộ",
-                        "caption": "Chiến dịch tiến công quy mô lớn đầu tiên làm phá sản Kế hoạch Rơ-ve của Pháp; đánh dấu bước ngoặt ta chuyển hẳn sang thế chủ động tiến công.",
-                        "localImage": "assets/images/bai7/b7_img21.jpg",
-                        "url": "assets/images/bai7/b7_img21.jpg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                }
+          {
+            "title": "Bộ đội ta xung phong đánh chiếm cứ điểm Đông Khê (16-18/9/1950)",
+            "caption": "Bộ đội xung kích ta đánh chiếm cụm cứ điểm Đông Khê mở màn Chiến dịch Biên giới, chặt đứt mắt xích huyết mạch của địch trên Đường số 4.",
+            "localImage": "assets/images/bai7/b7_img21.jpg",
+            "url": "assets/images/bai7/b7_img21.jpg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Giải phóng dải biên giới Việt – Trung dài 750 km, 35 vạn dân",
+            "caption": "Chọc thủng tuyến phòng thủ Hành lang Đông - Tây, xóa sổ hệ thống đồn bốt kẹp của địch trên Đường số 4, khai thông đường liên lạc với quốc tế.",
+            "localImage": "assets/images/bai7/b7_img21.jpg",
+            "url": "assets/images/bai7/b7_img21.jpg",
+            "source": "Tư liệu Chiến dịch Biên giới 1950"
+          },
+          {
+            "title": "Giành quyền chủ động chiến lược trên chiến trường chính Bắc Bộ",
+            "caption": "Chiến dịch tiến công quy mô lớn đầu tiên làm phá sản Kế hoạch Rơ-ve của Pháp; đánh dấu bước ngoặt ta chuyển hẳn sang thế chủ động tiến công.",
+            "localImage": "assets/images/bai7/b7_img21.jpg",
+            "url": "assets/images/bai7/b7_img21.jpg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          }
         ],
         "7": [
-                {
-                        "title": "Quang cảnh Đại hội đại biểu toàn quốc lần thứ II của Đảng (2/1951)",
-                        "caption": "Đại hội đại biểu toàn quốc lần thứ II họp từ ngày 11-19/2/1951 tại xã Vinh Quang, huyện Chiêm Hóa (Tuyên Quang), quyết định đưa Đảng ra hoạt động công khai lấy tên là Đảng Lao động Việt Nam.",
-                        "localImage": "assets/images/bai7/b7_img22.gif",
-                        "url": "assets/images/bai7/b7_img22.gif",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Bản đồ các chiến dịch tiến công giữ vững thế chủ động (1951 – 1953)",
-                        "caption": "Liên tiếp mở các chiến dịch Trần Hưng Đạo, Hoàng Hoa Thám, Quang Trung, Hòa Bình (1951-1952), Tây Bắc (1952), Thượng Lào (1953) tiêu diệt sinh lực địch.",
-                        "localImage": "assets/images/bai7/b7_img24.jpeg",
-                        "url": "assets/images/bai7/b7_img24.jpeg",
-                        "source": "Tư liệu Bộ Quốc phòng"
-                },
-                {
-                        "title": "Nông dân nhận ruộng trong Cải cách ruộng đất (tháng 12/1953)",
-                        "caption": "Quốc hội thông qua Luật Cải cách ruộng đất năm 1953; nông dân vùng tự do hân hoan cắm thẻ nhận ruộng đất, hiện thực hóa mục tiêu 'Người cày có ruộng'.",
-                        "localImage": "assets/images/bai7/b7_img29.jpg",
-                        "url": "assets/images/bai7/b7_img29.jpg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Cải cách giáo dục: Phục vụ kháng chiến, dân sinh và sản xuất",
-                        "caption": "Chủ tịch Hồ Chí Minh thăm và động viên thầy trò lớp học thời kháng chiến; đẩy mạnh cải cách giáo dục theo 3 phương châm toàn diện.",
-                        "localImage": "assets/images/bai7/b7_img30.jpeg",
-                        "url": "assets/images/bai7/b7_img30.jpeg",
-                        "source": "Thông tấn xã Việt Nam (TTXVN)"
-                }
+          {
+            "title": "Quang cảnh Đại hội đại biểu toàn quốc lần thứ II của Đảng (2/1951)",
+            "caption": "Đại hội đại biểu toàn quốc lần thứ II họp từ ngày 11-19/2/1951 tại xã Vinh Quang, huyện Chiêm Hóa (Tuyên Quang), quyết định đưa Đảng ra hoạt động công khai lấy tên là Đảng Lao động Việt Nam.",
+            "localImage": "assets/images/bai7/b7_img22.gif",
+            "url": "assets/images/bai7/b7_img22.gif",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Bản đồ các chiến dịch tiến công giữ vững thế chủ động (1951 – 1953)",
+            "caption": "Liên tiếp mở các chiến dịch Trần Hưng Đạo, Hoàng Hoa Thám, Quang Trung, Hòa Bình (1951-1952), Tây Bắc (1952), Thượng Lào (1953) tiêu diệt sinh lực địch.",
+            "localImage": "assets/images/bai7/b7_img24.jpeg",
+            "url": "assets/images/bai7/b7_img24.jpeg",
+            "source": "Tư liệu Bộ Quốc phòng"
+          },
+          {
+            "title": "Nông dân nhận ruộng trong Cải cách ruộng đất (tháng 12/1953)",
+            "caption": "Quốc hội thông qua Luật Cải cách ruộng đất năm 1953; nông dân vùng tự do hân hoan cắm thẻ nhận ruộng đất, hiện thực hóa mục tiêu 'Người cày có ruộng'.",
+            "localImage": "assets/images/bai7/b7_img29.jpg",
+            "url": "assets/images/bai7/b7_img29.jpg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Cải cách giáo dục: Phục vụ kháng chiến, dân sinh và sản xuất",
+            "caption": "Chủ tịch Hồ Chí Minh thăm và động viên thầy trò lớp học thời kháng chiến; đẩy mạnh cải cách giáo dục theo 3 phương châm toàn diện.",
+            "localImage": "assets/images/bai7/b7_img30.jpeg",
+            "url": "assets/images/bai7/b7_img30.jpeg",
+            "source": "Thông tấn xã Việt Nam (TTXVN)"
+          }
         ],
         "8": [
-                {
-                        "title": "Tướng Na-va và Bộ Tổng chỉ huy Pháp vạch Kế hoạch Na-va (7/1953)",
-                        "caption": "Tổng chỉ huy quân viễn chinh Pháp Henri Navarre được Mỹ viện trợ đề ra kế hoạch 18 tháng hòng chuyển bại thành thắng ở Đông Dương.",
-                        "localImage": "assets/images/bai7/b7_img31.gif",
-                        "url": "assets/images/bai7/b7_img31.gif",
-                        "source": "Lưu trữ Lịch sử Quân sự Pháp & Việt Nam"
-                },
-                {
-                        "title": "Tiến công chiến lược Đông – Xuân 1953 – 1954 xé lẻ quân cơ động Pháp",
-                        "caption": "Bộ đội ta tiến công dồn dập trên 5 hướng chiến lược, buộc khối cơ động mạnh của Na-va bị phân tán thành 5 cụm cô lập, không thể ứng cứu lẫn nhau.",
-                        "localImage": "assets/images/bai7/b7_img32.gif",
-                        "url": "assets/images/bai7/b7_img32.gif",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Chuẩn bị toàn diện mở đòn quyết chiến Điện Biên Phủ",
-                        "caption": "Thất bại bước đầu của Kế hoạch Na-va đẩy địch vào thế bị động phòng ngự tại Điện Biên Phủ, tạo thời cơ chín muồi cho trận quyết chiến chiến lược của ta.",
-                        "localImage": "assets/images/bai7/b7_img32.gif",
-                        "url": "assets/images/bai7/b7_img32.gif",
-                        "source": "Tư liệu Lịch sử Chiến dịch 1953 - 1954"
-                }
+          {
+            "title": "Tướng Na-va và Bộ Tổng chỉ huy Pháp vạch Kế hoạch Na-va (7/1953)",
+            "caption": "Tổng chỉ huy quân viễn chinh Pháp Henri Navarre được Mỹ viện trợ đề ra kế hoạch 18 tháng hòng chuyển bại thành thắng ở Đông Dương.",
+            "localImage": "assets/images/bai7/b7_img31.gif",
+            "url": "assets/images/bai7/b7_img31.gif",
+            "source": "Lưu trữ Lịch sử Quân sự Pháp & Việt Nam"
+          },
+          {
+            "title": "Tiến công chiến lược Đông – Xuân 1953 – 1954 xé lẻ quân cơ động Pháp",
+            "caption": "Bộ đội ta tiến công dồn dập trên 5 hướng chiến lược, buộc khối cơ động mạnh của Na-va bị phân tán thành 5 cụm cô lập, không thể ứng cứu lẫn nhau.",
+            "localImage": "assets/images/bai7/b7_img32.gif",
+            "url": "assets/images/bai7/b7_img32.gif",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Chuẩn bị toàn diện mở đòn quyết chiến Điện Biên Phủ",
+            "caption": "Thất bại bước đầu của Kế hoạch Na-va đẩy địch vào thế bị động phòng ngự tại Điện Biên Phủ, tạo thời cơ chín muồi cho trận quyết chiến chiến lược của ta.",
+            "localImage": "assets/images/bai7/b7_img32.gif",
+            "url": "assets/images/bai7/b7_img32.gif",
+            "source": "Tư liệu Lịch sử Chiến dịch 1953 - 1954"
+          }
         ],
         "9": [
-                {
-                        "title": "Bộ Chính trị họp duyệt kế hoạch tác chiến Điện Biên Phủ (12/1953)",
-                        "caption": "Chủ tịch Hồ Chí Minh cùng Đại tướng Võ Nguyên Giáp và các đồng chí trong Bộ Chính trị họp tại Tỉn Keo (Thái Nguyên) quyết định mở Chiến dịch Điện Biên Phủ.",
-                        "localImage": "assets/images/bai7/b7_img34.jpeg",
-                        "url": "assets/images/bai7/b7_img34.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Tướng Đờ Ca-xtơ-ri cùng toàn bộ Bộ Tham mưu Pháp đầu hàng (7/5/1954)",
-                        "caption": "Đúng 17h30 ngày 7/5/1954, lá cờ Quyết chiến Quyết thắng tung bay trên nóc hầm tướng De Castries; toàn bộ tập đoàn cứ điểm Điện Biên Phủ bị tiêu diệt hoàn toàn.",
-                        "localImage": "assets/images/bai7/b7_img37.jpeg",
-                        "url": "assets/images/bai7/b7_img37.jpeg",
-                        "source": "Ảnh tư liệu phóng viên chiến trường Triệu Đại"
-                },
-                {
-                        "title": "Ký kết Hiệp định Giơ-ne-vơ chấm dứt chiến tranh (21/7/1954)",
-                        "caption": "Hội nghị Giơ-ne-vơ ký kết thành công; các nước công nhận độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam, Lào và Campuchia.",
-                        "localImage": "assets/images/bai7/b7_img39.jpg",
-                        "url": "assets/images/bai7/b7_img39.jpg",
-                        "source": "Lưu trữ Bộ Ngoại giao"
-                },
-                {
-                        "title": "Sức mạnh đại đoàn kết toàn dân tộc làm nên chiến thắng Điện Biên Phủ",
-                        "caption": "Hàng vạn dân công hỏa tuyến vượt núi băng rừng kéo pháo, gánh đạn, thồ lương thực tiếp tế cho mặt trận; sức mạnh toàn dân làm nên kỳ tích.",
-                        "localImage": "assets/images/bai7/b7_img38.jpg",
-                        "url": "assets/images/bai7/b7_img38.jpg",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Chiến thắng Điện Biên Phủ lừng lẫy năm châu, chấn động địa cầu",
-                        "caption": "Lá cờ Quyết chiến Quyết thắng tung bay trên đỉnh đồi chiến thắng, giáng đòn sụp đổ vào chủ nghĩa thực dân cũ, mở ra thời kỳ giải phóng thuộc địa toàn cầu.",
-                        "localImage": "assets/images/bai7/b7_img38.jpg",
-                        "url": "assets/images/bai7/b7_img38.jpg",
-                        "source": "Thông tấn xã Việt Nam (TTXVN)"
-                }
+          {
+            "title": "Bộ Chính trị họp duyệt kế hoạch tác chiến Điện Biên Phủ (12/1953)",
+            "caption": "Chủ tịch Hồ Chí Minh cùng Đại tướng Võ Nguyên Giáp và các đồng chí trong Bộ Chính trị họp tại Tỉn Keo (Thái Nguyên) quyết định mở Chiến dịch Điện Biên Phủ.",
+            "localImage": "assets/images/bai7/b7_img34.jpeg",
+            "url": "assets/images/bai7/b7_img34.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Tướng Đờ Ca-xtơ-ri cùng toàn bộ Bộ Tham mưu Pháp đầu hàng (7/5/1954)",
+            "caption": "Đúng 17h30 ngày 7/5/1954, lá cờ Quyết chiến Quyết thắng tung bay trên nóc hầm tướng De Castries; toàn bộ tập đoàn cứ điểm Điện Biên Phủ bị tiêu diệt hoàn toàn.",
+            "localImage": "assets/images/bai7/b7_img37.jpeg",
+            "url": "assets/images/bai7/b7_img37.jpeg",
+            "source": "Ảnh tư liệu phóng viên chiến trường Triệu Đại"
+          },
+          {
+            "title": "Ký kết Hiệp định Giơ-ne-vơ chấm dứt chiến tranh (21/7/1954)",
+            "caption": "Hội nghị Giơ-ne-vơ ký kết thành công; các nước công nhận độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam, Lào và Campuchia.",
+            "localImage": "assets/images/bai7/b7_img39.jpg",
+            "url": "assets/images/bai7/b7_img39.jpg",
+            "source": "Lưu trữ Bộ Ngoại giao"
+          },
+          {
+            "title": "Sức mạnh đại đoàn kết toàn dân tộc làm nên chiến thắng Điện Biên Phủ",
+            "caption": "Hàng vạn dân công hỏa tuyến vượt núi băng rừng kéo pháo, gánh đạn, thồ lương thực tiếp tế cho mặt trận; sức mạnh toàn dân làm nên kỳ tích.",
+            "localImage": "assets/images/bai7/b7_img38.jpg",
+            "url": "assets/images/bai7/b7_img38.jpg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Chiến thắng Điện Biên Phủ lừng lẫy năm châu, chấn động địa cầu",
+            "caption": "Lá cờ Quyết chiến Quyết thắng tung bay trên đỉnh đồi chiến thắng, giáng đòn sụp đổ vào chủ nghĩa thực dân cũ, mở ra thời kỳ giải phóng thuộc địa toàn cầu.",
+            "localImage": "assets/images/bai7/b7_img38.jpg",
+            "url": "assets/images/bai7/b7_img38.jpg",
+            "source": "Thông tấn xã Việt Nam (TTXVN)"
+          }
         ]
-};
+      };
 
       const stationFallbacksBai8 = {
         "1": [
-                {
-                        "title": "Âm mưu của Mỹ biến miền Nam thành thuộc địa kiểu mới",
-                        "caption": "Mỹ hất cẳng Pháp, dựng lên chính quyền độc tài tay sai Ngô Đình Diệm, rắp tâm chia cắt lâu dài nước Việt Nam và đàn áp phong trào cách mạng.",
-                        "localImage": "assets/images/bai8/b8_img01.jpeg",
-                        "url": "assets/images/bai8/b8_img01.jpeg",
-                        "source": "Tư liệu Kháng chiến chống Mỹ"
-                },
-                {
-                        "title": "Cầu Hiền Lương vĩ tuyến 17 chia cắt hai miền đất nước (1954)",
-                        "caption": "Cầu Hiền Lương bắc qua sông Bến Hải (Quảng Trị) trở thành giới tuyến quân sự tạm thời sau Hiệp định Giơ-ne-vơ 1954, chia cắt hai miền non sông.",
-                        "localImage": "assets/images/bai8/b8_img02.jpeg",
-                        "url": "assets/images/bai8/b8_img02.jpeg",
-                        "source": "Bảo tàng Di tích Lịch sử Đôi bờ Hiền Lương"
-                }
+          {
+            "title": "Âm mưu của Mỹ biến miền Nam thành thuộc địa kiểu mới",
+            "caption": "Mỹ hất cẳng Pháp, dựng lên chính quyền độc tài tay sai Ngô Đình Diệm, rắp tâm chia cắt lâu dài nước Việt Nam và đàn áp phong trào cách mạng.",
+            "localImage": "assets/images/bai8/b8_img01.jpeg",
+            "url": "assets/images/bai8/b8_img01.jpeg",
+            "source": "Tư liệu Kháng chiến chống Mỹ"
+          },
+          {
+            "title": "Cầu Hiền Lương vĩ tuyến 17 chia cắt hai miền đất nước (1954)",
+            "caption": "Cầu Hiền Lương bắc qua sông Bến Hải (Quảng Trị) trở thành giới tuyến quân sự tạm thời sau Hiệp định Giơ-ne-vơ 1954, chia cắt hai miền non sông.",
+            "localImage": "assets/images/bai8/b8_img02.jpeg",
+            "url": "assets/images/bai8/b8_img02.jpeg",
+            "source": "Bảo tàng Di tích Lịch sử Đôi bờ Hiền Lương"
+          }
         ],
         "2": [
-                {
-                        "title": "Hội nghị Trung ương 15 mở đường bạo lực cách mạng (1/1959)",
-                        "caption": "Hội nghị BCH Trung ương Đảng lần thứ 15 xác định con đường cơ bản của cách mạng miền Nam là sử dụng bạo lực cách mạng để tự giải phóng.",
-                        "localImage": "assets/images/bai8/b8_img03.jpg",
-                        "url": "assets/images/bai8/b8_img03.jpg",
-                        "source": "Lưu trữ Lịch sử Đảng"
-                },
-                {
-                        "title": "Phong trào 'Đồng khởi' Bến Tre bùng nổ (17/1/1960)",
-                        "caption": "Nhân dân Bến Tre dưới sự lãnh đạo của 'Đội quân tóc dài' nữ tướng Nguyễn Thị Định nhất tề nổi dậy diệt ác phá kìm, làm chủ xóm làng.",
-                        "localImage": "assets/images/bai8/b8_img04.jpg",
-                        "url": "assets/images/bai8/b8_img04.jpg",
-                        "source": "Bảo tàng Bến Tre"
-                },
-                {
-                        "title": "Thành lập Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960)",
-                        "caption": "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam ra đời, đoàn kết toàn dân đẩy cách mạng miền Nam chuyển hẳn từ thế giữ gìn lực lượng sang thế tiến công.",
-                        "localImage": "assets/images/bai8/b8_img05.jpeg",
-                        "url": "assets/images/bai8/b8_img05.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                }
+          {
+            "title": "Hội nghị Trung ương 15 mở đường bạo lực cách mạng (1/1959)",
+            "caption": "Hội nghị BCH Trung ương Đảng lần thứ 15 xác định con đường cơ bản của cách mạng miền Nam là sử dụng bạo lực cách mạng để tự giải phóng.",
+            "localImage": "assets/images/bai8/b8_img03.jpg",
+            "url": "assets/images/bai8/b8_img03.jpg",
+            "source": "Lưu trữ Lịch sử Đảng"
+          },
+          {
+            "title": "Phong trào 'Đồng khởi' Bến Tre bùng nổ (17/1/1960)",
+            "caption": "Nhân dân Bến Tre dưới sự lãnh đạo của 'Đội quân tóc dài' nữ tướng Nguyễn Thị Định nhất tề nổi dậy diệt ác phá kìm, làm chủ xóm làng.",
+            "localImage": "assets/images/bai8/b8_img04.jpg",
+            "url": "assets/images/bai8/b8_img04.jpg",
+            "source": "Bảo tàng Bến Tre"
+          },
+          {
+            "title": "Thành lập Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960)",
+            "caption": "Mặt trận Dân tộc Giải phóng miền Nam Việt Nam ra đời, đoàn kết toàn dân đẩy cách mạng miền Nam chuyển hẳn từ thế giữ gìn lực lượng sang thế tiến công.",
+            "localImage": "assets/images/bai8/b8_img05.jpeg",
+            "url": "assets/images/bai8/b8_img05.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          }
         ],
         "3": [
-                {
-                        "title": "Đại hội đại biểu toàn quốc lần thứ III của Đảng (9/1960)",
-                        "caption": "Đại hội xác định miền Bắc tiến lên CNXH giữ vai trò quyết định nhất, miền Nam đấu tranh giải phóng giữ vai trò quyết định trực tiếp.",
-                        "localImage": "assets/images/bai8/b8_img06.jpeg",
-                        "url": "assets/images/bai8/b8_img06.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Chiến thuật 'Trực thăng vận' và 'Thiết xa vận' trong Chiến tranh đặc biệt",
-                        "caption": "Mỹ trang bị ồ ạt trực thăng vũ trang và xe thiết giáp M113 cho quân đội Sài Gòn, tiến hành dồn dân lập Ấp chiến lược hòng tát nước bắt cá.",
-                        "localImage": "assets/images/bai8/b8_img07.jpeg",
-                        "url": "assets/images/bai8/b8_img07.jpeg",
-                        "source": "Tư liệu Chiến tranh Việt Nam"
-                },
-                {
-                        "title": "Chiến thắng Ấp Bắc bẻ gãy chiến thuật tân tiến của Mỹ (1/1963)",
-                        "caption": "Chiến thắng Ấp Bắc (Mỹ Tho) chứng minh quân dân miền Nam hoàn toàn đủ sức đánh bại chiến thuật trực thăng vận và thiết xa vận của Mỹ.",
-                        "localImage": "assets/images/bai8/b8_img10.jpeg",
-                        "url": "assets/images/bai8/b8_img10.jpeg",
-                        "source": "Bảo tàng Quân khu 9"
-                },
-                {
-                        "title": "Phá ấp chiến lược & Chiến thắng Bình Giã làm phá sản Chiến tranh đặc biệt",
-                        "caption": "Các chiến dịch tiến công Bình Giã, An Lão, Ba Gia, Đồng Xoài (1964 – 1965) đã giáng đòn quyết định làm phá sản hoàn toàn chiến lược 'Chiến tranh đặc biệt'.",
-                        "localImage": "assets/images/bai8/b8_img12.jpeg",
-                        "url": "assets/images/bai8/b8_img12.jpeg",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                }
+          {
+            "title": "Đại hội đại biểu toàn quốc lần thứ III của Đảng (9/1960)",
+            "caption": "Đại hội xác định miền Bắc tiến lên CNXH giữ vai trò quyết định nhất, miền Nam đấu tranh giải phóng giữ vai trò quyết định trực tiếp.",
+            "localImage": "assets/images/bai8/b8_img06.jpeg",
+            "url": "assets/images/bai8/b8_img06.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Chiến thuật 'Trực thăng vận' và 'Thiết xa vận' trong Chiến tranh đặc biệt",
+            "caption": "Mỹ trang bị ồ ạt trực thăng vũ trang và xe thiết giáp M113 cho quân đội Sài Gòn, tiến hành dồn dân lập Ấp chiến lược hòng tát nước bắt cá.",
+            "localImage": "assets/images/bai8/b8_img07.jpeg",
+            "url": "assets/images/bai8/b8_img07.jpeg",
+            "source": "Tư liệu Chiến tranh Việt Nam"
+          },
+          {
+            "title": "Chiến thắng Ấp Bắc bẻ gãy chiến thuật tân tiến của Mỹ (1/1963)",
+            "caption": "Chiến thắng Ấp Bắc (Mỹ Tho) chứng minh quân dân miền Nam hoàn toàn đủ sức đánh bại chiến thuật trực thăng vận và thiết xa vận của Mỹ.",
+            "localImage": "assets/images/bai8/b8_img10.jpeg",
+            "url": "assets/images/bai8/b8_img10.jpeg",
+            "source": "Bảo tàng Quân khu 9"
+          },
+          {
+            "title": "Phá ấp chiến lược & Chiến thắng Bình Giã làm phá sản Chiến tranh đặc biệt",
+            "caption": "Các chiến dịch tiến công Bình Giã, An Lão, Ba Gia, Đồng Xoài (1964 – 1965) đã giáng đòn quyết định làm phá sản hoàn toàn chiến lược 'Chiến tranh đặc biệt'.",
+            "localImage": "assets/images/bai8/b8_img12.jpeg",
+            "url": "assets/images/bai8/b8_img12.jpeg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          }
         ],
         "4": [
-                {
-                        "title": "Mỹ đổ quân viễn chinh vào Đà Nẵng mở màn Chiến tranh cục bộ (3/1965)",
-                        "caption": "Hơn 50 vạn lính viễn chinh Mỹ và chư hầu ồ ạt đổ bộ vào miền Nam và ném bom leo thang phá hoại miền Bắc lần thứ nhất.",
-                        "localImage": "assets/images/bai8/b8_img13.png",
-                        "url": "assets/images/bai8/b8_img13.png",
-                        "source": "Tư liệu Ảnh Quốc tế"
-                },
-                {
-                        "title": "Chiến thắng Vạn Tường mở màn 'Tìm Mỹ mà đánh, lùng ngụy mà diệt' (18/8/1965)",
-                        "caption": "Trận đọ sức trực tiếp đầu tiên giữa bộ đội chủ lực ta và quân viễn chinh Mỹ tại Quảng Ngãi, khẳng định ta có thể đánh thắng Mỹ về quân sự.",
-                        "localImage": "assets/images/bai8/b8_img15.jpg",
-                        "url": "assets/images/bai8/b8_img15.jpg",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Đập tan hai cuộc phản công mùa khô và Chiến dịch Gian-xơn Xi-ti",
-                        "caption": "Quân dân miền Nam bẻ gãy hoàn toàn các cuộc hành quân 'tìm diệt và bình định' quy mô lớn của Mỹ trong 2 mùa khô 1965-1966 và 1966-1967.",
-                        "localImage": "assets/images/bai8/b8_img17.png",
-                        "url": "assets/images/bai8/b8_img17.png",
-                        "source": "Tư liệu Bộ Chỉ huy Miền"
-                }
+          {
+            "title": "Mỹ đổ quân viễn chinh vào Đà Nẵng mở màn Chiến tranh cục bộ (3/1965)",
+            "caption": "Hơn 50 vạn lính viễn chinh Mỹ và chư hầu ồ ạt đổ bộ vào miền Nam và ném bom leo thang phá hoại miền Bắc lần thứ nhất.",
+            "localImage": "assets/images/bai8/b8_img13.png",
+            "url": "assets/images/bai8/b8_img13.png",
+            "source": "Tư liệu Ảnh Quốc tế"
+          },
+          {
+            "title": "Chiến thắng Vạn Tường mở màn 'Tìm Mỹ mà đánh, lùng ngụy mà diệt' (18/8/1965)",
+            "caption": "Trận đọ sức trực tiếp đầu tiên giữa bộ đội chủ lực ta và quân viễn chinh Mỹ tại Quảng Ngãi, khẳng định ta có thể đánh thắng Mỹ về quân sự.",
+            "localImage": "assets/images/bai8/b8_img15.jpg",
+            "url": "assets/images/bai8/b8_img15.jpg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Đập tan hai cuộc phản công mùa khô và Chiến dịch Gian-xơn Xi-ti",
+            "caption": "Quân dân miền Nam bẻ gãy hoàn toàn các cuộc hành quân 'tìm diệt và bình định' quy mô lớn của Mỹ trong 2 mùa khô 1965-1966 và 1966-1967.",
+            "localImage": "assets/images/bai8/b8_img17.png",
+            "url": "assets/images/bai8/b8_img17.png",
+            "source": "Tư liệu Bộ Chỉ huy Miền"
+          }
         ],
         "5": [
-                {
-                        "title": "Tổng tiến công và nổi dậy Tết Mậu Thân (1968)",
-                        "caption": "Đêm giao thừa Tết Mậu Thân 1968, quân giải phóng bất ngờ đồng loạt tiến công vào Tòa Đại sứ Mỹ, Dinh Độc Lập, Bộ Tổng tham mưu địch tại Sài Gòn.",
-                        "localImage": "assets/images/bai8/b8_img18.jpg",
-                        "url": "assets/images/bai8/b8_img18.jpg",
-                        "source": "Bảo tàng Lực lượng Vũ trang Miền Đông"
-                },
-                {
-                        "title": "Buộc Mỹ tuyên bố 'phi Mỹ hóa' chiến tranh và ngồi vào bàn đàm phán Pa-ri",
-                        "caption": "Đòn bất ngờ Mậu Thân làm lung lay tận gốc ý chí xâm lược của giới cầm quyền Mỹ, buộc Mỹ ngừng ném bom miền Bắc và chấp nhận đàm phán tại Pa-ri.",
-                        "localImage": "assets/images/bai8/b8_img19.jpeg",
-                        "url": "assets/images/bai8/b8_img19.jpeg",
-                        "source": "Thông tấn xã Việt Nam (TTXVN)"
-                }
+          {
+            "title": "Tổng tiến công và nổi dậy Tết Mậu Thân (1968)",
+            "caption": "Đêm giao thừa Tết Mậu Thân 1968, quân giải phóng bất ngờ đồng loạt tiến công vào Tòa Đại sứ Mỹ, Dinh Độc Lập, Bộ Tổng tham mưu địch tại Sài Gòn.",
+            "localImage": "assets/images/bai8/b8_img18.jpg",
+            "url": "assets/images/bai8/b8_img18.jpg",
+            "source": "Bảo tàng Lực lượng Vũ trang Miền Đông"
+          },
+          {
+            "title": "Buộc Mỹ tuyên bố 'phi Mỹ hóa' chiến tranh và ngồi vào bàn đàm phán Pa-ri",
+            "caption": "Đòn bất ngờ Mậu Thân làm lung lay tận gốc ý chí xâm lược của giới cầm quyền Mỹ, buộc Mỹ ngừng ném bom miền Bắc và chấp nhận đàm phán tại Pa-ri.",
+            "localImage": "assets/images/bai8/b8_img19.jpeg",
+            "url": "assets/images/bai8/b8_img19.jpeg",
+            "source": "Thông tấn xã Việt Nam (TTXVN)"
+          }
         ],
         "6": [
-                {
-                        "title": "Chiến lược 'Việt Nam hóa chiến tranh' của Mỹ (1969 – 1973)",
-                        "caption": "Tổng thống Nixon triển khai học thuyết rút dần lính Mỹ, tăng cường vũ khí cho quân đội Sài Gòn và mở rộng chiến tranh sang Lào, Campuchia.",
-                        "localImage": "assets/images/bai8/b8_img20.png",
-                        "url": "assets/images/bai8/b8_img20.png",
-                        "source": "Tư liệu Lịch sử Thế kỷ 20"
-                },
-                {
-                        "title": "Chính phủ Cách mạng lâm thời Cộng hòa MNVN thành lập (6/6/1969)",
-                        "caption": "Chính phủ Cách mạng lâm thời CHMNVN ra đời do kiến trúc sư Huỳnh Tấn Phát làm Chủ tịch, tập hợp rộng rãi lực lượng yêu nước và nâng cao vị thế đối ngoại.",
-                        "localImage": "assets/images/bai8/b8_img21.jpeg",
-                        "url": "assets/images/bai8/b8_img21.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Cuộc Tiến công chiến lược năm 1972 chọc thủng 3 phòng tuyến của địch",
-                        "caption": "Quân ta tiến công thần tốc giải phóng Quảng Trị, Đắk Tô – Tân Cảnh và Lộc Ninh, buộc Mỹ phải thừa nhận sự phá sản của 'Việt Nam hóa chiến tranh'.",
-                        "localImage": "assets/images/bai8/b8_img22.png",
-                        "url": "assets/images/bai8/b8_img22.png",
-                        "source": "Tư liệu Bộ Quốc phòng"
-                }
+          {
+            "title": "Chiến lược 'Việt Nam hóa chiến tranh' của Mỹ (1969 – 1973)",
+            "caption": "Tổng thống Nixon triển khai học thuyết rút dần lính Mỹ, tăng cường vũ khí cho quân đội Sài Gòn và mở rộng chiến tranh sang Lào, Campuchia.",
+            "localImage": "assets/images/bai8/b8_img20.png",
+            "url": "assets/images/bai8/b8_img20.png",
+            "source": "Tư liệu Lịch sử Thế kỷ 20"
+          },
+          {
+            "title": "Chính phủ Cách mạng lâm thời Cộng hòa MNVN thành lập (6/6/1969)",
+            "caption": "Chính phủ Cách mạng lâm thời CHMNVN ra đời do kiến trúc sư Huỳnh Tấn Phát làm Chủ tịch, tập hợp rộng rãi lực lượng yêu nước và nâng cao vị thế đối ngoại.",
+            "localImage": "assets/images/bai8/b8_img21.jpeg",
+            "url": "assets/images/bai8/b8_img21.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Cuộc Tiến công chiến lược năm 1972 chọc thủng 3 phòng tuyến của địch",
+            "caption": "Quân ta tiến công thần tốc giải phóng Quảng Trị, Đắk Tô – Tân Cảnh và Lộc Ninh, buộc Mỹ phải thừa nhận sự phá sản của 'Việt Nam hóa chiến tranh'.",
+            "localImage": "assets/images/bai8/b8_img22.png",
+            "url": "assets/images/bai8/b8_img22.png",
+            "source": "Tư liệu Bộ Quốc phòng"
+          }
         ],
         "7": [
-                {
-                        "title": "Trận 'Điện Biên Phủ trên không' đập tan pháo đài bay B-52 (12/1972)",
-                        "caption": "Trong 12 ngày đêm cuối năm 1972, quân dân Hà Nội, Hải Phòng bắn rơi 81 máy bay Mỹ (trong đó có 34 pháo đài bay B-52), đập tan tối hậu thư của Nixon.",
-                        "localImage": "assets/images/bai8/b8_img24.jpg",
-                        "url": "assets/images/bai8/b8_img24.jpg",
-                        "source": "Bảo tàng Phòng không - Không quân"
-                },
-                {
-                        "title": "Ký kết Hiệp định Pa-ri ngày 27/1/1973 – Đánh cho Mỹ cút",
-                        "caption": "Bộ trưởng Ngoại giao Nguyễn Thị Bình cùng đại diện các bên ký kết Hiệp định Pa-ri; Mỹ buộc phải rút toàn bộ quân viễn chinh về nước, chấm dứt can thiệp quân sự.",
-                        "localImage": "assets/images/bai8/b8_img25.jpeg",
-                        "url": "assets/images/bai8/b8_img25.jpeg",
-                        "source": "Lưu trữ Bộ Ngoại giao Việt Nam"
-                }
+          {
+            "title": "Trận 'Điện Biên Phủ trên không' đập tan pháo đài bay B-52 (12/1972)",
+            "caption": "Trong 12 ngày đêm cuối năm 1972, quân dân Hà Nội, Hải Phòng bắn rơi 81 máy bay Mỹ (trong đó có 34 pháo đài bay B-52), đập tan tối hậu thư của Nixon.",
+            "localImage": "assets/images/bai8/b8_img24.jpg",
+            "url": "assets/images/bai8/b8_img24.jpg",
+            "source": "Bảo tàng Phòng không - Không quân"
+          },
+          {
+            "title": "Ký kết Hiệp định Pa-ri ngày 27/1/1973 – Đánh cho Mỹ cút",
+            "caption": "Bộ trưởng Ngoại giao Nguyễn Thị Bình cùng đại diện các bên ký kết Hiệp định Pa-ri; Mỹ buộc phải rút toàn bộ quân viễn chinh về nước, chấm dứt can thiệp quân sự.",
+            "localImage": "assets/images/bai8/b8_img25.jpeg",
+            "url": "assets/images/bai8/b8_img25.jpeg",
+            "source": "Lưu trữ Bộ Ngoại giao Việt Nam"
+          }
         ],
         "8": [
-                {
-                        "title": "Nghị quyết Hội nghị Trung ương lần thứ 21 (7/1973)",
-                        "caption": "Trung ương Đảng khẳng định trong mọi tình huống con đường cách mạng miền Nam vẫn là con đường bạo lực cách mạng, giữ vững thế tiến công giải phóng.",
-                        "localImage": "assets/images/bai8/b8_img26.jpeg",
-                        "url": "assets/images/bai8/b8_img26.jpeg",
-                        "source": "Bảo tàng Lịch sử Quốc gia"
-                },
-                {
-                        "title": "Chiến thắng Đường 14 – Phước Long giải phóng toàn tỉnh (6/1/1975)",
-                        "caption": "Bộ đội ta tiến công giải phóng thị xã và toàn bộ tỉnh Phước Long, tạo bàn đạp tiến công hiểm yếu áp sát cửa ngõ Đông Bắc Sài Gòn.",
-                        "localImage": "assets/images/bai8/b8_img27.jpeg",
-                        "url": "assets/images/bai8/b8_img27.jpeg",
-                        "source": "Bảo tàng Chiến dịch Hồ Chí Minh"
-                },
-                {
-                        "title": "Đòn trinh sát chiến lược mở ra thời cơ giải phóng hoàn toàn miền Nam",
-                        "caption": "Chiến thắng Phước Long chứng minh quân ngụy Sài Gòn đã suy sụp trầm trọng và đế quốc Mỹ không còn khả năng can thiệp trở lại bằng bộ binh.",
-                        "localImage": "assets/images/bai8/b8_img28.jpeg",
-                        "url": "assets/images/bai8/b8_img28.jpeg",
-                        "source": "Tư liệu Bộ Tổng Tham mưu"
-                }
+          {
+            "title": "Nghị quyết Hội nghị Trung ương lần thứ 21 (7/1973)",
+            "caption": "Trung ương Đảng khẳng định trong mọi tình huống con đường cách mạng miền Nam vẫn là con đường bạo lực cách mạng, giữ vững thế tiến công giải phóng.",
+            "localImage": "assets/images/bai8/b8_img26.jpeg",
+            "url": "assets/images/bai8/b8_img26.jpeg",
+            "source": "Bảo tàng Lịch sử Quốc gia"
+          },
+          {
+            "title": "Chiến thắng Đường 14 – Phước Long giải phóng toàn tỉnh (6/1/1975)",
+            "caption": "Bộ đội ta tiến công giải phóng thị xã và toàn bộ tỉnh Phước Long, tạo bàn đạp tiến công hiểm yếu áp sát cửa ngõ Đông Bắc Sài Gòn.",
+            "localImage": "assets/images/bai8/b8_img27.jpeg",
+            "url": "assets/images/bai8/b8_img27.jpeg",
+            "source": "Bảo tàng Chiến dịch Hồ Chí Minh"
+          },
+          {
+            "title": "Đòn trinh sát chiến lược mở ra thời cơ giải phóng hoàn toàn miền Nam",
+            "caption": "Chiến thắng Phước Long chứng minh quân ngụy Sài Gòn đã suy sụp trầm trọng và đế quốc Mỹ không còn khả năng can thiệp trở lại bằng bộ binh.",
+            "localImage": "assets/images/bai8/b8_img28.jpeg",
+            "url": "assets/images/bai8/b8_img28.jpeg",
+            "source": "Tư liệu Bộ Tổng Tham mưu"
+          }
         ],
         "9": [
-                {
-                        "title": "Chiến dịch Tây Nguyên: Đòn điểm huyệt giải phóng Buôn Ma Thuột (3/1975)",
-                        "caption": "Đòn tiến công bất ngờ giải phóng thị xã Buôn Ma Thuột (10/3/1975) làm rung chuyển toàn bộ chiến trường miền Nam, mở màn cuộc Tổng tiến công mùa Xuân 1975.",
-                        "localImage": "assets/images/bai8/b8_img29.jpeg",
-                        "url": "assets/images/bai8/b8_img29.jpeg",
-                        "source": "Bảo tàng Đắk Lắk"
-                },
-                {
-                        "title": "Chiến dịch Huế – Đà Nẵng: Cắm cờ trên đỉnh Phú Văn Lâu (3/1975)",
-                        "caption": "Quân ta tiến công thần tốc giải phóng Cố đô Huế (26/3) và đập tan căn cứ quân sự liên hợp Đà Nẵng (29/3), tiêu diệt toàn bộ Quân đoàn 1 ngụy.",
-                        "localImage": "assets/images/bai8/b8_img30.jpeg",
-                        "url": "assets/images/bai8/b8_img30.jpeg",
-                        "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-                },
-                {
-                        "title": "Chiến dịch Hồ Chí Minh lịch sử: Năm cánh quân thần tốc tiến về Sài Gòn",
-                        "caption": "Chấp hành mệnh lệnh của Đại tướng Võ Nguyên Giáp 'Thần tốc, thần tốc hơn nữa, táo bạo, táo bạo hơn nữa', năm cánh quân rầm rập tiến về sào huyệt cuối cùng của địch.",
-                        "localImage": "assets/images/bai8/b8_img31.jpeg",
-                        "url": "assets/images/bai8/b8_img31.jpeg",
-                        "source": "Thông tấn xã Việt Nam (TTXVN)"
-                },
-                {
-                        "title": "Xe tăng 390 húc đổ cổng Dinh Độc Lập – Đại thắng mùa Xuân 30/4/1975",
-                        "caption": "Đúng 11 giờ 30 phút ngày 30/4/1975, lá cờ giải phóng tung bay trên nóc Dinh Độc Lập, kết thúc toàn thắng cuộc kháng chiến chống Mỹ cứu nước, non sông thu về một mối.",
-                        "localImage": "assets/images/bai8/b8_img32.jpeg",
-                        "url": "assets/images/bai8/b8_img32.jpeg",
-                        "source": "Ảnh tư liệu Francoise De Mulder & TTXVN"
-                }
+          {
+            "title": "Chiến dịch Tây Nguyên: Đòn điểm huyệt giải phóng Buôn Ma Thuột (3/1975)",
+            "caption": "Đòn tiến công bất ngờ giải phóng thị xã Buôn Ma Thuột (10/3/1975) làm rung chuyển toàn bộ chiến trường miền Nam, mở màn cuộc Tổng tiến công mùa Xuân 1975.",
+            "localImage": "assets/images/bai8/b8_img29.jpeg",
+            "url": "assets/images/bai8/b8_img29.jpeg",
+            "source": "Bảo tàng Đắk Lắk"
+          },
+          {
+            "title": "Chiến dịch Huế – Đà Nẵng: Cắm cờ trên đỉnh Phú Văn Lâu (3/1975)",
+            "caption": "Quân ta tiến công thần tốc giải phóng Cố đô Huế (26/3) và đập tan căn cứ quân sự liên hợp Đà Nẵng (29/3), tiêu diệt toàn bộ Quân đoàn 1 ngụy.",
+            "localImage": "assets/images/bai8/b8_img30.jpeg",
+            "url": "assets/images/bai8/b8_img30.jpeg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Chiến dịch Hồ Chí Minh lịch sử: Năm cánh quân thần tốc tiến về Sài Gòn",
+            "caption": "Chấp hành mệnh lệnh của Đại tướng Võ Nguyên Giáp 'Thần tốc, thần tốc hơn nữa, táo bạo, táo bạo hơn nữa', năm cánh quân rầm rập tiến về sào huyệt cuối cùng của địch.",
+            "localImage": "assets/images/bai8/b8_img31.jpeg",
+            "url": "assets/images/bai8/b8_img31.jpeg",
+            "source": "Thông tấn xã Việt Nam (TTXVN)"
+          },
+          {
+            "title": "Xe tăng 390 húc đổ cổng Dinh Độc Lập – Đại thắng mùa Xuân 30/4/1975",
+            "caption": "Đúng 11 giờ 30 phút ngày 30/4/1975, lá cờ giải phóng tung bay trên nóc Dinh Độc Lập, kết thúc toàn thắng cuộc kháng chiến chống Mỹ cứu nước, non sông thu về một mối.",
+            "localImage": "assets/images/bai8/b8_img32.jpeg",
+            "url": "assets/images/bai8/b8_img32.jpeg",
+            "source": "Ảnh tư liệu Francoise De Mulder & TTXVN"
+          }
         ]
-};
+      };
 
       const stationFallbacksBai6 = {
         1: [
@@ -16733,7 +16756,7 @@ window.addEventListener('pointermove', (e) => {
         if (window.Bai7SpatialDirector && typeof window.Bai7SpatialDirector.onStationClose === 'function') {
           window.Bai7SpatialDirector.onStationClose();
         }
-      } catch (_) {}
+      } catch (_) { }
 
       const pathLocus = document.getElementById('bdt-path-locus');
       const pathTabs = document.getElementById('bdt-path-tabs');
@@ -16755,7 +16778,7 @@ window.addEventListener('pointermove', (e) => {
       _cachedPhotoWrapRect = null;
     }, { passive: true });
 
-    
+
     // ══════════════════════════════════════════════════════════════════════════
     // BẢN ĐỒ TỌA ĐỘ VẬT THỂ 3D TƯƠNG ỨNG VỚI TỪNG Ý KIẾN THỨC CỦA MỐI TRẠM (LOCI STEP ANCHOR MAP)
     // Dây chỉ nối từ Thẻ Kiến Thức sẽ trỏ CHÍNH XÁC vào từng Model 3D tương ứng với nội dung đang học!
@@ -17023,13 +17046,13 @@ window.addEventListener('pointermove', (e) => {
     function findAnchorSource(locus) {
       const all = window.LOCI_ANCHORS || {};
       const currentKey = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY) ? EFFECTIVE_LESSON_KEY : 'bai_6';
-      
+
       // 1. Tìm theo ID chuẩn
       for (const k in all) {
         const a = (all[k].anchors || []).find(x => x.id === locus.id);
         if (a) return { anchor: a, lesson: all[k] };
       }
-      
+
       // 2. Fallback tìm theo Order/Thứ tự trạm (đảm bảo 100% nạp đúng trạm tương ứng)
       if (all[currentKey] && all[currentKey].anchors) {
         const idx = (typeof lociList !== 'undefined' && Array.isArray(lociList)) ? lociList.findIndex(l => l.id === locus.id) : -1;
@@ -17796,7 +17819,7 @@ window.addEventListener('pointermove', (e) => {
       if (ghostMarker) ghostMarker.visible = false;
       if (placingHudBanner) placingHudBanner.style.display = 'none';
     }
-window.addEventListener('pointermove', (e) => {
+    window.addEventListener('pointermove', (e) => {
       if (pendingPlacingAnchor && ghostMarker) {
         updateGhostMarkerPosition(e);
       }
@@ -19499,8 +19522,8 @@ window.addEventListener('pointermove', (e) => {
     /* --- PROGRESS HUD & BOTTOM STRIP --- */
     function updateUIProgress() {
       const total = (typeof lociList !== 'undefined' && lociList.length) ? lociList.length : 9;
-      const count = (typeof lociList !== 'undefined' && Array.isArray(lociList)) 
-        ? lociList.filter(l => l.status === 'mastered' || l._visited).length 
+      const count = (typeof lociList !== 'undefined' && Array.isArray(lociList))
+        ? lociList.filter(l => l.status === 'mastered' || l._visited).length
         : 0;
       const percent = Math.round((count / total) * 100);
       const masteryPercent = document.getElementById('mastery-percent');
@@ -19652,7 +19675,7 @@ window.addEventListener('pointermove', (e) => {
       joystickActive = true;
       updateJoystick(e);
     }, { passive: true });
-window.addEventListener('pointermove', (e) => {
+    window.addEventListener('pointermove', (e) => {
       if (!joystickActive) return;
       updateJoystick(e);
     }, { passive: true });
@@ -22692,8 +22715,8 @@ window.addEventListener('pointermove', (e) => {
     }
 
     if (aiOrbTrigger) {
-      aiOrbTrigger.onclick = function(e) {
-        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch(_) {} }
+      aiOrbTrigger.onclick = function (e) {
+        if (e) { try { e.preventDefault(); e.stopPropagation(); } catch (_) { } }
         window.openAIDrawer(e);
       };
       aiOrbTrigger.addEventListener('pointerdown', (e) => { e.stopPropagation(); });
@@ -22712,7 +22735,7 @@ window.addEventListener('pointermove', (e) => {
       });
     }
 
-    
+
 
     // Dismiss AI Assistant (smoothly slide out and close in both Web and VR)
     function dismissAIAssistant() {
@@ -24409,10 +24432,10 @@ Hỏi: ...
       <div style="width:6px; height:6px; border-radius:50%; background:#ef4444; box-shadow:0 0 8px #ef4444;"></div>
     </div>
   </div>
-<script>
+  <script>
 
     // THPT 2027 Ticker disabled
-    (function() {
+    (function () {
       const TARGET_2027 = new Date('2027-06-25T07:30:00+07:00').getTime();
       function tick3DCountdown() {
         const diff = Math.max(0, TARGET_2027 - Date.now());
@@ -24422,7 +24445,7 @@ Hỏi: ...
         const s = Math.floor((diff % (1000 * 60)) / 1000);
         const el = null; // hud-thpt-cd-text removed
         if (el) {
-          el.textContent = `${d} ngày ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+          el.textContent = `${d} ngày ${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
         }
       }
       tick3DCountdown();
@@ -24430,11 +24453,11 @@ Hỏi: ...
     })();
 
 
-// ══════════════════════════════════════════════════════════════════════════
+    // ══════════════════════════════════════════════════════════════════════════
     // BÀI 8 SPATIAL DIRECTOR — TƯƠNG TÁC 3D MÁY BAY NÉM BOM, BANNER VẠN TƯỜNG & CHIẾU CHỮ
     // ══════════════════════════════════════════════════════════════════════════
     window.Bai8SpatialDirector = {
-      onStepChange: function(order, stepIdx, locus) {
+      onStepChange: function (order, stepIdx, locus) {
         if (!locus) return;
 
         // 1. TRẠM 1: BỐI CẢNH 1954 & CHIẾN TRANH LẠNH
@@ -24512,7 +24535,7 @@ Hỏi: ...
                     }
                     const elapsed = ((now - t0) / 1000) % 7.0; // 7 giây tuần hoàn
                     const tNorm = elapsed / 7.0;
-                    
+
                     const { vnFlag, usFlag, rvnFlag, usFlagMat, rvnFlagMat } = flagGroup.userData || {};
                     if (vnFlag) {
                       const h = 1.0 + Math.min(1.0, tNorm * 1.4) * 1.1;
@@ -25054,7 +25077,7 @@ Hỏi: ...
 
       const lessonKey = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY) ? EFFECTIVE_LESSON_KEY : 'bai_6';
       const rawList = VISUAL_MODEL_QUIZ_DATA[lessonKey] || VISUAL_MODEL_QUIZ_DATA['bai_6'];
-      
+
       // Xáo trộn thứ tự các câu hỏi để thử thách phong phú
       vmqCurrentList = [...rawList].sort(() => Math.random() - 0.5);
       vmqIndex = 0;
@@ -25393,15 +25416,15 @@ Hỏi: ...
       }
     });
   </script>
-<script>
+  <script>
     // Tự động giải mã và điền API key an toàn
-    (function() {
-      const _fn = window._decodeGeminiKey || function(s) { try { return atob(s.split('').reverse().join('')); } catch(e){ return ''; } };
+    (function () {
+      const _fn = window._decodeGeminiKey || function (s) { try { return atob(s.split('').reverse().join('')); } catch (e) { return ''; } };
       const _autoKey = _fn('=EVMvpVbxdlWRZUZQlUQM1EblZVcHBTUzYDbidXdRl2RhNGT34UdRdTdNx0S24kU4IWQuEVQ');
       const _keyInput = document.getElementById('customApiKeyInput');
       if (_keyInput && !_keyInput.value) _keyInput.value = _autoKey;
     })();
-</script>
+  </script>
 </body>
 
 </html>
