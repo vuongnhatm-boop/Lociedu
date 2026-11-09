@@ -1557,7 +1557,82 @@
         }
     }
 
-</style>
+
+        /* ==================== NHÓM HỌC TẬP & BẢNG XẾP HẠNG NHÓM ==================== */
+        .group-card-item {
+            background: #ffffff;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+            transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            cursor: pointer;
+        }
+        .group-card-item:hover {
+            transform: translateY(-2px);
+            border-color: #0284c7;
+            box-shadow: 0 8px 24px rgba(2, 132, 199, 0.12);
+        }
+        .group-card-item.top-1 {
+            border-color: #facc15;
+            background: linear-gradient(135deg, #fffbeb 0%, #ffffff 100%);
+            box-shadow: 0 4px 20px rgba(234, 179, 8, 0.15);
+        }
+        .group-card-item.top-2 {
+            border-color: #cbd5e1;
+            background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+        }
+        .group-card-item.top-3 {
+            border-color: #fdba74;
+            background: linear-gradient(135deg, #fff7ed 0%, #ffffff 100%);
+        }
+        .group-rank-badge {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            font-size: 15px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+        .group-rank-badge.rank-1 { background: linear-gradient(135deg, #facc15, #eab308); color: #713f12; }
+        .group-rank-badge.rank-2 { background: linear-gradient(135deg, #e2e8f0, #94a3b8); color: #1e293b; }
+        .group-rank-badge.rank-3 { background: linear-gradient(135deg, #fed7aa, #f97316); color: #7c2d12; }
+        .group-rank-badge.rank-other { background: #f1f5f9; color: #64748b; font-size: 13px; }
+        .group-reward-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 99px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+        .group-reward-gold { background: #fef08a; color: #854d0e; border: 1px solid #fde047; }
+        .group-reward-silver { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
+        .group-reward-bronze { background: #ffedd5; color: #9a3412; border: 1px solid #fed7aa; }
+        .member-avatar-overlap {
+            display: flex;
+            align-items: center;
+            padding-left: 6px;
+        }
+        .member-avatar-overlap img, .member-avatar-overlap .member-avatar-circle {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            border: 2px solid #ffffff;
+            margin-left: -7px;
+            object-fit: cover;
+            font-size: 10px;
+            font-weight: 800;
+            display: grid;
+            place-items: center;
+            color: #fff;
+        }
+
+    </style>
 </head>
 <body>
 
@@ -1623,6 +1698,17 @@
                     </button>
                 </div>
 
+                
+                <!-- SWITCHER: CÁ NHÂN vs NHÓM HỌC TẬP (MAX 7 THÀNH VIÊN) -->
+                <div style="display: flex; gap: 6px; padding: 4px; background: #f1f5f9; border-radius: 12px; margin-bottom: 12px;">
+                    <button type="button" id="lb-tab-btn-individual" onclick="window.setLeaderboardMode('individual')" style="flex: 1; padding: 7px 12px; font-size: 13px; font-weight: 800; border-radius: 8px; border: none; cursor: pointer; background: #ffffff; color: #0284c7; box-shadow: 0 1px 4px rgba(0,0,0,0.06); transition: all 0.2s;">
+                        👤 Cá Nhân
+                    </button>
+                    <button type="button" id="lb-tab-btn-group" onclick="window.setLeaderboardMode('group')" style="flex: 1.25; padding: 7px 12px; font-size: 13px; font-weight: 800; border-radius: 8px; border: none; cursor: pointer; background: transparent; color: #64748b; transition: all 0.2s;">
+                        👥 Nhóm Học Tập (≤7 bạn)
+                    </button>
+                </div>
+
                 <!-- Tabs lọc phân loại -->
                 <div class="honor-filter-tabs">
                     <button class="honor-tab-btn active" data-type="overall" onclick="window.switchHonorType('overall', this)">
@@ -1637,8 +1723,10 @@
                 </div>
             </div>
 
-            <!-- Spotlight Card Quán Quân Top 1 -->
-            <div class="champion-spotlight-card" id="champion-spotlight-card" onclick="window.openTop1Celebration()">
+            <!-- CONTAINER BẢNG XẾP HẠNG CÁ NHÂN -->
+            <div id="honor-individual-container">
+                <!-- Spotlight Card Quán Quân Top 1 -->
+                <div class="champion-spotlight-card" id="champion-spotlight-card" onclick="window.openTop1Celebration()">
                 <div class="champion-crown-icon" id="spotlight-crown-wrap"></div>
                 
                 <div class="champion-avatar-box">
@@ -1696,6 +1784,69 @@
                 <div class="honor-bottom-banner">
                     <span style="background: linear-gradient(135deg,#fef08a,#f59e0b); color:#78350f; font-size:10.5px; font-weight:800; padding:2px 7px; border-radius:99px; white-space:nowrap;">TOP 3 DANH DỰ</span>
                     <span>Bấm vào học sinh để vinh danh & mở tiệc ăn mừng!</span>
+                </div>
+            </div>
+            </div>
+
+            <!-- CONTAINER BẢNG XẾP HẠNG NHÓM HỌC TẬP (TỐI ĐA 7 THÀNH VIÊN) -->
+            <div id="honor-group-container" style="display: none;">
+                <!-- Bộ lọc thời gian: Tuần - Tháng - Năm -->
+                <div class="honor-filter-tabs" style="margin-bottom: 12px;">
+                    <button class="honor-tab-btn active" data-period="week" onclick="window.switchGroupPeriod('week', this)">
+                        Tuần này
+                    </button>
+                    <button class="honor-tab-btn" data-period="month" onclick="window.switchGroupPeriod('month', this)">
+                        Tháng này
+                    </button>
+                    <button class="honor-tab-btn" data-period="year" onclick="window.switchGroupPeriod('year', this)">
+                        Năm học 2025-2026
+                    </button>
+                </div>
+
+                <!-- Thẻ Quy Định 15 Phút Online & Bộ Đếm Thời Gian Thực -->
+                <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 12px 14px; margin-bottom: 14px;">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px;">
+                        <span style="font-size: 12px; font-weight: 800; color: #0284c7; text-transform: uppercase;">⏱️ QUY CHẾ TÍCH ĐIỂM NHÓM</span>
+                        <span id="user-active-status-badge" style="font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 99px; background: #e0f2fe; color: #0369a1;">Đang tải...</span>
+                    </div>
+                    <p style="font-size: 11.5px; color: #64748b; line-height: 1.45; margin: 0 0 8px;">
+                        Mỗi thành viên cần tích lũy <strong>ít nhất 15 phút học online</strong> trên hệ thống thì điểm làm quiz, thuộc trạm Loci mới được tính vào Nhóm (Tối đa <strong>7 thành viên</strong>).
+                    </p>
+                    <div style="background: #e2e8f0; border-radius: 99px; height: 7px; overflow: hidden; position: relative;">
+                        <div id="user-active-progress-bar" style="background: #10b981; height: 100%; width: 0%; transition: width 0.3s;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; font-size: 11px; color: #475569; margin-top: 5px; font-weight: 700;">
+                        <span>Thời gian học của bạn hôm nay:</span>
+                        <span id="user-active-time-text">0 / 15 phút</span>
+                    </div>
+                </div>
+
+                <!-- Banner Phần Thưởng Vinh Danh Nhóm Top 1-2-3 -->
+                <div style="background: linear-gradient(135deg, #fefce8 0%, #fffbeb 100%); border: 1.5px solid #facc15; border-radius: 14px; padding: 12px; margin-bottom: 14px; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.1);">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span style="font-size: 16px;">🏆</span>
+                        <span style="font-size: 12.5px; font-weight: 800; color: #854d0e;">PHẦN THƯỞNG VINH DANH NHÓM XUẤT SẮC</span>
+                    </div>
+                    <div style="font-size: 11.5px; color: #713f12; line-height: 1.45;">
+                        • <strong>Top 1:</strong> Cúp Vàng Loci + Khung Rồng Vàng Hoàng Kim + 1,000 XP/bạn<br>
+                        • <strong>Top 2:</strong> Cúp Bạc Loci + Khung Phượng Hoàng + 600 XP/bạn<br>
+                        • <strong>Top 3:</strong> Cúp Đồng Loci + Khung Kỳ Lân Ngọc + 300 XP/bạn
+                    </div>
+                </div>
+
+                <!-- Nút Hành Động Tạo Nhóm / Gia Nhập -->
+                <div style="display: flex; gap: 8px; margin-bottom: 14px;">
+                    <button type="button" onclick="window.openCreateGroupModal()" style="flex: 1; padding: 9px 12px; background: #0284c7; color: #ffffff; border: none; border-radius: 10px; font-size: 12px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);">
+                        <span>+</span> Tạo Nhóm (≤7 bạn)
+                    </button>
+                    <button type="button" onclick="window.openJoinGroupModal()" style="padding: 9px 12px; background: #ffffff; color: #0f172a; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                        🔗 Nhập Mã
+                    </button>
+                </div>
+
+                <!-- Danh sách nhóm xếp hạng -->
+                <div id="group-leaderboard-list">
+                    <!-- Rendered by JS -->
                 </div>
             </div>
         </div>
@@ -3456,5 +3607,500 @@
     </script>
     <!-- BOT GIÁM SÁT KẾT NỐI & KIỂM DUYỆT NỘI DUNG LỊCH SỬ -->
     <script src="history_sentinel_bot.js"></script>
+
+    <!-- MODAL CHI TIẾT 7 THÀNH VIÊN NHÓM -->
+    <div id="group-detail-modal" class="cloud-modal-overlay" style="display:none; z-index: 100000; align-items:center; justify-content:center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px);" onclick="if(event.target===this) window.closeGroupDetailModal()">
+        <div style="background: #ffffff; border-radius: 20px; width: 100%; max-width: 520px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); overflow: hidden; border: 1px solid #e2e8f0;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: #f8fafc;">
+                <div>
+                    <h3 id="gdm-name" style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Tên Nhóm</h3>
+                    <p id="gdm-school" style="font-size: 12px; color: #64748b; margin: 2px 0 0;">Trường / CLB</p>
+                </div>
+                <button type="button" onclick="window.closeGroupDetailModal()" style="background: transparent; border: none; font-size: 18px; color: #64748b; cursor: pointer;">✕</button>
+            </div>
+            <div style="padding: 18px 20px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; background: #e0f2fe; border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;">
+                    <div>
+                        <div style="font-size: 11px; font-weight: 800; color: #0369a1; text-transform: uppercase;">TỔNG ĐIỂM NHÓM</div>
+                        <div id="gdm-score" style="font-size: 20px; font-weight: 900; color: #0284c7;">0 pts</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <div style="font-size: 11px; font-weight: 800; color: #0369a1; text-transform: uppercase;">QUY MÔ</div>
+                        <div id="gdm-count" style="font-size: 14px; font-weight: 800; color: #0c4a6e;">7/7 Thành viên</div>
+                    </div>
+                </div>
+
+                <div style="font-size: 12.5px; font-weight: 800; color: #334155; margin-bottom: 8px;">
+                    Danh Sách Thành Viên (Yêu cầu ≥15 phút online để tích điểm):
+                </div>
+                <div id="gdm-members-list" style="display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto;">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+            <div style="padding: 12px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end;">
+                <button type="button" onclick="window.closeGroupDetailModal()" style="padding: 8px 18px; background: #0284c7; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TẠO NHÓM MỚI -->
+    <div id="create-group-modal" class="cloud-modal-overlay" style="display:none; z-index: 100000; align-items:center; justify-content:center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px);" onclick="if(event.target===this) window.closeCreateGroupModal()">
+        <div style="background: #ffffff; border-radius: 20px; width: 100%; max-width: 460px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); overflow: hidden; border: 1px solid #e2e8f0;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: #f8fafc;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">👥</span>
+                    <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Lập Nhóm Học Tập Mới</h3>
+                </div>
+                <button type="button" onclick="window.closeCreateGroupModal()" style="background: transparent; border: none; font-size: 18px; color: #64748b; cursor: pointer;">✕</button>
+            </div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 14px;">
+                <div style="font-size: 12.5px; color: #64748b; line-height: 1.45; background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 10px;">
+                    💡 <strong>Quy định:</strong> Nhóm có tối đa <strong>7 thành viên</strong>. Mỗi thành viên cần online học tập ≥ 15 phút để điểm số được đóng góp vào bảng xếp hạng tuần/tháng/năm.
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">Tên nhóm học tập:</label>
+                    <input type="text" id="new-group-name" placeholder="Ví dụ: Chiến Hữu Loci 2K9" maxlength="35" style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13.5px; outline: none; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">Trường / Đơn vị:</label>
+                    <input type="text" id="new-group-school" placeholder="Ví dụ: THPT Chuyên Chu Văn An" maxlength="40" style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13.5px; outline: none; box-sizing: border-box;">
+                </div>
+                <div>
+                    <label style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">Khẩu hiệu / Mục tiêu:</label>
+                    <input type="text" id="new-group-motto" placeholder="Ví dụ: Cùng nhau chinh phục 9+ môn Lịch Sử!" maxlength="50" style="width: 100%; padding: 10px 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 13.5px; outline: none; box-sizing: border-box;">
+                </div>
+            </div>
+            <div style="padding: 14px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="window.closeCreateGroupModal()" style="padding: 9px 16px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer;">Hủy</button>
+                <button type="button" onclick="window.submitCreateGroup()" style="padding: 9px 20px; background: #0284c7; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">Tạo Nhóm Ngay ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NHẬP MÃ THAM GIA NHÓM -->
+    <div id="join-group-modal" class="cloud-modal-overlay" style="display:none; z-index: 100000; align-items:center; justify-content:center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px);" onclick="if(event.target===this) window.closeJoinGroupModal()">
+        <div style="background: #ffffff; border-radius: 20px; width: 100%; max-width: 420px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); overflow: hidden; border: 1px solid #e2e8f0;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: #f8fafc;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span style="font-size: 18px;">🔗</span>
+                    <h3 style="font-size: 16px; font-weight: 800; color: #0f172a; margin: 0;">Tham Gia Bằng Mã Nhóm</h3>
+                </div>
+                <button type="button" onclick="window.closeJoinGroupModal()" style="background: transparent; border: none; font-size: 18px; color: #64748b; cursor: pointer;">✕</button>
+            </div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+                <p style="font-size: 13px; color: #64748b; margin: 0;">Nhập mã nhóm gồm 6-8 ký tự do nhóm trưởng chia sẻ để tham gia:</p>
+                <input type="text" id="join-group-code" placeholder="Ví dụ: LOCI-G1" maxlength="15" style="width: 100%; padding: 11px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; outline: none; box-sizing: border-box;">
+            </div>
+            <div style="padding: 14px 20px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="window.closeJoinGroupModal()" style="padding: 9px 16px; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px; font-weight: 600; color: #475569; cursor: pointer;">Hủy</button>
+                <button type="button" onclick="window.submitJoinGroup()" style="padding: 9px 20px; background: #0284c7; color: #fff; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">Tham Gia ➔</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+
+    // =========================================================================
+    // HỆ THỐNG NHÓM HỌC TẬP & BẢNG XẾP HẠNG NHÓM (MAX 7 THÀNH VIÊN · 15 PHÚT ONLINE)
+    // =========================================================================
+    (function initStudyGroupsSystem() {
+        let currentLbMode = 'individual'; // 'individual' | 'group'
+        let currentGroupPeriod = 'week'; // 'week' | 'month' | 'year'
+
+        // 1. Quản lý thời gian online học tập tích lũy (Realtime Active Time Tracker)
+        let activeSeconds = parseInt(localStorage.getItem('loci_active_study_seconds') || '0', 10);
+        setInterval(() => {
+            if (!document.hidden) {
+                activeSeconds += 1;
+                if (activeSeconds % 10 === 0) {
+                    try { localStorage.setItem('loci_active_study_seconds', activeSeconds.toString()); } catch (_) {}
+                    updateActiveTimeUI();
+                }
+            }
+        }, 1000);
+
+        function updateActiveTimeUI() {
+            const mins = Math.floor(activeSeconds / 60);
+            const progressBar = document.getElementById('user-active-progress-bar');
+            const timeText = document.getElementById('user-active-time-text');
+            const badge = document.getElementById('user-active-status-badge');
+
+            const pct = Math.min(100, Math.round((mins / 15) * 100));
+            if (progressBar) progressBar.style.width = pct + '%';
+            if (timeText) timeText.textContent = `${mins} / 15 phút (${pct}%)`;
+
+            if (badge) {
+                if (mins >= 15) {
+                    badge.style.background = '#dcfce7';
+                    badge.style.color = '#15803d';
+                    badge.textContent = '✓ Đã kích hoạt tích điểm nhóm';
+                } else {
+                    badge.style.background = '#fef3c7';
+                    badge.style.color = '#b45309';
+                    badge.textContent = `Thiếu ${15 - mins}p nữa`;
+                }
+            }
+        }
+
+        // 2. Dữ liệu các nhóm mẫu chuẩn mực (Tối đa 7 thành viên)
+        const DEFAULT_GROUPS = [
+            {
+                id: 'LOCI-G1',
+                code: 'LOCI-G1',
+                name: 'Biệt Đội Thủ Khoa Sử 12A1',
+                school: 'THPT Chuyên Chu Văn An, Hà Nội',
+                motto: 'Chinh phục 10 điểm Lịch Sử THPT Quốc Gia!',
+                scoreWeek: 18450,
+                scoreMonth: 54200,
+                scoreYear: 168000,
+                members: [
+                    { name: 'Trần Quang Minh (Nhóm trưởng)', avatar: 'M', onlineMinutes: 45, stations: 9, quiz: 98, contrib: 3850 },
+                    { name: 'Nguyễn Hà My', avatar: 'H', onlineMinutes: 38, stations: 9, quiz: 96, contrib: 3620 },
+                    { name: 'Lê Bảo Anh', avatar: 'B', onlineMinutes: 32, stations: 8, quiz: 94, contrib: 3410 },
+                    { name: 'Phạm Nhật Hoàng', avatar: 'H', onlineMinutes: 28, stations: 8, quiz: 92, contrib: 3150 },
+                    { name: 'Hoàng Vũ Thảo Linh', avatar: 'L', onlineMinutes: 25, stations: 7, quiz: 90, contrib: 2980 },
+                    { name: 'Đặng Tuấn Kiệt', avatar: 'K', onlineMinutes: 20, stations: 7, quiz: 88, contrib: 2750 },
+                    { name: 'Bùi Gia Huy', avatar: 'G', onlineMinutes: 18, stations: 6, quiz: 86, contrib: 2420 }
+                ]
+            },
+            {
+                id: 'LOCI-G2',
+                code: 'LOCI-G2',
+                name: 'CLB Cung Điện Lịch Sử LHP',
+                school: 'THPT Chuyên Lê Hồng Phong, TP.HCM',
+                motto: 'Ghi nhớ không gian - Phản xạ thần tốc',
+                scoreWeek: 16820,
+                scoreMonth: 48900,
+                scoreYear: 152300,
+                members: [
+                    { name: 'Lê Minh Quân (Trưởng nhóm)', avatar: 'Q', onlineMinutes: 40, stations: 9, quiz: 96, contrib: 3500 },
+                    { name: 'Trương Mỹ Uyên', avatar: 'U', onlineMinutes: 35, stations: 8, quiz: 95, contrib: 3250 },
+                    { name: 'Ngô Đức Trọng', avatar: 'T', onlineMinutes: 30, stations: 8, quiz: 92, contrib: 2950 },
+                    { name: 'Phan Khánh Vy', avatar: 'V', onlineMinutes: 24, stations: 7, quiz: 90, contrib: 2700 },
+                    { name: 'Đỗ Hoàng Nam', avatar: 'N', onlineMinutes: 22, stations: 7, quiz: 89, contrib: 2520 },
+                    { name: 'Vũ Hải Yến', avatar: 'Y', onlineMinutes: 19, stations: 6, quiz: 88, contrib: 2300 },
+                    { name: 'Trịnh Bảo Ngọc', avatar: 'N', onlineMinutes: 16, stations: 6, quiz: 85, contrib: 2100 }
+                ]
+            },
+            {
+                id: 'LOCI-G3',
+                code: 'LOCI-G3',
+                name: 'Liên Minh Kháng Chiến 1945',
+                school: 'THPT Chuyên Quốc Học Huế',
+                motto: 'Quyết chiến quyết thắng trên mọi đề thi!',
+                scoreWeek: 15200,
+                scoreMonth: 44100,
+                scoreYear: 139500,
+                members: [
+                    { name: 'Hoàng Nhật Nam', avatar: 'N', onlineMinutes: 36, stations: 8, quiz: 94, contrib: 3100 },
+                    { name: 'Nguyễn Khoa Điềm', avatar: 'Đ', onlineMinutes: 30, stations: 8, quiz: 93, contrib: 2950 },
+                    { name: 'Phan Bội Trân', avatar: 'T', onlineMinutes: 26, stations: 7, quiz: 91, contrib: 2750 },
+                    { name: 'Lê Thục Đoan', avatar: 'Đ', onlineMinutes: 21, stations: 7, quiz: 88, contrib: 2450 },
+                    { name: 'Tạ Quốc Huy', avatar: 'H', onlineMinutes: 18, stations: 6, quiz: 87, contrib: 2250 },
+                    { name: 'Trần Thảo Nguyên', avatar: 'N', onlineMinutes: 15, stations: 6, quiz: 84, contrib: 1700 }
+                ]
+            },
+            {
+                id: 'LOCI-G4',
+                code: 'LOCI-G4',
+                name: 'Chiến Hữu Vĩ Tuyến 17',
+                school: 'THPT Chuyên Hà Nội - Amsterdam',
+                motto: 'Vững vàng kiến thức Lịch Sử hiện đại',
+                scoreWeek: 13950,
+                scoreMonth: 41200,
+                scoreYear: 128700,
+                members: [
+                    { name: 'Vũ Gia Bách', avatar: 'B', onlineMinutes: 33, stations: 8, quiz: 93, contrib: 2900 },
+                    { name: 'Đoàn Mai Chi', avatar: 'C', onlineMinutes: 27, stations: 7, quiz: 91, contrib: 2650 },
+                    { name: 'Lâm Tuấn Dũng', avatar: 'D', onlineMinutes: 24, stations: 7, quiz: 89, contrib: 2400 },
+                    { name: 'Hoàng Kim Ngân', avatar: 'N', onlineMinutes: 19, stations: 6, quiz: 87, contrib: 2150 },
+                    { name: 'Phạm Thế Vinh', avatar: 'V', onlineMinutes: 16, stations: 6, quiz: 86, contrib: 2000 },
+                    { name: 'Dương Thúy Hằng', avatar: 'H', onlineMinutes: 15, stations: 5, quiz: 84, contrib: 1850 }
+                ]
+            },
+            {
+                id: 'LOCI-G5',
+                code: 'LOCI-G5',
+                name: 'Đội Ôn Thi THPT 9+',
+                school: 'THPT Phan Đình Phùng, Hà Nội',
+                motto: 'Học chắc từng bài - Nắm vững từng trạm',
+                scoreWeek: 11400,
+                scoreMonth: 35600,
+                scoreYear: 110200,
+                members: [
+                    { name: 'Nguyễn Đình Phúc', avatar: 'P', onlineMinutes: 28, stations: 7, quiz: 90, contrib: 2500 },
+                    { name: 'Tạ Thu Trang', avatar: 'T', onlineMinutes: 22, stations: 7, quiz: 88, contrib: 2300 },
+                    { name: 'Vũ Đức Mạnh', avatar: 'M', onlineMinutes: 19, stations: 6, quiz: 87, contrib: 2100 },
+                    { name: 'Lê Khánh Linh', avatar: 'L', onlineMinutes: 17, stations: 6, quiz: 85, contrib: 1950 },
+                    { name: 'Hoàng Hải Đăng', avatar: 'Đ', onlineMinutes: 15, stations: 5, quiz: 82, contrib: 1750 },
+                    { name: 'Trần Gia Ân', avatar: 'A', onlineMinutes: 8, stations: 3, quiz: 75, contrib: 800 } // Chưa đủ 15p
+                ]
+            }
+        ];
+
+        function getGroupsStore() {
+            try {
+                const raw = localStorage.getItem('loci_study_groups');
+                if (raw) return JSON.parse(raw);
+            } catch (_) {}
+            return DEFAULT_GROUPS;
+        }
+
+        function saveGroupsStore(list) {
+            try { localStorage.setItem('loci_study_groups', JSON.stringify(list)); } catch (_) {}
+        }
+
+        // Chuyển chế độ xem Cá Nhân / Nhóm
+        window.setLeaderboardMode = function(mode) {
+            currentLbMode = mode;
+            const indBtn = document.getElementById('lb-tab-btn-individual');
+            const grpBtn = document.getElementById('lb-tab-btn-group');
+            const indContainer = document.getElementById('honor-individual-container');
+            const grpContainer = document.getElementById('honor-group-container');
+            const indTabs = document.querySelector('.honor-filter-tabs');
+
+            if (mode === 'group') {
+                if (indBtn) { indBtn.style.background = 'transparent'; indBtn.style.color = '#64748b'; indBtn.style.boxShadow = 'none'; }
+                if (grpBtn) { grpBtn.style.background = '#ffffff'; grpBtn.style.color = '#0284c7'; grpBtn.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }
+                if (indContainer) indContainer.style.display = 'none';
+                if (grpContainer) grpContainer.style.display = 'block';
+                if (indTabs) indTabs.style.display = 'none';
+                updateActiveTimeUI();
+                window.renderGroupLeaderboard();
+            } else {
+                if (grpBtn) { grpBtn.style.background = 'transparent'; grpBtn.style.color = '#64748b'; grpBtn.style.boxShadow = 'none'; }
+                if (indBtn) { indBtn.style.background = '#ffffff'; indBtn.style.color = '#0284c7'; indBtn.style.boxShadow = '0 1px 4px rgba(0,0,0,0.06)'; }
+                if (grpContainer) grpContainer.style.display = 'none';
+                if (indContainer) indContainer.style.display = 'block';
+                if (indTabs) indTabs.style.display = 'flex';
+                if (typeof window.renderHonorBoard === 'function') window.renderHonorBoard();
+            }
+        };
+
+        window.switchGroupPeriod = function(period, btn) {
+            currentGroupPeriod = period;
+            document.querySelectorAll('#honor-group-container .honor-tab-btn').forEach(b => b.classList.remove('active'));
+            if (btn) btn.classList.add('active');
+            window.renderGroupLeaderboard();
+        };
+
+        // Render Bảng Xếp Hạng Nhóm
+        window.renderGroupLeaderboard = function() {
+            const listEl = document.getElementById('group-leaderboard-list');
+            if (!listEl) return;
+
+            const groups = getGroupsStore();
+            const scoreKey = currentGroupPeriod === 'month' ? 'scoreMonth' : (currentGroupPeriod === 'year' ? 'scoreYear' : 'scoreWeek');
+
+            // Sắp xếp nhóm theo điểm
+            const sorted = [...groups].sort((a, b) => (b[scoreKey] || 0) - (a[scoreKey] || 0));
+
+            listEl.innerHTML = sorted.map((g, idx) => {
+                const rank = idx + 1;
+                let rankClass = rank === 1 ? 'rank-1' : (rank === 2 ? 'rank-2' : (rank === 3 ? 'rank-3' : 'rank-other'));
+                let cardClass = rank === 1 ? 'top-1' : (rank === 2 ? 'top-2' : (rank === 3 ? 'top-3' : ''));
+                let rewardTag = '';
+                if (rank === 1) rewardTag = '<span class="group-reward-tag group-reward-gold">🏆 Cúp Vàng Loci + Khung Rồng</span>';
+                else if (rank === 2) rewardTag = '<span class="group-reward-tag group-reward-silver">🥈 Cúp Bạc Loci</span>';
+                else if (rank === 3) rewardTag = '<span class="group-reward-tag group-reward-bronze">🥉 Cúp Đồng Loci</span>';
+
+                // Đếm số thành viên đủ 15 phút
+                const activeMems = (g.members || []).filter(m => (m.onlineMinutes || 0) >= 15).length;
+                const totalMems = (g.members || []).length;
+
+                return `
+                    <div class="group-card-item ${cardClass}" onclick="window.openGroupDetailModal('${g.id}')">
+                        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div class="group-rank-badge ${rankClass}">
+                                    ${rank === 1 ? '👑' : rank}
+                                </div>
+                                <div>
+                                    <div style="font-size: 14px; font-weight: 800; color: #0f172a; line-height: 1.2;">${g.name}</div>
+                                    <div style="font-size: 11.5px; color: #64748b; line-height: 1.3;">${g.school}</div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 15px; font-weight: 900; color: #0284c7;">${Number(g[scoreKey] || 0).toLocaleString()} pts</div>
+                                <div style="font-size: 11px; font-weight: 700; color: ${activeMems === totalMems ? '#10b981' : '#f59e0b'};">
+                                    ${activeMems}/${totalMems} bạn đủ 15p
+                                </div>
+                            </div>
+                        </div>
+
+                        <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px dashed #e2e8f0; padding-top: 8px; margin-top: 6px;">
+                            <div class="member-avatar-overlap">
+                                ${(g.members || []).slice(0, 5).map(m => `
+                                    <div class="member-avatar-circle" style="background: ${(m.onlineMinutes >= 15 ? '#0284c7' : '#94a3b8')};" title="${m.name} (${m.onlineMinutes}p)">
+                                        ${m.avatar || m.name[0]}
+                                    </div>
+                                `).join('')}
+                                ${totalMems > 5 ? `<div class="member-avatar-circle" style="background: #e2e8f0; color: #475569;">+${totalMems - 5}</div>` : ''}
+                            </div>
+                            <div>
+                                ${rewardTag}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        // Modal chi tiết nhóm
+        window.openGroupDetailModal = function(groupId) {
+            const groups = getGroupsStore();
+            const g = groups.find(x => x.id === groupId);
+            if (!g) return;
+
+            const modal = document.getElementById('group-detail-modal');
+            const scoreKey = currentGroupPeriod === 'month' ? 'scoreMonth' : (currentGroupPeriod === 'year' ? 'scoreYear' : 'scoreWeek');
+
+            document.getElementById('gdm-name').textContent = g.name;
+            document.getElementById('gdm-school').textContent = `${g.school} · Khẩu hiệu: "${g.motto || 'Học hết mình'}"`;
+            document.getElementById('gdm-score').textContent = Number(g[scoreKey] || 0).toLocaleString() + ' pts';
+            document.getElementById('gdm-count').textContent = `${(g.members || []).length}/7 Thành viên (Mã: ${g.code || g.id})`;
+
+            const membersListEl = document.getElementById('gdm-members-list');
+            if (membersListEl) {
+                membersListEl.innerHTML = (g.members || []).map((m, idx) => {
+                    const isEligible = (m.onlineMinutes || 0) >= 15;
+                    return `
+                        <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0;">
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <div style="width: 32px; height: 32px; border-radius: 50%; background: ${isEligible ? '#0284c7' : '#94a3b8'}; color: #fff; display: grid; place-items: center; font-size: 13px; font-weight: 800;">
+                                    ${m.avatar || m.name[0]}
+                                </div>
+                                <div>
+                                    <div style="font-size: 13px; font-weight: 800; color: #0f172a;">${m.name}</div>
+                                    <div style="font-size: 11px; color: #64748b;">
+                                        Online: <strong>${m.onlineMinutes} phút</strong> · Đã thuộc: <strong>${m.stations || 0} trạm</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="font-size: 12.5px; font-weight: 800; color: #0f172a;">+${Number(m.contrib || 0).toLocaleString()} pts</div>
+                                <span style="display: inline-block; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 99px; ${isEligible ? 'background:#dcfce7; color:#15803d;' : 'background:#fee2e2; color:#b91c1c;'}">
+                                    ${isEligible ? '✓ Đủ 15p' : 'Chưa đủ 15p'}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        };
+
+        window.closeGroupDetailModal = function() {
+            const modal = document.getElementById('group-detail-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        // Modal Tạo Nhóm
+        window.openCreateGroupModal = function() {
+            const modal = document.getElementById('create-group-modal');
+            if (modal) modal.style.display = 'flex';
+        };
+
+        window.closeCreateGroupModal = function() {
+            const modal = document.getElementById('create-group-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.submitCreateGroup = function() {
+            const name = (document.getElementById('new-group-name').value || '').trim();
+            const school = (document.getElementById('new-group-school').value || '').trim();
+            const motto = (document.getElementById('new-group-motto').value || '').trim();
+
+            if (!name) return alert('Vui lòng nhập Tên nhóm học tập.');
+            if (!school) return alert('Vui lòng nhập Trường hoặc Đơn vị của nhóm.');
+
+            const user = (window.LociFirebase && window.LociFirebase.currentUser) || null;
+            const myName = (user && user.displayName) || 'Bạn (Nhóm trưởng)';
+            const userMinutes = Math.floor(activeSeconds / 60);
+
+            const newGroupId = 'LOCI-G' + Math.floor(1000 + Math.random() * 9000);
+            const newGroup = {
+                id: newGroupId,
+                code: newGroupId,
+                name: name,
+                school: school,
+                motto: motto || 'Cùng nhau học tập',
+                scoreWeek: userMinutes >= 15 ? 1500 : 0,
+                scoreMonth: userMinutes >= 15 ? 1500 : 0,
+                scoreYear: userMinutes >= 15 ? 1500 : 0,
+                members: [
+                    {
+                        name: myName,
+                        avatar: myName[0].toUpperCase(),
+                        onlineMinutes: userMinutes,
+                        stations: 5,
+                        quiz: 90,
+                        contrib: userMinutes >= 15 ? 1500 : 0
+                    }
+                ]
+            };
+
+            const groups = getGroupsStore();
+            groups.unshift(newGroup);
+            saveGroupsStore(groups);
+
+            window.closeCreateGroupModal();
+            window.renderGroupLeaderboard();
+            alert(`🎉 Chúc mừng! Bạn đã thành lập nhóm "${name}" thành công!\nMã mời nhóm của bạn: ${newGroupId}\n(Chia sẻ mã này cho tối đa 6 người bạn nữa).`);
+        };
+
+        // Modal Tham Gia Nhóm
+        window.openJoinGroupModal = function() {
+            const modal = document.getElementById('join-group-modal');
+            if (modal) modal.style.display = 'flex';
+        };
+
+        window.closeJoinGroupModal = function() {
+            const modal = document.getElementById('join-group-modal');
+            if (modal) modal.style.display = 'none';
+        };
+
+        window.submitJoinGroup = function() {
+            const code = (document.getElementById('join-group-code').value || '').trim().toUpperCase();
+            if (!code) return alert('Vui lòng nhập Mã nhóm.');
+
+            const groups = getGroupsStore();
+            const g = groups.find(x => (x.code || x.id).toUpperCase() === code);
+            if (!g) return alert('Không tìm thấy nhóm với mã: ' + code);
+
+            if ((g.members || []).length >= 7) {
+                return alert('Nhóm này đã đủ tối đa 7 thành viên! Vui lòng chọn hoặc lập nhóm khác.');
+            }
+
+            const user = (window.LociFirebase && window.LociFirebase.currentUser) || null;
+            const myName = (user && user.displayName) || 'Bạn';
+            const userMinutes = Math.floor(activeSeconds / 60);
+
+            g.members.push({
+                name: myName,
+                avatar: myName[0].toUpperCase(),
+                onlineMinutes: userMinutes,
+                stations: 3,
+                quiz: 85,
+                contrib: userMinutes >= 15 ? 1000 : 0
+            });
+
+            if (userMinutes >= 15) {
+                g.scoreWeek = (g.scoreWeek || 0) + 1000;
+                g.scoreMonth = (g.scoreMonth || 0) + 1000;
+                g.scoreYear = (g.scoreYear || 0) + 1000;
+            }
+
+            saveGroupsStore(groups);
+            window.closeJoinGroupModal();
+            window.renderGroupLeaderboard();
+            alert(`🎉 Bạn đã gia nhập nhóm "${g.name}" thành công!`);
+        };
+    })();
+
+</script>
 </body>
 </html>

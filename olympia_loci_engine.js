@@ -1,5 +1,5 @@
 /**
- * LOCI EDU - ĐƯỜNG LÊN ĐỈNH LOCI (4-PLAYER OLYMPIA DUEL ENGINE)
+ * LOCI EDU - CÚP LOCI (4-PLAYER OLYMPIA DUEL ENGINE)
  * ============================================================================
  * Chuẩn format 4 Vòng thi Đường Lên Đỉnh Olympia:
  * 1. KHỞI ĐỘNG (60 giây câu hỏi nhanh dồn dập, +10 điểm/câu)
@@ -16,6 +16,61 @@
     // ÂM THANH TỰ NHẬN DIỆN WEB AUDIO SYNTHESIZER
     const OlympiaAudio = {
         ctx: null,
+        
+        isExamLockActive: false,
+        _antiCheatBound: false,
+
+        bindAntiCheatLock() {
+            if (this._antiCheatBound) return;
+            this._antiCheatBound = true;
+
+            this._onVisibilityChange = () => {
+                if (this.isExamLockActive && document.hidden) {
+                    this.triggerAntiCheatForfeit('Thí sinh đã chuyển sang tab hoặc ứng dụng khác trong giờ thi đấu!');
+                }
+            };
+            this._onBlur = () => {
+                if (this.isExamLockActive) {
+                    setTimeout(() => {
+                        if (this.isExamLockActive && !document.hasFocus()) {
+                            this.triggerAntiCheatForfeit('Thí sinh đã rời khỏi màn hình thi đấu Cúp Loci!');
+                        }
+                    }, 400);
+                }
+            };
+            document.addEventListener('visibilitychange', this._onVisibilityChange);
+            window.addEventListener('blur', this._onBlur);
+        },
+
+        triggerAntiCheatForfeit(reason) {
+            this.clearTimer();
+            this.isExamLockActive = false;
+            OlympiaAudio.buzzer();
+
+            const me = this.players.find(p => p.isUser);
+            if (me) me.score = 0;
+
+            const stage = document.getElementById('olympia-main-stage');
+            if (!stage) return;
+
+            stage.innerHTML = `
+                <div style="text-align: center; max-width: 620px; margin: 30px auto; padding: 36px 24px; background: rgba(239, 68, 68, 0.12); border: 2px solid #ef4444; border-radius: 24px; box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 12px;">🚫</div>
+                    <h2 style="font-size: 26px; font-weight: 900; color: #ef4444; margin: 0 0 10px;">VI PHẠM QUY CHẾ PHÒNG THI</h2>
+                    <p style="font-size: 15px; font-weight: 700; color: #fca5a5; margin: 0 0 8px;">BẠN ĐÃ BỊ XỬ THUA TRONG CUỘC THI CÚP LOCI!</p>
+                    <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; margin: 0 0 24px;">
+                        Lý do: <em>${reason || 'Thí sinh đã rời khỏi màn hình hoặc chuyển tab khi trận đấu đang diễn ra.'}</em><br>
+                        Hệ thống đã khóa kết quả trận đấu này để bảo đảm tính công bằng tuyệt đối.
+                    </p>
+                    <button type="button" onclick="window.OlympiaLociEngine.renderLobby()"
+                        style="background: #ef4444; color: #fff; border: none; padding: 12px 28px; border-radius: 99px; font-weight: 800; font-size: 14.5px; cursor: pointer; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);">
+                        Quay Về Sảnh Chờ ➔
+                    </button>
+                </div>
+            `;
+            this.renderPodium();
+        },
+
         init() {
             if (!this.ctx) {
                 const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -72,7 +127,7 @@
 
     // BỘ DỮ LIỆU CÂU HỎI OLYMPIA CHUYÊN SÂU LỊCH SỬ THPT & CUNG ĐIỆN LOCI
     const OLYMPIA_DATA = {
-        // Vòng 1: Khởi động (20 câu hỏi nhanh)
+        // Vòng 1: Làm nóng (20 câu hỏi nhanh)
         warmup: [
             { q: "Cây đa Tân Trào (Tuyên Quang) là nơi làm lễ xuất quân của đơn vị vũ trang nào vào chiều 16/8/1945?", a: "Việt Nam Giải phóng quân", opts: ["Việt Nam Giải phóng quân", "Cứu quốc quân", "Việt Nam Tuyên truyền Giải phóng quân", "Vệ quốc đoàn"] },
             { q: "Vào ngày 19/8/1945, cuộc mít tinh khổng lồ biến thành khởi nghĩa giành chính quyền ở Hà Nội diễn ra tại đâu?", a: "Nhà hát Lớn Hà Nội", opts: ["Nhà hát Lớn Hà Nội", "Quảng trường Ba Đình", "Cột Cờ Hà Nội", "Bắc Bộ Phủ"] },
@@ -88,7 +143,7 @@
             { q: "Phương pháp chu kỳ ôn tập ngắt quãng (Spaced Repetition) phổ biến dựa trên thuật toán nào?", a: "Thuật toán SM-2", opts: ["Thuật toán SM-2", "Thuật toán Dijkstra", "Thuật toán Huffman", "Thuật toán A*"] }
         ],
 
-        // Vòng 2: Vượt chướng ngại vật (Gói hoàn chỉnh)
+        // Vòng 2: Giải mã ô chữ (Gói hoàn chỉnh)
                 obstacles: [
             {
                 id: "cmt8",
@@ -170,7 +225,7 @@
             }
         ],
 
-        // Vòng 3: Tăng tốc (4 câu hỏi chia mốc 10s, 20s, 30s, 40s)
+        // Vòng 3: Siêu tư duy (4 câu hỏi chia mốc 10s, 20s, 30s, 40s)
         speedup: [
             {
                 id: 1,
@@ -210,7 +265,7 @@
             }
         ],
 
-        // Vòng 4: Về đích (Gói câu hỏi 20 và 30 điểm)
+        // Vòng 4: Lấy cúp (Gói câu hỏi 20 và 30 điểm)
         finish: [
             {
                 points: 20,
@@ -290,6 +345,61 @@
             stealChanceActive: false
         },
 
+        
+        isExamLockActive: false,
+        _antiCheatBound: false,
+
+        bindAntiCheatLock() {
+            if (this._antiCheatBound) return;
+            this._antiCheatBound = true;
+
+            this._onVisibilityChange = () => {
+                if (this.isExamLockActive && document.hidden) {
+                    this.triggerAntiCheatForfeit('Thí sinh đã chuyển sang tab hoặc ứng dụng khác trong giờ thi đấu!');
+                }
+            };
+            this._onBlur = () => {
+                if (this.isExamLockActive) {
+                    setTimeout(() => {
+                        if (this.isExamLockActive && !document.hasFocus()) {
+                            this.triggerAntiCheatForfeit('Thí sinh đã rời khỏi màn hình thi đấu Cúp Loci!');
+                        }
+                    }, 400);
+                }
+            };
+            document.addEventListener('visibilitychange', this._onVisibilityChange);
+            window.addEventListener('blur', this._onBlur);
+        },
+
+        triggerAntiCheatForfeit(reason) {
+            this.clearTimer();
+            this.isExamLockActive = false;
+            OlympiaAudio.buzzer();
+
+            const me = this.players.find(p => p.isUser);
+            if (me) me.score = 0;
+
+            const stage = document.getElementById('olympia-main-stage');
+            if (!stage) return;
+
+            stage.innerHTML = `
+                <div style="text-align: center; max-width: 620px; margin: 30px auto; padding: 36px 24px; background: rgba(239, 68, 68, 0.12); border: 2px solid #ef4444; border-radius: 24px; box-shadow: 0 0 40px rgba(239, 68, 68, 0.3);">
+                    <div style="font-size: 64px; margin-bottom: 12px;">🚫</div>
+                    <h2 style="font-size: 26px; font-weight: 900; color: #ef4444; margin: 0 0 10px;">VI PHẠM QUY CHẾ PHÒNG THI</h2>
+                    <p style="font-size: 15px; font-weight: 700; color: #fca5a5; margin: 0 0 8px;">BẠN ĐÃ BỊ XỬ THUA TRONG CUỘC THI CÚP LOCI!</p>
+                    <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; margin: 0 0 24px;">
+                        Lý do: <em>${reason || 'Thí sinh đã rời khỏi màn hình hoặc chuyển tab khi trận đấu đang diễn ra.'}</em><br>
+                        Hệ thống đã khóa kết quả trận đấu này để bảo đảm tính công bằng tuyệt đối.
+                    </p>
+                    <button type="button" onclick="window.OlympiaLociEngine.renderLobby()"
+                        style="background: #ef4444; color: #fff; border: none; padding: 12px 28px; border-radius: 99px; font-weight: 800; font-size: 14.5px; cursor: pointer; box-shadow: 0 4px 16px rgba(239, 68, 68, 0.4);">
+                        Quay Về Sảnh Chờ ➔
+                    </button>
+                </div>
+            `;
+            this.renderPodium();
+        },
+
         init() {
             this.injectStyles();
             this.ensureModal();
@@ -297,6 +407,8 @@
 
                 // NHẢY NHANH ĐẾN VÒNG THI (HỖ TRỢ TEST & PHÍM TẮT Q1, Q2, Q3, Q4)
         jumpToRound(roundNum) {
+            this.isExamLockActive = true;
+            this.bindAntiCheatLock();
             this.clearTimer();
             if (this.currentRoundIndex === 0) {
                 // Đảm bảo đối thủ đã nạp
@@ -791,7 +903,7 @@
                         <div class="olympia-brand">
                             <div class="olympia-logo-badge">🌿</div>
                             <div>
-                                <div class="olympia-title">ĐƯỜNG LÊN ĐỈNH LOCI</div>
+                                <div class="olympia-title">CÚP LOCI</div>
                                 <div style="font-size: 11px; color: #bae6fd; font-weight: 600;">Đấu Trường Lịch Sử 4 Thí Sinh · Chuẩn Format Olympia</div>
                             </div>
                         </div>
@@ -855,26 +967,26 @@
                 <div style="text-align: center; max-width: 700px; margin: 10px auto;">
                     <div style="font-size: 54px; margin-bottom: 12px; animation: starGlow 2s infinite alternate;">🏛️</div>
                     <h2 style="font-size: 26px; font-weight: 900; color: #fde047; margin: 0 0 8px 0; text-shadow: 0 0 20px rgba(253, 224, 71, 0.5);">
-                        CHÀO MỪNG ĐẾN VỚI ĐƯỜNG LÊN ĐỈNH LOCI!
+                        CHÀO MỪNG ĐẾN VỚI CÚP LOCI!
                     </h2>
                     <p style="font-size: 14.5px; color: #cbd5e1; line-height: 1.5; margin: 0 0 24px 0;">
                         Cuộc so tài trí tuệ đỉnh cao của 4 nhà leo núi chinh phục Cung Điện Ký Ức Lịch Sử qua 4 vòng thi đầy kịch tính: 
-                        <b style="color:#38bdf8;">Khởi Động</b> ➔ <b style="color:#34d399;">Vượt Chướng Ngại Vật</b> ➔ <b style="color:#f59e0b;">Tăng Tốc</b> ➔ <b style="color:#f43f5e;">Về Đích & Vòng Nguyệt Quế</b>!
+                        <b style="color:#38bdf8;">Làm Nóng</b> ➔ <b style="color:#34d399;">Giải Mã Ô Chữ</b> ➔ <b style="color:#f59e0b;">Siêu Tư Duy</b> ➔ <b style="color:#f43f5e;">Lấy Cúp Vàng Loci</b>!
                     </p>
 
                     <!-- THANH HƯỚNG DẪN TEST NHANH VÒNG THI (Q1 - Q4) -->
                     <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
                         <span style="font-size: 12px; color: #94a3b8; font-weight: 700;">Nhảy nhanh vòng test:</span>
-                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q1: Khởi Động</button>
-                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="background: rgba(52, 211, 153, 0.15); border: 1px solid #34d399; color: #34d399; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q2: Vượt CNV</button>
-                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; color: #f59e0b; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q3: Tăng Tốc</button>
-                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="background: rgba(244, 63, 94, 0.15); border: 1px solid #f43f5e; color: #f43f5e; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q4: Về Đích</button>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q1: Làm Nóng</button>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="background: rgba(52, 211, 153, 0.15); border: 1px solid #34d399; color: #34d399; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q2: Giải Mã Ô Chữ</button>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; color: #f59e0b; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q3: Siêu Tư Duy</button>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="background: rgba(244, 63, 94, 0.15); border: 1px solid #f43f5e; color: #f43f5e; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q4: Lấy Cúp</button>
                     </div>
 
                     <!-- NÚT BẮT ĐẦU VÒNG KHỞI ĐỘNG -->
                     <button type="button" onclick="window.OlympiaLociEngine.startRound1Warmup()"
                         style="background: linear-gradient(135deg, #0284c7, #0369a1); border: 2px solid #38bdf8; border-radius: 99px; padding: 14px 44px; font-size: 17px; font-weight: 900; color: #ffffff; cursor: pointer; box-shadow: 0 0 30px rgba(56, 189, 248, 0.5); letter-spacing: 0.5px; transition: all 0.2s;">
-                        BƯỚC VÀO TRẬN ĐẤU (VÒNG 1: KHỞI ĐỘNG) ➔
+                        BƯỚC VÀO TRẬN ĐẤU (VÒNG 1: LÀM NÓNG) ➔
                     </button>
                 </div>
             `;
@@ -902,9 +1014,14 @@
         },
 
         // =========================================================================
-        // VÒNG 1: KHỞI ĐỘNG (60 GIÂY - CÂU HỎI NHANH DỒN DẬP)
+        // VÒNG 1: LÀM NÓNG (60 GIÂY - CÂU HỎI NHANH DỒN DẬP)
         // =========================================================================
         startRound1Warmup() {
+            this.isExamLockActive = true;
+            this.bindAntiCheatLock();
+            if (typeof showToast === 'function') {
+                showToast('🔒 Phòng thi đã được khóa màn hình! Không thoát tab cho đến khi kết thúc.', 'warning', 4500);
+            }
             this.currentRoundIndex = 1;
             this.state.warmupQuestionIdx = 0;
             this.state.warmupAnswered = 0;
@@ -935,16 +1052,16 @@
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4)</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: LÀM NÓNG (Q1)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: GIẢI MÃ Ô CHỮ (Q2)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: SIÊU TƯ DUY (Q3)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: LẤY CÚP (Q4)</span>
                 </div>
 
                 <div class="olympia-q-card">
                     <div class="olympia-timer-bar">
                         <div style="font-size: 13.5px; font-weight: 800; color: #38bdf8;">
-                            LƯỢT KHỞI ĐỘNG CỦA BẠN (CÂU ${this.state.warmupQuestionIdx + 1}) · +10 ĐIỂM/CÂU ĐÚNG
+                            LƯỢT LÀM NÓNG CỦA BẠN (CÂU ${this.state.warmupQuestionIdx + 1}) · +10 ĐIỂM/CÂU ĐÚNG
                         </div>
                         <div class="olympia-clock-badge" id="warmup-clock">${this.roundSeconds}s</div>
                     </div>
@@ -1002,8 +1119,8 @@
             if (!stage) return;
             stage.innerHTML = `
                 <div style="text-align: center; padding: 20px 0;">
-                    <div style="font-size: 48px; margin-bottom: 8px;">🔔 HẾT THỜI GIAN KHỞI ĐỘNG!</div>
-                    <h3 style="font-size: 22px; font-weight: 800; color: #fde047; margin: 0 0 10px;">KẾT THÚC VÒNG 1: KHỞI ĐỘNG</h3>
+                    <div style="font-size: 48px; margin-bottom: 8px;">🔔 HẾT THỜI GIAN LÀM NÓNG!</div>
+                    <h3 style="font-size: 22px; font-weight: 800; color: #fde047; margin: 0 0 10px;">KẾT THÚC VÒNG 1: LÀM NÓNG</h3>
                     <p style="font-size: 15px; color: #cbd5e1; margin: 0 0 24px;">Bạn đã trả lời đúng <b>${this.state.warmupCorrect}</b> câu và đạt <b>${this.players[0].score} điểm</b>!</p>
 
                     <div style="background: rgba(30, 41, 59, 0.7); border: 1.5px solid #38bdf8; border-radius: 18px; padding: 16px; max-width: 480px; margin: 0 auto 24px; text-align: left;">
@@ -1018,14 +1135,14 @@
 
                     <button type="button" onclick="window.OlympiaLociEngine.startRound2Obstacle()"
                         style="background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 99px; padding: 14px 40px; font-size: 16px; font-weight: 800; color: #fff; cursor: pointer; box-shadow: 0 0 24px rgba(16, 185, 129, 0.5);">
-                        TIẾP TỤC VÀO VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT ➔
+                        TIẾP TỤC VÀO VÒNG 2: GIẢI MÃ Ô CHỮ ➔
                     </button>
                 </div>
             `;
         },
 
         // =========================================================================
-        // VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (4 HÀNG NGANG + BẤM CHUÔNG ĐOÁN TỪ KHÓA)
+        // VÒNG 2: GIẢI MÃ Ô CHỮ (4 HÀNG NGANG + BẤM CHUÔNG ĐOÁN TỪ KHÓA)
         // =========================================================================
         startRound2Obstacle() {
             this.currentRoundIndex = 2;
@@ -1043,10 +1160,10 @@
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
-                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: LÀM NÓNG (Q1)</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: GIẢI MÃ Ô CHỮ (Q2)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: SIÊU TƯ DUY (Q3)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: LẤY CÚP (Q4)</span>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 24px; align-items: start;">
@@ -1183,14 +1300,14 @@ Bạn nhận được +${bonus} điểm!`);
 
                     <button type="button" onclick="window.OlympiaLociEngine.startRound3Speedup()"
                         style="background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 99px; padding: 14px 44px; font-size: 16px; font-weight: 800; color: #fff; cursor: pointer; box-shadow: 0 0 24px rgba(245, 158, 11, 0.5);">
-                        BƯỚC VÀO VÒNG 3: TĂNG TỐC ➔
+                        BƯỚC VÀO VÒNG 3: SIÊU TƯ DUY ➔
                     </button>
                 </div>
             `;
         },
 
         // =========================================================================
-        // VÒNG 3: TĂNG TỐC (4 CÂU HỎI THỜI GIAN 10s - 20s - 30s - 40s)
+        // VÒNG 3: SIÊU TƯ DUY (4 CÂU HỎI THỜI GIAN 10s - 20s - 30s - 40s)
         // =========================================================================
         startRound3Speedup() {
             this.currentRoundIndex = 3;
@@ -1219,10 +1336,10 @@ Bạn nhận được +${bonus} điểm!`);
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
-                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3 - ${this.state.speedupQuestionIdx + 1}/4)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: LÀM NÓNG (Q1)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: GIẢI MÃ Ô CHỮ (Q2)</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: SIÊU TƯ DUY (Q3 - ${this.state.speedupQuestionIdx + 1}/4)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: LẤY CÚP (Q4)</span>
                 </div>
 
                 <div class="olympia-q-card">
@@ -1313,7 +1430,7 @@ Bạn nhận được +${bonus} điểm!`);
                     ` : `
                         <button type="button" onclick="window.OlympiaLociEngine.startRound4Finish()"
                             style="background: linear-gradient(135deg, #e11d48, #be123c); color: #fff; border: none; padding: 14px 40px; border-radius: 99px; font-weight: 900; font-size: 16px; cursor: pointer; box-shadow: 0 0 25px rgba(225, 29, 72, 0.6);">
-                            BƯỚC VÀO VÒNG 4: VỀ ĐÍCH QUYẾT ĐỊNH ➔
+                            BƯỚC VÀO VÒNG 4: LẤY CÚP QUYẾT ĐỊNH ➔
                         </button>
                     `}
                 </div>
@@ -1326,7 +1443,7 @@ Bạn nhận được +${bonus} điểm!`);
         },
 
         // =========================================================================
-        // VÒNG 4: VỀ ĐÍCH (GÓI 20-30đ + NGÔI SAO HY VỌNG + BẤM CHUÔNG CƯỚP ĐIỂM)
+        // VÒNG 4: LẤY CÚP (GÓI 20-30đ + NGÔI SAO HY VỌNG + BẤM CHUÔNG CƯỚP ĐIỂM)
         // =========================================================================
         startRound4Finish() {
             this.currentRoundIndex = 4;
@@ -1347,10 +1464,10 @@ Bạn nhận được +${bonus} điểm!`);
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
-                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3)</span>
-                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4 - ${p.name})</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: LÀM NÓNG (Q1)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: GIẢI MÃ Ô CHỮ (Q2)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: SIÊU TƯ DUY (Q3)</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: LẤY CÚP (Q4 - ${p.name})</span>
                 </div>
 
                 <div class="olympia-q-card">
@@ -1444,6 +1561,7 @@ Bạn nhận được +${bonus} điểm!`);
         // =========================================================================
         renderCoronationCeremony() {
             this.currentRoundIndex = 5;
+            this.isExamLockActive = false; // Hoàn thành bài thi hợp lệ
             OlympiaAudio.fanfare();
             this.renderPodium();
 
@@ -1454,15 +1572,23 @@ Bạn nhận được +${bonus} điểm!`);
             const ranking = [...this.players].sort((a, b) => b.score - a.score);
             const champ = ranking[0];
             const isMeChamp = champ.isUser;
+            const myRank = ranking.findIndex(p => p.isUser) + 1;
+
+            // Trao Cúp Loci, Điểm và XP tự động theo thứ hạng
+            if (window.LociAccountManager) {
+                const xpMap = { 1: 250, 2: 150, 3: 100, 4: 50 };
+                const rankPointsMap = { 1: 100, 2: 60, 3: 30, 4: 10 };
+                window.LociAccountManager.awardLociCup(myRank, xpMap[myRank] || 50, rankPointsMap[myRank] || 10);
+            }
 
             stage.innerHTML = `
                 <div style="text-align: center; padding: 20px 0;">
                     <div style="font-size: 64px; margin-bottom: 8px; animation: starGlow 1.5s infinite alternate;">🌿</div>
                     <h2 style="font-size: 32px; font-weight: 900; color: #fde047; margin: 0 0 6px; text-shadow: 0 0 30px rgba(253, 224, 71, 0.7);">
-                        ${isMeChamp ? 'CHÚC MỪNG QUÁN QUÂN ĐƯỜNG LÊN ĐỈNH LOCI!' : `QUÁN QUÂN: ${champ.name.toUpperCase()}!`}
+                        ${isMeChamp ? 'CHÚC MỪNG QUÁN QUÂN CÚP LOCI!' : `QUÁN QUÂN: ${champ.name.toUpperCase()}!`}
                     </h2>
                     <p style="font-size: 15px; color: #cbd5e1; margin: 0 0 28px;">
-                        ${isMeChamp ? 'Bạn đã xuất sắc đánh bại các đối thủ trường chuyên và vinh dự nhận Vòng Nguyệt Quế Hoàng Quang Loci!' : 'Bạn đã có một trận đấu quả cảm và tích lũy thêm nhiều tri thức quý giá!'}
+                        ${isMeChamp ? 'Bạn đã xuất sắc đánh bại các đối thủ trường chuyên và vinh dự nâng cao CÚP VÀNG LOCI VÔ ĐỊCH!' : 'Bạn đã có một trận đấu quả cảm và tích lũy thêm nhiều tri thức quý giá!'}
                     </p>
 
                     <!-- BỤC VINH QUANG 4 VỊ TRÍ -->

@@ -21,6 +21,26 @@
   };
 
   const DEFAULT_SEED_ACCOUNTS = {
+    "admin": {
+      uid: "loci_admin_bgk",
+      username: "admin",
+      displayName: "Ban Giám Khảo Loci",
+      email: "bengiamkhao@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('admin123') : 'admin123'),
+      photoURL: "assets/images/avatar_quangminh.jpg",
+      avatar: "assets/images/avatar_quangminh.jpg",
+      school: "Hội Đồng Ban Giám Khảo Loci",
+      role: "admin",
+      isAdmin: true,
+      xp: 99999,
+      level: 5,
+      streak: 99,
+      honorRole: "Ban Giám Khảo Đặc Quyền Toàn Không Gian",
+      petName: "Kỳ Lân Hoàng Kim",
+      petTier: 5,
+      lociCups: 99,
+      registeredAt: "2026-01-01T00:00:00.000Z"
+    },
     "quangminh": {
       uid: "loci_quangminh",
       username: "quangminh",
@@ -229,10 +249,11 @@
     _normalizeProfile(src) {
       const uname = src.username || (src.email ? src.email.split('@')[0] : 'hocsinh');
       const cleanUname = String(uname).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
-      const dname = src.displayName || uname || 'Học sinh Loci';
+      const isAdminUser = cleanUname === 'admin' || src.role === 'admin' || !!src.isAdmin;
+      const dname = src.displayName || (isAdminUser ? 'Ban Giám Khảo Loci' : uname) || 'Học sinh Loci';
       const uid = src.uid || ('loci_' + cleanUname);
       const email = src.email || (cleanUname + '@loci.edu.vn');
-      const xp = parseInt(src.xp || (src.stats && src.stats.xp) || 50, 10);
+      const xp = isAdminUser ? 99999 : parseInt(src.xp || (src.stats && src.stats.xp) || 50, 10);
       const lvlInfo = calcLevel(xp);
 
       return {
@@ -240,17 +261,20 @@
         username: cleanUname,
         displayName: dname,
         email: email,
-        role: src.role || 'student',
+        role: isAdminUser ? 'admin' : (src.role || 'student'),
+        isAdmin: isAdminUser,
         avatarUrl: src.avatarUrl || src.photoURL || '',
-        avatarFrame: src.avatarFrame || 'bronze',
+        avatarFrame: isAdminUser ? 'tier5_legendary' : (src.avatarFrame || 'bronze'),
         xp: lvlInfo.xp,
         level: lvlInfo.level,
-        tierName: lvlInfo.tierName,
+        tierName: isAdminUser ? 'Ban Giám Khảo Loci' : lvlInfo.tierName,
         progressPct: lvlInfo.progressPct,
         xpNeeded: lvlInfo.xpNeeded,
-        streak: parseInt(src.streak || (src.stats && src.stats.streak) || 1, 10),
+        streak: isAdminUser ? 99 : parseInt(src.streak || (src.stats && src.stats.streak) || 1, 10),
         hasCustomNickname: !!(src.hasCustomNickname),
         lastNicknameChangeDate: src.lastNicknameChangeDate || null,
+        lociCups: parseInt(src.lociCups || (isAdminUser ? 99 : 0), 10),
+        studyMinutes: parseInt(src.studyMinutes || 0, 10),
         stats: {
           answered: parseInt((src.stats && src.stats.answered) || 0, 10),
           correct: parseInt((src.stats && src.stats.correct) || 0, 10),
@@ -259,7 +283,8 @@
           weakPoints: (src.stats && Array.isArray(src.stats.weakPoints)) ? src.stats.weakPoints : []
         },
         completedStations: src.completedStations || { bai_6: [], bai_7: [], bai_8: [] },
-        badges: Array.isArray(src.badges) ? src.badges : ['khoi_dau_loci'],
+        completedLessons: src.completedLessons || (isAdminUser ? ['bai_6', 'bai_7', 'bai_8'] : []),
+        badges: Array.isArray(src.badges) ? src.badges : (isAdminUser ? ['dai_su_loci', 'kien_truc_su', 'sieu_ky_uc', 'than_nho_loci', 'khoi_dau_loci'] : ['khoi_dau_loci']),
         updatedAt: new Date().toISOString()
       };
     },
@@ -443,6 +468,10 @@
       let prevProfile = null;
       try {
         const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
+        if (cleanName === 'admin' && !accounts['admin']) {
+          accounts['admin'] = DEFAULT_SEED_ACCOUNTS['admin'];
+          localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+        }
         if (accounts[cleanName]) {
           prevProfile = accounts[cleanName];
         }
@@ -611,6 +640,87 @@
         this.addXP(25, `Hoàn thành Trạm 3D số ${stationOrder}`);
       }
       this._persistAll(u);
+    },
+
+    awardLociCup(rank, xpBonus, score) {
+      if (!this.isLoggedIn()) return;
+      const u = this.getUser();
+      if (!u) return;
+      if (rank === 1) {
+        u.lociCups = (u.lociCups || 0) + 1;
+        this.addBadge('quan_quan_cup_loci');
+      }
+      const xp = xpBonus || (rank === 1 ? 250 : (rank === 2 ? 150 : (rank === 3 ? 100 : 50)));
+      this.addXP(xp, `Thành tích Cúp Loci (Hạng ${rank})`);
+      this._persistAll(u);
+      this._notify(u);
+      return u;
+    },
+
+    addBadge(badgeId) {
+      if (!this.isLoggedIn()) return;
+      const u = this.getUser();
+      if (!u) return;
+      if (!Array.isArray(u.badges)) u.badges = [];
+      if (!u.badges.includes(badgeId)) {
+        u.badges.push(badgeId);
+        this._persistAll(u);
+        this._notify(u);
+      }
+    },
+
+    recordLessonCompletion(lessonId) {
+      if (!this.isLoggedIn()) return;
+      const u = this.getUser();
+      if (!u) return;
+      if (!Array.isArray(u.completedLessons)) u.completedLessons = [];
+      if (!u.completedLessons.includes(lessonId)) {
+        u.completedLessons.push(lessonId);
+        this.addXP(150, `Tốt nghiệp bài học ${lessonId.toUpperCase()}`);
+        this.checkAllLessonsCompleted();
+        this._persistAll(u);
+        this._notify(u);
+      }
+    },
+
+    checkAllLessonsCompleted() {
+      if (!this.isLoggedIn()) return false;
+      const u = this.getUser();
+      if (!u) return false;
+      if (u.isAdmin) return true;
+
+      const c = u.completedLessons || [];
+      const hasAll = ['bai_6', 'bai_7', 'bai_8'].every(k => c.includes(k));
+      if (hasAll) {
+        const allGoldBadges = ['dai_su_loci', 'kien_truc_su', 'sieu_ky_uc', 'than_nho_loci', 'master_cung_dien'];
+        let updated = false;
+        allGoldBadges.forEach(b => {
+          if (!u.badges.includes(b)) {
+            u.badges.push(b);
+            updated = true;
+          }
+        });
+        u.avatarFrame = 'tier5_legendary';
+        if (updated) {
+          this.addXP(500, 'Đại sứ Hoàn Thành Tất Cả Bài Học Loci!');
+          this._persistAll(u);
+          this._notify(u);
+          if (typeof global.showToast === 'function') {
+            global.showToast('🎉 Vinh danh: Bạn đã hoàn thành tất cả bài học và mở khóa toàn bộ thành tích vàng!', 'success', 6000);
+          }
+        }
+        return true;
+      }
+      return false;
+    },
+
+    recordActiveMinutes(minutes) {
+      if (!this.isLoggedIn()) return;
+      const u = this.getUser();
+      if (!u) return;
+      u.studyMinutes = (u.studyMinutes || 0) + (parseInt(minutes, 10) || 1);
+      this._persistAll(u);
+      this._notify(u);
     },
 
     onAuthChange(fn) {

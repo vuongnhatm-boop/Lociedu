@@ -29,6 +29,10 @@
             p2AnswerTime: 0,
             p1Answered: false,
             p2Answered: false,
+            p1HopeStarUsed: false,
+            p2HopeStarUsed: false,
+            p1HopeStarActive: false,
+            p2HopeStarActive: false,
             questions: [],
             timerInterval: null,
             secondsLeft: 30,
@@ -856,6 +860,10 @@
             this.gameState.isBotOpponent = true;
             this.gameState.p1Score = 0;
             this.gameState.p2Score = 0;
+            this.gameState.p1HopeStarUsed = false;
+            this.gameState.p2HopeStarUsed = false;
+            this.gameState.p1HopeStarActive = false;
+            this.gameState.p2HopeStarActive = false;
             this.gameState.totalRounds = this.roomConfig.questionCount;
             this.gameState.currentRound = 0;
 
@@ -923,6 +931,18 @@
             this.gameState.p2Answered = false;
             this.gameState.roundResolved = false;
 
+            // Đặt lại cờ kích hoạt ngôi sao theo từng vòng (chỉ có hiệu lực ở vòng đã chọn)
+            this.gameState.p1HopeStarActive = false;
+            this.gameState.p2HopeStarActive = false;
+
+            // Bot đối thủ sử dụng Ngôi sao may mắn thông minh (khoảng vòng 4-9)
+            if (this.gameState.isBotOpponent && !this.gameState.p2HopeStarUsed && roundIndex >= 3) {
+                if (Math.random() < 0.35 || roundIndex === this.gameState.totalRounds - 1) {
+                    this.gameState.p2HopeStarActive = true;
+                    this.gameState.p2HopeStarUsed = true;
+                }
+            }
+
             const currentQ = this.gameState.questions[roundIndex];
             this.renderQuestionScreen(currentQ);
 
@@ -949,6 +969,36 @@
                         this.submitOpponentAnswer(ans, 30 - this.gameState.secondsLeft);
                     }
                 }, answerTime * 1000);
+            }
+        },
+
+        toggleP1HopeStar() {
+            if (this.gameState.p1HopeStarUsed) {
+                if (typeof showToast === 'function') showToast('Bạn đã sử dụng Ngôi sao may mắn trong trận này rồi!', 'warning', 3000);
+                return;
+            }
+            if (this.gameState.p1Answered || this.gameState.roundResolved) return;
+
+            this.gameState.p1HopeStarActive = !this.gameState.p1HopeStarActive;
+            const starBtn = document.getElementById('arena-hope-star-btn');
+            const starBadge = document.getElementById('p1-star-active-badge');
+            if (starBtn) {
+                if (this.gameState.p1HopeStarActive) {
+                    starBtn.style.background = '#f59e0b';
+                    starBtn.style.color = '#ffffff';
+                    starBtn.style.border = 'none';
+                    starBtn.style.boxShadow = '0 0 16px rgba(245, 158, 11, 0.6)';
+                    starBtn.textContent = '⭐ ĐANG BẬT X2 ĐIỂM';
+                    if (starBadge) starBadge.style.display = 'inline-flex';
+                    if (typeof showToast === 'function') showToast('⭐ Đã kích hoạt Ngôi Sao May Mắn: Đúng được 20 điểm!', 'success', 2500);
+                } else {
+                    starBtn.style.background = '#ffffff';
+                    starBtn.style.color = '#d97706';
+                    starBtn.style.border = '1.5px solid #f59e0b';
+                    starBtn.style.boxShadow = 'none';
+                    starBtn.textContent = '⭐ Ngôi sao may mắn (x2 điểm)';
+                    if (starBadge) starBadge.style.display = 'none';
+                }
             }
         },
 
@@ -1039,6 +1089,19 @@
                         </div>
                     ` : '')}
 
+                    <!-- KHU VỰC NGÔI SAO MAY MẮN (X2 ĐIỂM) -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 10px; flex-wrap: wrap;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span id="p1-star-active-badge" style="display: ${this.gameState.p1HopeStarActive ? 'inline-flex' : 'none'}; align-items: center; gap: 4px; background: #fef3c7; border: 1.5px solid #f59e0b; color: #b45309; padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 800;">⭐ Đang bật Ngôi sao x2 (Đúng +20đ)</span>
+                            ${this.gameState.p2HopeStarActive ? '<span style="display: inline-flex; align-items: center; gap: 4px; background: #fee2e2; border: 1.5px solid #ef4444; color: #b91c1c; padding: 4px 12px; border-radius: 99px; font-size: 12px; font-weight: 800;">⭐ Đối thủ bật Ngôi sao x2!</span>' : ''}
+                        </div>
+                        <button type="button" id="arena-hope-star-btn" onclick="window.ArenaDuelEngine.toggleP1HopeStar()"
+                            style="padding: 7px 16px; border-radius: 99px; font-size: 12.5px; font-weight: 800; cursor: pointer; transition: all 0.2s; ${this.gameState.p1HopeStarUsed ? 'background: #f1f5f9; color: #94a3b8; border: 1px solid #e2e8f0; cursor: not-allowed;' : (this.gameState.p1HopeStarActive ? 'background: #f59e0b; color: #ffffff; border: none; box-shadow: 0 0 16px rgba(245, 158, 11, 0.6);' : 'background: #ffffff; color: #d97706; border: 1.5px solid #f59e0b;')}"
+                            ${this.gameState.p1HopeStarUsed ? 'disabled title="Bạn đã dùng ngôi sao may mắn của trận này rồi"' : 'title="Kích hoạt 1 lần duy nhất trong trận để x2 điểm nếu trả lời đúng"'}>
+                            ${this.gameState.p1HopeStarUsed ? 'Đã dùng Ngôi sao ⭐' : (this.gameState.p1HopeStarActive ? '⭐ ĐANG BẬT X2 ĐIỂM' : '⭐ Ngôi sao may mắn (x2 điểm)')}
+                        </button>
+                    </div>
+
                     <!-- Options Area -->
                     ${q.type === 'multiple_choice' ? `
                         <div class="arena-option-list">
@@ -1065,6 +1128,10 @@
             this.gameState.p1Answered = true;
             this.gameState.p1Answer = ans;
             this.gameState.p1AnswerTime = 30 - this.gameState.secondsLeft;
+
+            if (this.gameState.p1HopeStarActive) {
+                this.gameState.p1HopeStarUsed = true;
+            }
 
             document.querySelectorAll('.arena-option-btn').forEach(b => b.disabled = true);
             if (btnEl) btnEl.classList.add('selected');
@@ -1109,7 +1176,7 @@
             }
         },
 
-        // 5. TỔNG KẾT VÒNG ĐẤU VÀ TÍNH ĐIỂM TỨC THÌ
+        // 5. TỔNG KẾT VÒNG ĐẤU VÀ TÍNH ĐIỂM TỨC THÌ (10 ĐIỂM / CÂU, 20 ĐIỂM VỚI NGÔI SAO MAY MẮN)
         resolveRound() {
             if (this.gameState.roundResolved) return;
             this.gameState.roundResolved = true;
@@ -1121,16 +1188,17 @@
             let p1RoundScore = 0;
             let p2RoundScore = 0;
 
-            if (p1Correct) {
-                const speedBonus = Math.max(0, this.gameState.secondsLeft * 2);
-                p1RoundScore = 100 + speedBonus;
-                this.gameState.p1Score += p1RoundScore;
-            }
-            if (p2Correct) {
-                const speedBonus = Math.max(0, (30 - this.gameState.p2AnswerTime) * 2);
-                p2RoundScore = 100 + speedBonus;
-                this.gameState.p2Score += p2RoundScore;
-            }
+            const p1Base = p1Correct ? 10 : 0;
+            const p2Base = p2Correct ? 10 : 0;
+
+            const p1Mult = this.gameState.p1HopeStarActive ? 2 : 1;
+            const p2Mult = this.gameState.p2HopeStarActive ? 2 : 1;
+
+            p1RoundScore = p1Base * p1Mult;
+            p2RoundScore = p2Base * p2Mult;
+
+            this.gameState.p1Score += p1RoundScore;
+            this.gameState.p2Score += p2RoundScore;
 
             // Highlight đáp án đúng/sai
             document.querySelectorAll('.arena-option-btn').forEach(btn => {

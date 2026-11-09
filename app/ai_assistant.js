@@ -719,7 +719,7 @@ export class LociAIAssistant {
       if (l) return l;
     }
     // 3. Chiến dịch Hồ Chí Minh
-    if (lower.includes('hồ chí minh') || lower.includes('ho chi minh') || lower.includes('1975') || lower.includes('30/4') || lower.includes('giải phóng') || lower.includes('tv') || lower.includes('tivi') || lower.includes('dinh độc lập')) {
+    if (lower.includes('hồ chí minh') || lower.includes('ho chi minh') || lower.includes('1975') || lower.includes('30/4') || lower.includes('giải phóng') || lower.includes('dinh độc lập')) {
       const l = lociList.find(x => x.id === 'chien_dich_ho_chi_minh');
       if (l) return l;
     }
@@ -775,6 +775,14 @@ export class LociAIAssistant {
    - Bạn VẪN TRẢ LỜI ĐẦY ĐỦ, thông thái, lịch sự và giải đáp câu hỏi của bạn.
    - BẮT BUỘC ĐÍNH KÈM CHÚ THÍCH rõ ràng ở ngay đầu hoặc cuối câu trả lời theo đúng khuôn mẫu sau:
 > 📌 **Lưu ý**: *Nội dung này không nằm trong phạm vi kiến thức trọng tâm Bài 6, 7, 8 (Lịch sử 12 ôn thi THPT 2027) của hệ thống LOCI EDU và chỉ mang tính chất tham khảo.*
+
+3. NGUYÊN TẮC LIÊN KẾT KHÔNG GIAN 3D (CHỈ DỰA VÀO 3 KHÔNG GIAN THỰC TẾ):
+   - CHỈ dựa vào 3 không gian thực tế có trong hệ thống LOCI EDU:
+     * Bài 6: Triển lãm Nâu 9 mốc Cách mạng Tháng Tám 1945 (Bắc Bộ Phủ, Quảng trường Ba Đình, Nhà hát Lớn, Tân Trào...).
+     * Bài 7: Không gian 3D Điện Biên Phủ 10 mốc Kháng chiến chống Pháp (Đồi A1, Hầm De Castries, Kéo pháo, Bản Pa Phéc...).
+     * Bài 8: Không gian 3D Vĩ tuyến 17 & Chiến dịch Hồ Chí Minh 9 mốc Kháng chiến chống Mỹ (Cầu Hiền Lương, Dinh Độc Lập, Đường Trường Sơn...).
+   - TUYỆT ĐỐI KHÔNG liên tưởng hay bịa ra các đồ vật ngoại lai như "màn hình tivi", "kệ tivi", "phòng khách tivi"... mà phải gắn đúng vào các trạm sa bàn, di tích lịch sử trong 3 không gian trên.
+   - Trình bày câu trả lời khoa học, sáng sủa, có tiêu đề Markdown, gạch đầu dòng rõ ràng, bảng biểu so sánh hoặc thẻ tóm tắt mốc thời gian để học sinh dễ nắm bắt.
 `;
     const lociList = context.lociList || [];
     const total = lociList.length;

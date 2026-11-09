@@ -120,22 +120,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
-    <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
-    <script id="desktop-scale-meta-controller">
-    (function enforceDesktopProportionOnMobile() {
-        try {
-            var screenW = window.screen.width;
-            var targetW = 1200; // Layout chuẩn máy tính (PC)
-            if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
-                var scale = (screenW / targetW).toFixed(4);
-                var mv = document.querySelector('meta[name="viewport"]');
-                if (mv) {
-                    mv.setAttribute('content', 'width=' + targetW + ', initial-scale=' + scale + ', maximum-scale=3.0, user-scalable=yes');
-                }
-            }
-        } catch (e) {}
-    })();
-    </script>
+  <!-- Preload 3D Exhibition Room for ultra-fast loading -->
+  <link rel="preload" href="./trien_lam_nau.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="./backrooms_vr.glb" as="fetch" crossorigin="anonymous">
 
   <title>Cung Điện Ký Ức - Lịch Sử 12 | 3D Loft Living Room</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
@@ -18623,7 +18610,7 @@ window.addEventListener('pointermove', (e) => {
           ],
           shin: [
             { locName: 'Bàn trà Kotatsu (Phòng khách)', pos: [0.8, 0.75, -0.5], mnemonic: 'Bàn trà Kotatsu: Nơi hội ý bàn định kế sách và chỉ thị quan trọng' },
-            { locName: 'Kệ TV trung tâm phòng khách', pos: [2.8, 1.15, -1.2], mnemonic: 'Màn hình Tivi: Nơi phát đi thông điệp tuyên ngôn độc lập vang dội' },
+            { locName: 'Bục Trưng Bày Tư Liệu Trung Tâm', pos: [2.8, 1.15, -1.2], mnemonic: 'Bục trưng bày: Nơi phát đi thông điệp tuyên ngôn độc lập vang dội' },
             { locName: 'Bàn ăn & Bếp nấu gia đình', pos: [-2.2, 1.1, -2.5], mnemonic: 'Bếp ăn ấm cúng: Nguồn chi viện hậu cần dồi dào cho tiền tuyến' },
             { locName: 'Cửa kính ngắm sân vườn', pos: [-0.5, 1.45, 3.2], mnemonic: 'Cửa kính sân vườn: Nhìn ra thời cơ cách mạng đang chín muồi' },
             { locName: 'Kệ tủ phòng khách Tatami', pos: [3.2, 1.25, 1.8], mnemonic: 'Tủ lưu niệm: Nơi cất giữ khí tài và lực lượng cách mạng bí mật' },
@@ -18631,7 +18618,7 @@ window.addEventListener('pointermove', (e) => {
           ],
           modern_house: [
             { locName: 'Sofa tiếp khách sang trọng', pos: [0.5, 0.85, 0.6], mnemonic: 'Sofa phòng khách: Trung tâm hội nghị bàn định đại sự' },
-            { locName: 'Kệ Tivi & Màn hình phòng khách', pos: [0.0, 1.3, -2.8], mnemonic: 'Màn hình truyền hình: Nơi phát lệnh Tổng khởi nghĩa toàn quốc' },
+            { locName: 'Kệ Hiện Vật Lịch Sử Trung Tâm', pos: [0.0, 1.3, -2.8], mnemonic: 'Kệ hiện vật: Nơi phát lệnh Tổng khởi nghĩa toàn quốc' },
             { locName: 'Bàn ăn gia đình hiện đại', pos: [-2.6, 1.1, -0.8], mnemonic: 'Bàn ăn: Nơi đàm phán ký kết các hiệp định quốc tế' },
             { locName: 'Khu vực quầy bếp nấu ăn', pos: [-2.8, 1.15, 1.8], mnemonic: 'Khu vực bếp: Hậu phương cung ứng dồi dào sức người sức của' },
             { locName: 'Cửa kính lớn nhìn ra sân vườn', pos: [2.9, 1.4, -0.5], mnemonic: 'Cửa hướng vườn: Đón nhận thời cơ lịch sử ngàn năm có một' },
@@ -18639,7 +18626,7 @@ window.addEventListener('pointermove', (e) => {
           ],
           loft: [
             { locName: 'Bàn trà Sofa trung tâm phòng khách', pos: [0.15, 0.75, 0.35], mnemonic: 'Bàn trà sofa: Cơ quan đầu não chỉ đạo toàn diện chiến dịch' },
-            { locName: 'Kệ Tivi màn hình lớn trên tường', pos: [0.0, 1.25, -3.1], mnemonic: 'Màn hình Tivi: Tuyên truyền hiệu triệu toàn dân đứng lên' },
+            { locName: 'Kệ Sa Bàn Di Tích Triển Lãm', pos: [0.0, 1.25, -3.1], mnemonic: 'Sa bàn di tích: Tuyên truyền hiệu triệu toàn dân đứng lên' },
             { locName: 'Quầy bar & Đảo bếp hiện đại', pos: [-2.35, 1.2, 0.75], mnemonic: 'Đảo bếp: Điểm tựa hậu phương vững chắc chi viện sức người sức của' },
             { locName: 'Bàn ăn 4 ghế bên cửa kính', pos: [-2.45, 1.1, -2.15], mnemonic: 'Bàn ăn: Nơi đàm phán ngoại giao đỉnh cao giành thắng lợi trên bàn hội nghị' },
             { locName: 'Kệ sách nghệ thuật góc phòng', pos: [2.9, 1.35, -2.5], mnemonic: 'Tủ sách tri thức: Nơi đúc kết lý luận và bài học kinh nghiệm sâu sắc' },
