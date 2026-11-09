@@ -17309,7 +17309,7 @@
                     vOverview.scrollTop = 0;
                 }
                 if (window.renderOverviewTop3) window.renderOverviewTop3();
-                history.replaceState(null, '', '#overview');
+                history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
             } else if (tabName === 'pet') {
                 if (vPet) {
                     vPet.classList.add('active');
