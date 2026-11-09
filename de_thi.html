@@ -3,12 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=1280, initial-scale=0.35, maximum-scale=3.0, user-scalable=yes">
 
     <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
     <script id="desktop-scale-meta-controller">
     (function enforceDesktopProportionOnMobile() {
         try {
+            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
             var screenW = window.screen.width;
             var targetW = 1200; // Layout chuẩn máy tính (PC)
             if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
@@ -1557,6 +1558,7 @@
     </div>
 
     <script src="de_thi_data.js?v=1.1"></script>
+    <script src="app/loci_progression.js" onerror="this.onerror=null;this.src='loci_progression.js'"></script>
     <script>
         (() => {
             'use strict';
@@ -2252,6 +2254,36 @@
                     durationUsed: used
                 };
                 pushHistory(rec);
+
+                // CỘNG ĐIỂM KINH NGHIỆM CHUẨN: +0.5 XP / CÂU ĐÚNG & +10 XP DUY TRÌ STREAK
+                let totalCorrectAnswers = correct1;
+                exam.part2.forEach(t => { totalCorrectAnswers += (t._correctCount || 0); });
+                const earnedExamXp = Math.round(totalCorrectAnswers * 0.5 * 10) / 10;
+                const streakBonusXp = 10;
+                const totalGainedXp = earnedExamXp + streakBonusXp;
+
+                try {
+                    const raw = localStorage.getItem('loci_user_profile');
+                    if (raw) {
+                        const u = JSON.parse(raw);
+                        u.xp = (u.xp || 0) + totalGainedXp;
+                        u.streak = (u.streak || 0) + 1;
+                        localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                        if (typeof window.dispatchEvent === 'function') {
+                            window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                        }
+                    }
+                    if (window.LociPet && typeof window.LociPet.addExp === 'function') {
+                        window.LociPet.addExp(totalGainedXp, `Hoàn thành đề thi (${totalCorrectAnswers} câu đúng + Chuỗi học tập)`);
+                    }
+                } catch (_) {}
+    
+                // Ghi nhận điểm thi vào hệ thống mở khóa tuần tự LociProgression
+                try {
+                    if (window.LociProgression && exam.lessonId) {
+                        window.LociProgression.recordQuizScore(exam.lessonId, totalScore * 10);
+                    }
+                } catch (_) {}
                 clearState();
 
                 renderResult({ correct1, p1, p2, totalScore, used, auto: !!auto });

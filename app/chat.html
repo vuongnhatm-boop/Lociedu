@@ -60,7 +60,7 @@ function _decodeGeminiKey(s) {
         }
 
         body {
-            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #f0f4ff 0%, #e0e7ff 50%, #fdf4ff 100%);
             color: var(--text-main);
             height: 100vh;
@@ -775,19 +775,23 @@ function _decodeGeminiKey(s) {
         }
 
         .msg.user .bubble {
-            background: var(--primary);
-            color: #fff;
-            padding: 12px 18px;
-            border-radius: 20px 4px 20px 20px;
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            color: #ffffff;
+            padding: 13px 18px;
+            border-radius: 4px 20px 20px 20px;
             white-space: pre-wrap;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
+            text-align: left;
         }
 
         .msg.ai .bubble {
-            background: rgba(255, 255, 255, .88);
-            border: 1px solid rgba(255, 255, 255, .95);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             padding: 16px 22px;
-            border-radius: 4px 20px 20px 20px;
-            box-shadow: 0 8px 24px rgba(15, 23, 42, .04);
+            border-radius: 20px 4px 20px 20px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            color: #0f172a;
+            text-align: left;
         }
 
         .bubble p {
@@ -1471,29 +1475,23 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
 
         /* Message Bubbles - iOS 18 Liquid Glass */
         .msg.user .bubble {
-            background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
-            color: #ffffff !important;
-            padding: 13px 18px !important;
-            border-radius: 22px 22px 6px 22px !important;
-            box-shadow: 0 6px 20px rgba(2, 132, 199, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.35) !important;
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            font-size: 15px !important;
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            color: #ffffff;
+            padding: 13px 18px;
+            border-radius: 4px 20px 20px 20px;
+            white-space: pre-wrap;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
+            text-align: left;
         }
 
         .msg.ai .bubble {
-            background: rgba(255, 255, 255, 0.78) !important;
-            backdrop-filter: blur(28px) saturate(190%) contrast(102%) !important;
-            -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(102%) !important;
-            border: 1px solid rgba(255, 255, 255, 0.75) !important;
-            padding: 18px 24px !important;
-            border-radius: 22px 22px 22px 6px !important;
-            box-shadow: 
-                0 14px 34px -10px rgba(0, 0, 0, 0.05),
-                0 2px 6px rgba(0, 0, 0, 0.02),
-                inset 0 1.5px 1.5px rgba(255, 255, 255, 0.95),
-                inset 0 -1px 1px rgba(0, 0, 0, 0.02) !important;
-            color: #0f172a !important;
-            font-size: 15px !important;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 16px 22px;
+            border-radius: 20px 4px 20px 20px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            color: #0f172a;
+            text-align: left;
         }
 
         /* Composer - Floating iOS 18 Pill */
@@ -1605,10 +1603,13 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             border-bottom-color: rgba(255, 255, 255, 0.1) !important;
         }
         body.dark-mode .msg.ai .bubble {
-            background: rgba(22, 30, 46, 0.82) !important;
-            border-color: rgba(255, 255, 255, 0.14) !important;
-            color: #f8fafc !important;
-            box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.18) !important;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 16px 22px;
+            border-radius: 20px 4px 20px 20px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            color: #0f172a;
+            text-align: left;
         }
         body.dark-mode .composer {
             background: rgba(22, 30, 46, 0.85) !important;
@@ -1906,7 +1907,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
            ========================================================================== */
         body {
             background: #ffffff !important;
-            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+            font-family: 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
 
         /* ChatGPT Sidebar */
@@ -2426,15 +2427,13 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
         }
 
         .msg.user .bubble {
-            background: #f4f4f4 !important;
-            color: #0d0d0d !important;
-            border-radius: 20px 20px 4px 20px !important;
-            padding: 12px 18px !important;
-            font-size: 15px !important;
-            line-height: 1.6 !important;
-            max-width: 82% !important;
-            box-shadow: none !important;
-            word-break: break-word !important;
+            background: linear-gradient(135deg, #0284c7, #0ea5e9);
+            color: #ffffff;
+            padding: 13px 18px;
+            border-radius: 4px 20px 20px 20px;
+            white-space: pre-wrap;
+            box-shadow: 0 4px 14px rgba(2, 132, 199, 0.18);
+            text-align: left;
         }
 
         .msg.user .av {
@@ -2459,15 +2458,13 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
         }
 
         .msg.ai .bubble {
-            flex: 1 !important;
-            background: transparent !important;
-            color: #0d0d0d !important;
-            border: none !important;
-            box-shadow: none !important;
-            padding: 0 !important;
-            font-size: 15px !important;
-            line-height: 1.68 !important;
-            word-break: break-word !important;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 16px 22px;
+            border-radius: 20px 4px 20px 20px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+            color: #0f172a;
+            text-align: left;
         }
 
         /* Attachment inside User Bubble */
@@ -2750,6 +2747,9 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
 
 </style>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400;1,600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -3041,12 +3041,26 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
         function parseActions(text) {
             const acts = [];
             const clean = text.replace(/\[ACTION:([A-Z_]+)(?::([^\]]*))?\]/g, (_, type, arg) => {
-                if (type === 'TELEPORT') {
-                    const target = (arg || '').trim();
-                    if (target === 'center' || !target) {
-                        acts.push({ label: '🌿 Dạo ngắm Cung điện 3D', href: 'app/index.html' });
+                const target = (arg || '').trim();
+                if (type === 'NAVIGATE' || type === 'TELEPORT') {
+                    if (target === 'bai_6') {
+                        acts.push({ label: '🚀 Khám phá Bài 6 (Cách mạng Tháng 8)', href: 'khong_gian_360.html?lesson=bai_6' });
+                    } else if (target === 'bai_7') {
+                        acts.push({ label: '🚀 Khám phá Bài 7 (K/c chống Pháp)', href: 'khong_gian_360.html?lesson=bai_7' });
+                    } else if (target === 'bai_8') {
+                        acts.push({ label: '🚀 Khám phá Bài 8 (K/c chống Mỹ)', href: 'khong_gian_360.html?lesson=bai_8' });
+                    } else if (target === 'review' || target === 'flashcard') {
+                        acts.push({ label: '🃏 Thẻ ôn tập ghi nhớ Loci', href: 'review.html' });
+                    } else if (target === 'de_thi' || target === 'exam') {
+                        acts.push({ label: '📝 Vào Phòng Đề ôn tập', href: 'de_thi.html' });
+                    } else if (target === 'arena' || target === 'duong_dua') {
+                        acts.push({ label: '⚔️ Vào Đường đua tri thức (1v1)', href: 'portal_v2.html#arena' });
+                    } else if (target === 'olympia' || target === 'cup_loci') {
+                        acts.push({ label: '🏆 Tham gia Cúp Loci (Olympia)', href: 'portal_v2.html#olympia' });
+                    } else if (target === 'ket_noi' || target === 'group' || target === 'bxh') {
+                        acts.push({ label: '👥 Xem Nhóm học tập & BXH', href: 'ket_noi.html' });
                     } else {
-                        acts.push({ label: '🏛️ Đến mốc này trong Cung điện', href: `app/index.html#${encodeURIComponent(target)}` });
+                        acts.push({ label: '🏛️ Đến không gian học tập', href: 'portal_v2.html' });
                     }
                 }
                 else if (type === 'QUIZ_START') acts.push({ label: '🃏 Thẻ ôn tập', href: 'review.html' }, { label: '📝 Đề ôn tập (28 câu)', href: 'de_thi.html' });
@@ -3055,7 +3069,10 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 else if (type === 'RELAX_STORY') acts.push({ label: '🎧 Nghe chuyện Lịch sử', query: 'Kể cho mình nghe một mẩu chuyện lịch sử ngắn và nhẹ nhàng nhé' });
                 else if (type === 'RELAX_FLASHCARD') acts.push({ label: '🃏 Thử 1 Flashcard vui 1 phút', query: 'Cho mình xem 1 flashcard vui nhộn siêu ngắn 1 phút thôi nhé' });
                 return '';
-            }).replace(/\n{3,}/g, '\n\n').trim();
+            }).replace(/
+{3,}/g, '
+
+').trim();
             return { clean, acts };
         }
 
@@ -3510,7 +3527,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 if (!inspection.isAllowed) {
                     if (inspection.silentPedagogicalReply) {
                         const pedagogicalReply = inspection.pedagogicalText || 
-                            `> 📌 **Lưu ý**: *Nội dung này không nằm trong phạm vi kiến thức trọng tâm Bài 6, 7, 8 (Lịch sử 12 ôn thi THPT 2027) của hệ thống LOCI EDU và chỉ mang tính chất tham khảo.*\n\nChào bạn, mình là Gia sư AI Loci chuyên sâu về Lịch sử 12. Câu hỏi này thuộc ${inspection.category || 'chủ đề khác'}, bạn hãy trao đổi thêm với thầy cô nhé! Còn về Lịch sử 12 (Bài 6, 7, 8), bạn đang cần hỗ trợ bài học nào?`;
+                            `*(Đây là các câu hỏi ngoài phạm vi của tôi, tôi vẫn sẽ trả lời nhưng bạn nên kiểm tra lại với nguồn thông tin chính xác)*\n\nChào bạn, mình là Gia sư AI Loci chuyên sâu về Lịch sử 12. Câu hỏi này thuộc ${inspection.category || 'chủ đề khác'}, bạn hãy trao đổi thêm với thầy cô nhé! Còn về Lịch sử 12 (Bài 6, 7, 8), bạn đang cần hỗ trợ bài học nào?`;
 
                         setTimeout(() => {
                             setBusy(false);
@@ -3555,11 +3572,12 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 }); 
             }
             catch (e) { 
-                console.error(e); 
-                const errText = 'Mình gặp lỗi khi kết nối AI. Bạn thử lại sau ít phút nhé.';
-                addMsg('assistant', errText);
-                sess.messages.push({ role: 'assistant', text: errText });
+                console.error('AI fallback activated:', e); 
+                const fallbackReply = generateOfflineHistoryResponse(text, { ...buildContext(), spatialVisionContext: currentVisionCtx });
+                addMsg('assistant', fallbackReply);
+                sess.messages.push({ role: 'assistant', text: fallbackReply });
                 saveSessions();
+                renderHistory();
             }
             finally { 
                 setBusy(false); 
@@ -3654,7 +3672,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             _decodeGeminiKey('=cmMVpWdCVmetZWOmVTeiJ2QrxkRSFkNtF1N4FUcElTMDZmd0JDSEhXViJDT24kU4IWQuEVQ')  // Khóa 3 (Dự phòng 2)
         ];
         const DEFAULT_API_KEY = DEFAULT_GEMINI_KEYS[0];
-        const DEFAULT_MODEL = 'gemini-3.5-flash-lite';
+        const DEFAULT_MODEL = 'gemini-1.5-flash';
 
         let activeKey = localStorage.getItem('loci_gemini_api_key');
         const knownExpired = [
@@ -3666,6 +3684,11 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             localStorage.setItem('loci_gemini_api_key', activeKey);
         }
         let activeModel = localStorage.getItem('loci_gemini_model') || DEFAULT_MODEL;
+        const deprecatedModels = ['gemini-2.5-flash', 'gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-pro', '1.5'];
+        if (!activeModel || deprecatedModels.includes(activeModel)) {
+            activeModel = DEFAULT_MODEL;
+            try { localStorage.setItem('loci_gemini_model', DEFAULT_MODEL); } catch (_) {}
+        }
 
         function updateEngineBadge(isOnline, modelName) {
             const badge = $('engine-badge');
@@ -3828,7 +3851,7 @@ Bạn có thể hỏi mình:
    - Nếu học sinh hỏi kiến thức Lịch sử thế giới, giai đoạn lịch sử khác ngoài Bài 6, 7, 8, hoặc câu hỏi khoa học/đời sống khác:
    - Bạn VẪN TRẢ LỜI ĐẦY ĐỦ, thông thái, lịch sự và giải đáp câu hỏi của bạn.
    - BẮT BUỘC ĐÍNH KÈM CHÚ THÍCH rõ ràng ở ngay đầu hoặc cuối câu trả lời theo đúng khuôn mẫu sau:
-> 📌 **Lưu ý**: *Nội dung này không nằm trong phạm vi kiến thức trọng tâm Bài 6, 7, 8 (Lịch sử 12 ôn thi THPT 2027) của hệ thống LOCI EDU và chỉ mang tính chất tham khảo.*
+*(Đây là các câu hỏi ngoài phạm vi của tôi, tôi vẫn sẽ trả lời nhưng bạn nên kiểm tra lại với nguồn thông tin chính xác)*
 `;
                 let depthInstruction = '';
                 if (depth === 'concise' || depth === 'short') {
@@ -3965,7 +3988,7 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
                                 'gemini-3.5-flash',
                                 'gemini-3.8-flash',
                                 'gemini-flash-latest'
-                            ].filter((v, i, a) => a.indexOf(v) === i && v && !v.includes('1.5') && !v.includes('2.0') && v !== 'gemini-2.5-flash');
+                            ].filter((v, i, a) => a.indexOf(v) === i && v && !v.includes('3.5') && !v.includes('3.8'));
 
                             const userParts = [{ text: text }];
                             if (spatialImg) {

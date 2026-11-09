@@ -18,6 +18,59 @@
         ctx: null,
         
         isExamLockActive: false,
+
+        // ÂM THANH CHUẨN CÚP LOCI & NHẠC SẢNH CHỜ
+        lobbyBgm: null,
+        playLobbyTheme() {
+            try {
+                if (!this.lobbyBgm) {
+                    this.lobbyBgm = new Audio('assets/audio/lobby_theme.mp3');
+                    this.lobbyBgm.loop = true;
+                    this.lobbyBgm.volume = 0.5;
+                }
+                this.lobbyBgm.currentTime = 0;
+                this.lobbyBgm.play().catch(() => {});
+            } catch (_) {}
+        },
+        stopLobbyTheme() {
+            try {
+                if (this.lobbyBgm) {
+                    this.lobbyBgm.pause();
+                    this.lobbyBgm.currentTime = 0;
+                }
+            } catch (_) {}
+        },
+        playCorrectSound() {
+            try {
+                const s = new Audio('assets/audio/correct.mp3');
+                s.volume = 0.9;
+                s.play().catch(() => {});
+            } catch (_) {}
+        },
+        playWrongSound() {
+            try {
+                const s = new Audio('assets/audio/wrong.mp3');
+                s.volume = 0.9;
+                s.play().catch(() => {});
+            } catch (_) {}
+        },
+        awardXp(amount, reason) {
+            try {
+                const raw = localStorage.getItem('loci_user_profile');
+                if (raw) {
+                    const u = JSON.parse(raw);
+                    u.xp = (u.xp || 0) + amount;
+                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                    if (typeof window.dispatchEvent === 'function') {
+                        window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                    }
+                }
+                if (window.LociPet && typeof window.LociPet.addExp === 'function') {
+                    window.LociPet.addExp(amount, reason);
+                }
+            } catch (_) {}
+        },
+
         _antiCheatBound: false,
 
         bindAntiCheatLock() {
@@ -26,14 +79,14 @@
 
             this._onVisibilityChange = () => {
                 if (this.isExamLockActive && document.hidden) {
-                    this.triggerAntiCheatForfeit('Thí sinh đã chuyển sang tab hoặc ứng dụng khác trong giờ thi đấu!');
+                    this.triggerAntiCheatForfeit('Đồng Sử đã chuyển sang tab hoặc ứng dụng khác trong giờ thi đấu!');
                 }
             };
             this._onBlur = () => {
                 if (this.isExamLockActive) {
                     setTimeout(() => {
                         if (this.isExamLockActive && !document.hasFocus()) {
-                            this.triggerAntiCheatForfeit('Thí sinh đã rời khỏi màn hình thi đấu Cúp Loci!');
+                            this.triggerAntiCheatForfeit('Đồng Sử đã rời khỏi màn hình thi đấu Cúp Loci!');
                         }
                     }, 400);
                 }
@@ -50,6 +103,21 @@
             const me = this.players.find(p => p.isUser);
             if (me) me.score = 0;
 
+            // Phạt vi phạm quy chế phòng thi: -20 XP và ghi nhận cảnh cáo
+            try {
+                const raw = localStorage.getItem('loci_user_profile');
+                if (raw) {
+                    const u = JSON.parse(raw);
+                    u.xp = Math.max(0, (u.xp || 0) - 20);
+                    u.violationCount = (u.violationCount || 0) + 1;
+                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                    if (typeof window.dispatchEvent === 'function') {
+                        window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                    }
+                }
+            } catch (_) {}
+
+
             const stage = document.getElementById('olympia-main-stage');
             if (!stage) return;
 
@@ -59,7 +127,7 @@
                     <h2 style="font-size: 26px; font-weight: 900; color: #ef4444; margin: 0 0 10px;">VI PHẠM QUY CHẾ PHÒNG THI</h2>
                     <p style="font-size: 15px; font-weight: 700; color: #fca5a5; margin: 0 0 8px;">BẠN ĐÃ BỊ XỬ THUA TRONG CUỘC THI CÚP LOCI!</p>
                     <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; margin: 0 0 24px;">
-                        Lý do: <em>${reason || 'Thí sinh đã rời khỏi màn hình hoặc chuyển tab khi trận đấu đang diễn ra.'}</em><br>
+                        Lý do: <em>${reason || 'Đồng Sử đã rời khỏi màn hình hoặc chuyển tab khi trận đấu đang diễn ra.'}</em><br>
                         Hệ thống đã khóa kết quả trận đấu này để bảo đảm tính công bằng tuyệt đối.
                     </p>
                     <button type="button" onclick="window.OlympiaLociEngine.renderLobby()"
@@ -322,12 +390,12 @@
         timerInterval: null,
         roundSeconds: 60,
 
-        // 4 Thí sinh
+        // 4 Đồng Sử
         players: [
-            { id: 'p1', name: 'Bạn', school: 'THPT Loci Scholar', score: 0, avatar: 'assets/images/loci_avatar.jpg', isUser: true, hopeStarUsed: false },
-            { id: 'p2', name: 'Nguyễn Nhật Minh', school: 'Chuyên Hà Nội - Amsterdam', score: 0, avatar: 'assets/images/pets/owl_scholar.png', isUser: false, hopeStarUsed: false },
-            { id: 'p3', name: 'Trần Bảo Vy', school: 'Chuyên Lê Hồng Phong TP.HCM', score: 0, avatar: 'assets/images/pets/phoenix_fire.png', isUser: false, hopeStarUsed: false },
-            { id: 'p4', name: 'Lê Quốc Tuấn', school: 'Chuyên Quốc Học Huế', score: 0, avatar: 'assets/images/pets/tiger_speed.png', isUser: false, hopeStarUsed: false }
+            { id: 'p1', name: 'Bạn', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/loci_avatar.jpg', isUser: true, hopeStarUsed: false },
+            { id: 'p2', name: 'Nguyễn Nhật Minh', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/pets/owl_scholar.png', isUser: false, hopeStarUsed: false },
+            { id: 'p3', name: 'Trần Bảo Vy', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/pets/phoenix_fire.png', isUser: false, hopeStarUsed: false },
+            { id: 'p4', name: 'Lê Quốc Tuấn', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/pets/tiger_speed.png', isUser: false, hopeStarUsed: false }
         ],
 
         // Trạng thái các vòng thi
@@ -347,6 +415,59 @@
 
         
         isExamLockActive: false,
+
+        // ÂM THANH CHUẨN CÚP LOCI & NHẠC SẢNH CHỜ
+        lobbyBgm: null,
+        playLobbyTheme() {
+            try {
+                if (!this.lobbyBgm) {
+                    this.lobbyBgm = new Audio('assets/audio/lobby_theme.mp3');
+                    this.lobbyBgm.loop = true;
+                    this.lobbyBgm.volume = 0.5;
+                }
+                this.lobbyBgm.currentTime = 0;
+                this.lobbyBgm.play().catch(() => {});
+            } catch (_) {}
+        },
+        stopLobbyTheme() {
+            try {
+                if (this.lobbyBgm) {
+                    this.lobbyBgm.pause();
+                    this.lobbyBgm.currentTime = 0;
+                }
+            } catch (_) {}
+        },
+        playCorrectSound() {
+            try {
+                const s = new Audio('assets/audio/correct.mp3');
+                s.volume = 0.9;
+                s.play().catch(() => {});
+            } catch (_) {}
+        },
+        playWrongSound() {
+            try {
+                const s = new Audio('assets/audio/wrong.mp3');
+                s.volume = 0.9;
+                s.play().catch(() => {});
+            } catch (_) {}
+        },
+        awardXp(amount, reason) {
+            try {
+                const raw = localStorage.getItem('loci_user_profile');
+                if (raw) {
+                    const u = JSON.parse(raw);
+                    u.xp = (u.xp || 0) + amount;
+                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                    if (typeof window.dispatchEvent === 'function') {
+                        window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                    }
+                }
+                if (window.LociPet && typeof window.LociPet.addExp === 'function') {
+                    window.LociPet.addExp(amount, reason);
+                }
+            } catch (_) {}
+        },
+
         _antiCheatBound: false,
 
         bindAntiCheatLock() {
@@ -355,14 +476,14 @@
 
             this._onVisibilityChange = () => {
                 if (this.isExamLockActive && document.hidden) {
-                    this.triggerAntiCheatForfeit('Thí sinh đã chuyển sang tab hoặc ứng dụng khác trong giờ thi đấu!');
+                    this.triggerAntiCheatForfeit('Đồng Sử đã chuyển sang tab hoặc ứng dụng khác trong giờ thi đấu!');
                 }
             };
             this._onBlur = () => {
                 if (this.isExamLockActive) {
                     setTimeout(() => {
                         if (this.isExamLockActive && !document.hasFocus()) {
-                            this.triggerAntiCheatForfeit('Thí sinh đã rời khỏi màn hình thi đấu Cúp Loci!');
+                            this.triggerAntiCheatForfeit('Đồng Sử đã rời khỏi màn hình thi đấu Cúp Loci!');
                         }
                     }, 400);
                 }
@@ -379,6 +500,21 @@
             const me = this.players.find(p => p.isUser);
             if (me) me.score = 0;
 
+            // Phạt vi phạm quy chế phòng thi: -20 XP và ghi nhận cảnh cáo
+            try {
+                const raw = localStorage.getItem('loci_user_profile');
+                if (raw) {
+                    const u = JSON.parse(raw);
+                    u.xp = Math.max(0, (u.xp || 0) - 20);
+                    u.violationCount = (u.violationCount || 0) + 1;
+                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                    if (typeof window.dispatchEvent === 'function') {
+                        window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                    }
+                }
+            } catch (_) {}
+
+
             const stage = document.getElementById('olympia-main-stage');
             if (!stage) return;
 
@@ -388,7 +524,7 @@
                     <h2 style="font-size: 26px; font-weight: 900; color: #ef4444; margin: 0 0 10px;">VI PHẠM QUY CHẾ PHÒNG THI</h2>
                     <p style="font-size: 15px; font-weight: 700; color: #fca5a5; margin: 0 0 8px;">BẠN ĐÃ BỊ XỬ THUA TRONG CUỘC THI CÚP LOCI!</p>
                     <p style="font-size: 13.5px; color: #cbd5e1; line-height: 1.5; margin: 0 0 24px;">
-                        Lý do: <em>${reason || 'Thí sinh đã rời khỏi màn hình hoặc chuyển tab khi trận đấu đang diễn ra.'}</em><br>
+                        Lý do: <em>${reason || 'Đồng Sử đã rời khỏi màn hình hoặc chuyển tab khi trận đấu đang diễn ra.'}</em><br>
                         Hệ thống đã khóa kết quả trận đấu này để bảo đảm tính công bằng tuyệt đối.
                     </p>
                     <button type="button" onclick="window.OlympiaLociEngine.renderLobby()"
@@ -942,6 +1078,7 @@
 
         // 1. PHÒNG CHỜ (LOBBY): CHỌN CHẾ ĐỘ THI ĐẤU 4 NGƯỜI
         renderLobby() {
+        this.playLobbyTheme();
             this.currentRoundIndex = 0;
             this.players.forEach(p => p.score = 0);
 
@@ -1001,10 +1138,10 @@
                 bParty.style.borderColor = isParty ? '#38bdf8' : 'rgba(148, 163, 184, 0.3)';
             }
             if (isParty) {
-                const n1 = prompt('Nhập tên Thí sinh 1 (Bạn):', this.players[0].name) || this.players[0].name;
-                const n2 = prompt('Nhập tên Thí sinh 2:', this.players[1].name) || this.players[1].name;
-                const n3 = prompt('Nhập tên Thí sinh 3:', this.players[2].name) || this.players[2].name;
-                const n4 = prompt('Nhập tên Thí sinh 4:', this.players[3].name) || this.players[3].name;
+                const n1 = prompt('Nhập tên Đồng Sử 1 (Bạn):', this.players[0].name) || this.players[0].name;
+                const n2 = prompt('Nhập tên Đồng Sử 2:', this.players[1].name) || this.players[1].name;
+                const n3 = prompt('Nhập tên Đồng Sử 3:', this.players[2].name) || this.players[2].name;
+                const n4 = prompt('Nhập tên Đồng Sử 4:', this.players[3].name) || this.players[3].name;
                 this.players[0].name = n1;
                 this.players[1].name = n2;
                 this.players[2].name = n3;
@@ -1245,13 +1382,13 @@ Nhập câu trả lời của bạn:`);
             this.renderPodium();
             this.renderRound2();
 
-            // AI Thí sinh có thể bấm chuông sau khi 2-3 hàng ngang đã mở
+            // AI Đồng Sử có thể bấm chuông sau khi 2-3 hàng ngang đã mở
             if (!this.partyMode && this.state.obstacleRowsSolved.length >= 2 && Math.random() < 0.45) {
                 setTimeout(() => {
                     const aiIdx = Math.floor(Math.random() * 3 + 1);
                     OlympiaAudio.bell();
                     alert(`🔔 THÍ SINH ${this.players[aiIdx].name} (${this.players[aiIdx].school}) ĐÃ BẤM CHUÔNG XIN TRẢ LỜI CHƯỚNG NGẠI VẬT!`);
-                    alert(`Thí sinh ${this.players[aiIdx].name} đưa ra đáp án: "${obs.keyword}" và CHÍNH XÁC TUYỆT ĐỐI!`);
+                    alert(`Đồng Sử ${this.players[aiIdx].name} đưa ra đáp án: "${obs.keyword}" và CHÍNH XÁC TUYỆT ĐỐI!`);
                     this.players[aiIdx].score += 60;
                     this.finishRound2(this.players[aiIdx].name);
                 }, 800);
@@ -1381,7 +1518,7 @@ Bạn nhận được +${bonus} điểm!`);
             const q = OLYMPIA_DATA.speedup[this.state.speedupQuestionIdx];
             const isUserCorrect = chosen === q.correct;
 
-            // Giả lập thời gian và độ chính xác của 3 thí sinh AI
+            // Giả lập thời gian và độ chính xác của 3 Đồng Sử AI
             const results = [
                 { player: this.players[0], correct: isUserCorrect, time: isUserCorrect ? timeUsed : 99 }
             ];
@@ -1391,7 +1528,7 @@ Bạn nhận được +${bonus} điểm!`);
                 results.push({ player: this.players[i], correct: aiCorrect, time: aiTime });
             }
 
-            // Sắp xếp các thí sinh trả lời đúng theo thời gian
+            // Sắp xếp các Đồng Sử trả lời đúng theo thời gian
             const correctOrder = results.filter(r => r.correct).sort((a, b) => a.time - b.time);
             const scoreTiers = [40, 30, 20, 10];
             correctOrder.forEach((r, idx) => {
@@ -1526,20 +1663,20 @@ Bạn nhận được +${bonus} điểm!`);
                 OlympiaAudio.wrong();
                 const lost = star ? pts : 0;
                 p.score -= lost;
-                alert(`CHƯA CHÍNH XÁC! ${p.name} bị trừ ${lost} điểm. Chuông giành quyền trả lời mở ra cho 3 thí sinh còn lại!`);
-                // 3 Thí sinh còn lại bấm chuông
+                alert(`CHƯA CHÍNH XÁC! ${p.name} bị trừ ${lost} điểm. Chuông giành quyền trả lời mở ra cho 3 Đồng Sử còn lại!`);
+                // 3 Đồng Sử còn lại bấm chuông
                 if (!this.partyMode) {
                     const stealerIdx = Math.floor(Math.random() * 3 + 1);
                     OlympiaAudio.bell();
-                    alert(`🔔 Thí sinh ${this.players[stealerIdx].name} bấm chuông giành quyền trả lời!`);
+                    alert(`🔔 Đồng Sử ${this.players[stealerIdx].name} bấm chuông giành quyền trả lời!`);
                     if (Math.random() < 0.6) {
                         OlympiaAudio.correct();
                         this.players[stealerIdx].score += pts;
-                        alert(`Thí sinh ${this.players[stealerIdx].name} trả lời đúng và nhận được +${pts} điểm!`);
+                        alert(`Đồng Sử ${this.players[stealerIdx].name} trả lời đúng và nhận được +${pts} điểm!`);
                     } else {
                         OlympiaAudio.buzzer();
                         this.players[stealerIdx].score -= Math.floor(pts / 2);
-                        alert(`Thí sinh ${this.players[stealerIdx].name} trả lời sai và bị trừ ${Math.floor(pts / 2)} điểm!`);
+                        alert(`Đồng Sử ${this.players[stealerIdx].name} trả lời sai và bị trừ ${Math.floor(pts / 2)} điểm!`);
                     }
                 }
             }
@@ -1568,10 +1705,13 @@ Bạn nhận được +${bonus} điểm!`);
             const stage = document.getElementById('olympia-main-stage');
             if (!stage) return;
 
-            // Xếp hạng 4 thí sinh
+            // Xếp hạng 4 Đồng Sử
             const ranking = [...this.players].sort((a, b) => b.score - a.score);
             const champ = ranking[0];
             const isMeChamp = champ.isUser;
+            if (isMeChamp) {
+                this.awardXp(70, 'Quán quân Vô địch Cúp Loci (+70 XP)');
+            }
             const myRank = ranking.findIndex(p => p.isUser) + 1;
 
             // Trao Cúp Loci, Điểm và XP tự động theo thứ hạng

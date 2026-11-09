@@ -215,6 +215,33 @@
         }
     }
 
+    // Hàm trích xuất gợi nhớ các trạm neo trong phòng quen thuộc phục vụ pop up ôn tập
+    function getRoomAnchorCues(lessonId) {
+        try {
+            const roomNotes = JSON.parse(localStorage.getItem('loci_room_anchor_notes') || '{}');
+            const defaultNotes = {
+                1: 'Cửa ra vào',
+                2: 'Góc giá sách',
+                3: 'Bức tranh tường',
+                4: 'Bàn học',
+                5: 'Cửa sổ đón nắng',
+                6: 'Tủ sách Lịch sử',
+                7: 'Góc đèn học',
+                8: 'Bàn phụ / Ghế',
+                9: 'Kệ lưu niệm'
+            };
+            const lid = lessonId || 'bai_6';
+            const cues = [];
+            [4, 1, 5].forEach(order => {
+                const note = roomNotes[`${lid}_m${order}`] || defaultNotes[order];
+                if (note) cues.push(`Trạm ${order} (${note})`);
+            });
+            return cues.join(' · ');
+        } catch (_) {
+            return 'Trạm 4 (Bàn học) · Trạm 1 (Cửa ra vào)';
+        }
+    }
+
     function showInAppToast(title, message, actionText, actionCallback) {
         // Tuyệt đối không hiển thị popup toast nếu đang nhúng trong iframe (để tránh đè/lặp giao diện)
         if (isEmbedded) return;
@@ -235,7 +262,7 @@
                 display: 'flex',
                 flexDirection: 'column',
                 gap: '10px',
-                maxWidth: '380px',
+                maxWidth: '400px',
                 width: 'calc(100vw - 40px)',
                 pointerEvents: 'none'
             });
@@ -246,10 +273,10 @@
         toast.className = 'loci-toast-item';
         Object.assign(toast.style, {
             background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-            border: '2px solid #6366f1',
+            border: '2px solid #0284c7',
             borderRadius: '16px',
             padding: '16px 18px',
-            boxShadow: '0 12px 30px rgba(79, 70, 229, 0.25)',
+            boxShadow: '0 12px 30px rgba(2, 132, 199, 0.25)',
             pointerEvents: 'auto',
             display: 'flex',
             flexDirection: 'column',
@@ -309,18 +336,22 @@
             playChime();
         }
 
+        // Bổ sung gợi nhớ vị trí neo phòng học quen thuộc Loci
+        const cues = getRoomAnchorCues(options.lessonId || 'bai_6');
+        const enrichedMessage = message + (cues ? `<br><span style="display:inline-block; margin-top:6px; font-size:11.5px; color:#0284c7; font-weight:700; background:#f0f9ff; border:1px solid #bae6fd; border-radius:8px; padding:3px 8px;">📍 Gợi nhớ Loci: ${cues}</span>` : '');
+
         // Web Notification (nếu đã cấp quyền và là top window)
         if (window.Notification && Notification.permission === 'granted') {
             try {
                 new Notification(title, {
-                    body: message,
+                    body: message.replace(/<[^>]*>/g, '') + (cues ? ` (Neo Loci: ${cues})` : ''),
                     icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%230284c7" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
                 });
             } catch (e) {}
         }
 
         // In-App Toast
-        showInAppToast(title, message, options.actionText || 'Ôn tập ngay', options.onAction || (() => {
+        showInAppToast(title, enrichedMessage, options.actionText || 'Ôn tập ngay', options.onAction || (() => {
             if (typeof window.switchPortalTab === 'function') {
                 window.switchPortalTab('review');
                 const appFrame = document.getElementById('app-frame');
@@ -341,27 +372,31 @@
     function checkReminders() {
         if (isEmbedded) return;
 
-        // TUYỆT ĐỐI KHÔNG HIỆN THÔNG BÁO CHO NGƯỜI DÙNG CHƯA ĐĂNG NHẬP HOẶC TÀI KHOẢN CHƯA HỌC BÀI NÀO
+        // TUYỆT ĐỐI CHẶN POPUP KHI CHƯA ĐĂNG NHẬP HOẶC TÀI KHOẢN CHƯA CÓ TIẾN ĐỘ HỌC THỰC TẾ
         try {
             const isAuth = (typeof window !== 'undefined' && typeof window.isUserLoggedIn === 'function' && window.isUserLoggedIn());
-            if (!isAuth) return;
+            const hasAuthSession = localStorage.getItem('loci_auth_session') === 'active';
+            if (!isAuth || !hasAuthSession) return;
 
             const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
                 ? window.LociAccountManager.getUser() 
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
             
-            if (!user) return;
+            if (!user || user.isGuest || user.username === 'Khách') return;
 
-            // Kiểm tra xem học sinh đã từng học bài nào chưa
-            const answeredCount = (user.stats && user.stats.answered) ? parseInt(user.stats.answered, 10) : 0;
-            const completedCount = (user.completedLessons && Array.isArray(user.completedLessons)) ? user.completedLessons.length : 0;
-            const stationsCount = (user.completedStations && typeof user.completedStations === 'object') 
-                ? Object.values(user.completedStations).reduce((acc, curr) => acc + (Array.isArray(curr) ? curr.length : 0), 0) 
-                : 0;
-
-            // Nếu tài khoản chưa học gì (0 câu trả lời, 0 trạm, 0 bài xong) -> CHẶN 100% POPUP
-            if (answeredCount === 0 && completedCount === 0 && stationsCount === 0) {
-                return;
+            // KIỂM TRA TIẾN ĐỘ THỰC TẾ: NẾU CHƯA HỌC BÀI NÀO -> CHẶN 100% POPUP
+            let hasStudied = false;
+            if (window.LociProgression && typeof window.LociProgression.hasUserAnyStudyActivity === 'function') {
+                hasStudied = window.LociProgression.hasUserAnyStudyActivity();
+            }
+            if (!hasStudied) {
+                try {
+                    const prog = JSON.parse(localStorage.getItem('loci_study_progression') || '{}');
+                    hasStudied = Object.values(prog).some(p => (p.stationsVisited && p.stationsVisited.length > 0) || p.flashcardsReviewed || (p.quizScore && p.quizScore > 0));
+                } catch (_) {}
+            }
+            if (!hasStudied) {
+                return; // Người học chưa bắt đầu học bài nào -> TUYỆT ĐỐI KHÔNG HIỆN POPUP
             }
         } catch (_) {
             return;
@@ -385,9 +420,12 @@
 
         // 1. Kiểm tra giờ hẹn hàng ngày (CHỈ NHẮC KHI ĐÃ CÓ BÀI BẮT ĐẦU HỌC)
         if (currentTimeStr === settings.time && settings.lastNotifiedDate !== todayStr) {
+            const prog = (window.LociProgression ? window.LociProgression.getProgression() : JSON.parse(localStorage.getItem('loci_study_progression') || '{}'));
             const hasStartedLesson = ['bai_6', 'bai_7', 'bai_8'].some(lid => {
                 const stat = getLessonCycleStatus(lid);
-                return stat && stat.hasStarted;
+                const p = prog[lid] || {};
+                const hasAct = (p.stationsVisited && p.stationsVisited.length > 0) || p.flashcardsReviewed || (p.quizScore && p.quizScore > 0);
+                return stat && stat.hasStarted && hasAct;
             });
             if (!hasStartedLesson) return;
 
@@ -397,12 +435,12 @@
             triggerWebReminder(
                 'Loci Edu - Đến giờ ôn tập hôm nay',
                 `Đã đến giờ nhắc học (${settings.time}) bạn đã hẹn. Hãy dành 5 phút củng cố trí nhớ không gian nhé!`,
-                { actionText: 'Vào ôn ngay' }
+                { actionText: 'Vào ôn ngay', lessonId: 'bai_6' }
             );
             return;
         }
 
-        // 2. Kiểm tra chu kỳ 1-3-7 thông minh (Không lặp vô tận, gom các bài cùng đến hạn)
+        // 2. Kiểm tra chu kỳ 1-3-7 thông minh (CHỈ HIỆN BÀI ĐÃ HỌC, BÀI CHƯA HỌC TUYỆT ĐỐI KHÔNG HIỆN)
         if (settings.notify137) {
             const lessons = ['bai_6', 'bai_7', 'bai_8'];
             const lessonNames = {
@@ -414,11 +452,15 @@
             if (!settings.notifiedLessons) settings.notifiedLessons = {};
             if (!settings.notifiedLessons[todayStr]) settings.notifiedLessons[todayStr] = {};
 
+            const prog = (window.LociProgression ? window.LociProgression.getProgression() : JSON.parse(localStorage.getItem('loci_study_progression') || '{}'));
             const dueLessons = [];
             for (const lid of lessons) {
                 const stat = getLessonCycleStatus(lid);
-                // CHỈ TÍNH VÀ HIỆN THÔNG BÁO CHO BÀI ĐÃ HỌC (hasStarted === true)
-                if (stat && stat.hasStarted && stat.isAnyDue) {
+                const p = prog[lid] || {};
+                const hasActualActivity = (p.stationsVisited && p.stationsVisited.length > 0) || p.flashcardsReviewed || (p.quizScore && p.quizScore > 0);
+
+                // CHỈ TÍNH VÀ HIỆN THÔNG BÁO CHO BÀI ĐÃ HỌC (hasStarted === true && hasActualActivity)
+                if (stat && stat.hasStarted && hasActualActivity && stat.isAnyDue) {
                     if (!settings.notifiedLessons[todayStr][lid]) {
                         dueLessons.push({ id: lid, name: lessonNames[lid], stat });
                     }
@@ -432,8 +474,6 @@
                 });
                 saveSettings(settings);
 
-                // Ghi nhận chu kỳ vào bộ nhớ, không tự động bung popup đập vào màn hình người học
-                // Người học có thể xem trạng thái trực tiếp trên thanh lộ trình 1-3-7 của trang Tổng quan
                 console.log('📈 [Loci 1-3-7] Đã kiểm tra chu kỳ ngày hôm nay:', dueLessons.map(d => d.id));
             }
         }

@@ -1,5 +1,5 @@
 /**
- * LOCI EDU - ĐẤU TRƯỜNG TRI THỨC (KNOWLEDGE ARENA 1v1 DUEL ENGINE)
+ * LOCI EDU - ĐƯỜNG ĐUA TRI THỨC (KNOWLEDGE ARENA 1v1 DUEL ENGINE)
  * ============================================================================
  * Chế độ thi đấu đối kháng trực tuyến 1v1:
  * - Tùy chọn 5, 10, 15, 20 câu hỏi đa dạng (Trắc nghiệm, Điền khuyết, Model 3D).
@@ -14,6 +14,59 @@
 
     const ArenaDuelEngine = {
         active: false,
+
+        // HỆ THỐNG ÂM THANH CHUẨN ĐƯỜNG ĐUA TRI THỨC
+        lobbyBgm: null,
+        playLobbyBgm() {
+            try {
+                if (!this.lobbyBgm) {
+                    this.lobbyBgm = new Audio('assets/audio/lobby_theme.mp3');
+                    this.lobbyBgm.loop = true;
+                    this.lobbyBgm.volume = 0.5;
+                }
+                this.lobbyBgm.currentTime = 0;
+                this.lobbyBgm.play().catch(() => {});
+            } catch (_) {}
+        },
+        stopLobbyBgm() {
+            try {
+                if (this.lobbyBgm) {
+                    this.lobbyBgm.pause();
+                    this.lobbyBgm.currentTime = 0;
+                }
+            } catch (_) {}
+        },
+        playCorrectSound() {
+            try {
+                const s = new Audio('assets/audio/correct.mp3');
+                s.volume = 0.9;
+                s.play().catch(() => {});
+            } catch (_) {}
+        },
+        playWrongSound() {
+            try {
+                const s = new Audio('assets/audio/wrong.mp3');
+                s.volume = 0.9;
+                s.play().catch(() => {});
+            } catch (_) {}
+        },
+        awardUserXp(amount, reason) {
+            try {
+                const raw = localStorage.getItem('loci_user_profile');
+                if (raw) {
+                    const u = JSON.parse(raw);
+                    u.xp = (u.xp || 0) + amount;
+                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                    if (typeof window.dispatchEvent === 'function') {
+                        window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                    }
+                }
+                if (window.LociPet && typeof window.LociPet.addExp === 'function') {
+                    window.LociPet.addExp(amount, reason);
+                }
+            } catch (_) {}
+        },
+
         roomConfig: {
             questionCount: 10,
             timePerQuestion: 30
@@ -53,11 +106,11 @@
 
         // Danh sách đối thủ thông minh mô phỏng học sinh trường chuyên (khi không có người thật ghép cùng giây)
         OPPONENT_BOTS: [
-            { name: 'Nguyễn Hoàng Long', school: 'THPT Chuyên Hà Nội - Amsterdam', avatar: 'assets/images/pets/tiger_speed.png', accuracy: 0.82, speedMin: 4, speedMax: 12 },
-            { name: 'Trần Bảo Ngọc', school: 'THPT Chuyên Lê Hồng Phong (TP.HCM)', avatar: 'assets/images/pets/phoenix_fire.png', accuracy: 0.85, speedMin: 3, speedMax: 10 },
-            { name: 'Đặng Tuấn Kiệt', school: 'THPT Chuyên Quốc Học Huế', avatar: 'assets/images/pets/kirin_aura.png', accuracy: 0.88, speedMin: 5, speedMax: 14 },
-            { name: 'Lê Thùy Dung', school: 'THPT Chuyên Chu Văn An', avatar: 'assets/images/pets/owl_scholar.png', accuracy: 0.80, speedMin: 4, speedMax: 11 },
-            { name: 'Phạm Minh Quân', school: 'THPT Chuyên Khoa Học Tự Nhiên', avatar: 'assets/images/loci_avatar.jpg', accuracy: 0.84, speedMin: 3, speedMax: 9 }
+            { name: 'Nguyễn Hoàng Long', school: 'Đồng Sử K12', avatar: 'assets/images/pets/tiger_speed.png', accuracy: 0.82, speedMin: 4, speedMax: 12 },
+            { name: 'Trần Bảo Ngọc', school: 'Đồng Sử K12', avatar: 'assets/images/pets/phoenix_fire.png', accuracy: 0.85, speedMin: 3, speedMax: 10 },
+            { name: 'Đặng Tuấn Kiệt', school: 'Đồng Sử K12', avatar: 'assets/images/pets/kirin_aura.png', accuracy: 0.88, speedMin: 5, speedMax: 14 },
+            { name: 'Lê Thùy Dung', school: 'Đồng Sử K12', avatar: 'assets/images/pets/owl_scholar.png', accuracy: 0.80, speedMin: 4, speedMax: 11 },
+            { name: 'Phạm Minh Quân', school: 'Đồng Sử K12', avatar: 'assets/images/loci_avatar.jpg', accuracy: 0.84, speedMin: 3, speedMax: 9 }
         ],
 
         init() {
@@ -534,7 +587,7 @@
                 }
 
                 /* ═════════════════════════════════════════════════════════════════
-                   RESPONSIVE MOBILE STYLES CHO ĐẤU TRƯỜNG TRI THỨC (PHONES & TABLETS)
+                   RESPONSIVE MOBILE STYLES CHO ĐƯỜNG ĐUA TRI THỨC (PHONES & TABLETS)
                    ═════════════════════════════════════════════════════════════════ */
                 @media (max-width: 640px) {
                     .arena-modal-overlay {
@@ -730,6 +783,7 @@
 
         // 1. MÀN HÌNH CHỜ & TÙY CHỌN SỐ CÂU HỎI
         renderLobby() {
+            this.playLobbyBgm();
             const myUser = this.getMyUser();
             const wins = this.getArenaWins();
             const matches = this.getArenaMatches();
@@ -1183,6 +1237,12 @@
 
             const q = this.gameState.questions[this.gameState.currentRound];
             const p1Correct = this.isAnswerCorrect(this.gameState.p1Answer, q);
+            if (p1Correct) {
+                this.playCorrectSound();
+                this.awardUserXp(0.5, 'Trả lời đúng câu hỏi Đường đua tri thức (+0.5 XP)');
+            } else if (this.gameState.p1Answer) {
+                this.playWrongSound();
+            }
             const p2Correct = this.isAnswerCorrect(this.gameState.p2Answer, q);
 
             let p1RoundScore = 0;
@@ -1525,7 +1585,7 @@
         },
 
         getMyUser() {
-            let name = 'Học sinh Loci';
+            let name = 'Đồng Sử Loci';
             let avatar = 'assets/images/loci_avatar.jpg';
             try {
                 const u = window.LociAccountManager ? window.LociAccountManager.getUser() : null;
@@ -1579,11 +1639,11 @@
             const myBadge = this.getCurrentBadge(myWins);
 
             const mockTop = [
-                { name: 'Nguyễn Minh Khang', school: 'Chuyên Hà Nội - Amsterdam', wins: 28, points: 3420, avatar: 'assets/images/pets/phoenix_fire.png', badgeIcon: '👑', badgeName: 'Huyền Thoại' },
-                { name: 'Lê Hoàng Yến', school: 'THPT Chu Văn An', wins: 22, points: 2890, avatar: 'assets/images/pets/kirin_aura.png', badgeIcon: '👑', badgeName: 'Huyền Thoại' },
-                { name: 'Trần Gia Bảo', school: 'Chuyên Lê Hồng Phong', wins: 17, points: 2150, avatar: 'assets/images/pets/tiger_speed.png', badgeIcon: '💎', badgeName: 'Đại Kiện Tướng' },
-                { name: 'Vũ Đức Trọng', school: 'Chuyên Lam Sơn', wins: 12, points: 1780, avatar: 'assets/images/pets/owl_scholar.png', badgeIcon: '💎', badgeName: 'Đại Kiện Tướng' },
-                { name: 'Phạm Thu Thảo', school: 'THPT Kim Liên', wins: 8, points: 1240, avatar: 'assets/images/loci_avatar.jpg', badgeIcon: '🥇', badgeName: 'Quán Quân' },
+                { name: 'Nguyễn Minh Khang', school: 'Đồng Sử K12', wins: 28, points: 3420, avatar: 'assets/images/pets/phoenix_fire.png', badgeIcon: '👑', badgeName: 'Huyền Thoại' },
+                { name: 'Lê Hoàng Yến', school: 'Đồng Sử K12', wins: 22, points: 2890, avatar: 'assets/images/pets/kirin_aura.png', badgeIcon: '👑', badgeName: 'Huyền Thoại' },
+                { name: 'Trần Gia Bảo', school: 'Đồng Sử K12', wins: 17, points: 2150, avatar: 'assets/images/pets/tiger_speed.png', badgeIcon: '💎', badgeName: 'Đại Kiện Tướng' },
+                { name: 'Vũ Đức Trọng', school: 'Đồng Sử K12', wins: 12, points: 1780, avatar: 'assets/images/pets/owl_scholar.png', badgeIcon: '💎', badgeName: 'Đại Kiện Tướng' },
+                { name: 'Phạm Thu Thảo', school: 'Đồng Sử K12', wins: 8, points: 1240, avatar: 'assets/images/loci_avatar.jpg', badgeIcon: '🥇', badgeName: 'Quán Quân' },
                 { name: myUser.name, isMe: true, wins: myWins, points: myWins * 120, avatar: myUser.avatar, badgeIcon: myBadge.icon, badgeName: myBadge.name }
             ];
 

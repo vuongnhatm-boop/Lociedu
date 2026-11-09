@@ -13,7 +13,7 @@ class ReviewEngine {
     getApiKey() {
         return localStorage.getItem('loci_gemini_api_key');
     }
-    
+
     getModel() {
         return localStorage.getItem('loci_gemini_model') || 'gemini-3.5-flash';
     }
@@ -65,7 +65,7 @@ ${contentContext}
         try {
             let aiReplyText = "";
             const isOpenRouter = apiKey.startsWith('sk-');
-            
+
             if (isOpenRouter) {
                 const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                     method: 'POST',
@@ -95,11 +95,11 @@ ${contentContext}
                 const data = await response.json();
                 aiReplyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
             }
-            
+
             // Dọn dẹp markdown nếu API lỡ trả về
             aiReplyText = aiReplyText.replace(/^```json\s*/, '').replace(/```\s*$/, '').trim();
             const parsed = JSON.parse(aiReplyText);
-            
+
             return {
                 flashcards: parsed.flashcards || locusData.flashcards || [],
                 quizzes: parsed.quizzes || locusData.quizzes || [],
@@ -276,13 +276,14 @@ ${contentContext}
             });
             document.body.appendChild(overlay);
         }
-        
+
         let currentIndex = 0;
-        
+
         const renderCurrentQuestion = () => {
             if (currentIndex >= allQuestions.length) {
                 overlay.innerHTML = `
                     <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+                        <h2 style="font-size: 24px; color: #4ade80; margin-bottom: 20px;">🎉 Hoàn thành xuất sắc!</h2>
                         <h2 style="font-size: 24px; color: #10b981; margin-bottom: 20px;">Hoàn thành xuất sắc!</h2>
                         <p style="margin-bottom: 30px;">Bạn đã ôn tập xong các mốc kiến thức này.</p>
                         <button id="rv-close-btn" style="padding: 12px 24px; border-radius: 99px; border: none; background: #3b82f6; color: white; cursor: pointer; font-weight: bold;">Đóng</button>
@@ -330,7 +331,7 @@ ${contentContext}
                 q.data.options.forEach((opt, idx) => {
                     optionsHtml += `<button class="rv-quiz-opt" data-idx="${idx}" style="display:block; width:100%; padding:15px; margin-bottom:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:12px; color:white; text-align:left; cursor:pointer; transition: 0.2s;">${opt}</button>`;
                 });
-                
+
                 contentHTML = `
                     <div style="font-size: 14px; opacity: 0.5; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Trắc nghiệm</div>
                     <div style="font-size: 20px; margin-bottom: 25px;">${q.data.question}</div>
@@ -383,7 +384,7 @@ ${contentContext}
                 const fcCard = document.getElementById('rv-fc-card');
                 const fcInner = document.getElementById('rv-fc-inner');
                 const feedbackDiv = document.getElementById('rv-feedback');
-                
+
                 fcCard.onclick = () => {
                     if (isFlipped) return; // Only flip once
                     isFlipped = true;
@@ -405,18 +406,33 @@ ${contentContext}
                 const nextBtn = document.getElementById('rv-next-btn');
                 const expl = document.getElementById('rv-explanation');
                 let answered = false;
-                
+
                 document.querySelectorAll('.rv-quiz-opt').forEach(btn => {
                     btn.onclick = (e) => {
                         if (answered) return;
                         answered = true;
                         const selectedIdx = parseInt(e.currentTarget.dataset.idx);
                         const isCorrect = selectedIdx === q.data.correct;
-                        
+
                         if (isCorrect) {
                             e.currentTarget.style.background = 'rgba(16, 185, 129, 0.2)';
                             e.currentTarget.style.borderColor = '#10b981';
                             this.processReview(q.id, 5); // perfect
+                            // Cộng +0.5 XP cho câu trả lời đúng
+                            try {
+                                const raw = localStorage.getItem('loci_user_profile');
+                                if (raw) {
+                                    const u = JSON.parse(raw);
+                                    u.xp = (u.xp || 0) + 0.5;
+                                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                                    if (typeof window.dispatchEvent === 'function') {
+                                        window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                                    }
+                                }
+                                if (window.LociPet && typeof window.LociPet.addExp === 'function') {
+                                    window.LociPet.addExp(0.5, 'Trả lời đúng câu hỏi ôn tập Loci');
+                                }
+                            } catch (_) {}
                         } else {
                             e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
                             e.currentTarget.style.borderColor = '#ef4444';
@@ -424,12 +440,12 @@ ${contentContext}
                             document.querySelector(`.rv-quiz-opt[data-idx="${q.data.correct}"]`).style.borderColor = '#10b981';
                             this.processReview(q.id, 1); // wrong
                         }
-                        
+
                         expl.style.display = 'block';
                         nextBtn.style.display = 'block';
                     };
                 });
-                
+
                 nextBtn.onclick = () => {
                     currentIndex++;
                     renderCurrentQuestion();
@@ -439,21 +455,23 @@ ${contentContext}
                 const nextBtn = document.getElementById('rv-next-btn');
                 const resultDiv = document.getElementById('rv-blank-result');
                 const input = document.getElementById('rv-blank-input');
-                
+
                 if (input) input.focus();
 
                 checkBtn.onclick = () => {
                     const userAns = input.value.trim().toLowerCase();
                     const correctAns = q.data.answer.toLowerCase();
-                    
+
                     if (userAns === correctAns || correctAns.includes(userAns) && userAns.length > 2) {
+                        resultDiv.innerHTML = '<span style="color:#10b981;">✅ Chính xác!</span> (' + q.data.answer + ')';
                         resultDiv.innerHTML = '<span style="color:#10b981; font-weight:700;">Chính xác!</span> (' + q.data.answer + ')';
                         this.processReview(q.id, 5);
                     } else {
+                        resultDiv.innerHTML = '<span style="color:#ef4444;">❌ Sai.</span> Đáp án đúng: <b>' + q.data.answer + '</b>';
                         resultDiv.innerHTML = '<span style="color:#ef4444; font-weight:700;">Sai.</span> Đáp án đúng: <b>' + q.data.answer + '</b>';
                         this.processReview(q.id, 1);
                     }
-                    
+
                     resultDiv.style.display = 'block';
                     checkBtn.style.display = 'none';
                     nextBtn.style.display = 'block';
@@ -479,7 +497,7 @@ ${contentContext}
                 checkBtn.onclick = () => {
                     const typed = input.value.trim();
                     const checker = window.LociFlashcardFormats?.checkTypeInAnswer;
-                    const res = checker 
+                    const res = checker
                         ? checker(typed, q.data.answer, q.data.accepted || [])
                         : { score: 100, status: 'exact', title: 'Hoàn tất', target: q.data.answer, recommendedGrade: 5 };
 

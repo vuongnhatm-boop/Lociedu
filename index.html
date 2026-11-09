@@ -117,7 +117,7 @@
                     streak: 7,
                     quiz: 90,
                     level: 'LV.4 Chiến Binh',
-                    role: 'Học sinh Lớp 12A3 - Khóa 2009',
+                    role: 'Đồng Sử Lớp 12A3 - Khóa 2009',
                     avatar: 'A',
                     bg: 'linear-gradient(135deg, #0284c7, #38bdf8)',
                     badges: ['Khóa 2K9', 'Đạt 9+ Sử', 'Chuỗi 7 Ngày']
@@ -266,7 +266,7 @@
                         new Audio('https://tiengdong.com/wp-content/uploads/tieng-tinh-tinh-www_tiengdong_com.mp3').play();
                     } catch (_) { }
 
-                    alert('Đã cập nhật ảnh đại diện học sinh thành công!');
+                    alert('Đã cập nhật ảnh đại diện Đồng Sử thành công!');
                 };
                 img.src = e.target.result;
             };
@@ -302,7 +302,30 @@
             alert('Đã đặt lại ảnh đại diện mặc định!');
         };
 
-        const PRESET_AVATAR_SVGS = [
+        
+    const HISTORICAL_AVATARS_LIST = [
+        { id: 'av_hbt', name: 'Hai Bà Trưng', file: 'assets/images/avatars/04-hai-ba-trung.webp', tag: 'Anh Hùng' },
+        { id: 'av_vualy', name: 'Vua Lý Thái Tổ', file: 'assets/images/avatars/05-vua-ly.webp', tag: 'Hoàng Đế' },
+        { id: 'av_bachdang', name: 'Ngô Quyền Bạch Đằng', file: 'assets/images/avatars/06-bach-dang.webp', tag: 'Đại Thắng' },
+        { id: 'av_leloi', name: 'Lê Lợi Trả Gươm', file: 'assets/images/avatars/08-le-loi-ho-guom.webp', tag: 'Khởi Nghĩa' },
+        { id: 'av_batrieu', name: 'Bà Triệu Thị Trinh', file: 'assets/images/avatars/09-ba-trieu.webp', tag: 'Nữ Tướng' },
+        { id: 'av_thaydo', name: 'Thầy Đồ Văn Miếu', file: 'assets/images/avatars/10-thay-do-van-mieu.webp', tag: 'Nho Học' },
+        { id: 'av_andbg', name: 'An Dương Vương Cổ Loa', file: 'assets/images/avatars/11-an-duong-vuong.webp', tag: 'Cổ Loa Thành' },
+        { id: 'av_lehoi', name: 'Lễ Hội Dân Gian', file: 'assets/images/avatars/07-le-hoi-dan-gian.webp', tag: 'Truyền Thống' },
+        { id: 'av_tap1_1', name: 'Cử Nhân Lịch Sử', file: 'assets/images/avatars/01-tap-4-avatar-goc_1.webp', tag: 'Đồng Sử' },
+        { id: 'av_tap1_2', name: 'Chiến Sĩ Áo Chàm', file: 'assets/images/avatars/01-tap-4-avatar-goc_2.webp', tag: 'Việt Bắc' },
+        { id: 'av_tap1_3', name: 'Sĩ Tử Kinh Kỳ', file: 'assets/images/avatars/01-tap-4-avatar-goc_3.webp', tag: 'Khoa Cử' },
+        { id: 'av_tap1_4', name: 'Trạng Nguyên Trẻ', file: 'assets/images/avatars/01-tap-4-avatar-goc_4.webp', tag: 'Đỗ Đầu' },
+        { id: 'av_cute1_1', name: 'Trạng Chibi Thông Thái', file: 'assets/images/avatars/02-tap-4-avatar-cute_1.webp', tag: 'Chibi' },
+        { id: 'av_cute1_2', name: 'Tướng Quân Chibi', file: 'assets/images/avatars/02-tap-4-avatar-cute_2.webp', tag: 'Chibi' },
+        { id: 'av_cute1_3', name: 'Học Trò Chibi Đọc Sách', file: 'assets/images/avatars/02-tap-4-avatar-cute_3.webp', tag: 'Chibi' },
+        { id: 'av_cute1_4', name: 'Nữ Tướng Chibi', file: 'assets/images/avatars/02-tap-4-avatar-cute_4.webp', tag: 'Chibi' },
+        { id: 'av_cute2_1', name: 'Sĩ Tử Áo Xanh Chibi', file: 'assets/images/avatars/03-tap-4-avatar-cute-khong-ten_1.webp', tag: 'Chibi' },
+        { id: 'av_cute2_2', name: 'Cử Nhân Chibi Cầm Hoa', file: 'assets/images/avatars/03-tap-4-avatar-cute-khong-ten_2.webp', tag: 'Chibi' },
+        { id: 'av_cute2_3', name: 'Học Giả Chibi Áo Tím', file: 'assets/images/avatars/03-tap-4-avatar-cute-khong-ten_3.webp', tag: 'Chibi' }
+    ];
+
+    const PRESET_AVATAR_SVGS = [
             {
                 id: 'laurel',
                 name: 'Vòng Nguyệt Quế',
@@ -356,89 +379,47 @@
         window.renderPresetAvatars = function () {
             const grid = document.getElementById('preset-avatars-grid');
             if (!grid) return;
-            grid.innerHTML = PRESET_AVATAR_SVGS.map(p => `
-                <div onclick="window.selectPresetAvatar('${p.id}')"
-                    style="background:#ffffff; border:1px solid #e2e8f0; border-radius:14px; padding:12px 8px; text-align:center; cursor:pointer; transition:all 0.2s;"
+            grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(110px, 1fr))';
+            grid.style.gap = '10px';
+            grid.style.maxHeight = '320px';
+            grid.style.overflowY = 'auto';
+            grid.style.padding = '4px';
+
+            grid.innerHTML = HISTORICAL_AVATARS_LIST.map(p => `
+                <div onclick="window.selectHistoricalAvatar('${p.file}')"
+                    style="background:#ffffff; border:1.5px solid #e2e8f0; border-radius:14px; padding:10px 6px; text-align:center; cursor:pointer; transition:all 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04);"
                     onmouseover="this.style.borderColor='#0284c7'; this.style.transform='translateY(-2px)';"
                     onmouseout="this.style.borderColor='#e2e8f0'; this.style.transform='none';">
-                    <div style="width:44px; height:44px; margin:0 auto 8px;">${p.svg}</div>
-                    <div style="font-size:12px; font-weight:700; color:#0f172a; margin-bottom:2px; white-space:nowrap;">${p.name}</div>
-                    <div style="font-size:10.5px; color:#64748b;">${p.desc}</div>
+                    <img src="${p.file}" alt="${p.name}" style="width:56px; height:56px; border-radius:50%; object-fit:cover; margin:0 auto 6px; display:block; border: 2px solid #38bdf8;">
+                    <div style="font-size:11.5px; font-weight:700; color:#0f172a; margin-bottom:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${p.name}</div>
+                    <span style="font-size:10px; background:#e0f2fe; color:#0369a1; padding:2px 6px; border-radius:99px; font-weight:700;">${p.tag}</span>
                 </div>
             `).join('');
         };
 
-        window.selectPresetAvatar = function (presetId) {
-            const found = PRESET_AVATAR_SVGS.find(p => p.id === presetId);
-            if (!found) return;
-            // Convert SVG to data URI
-            const svgString = found.svg.replace('<svg', '<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200"');
-            const dataUri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svgString);
-
+        window.selectHistoricalAvatar = function(filePath) {
             try {
-                localStorage.setItem('loci_user_custom_avatar', dataUri);
-                const activeUid = (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid)
-                    || (window._lociLocalUser && window._lociLocalUser.uid)
-                    || localStorage.getItem('loci_active_student_uid');
-                if (activeUid) localStorage.setItem('loci_user_avatar_' + activeUid, dataUri);
-            } catch (_) { }
-
-            window.applyUserAvatar(dataUri);
-            window.closeAvatarPickerModal();
-            try {
-                new Audio('https://tiengdong.com/wp-content/uploads/tieng-tinh-tinh-www_tiengdong_com.mp3').play();
-            } catch (_) { }
-            alert('Đã trang bị thành công biểu tượng: ' + found.name + '!');
-        };
-
-
-        
-        /* CLOUDFLARE TURNSTILE CONTROLLER & FALLBACK */
-        window.turnstileToken = null;
-        window.onTurnstileSuccess = function(token) {
-            window.turnstileToken = token || 'cf_verified_token';
-            console.log('[Cloudflare Turnstile] Verified successfully:', window.turnstileToken ? window.turnstileToken.substring(0, 15) + '...' : 'OK');
-            const alertEl = document.getElementById('auth-alert');
-            if (alertEl && alertEl.textContent.includes('Turnstile')) {
-                alertEl.style.display = 'none';
-            }
-            // Update fallback mark if visible
-            const markLogin = document.getElementById('cf-mark-login');
-            const markReg = document.getElementById('cf-mark-reg');
-            if (markLogin) markLogin.style.display = 'inline-block';
-            if (markReg) markReg.style.display = 'inline-block';
-        };
-
-        window.renderTurnstileIfReady = function() {
-            setTimeout(() => {
-                if (window.turnstile && typeof window.turnstile.render === 'function') {
-                    ['cf-turnstile-login', 'cf-turnstile-register'].forEach(id => {
-                        const el = document.getElementById(id);
-                        if (el && !el.hasChildNodes()) {
-                            try {
-                                window.turnstile.render(el, {
-                                    sitekey: '1x00000000000000000000AA',
-                                    theme: 'light',
-                                    callback: function(token) { window.onTurnstileSuccess(token); }
-                                });
-                            } catch (e) {
-                                console.warn('[Turnstile] Render error:', e);
-                            }
-                        }
-                    });
+                localStorage.setItem('loci_user_custom_avatar', filePath);
+                const activeUid = (window.LociFirebase && window.LociFirebase.currentUser) ? window.LociFirebase.currentUser.uid : localStorage.getItem('loci_active_student_uid');
+                if (activeUid) {
+                    localStorage.setItem('loci_avatar_' + activeUid, filePath);
                 }
-            }, 80);
-        };
-
-        window.toggleManualTurnstile = function(type) {
-            window.onTurnstileSuccess('cf_manual_pass_' + Date.now());
-            const mark = document.getElementById(type === 'login' ? 'cf-mark-login' : 'cf-mark-reg');
-            if (mark) {
-                mark.style.display = 'inline-block';
-                mark.style.color = '#10b981';
-            }
-            if (typeof showToast === 'function') {
-                showToast('Xác thực bảo mật Cloudflare thành công!', 'success', 2500);
+                const raw = localStorage.getItem('loci_user_profile');
+                if (raw) {
+                    const u = JSON.parse(raw);
+                    u.photoURL = filePath;
+                    u.avatar = filePath;
+                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                }
+                if (typeof window.applyUserAvatar === 'function') {
+                    window.applyUserAvatar(filePath);
+                }
+                window.closeAvatarPickerModal();
+                if (typeof window.showToast === 'function') {
+                    window.showToast('✅ Đã đổi ảnh đại diện Lịch sử thành công!', 'success');
+                }
+            } catch (err) {
+                console.warn('selectHistoricalAvatar error:', err);
             }
         };
 
@@ -488,7 +469,7 @@
 
         window.syncPassportFromUser = function (user) {
             if (!user) return;
-            var name = user.displayName || user.username || (user.email ? user.email.split('@')[0] : 'Học sinh Loci');
+            var name = user.displayName || user.username || (user.email ? user.email.split('@')[0] : 'Đồng Sử Loci');
             var email = user.email || (user.username ? (user.username + '@loci.edu.vn') : 'hocsinh@loci.edu.vn');
             var modalName = document.getElementById('modal-user-name');
             var modalEmail = document.getElementById('modal-user-email');
@@ -530,7 +511,7 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <meta name="viewport" content="width=1280, initial-scale=0.35, maximum-scale=3.0, user-scalable=yes">
     <title>LOCI EDU - Cung Điện Tri Thức</title>
     <link rel="icon" type="image/png" href="assets/images/logo_loci_edu.png">
     <link
@@ -12913,7 +12894,7 @@
                             <span>Cúp Loci (4 Thí Sinh)</span>
                         </button>
                         <button class="topbar-dropdown-item" onclick="window.ArenaDuelEngine && window.ArenaDuelEngine.open()">
-                            <span>Đấu Trường Tri Thức (1v1)</span>
+                            <span>Đường Đua Tri Thức (1v1)</span>
                         </button>
                     </div>
                 </div>
@@ -12960,7 +12941,7 @@
             <!-- KHUNG TÀI KHOẢN HỌC SINH (CHUẨN MINIMALIST NCKH - MATCH IMAGE 3) -->
             <div class="user-profile topbar-user-profile" id="user-profile-btn" onclick="window.openCloudAuthModal()"
                 style="cursor: pointer; display: inline-flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #dbeafe; border-radius: 99px; padding: 6px 14px 6px 7px; box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06); transition: all 0.2s;"
-                title="Tài khoản học sinh - Nhấn để Đăng nhập / Đăng ký">
+                title="Tài khoản Đồng Sử - Nhấn để Đăng nhập / Đăng ký">
                 <div class="avatar-frame-wrap" id="user-avatar-wrap"
                     style="width: 38px; height: 38px; min-width: 38px; min-height: 38px; border-radius: 50%; background: #eff6ff center/cover no-repeat; border: 1.5px solid #bfdbfe; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: none !important;">
                     <div class="avatar" id="user-avatar"
@@ -13641,7 +13622,7 @@
                 <div class="lb-table-card">
                     <div class="lb-table-head">
                         <div class="col-stt">Hạng</div>
-                        <div class="col-name">Học sinh & Dấu ấn</div>
+                        <div class="col-name">Đồng Sử & Dấu ấn</div>
                         <div class="col-score" id="lb-score-col-title">Thành tích</div>
                         <div class="col-like">Thả tim</div>
                     </div>
@@ -13744,7 +13725,7 @@
             onclick="event.stopPropagation()">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px;">
                 <div>
-                    <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0;">Chọn Ảnh Đại Diện Học Sinh
+                    <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0;">Chọn Ảnh Đại Diện Đồng Sử
                     </h3>
                     <p style="font-size: 13px; color: #64748b; margin: 4px 0 0;">Tải ảnh chân dung từ thiết bị hoặc chọn
                         nhanh avatar linh vật học tập</p>
@@ -13808,7 +13789,7 @@
                     </div>
                     <div>
                         <h3 style="font-size:17px; font-weight:800; color:#0f172a; margin:0; line-height:1.2;">Tài khoản
-                            học sinh</h3>
+                            Đồng Sử</h3>
                         <p style="font-size:12.5px; color:#64748b; margin:2px 0 0 0;">Lưu trữ tiến trình học tập & không
                             gian ghi nhớ</p>
                     </div>
@@ -13876,7 +13857,7 @@
                     </button>
 
                     <div id="modal-user-name"
-                        style="font-size:18px; font-weight:800; color:#0f172a; text-align:center;">Học sinh Lộc</div>
+                        style="font-size:18px; font-weight:800; color:#0f172a; text-align:center;">Đồng Sử Lộc</div>
                     <button type="button" onclick="window.openNicknameModal()"
                         style="display:flex; align-items:center; justify-content:center; gap:5px; margin: 4px auto 8px; background: #f0f9ff; border: 1px dashed #7dd3fc; border-radius: 99px; padding: 4px 12px; font-size: 11.5px; font-weight: 700; color: #0369a1; cursor: pointer; transition: all 0.2s;"
                         onmouseover="this.style.background='#e0f2fe'" onmouseout="this.style.background='#f0f9ff'"
@@ -14420,7 +14401,7 @@
                     <button id="btn-submit-register-tab" type="button" onclick="window.submitRegisterOnly()"
                         style="width: 100%; padding: 12px; background: #059669; color: #ffffff; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(5,150,105,0.25);"
                         onmouseover="this.style.background='#047857'" onmouseout="this.style.background='#059669'">
-                        Khởi tạo tài khoản học sinh ➔
+                        Khởi tạo tài khoản Đồng Sử ➔
                     </button>
 
                     <div style="text-align: center; margin-top: 12px; font-size: 12.5px; color: #64748b;">
@@ -14441,7 +14422,7 @@
 
                     <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px;">Kích Hoạt Căn Cước Thành Công!</h4>
                     <p style="font-size: 13px; color: #64748b; margin: 0 0 14px;">
-                        Chào mừng <strong id="post-reg-student-name" style="color: #0284c7;">Học sinh</strong> đã gia nhập Cung Điện Tri Thức Loci!
+                        Chào mừng <strong id="post-reg-student-name" style="color: #0284c7;">Đồng Sử</strong> đã gia nhập Cung Điện Tri Thức Loci!
                     </p>
 
                     <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 14px; text-align: left; margin-bottom: 16px;">
@@ -14938,20 +14919,20 @@
         };
 
         window.quickDemoLogin = async function () {
-            window._showAuthAlert('Đang kích hoạt tài khoản học sinh Loci...', 'success');
+            window._showAuthAlert('Đang kích hoạt tài khoản Đồng Sử Loci...', 'success');
             try {
                 if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
                     try {
                         await window.LociFirebase.loginUser('hocsinh_loci', '123456');
                     } catch (_) {
-                        await window.LociFirebase.registerUser('hocsinh_loci', '123456', 'Học sinh Loci');
+                        await window.LociFirebase.registerUser('hocsinh_loci', '123456', 'Đồng Sử Loci');
                     }
                     window._showAuthAlert('Đăng nhập trải nghiệm thành công!', 'success');
                     setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
                     return;
                 }
 
-                window._handleLocalAuthSuccess('hocsinh_loci', 'Học sinh Loci');
+                window._handleLocalAuthSuccess('hocsinh_loci', 'Đồng Sử Loci');
                 window._showAuthAlert('Đăng nhập trải nghiệm thành công!', 'success');
                 setTimeout(() => { window._showAuthAlert(''); window.closeCloudAuthModal(); }, 1000);
             } catch (e) {
@@ -15043,7 +15024,7 @@
                     btnRegister.style.fontWeight = '700';
                     btnRegister.style.boxShadow = '0 2px 6px rgba(0,0,0,0.06)';
                 }
-                if (titleEl) titleEl.textContent = 'Khởi Tạo Căn Cước Học Sinh';
+                if (titleEl) titleEl.textContent = 'Khởi Tạo Căn Cước Đồng Sử';
                 if (descEl) descEl.textContent = 'Chỉ cần chọn tên tài khoản (User) hoặc đăng ký 1 chạm bằng Google.';
             } else if (mode === 'post-register') {
                 if (tabBar) tabBar.style.display = 'none';
@@ -15052,7 +15033,7 @@
                 if (postRegTab) postRegTab.style.display = 'block';
                 if (googleFirstTab) googleFirstTab.style.display = 'none';
                 if (titleEl) titleEl.textContent = 'Bảo Vệ Tiến Trình Học';
-                if (descEl) descEl.textContent = 'Hồ sơ học sinh của bạn đã được khởi tạo an toàn.';
+                if (descEl) descEl.textContent = 'Hồ sơ Đồng Sử của bạn đã được khởi tạo an toàn.';
             } else if (mode === 'google-first-time') {
                 if (tabBar) tabBar.style.display = 'none';
                 if (loginTab) loginTab.style.display = 'none';
@@ -15221,7 +15202,7 @@
 
             } catch (err) {
                 window._showAuthAlert('Lỗi đăng ký: ' + (err.message || 'Không thể đăng ký'));
-                if (btn) { btn.disabled = false; btn.textContent = 'Khởi tạo tài khoản học sinh ➔'; }
+                if (btn) { btn.disabled = false; btn.textContent = 'Khởi tạo tài khoản Đồng Sử ➔'; }
             }
         };
 
@@ -15273,9 +15254,9 @@
                 if (window.LociAccountManager && typeof window.LociAccountManager.downloadBackupFile === 'function') {
                     const fname = window.LociAccountManager.downloadBackupFile();
                     if (typeof showToast === 'function') {
-                        showToast('Đã tải mã sao lưu căn cước học sinh (' + fname + ')!', 'success', 3500);
+                        showToast('Đã tải mã sao lưu căn cước Đồng Sử (' + fname + ')!', 'success', 3500);
                     } else {
-                        alert('Đã tải mã sao lưu căn cước học sinh (' + fname + ')!');
+                        alert('Đã tải mã sao lưu căn cước Đồng Sử (' + fname + ')!');
                     }
                 }
             } catch (err) {
@@ -15308,14 +15289,14 @@
                     const accounts = JSON.parse(localStorage.getItem('loci_accounts') || '{}');
                     const cleanName = (user.email ? user.email.split('@')[0] : user.uid).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase();
 
-                    // Kiểm tra xem học sinh này đã có hồ sơ và custom nickname chưa
+                    // Kiểm tra xem Đồng Sử này đã có hồ sơ và custom nickname chưa
                     const existing = accounts[cleanName];
                     if (!existing || !existing.hasCustomNickname) {
                         // Lần đầu đăng nhập bằng Google: Cho phép đặt Tên hiển thị học thuật
                         window._pendingGoogleUser = user;
                         const gInput = document.getElementById('google-first-displayname');
                         if (gInput) {
-                            gInput.value = user.displayName || (user.email ? user.email.split('@')[0] : 'Học sinh Loci');
+                            gInput.value = user.displayName || (user.email ? user.email.split('@')[0] : 'Đồng Sử Loci');
                         }
                         window.switchAuthTab('google-first-time');
                         return;
@@ -15425,7 +15406,7 @@
             if (window.LociFirebase && typeof window.LociFirebase.checkRedirectResult === 'function') {
                 window.LociFirebase.checkRedirectResult().then(user => {
                     if (user && user.uid) {
-                        const dName = user.displayName || (user.email ? user.email.split('@')[0] : 'Học sinh Loci');
+                        const dName = user.displayName || (user.email ? user.email.split('@')[0] : 'Đồng Sử Loci');
                         window._handleLocalAuthSuccess(user.email || user.uid, dName);
                     }
                 }).catch(e => console.warn('[Google Auth Redirect]', e));
@@ -16742,7 +16723,7 @@
         // Lắng nghe trạng thái đăng nhập
         LociFirebase.onAuth((user) => {
             if (user) {
-                const displayName = user.displayName || user.email.split('@')[0] || 'Học sinh Loci';
+                const displayName = user.displayName || user.email.split('@')[0] || 'Đồng Sử Loci';
                 userName.textContent = displayName;
                 userRole.innerHTML = '<span class="user-capsule-status-dot"></span> <span>Tiến trình đã lưu</span>';
 
@@ -16906,7 +16887,7 @@
         document.getElementById('btn-quick-demo-login')?.addEventListener('click', (e) => {
             e.preventDefault();
             if (typeof window._handleLocalAuthSuccess === 'function') {
-                window._handleLocalAuthSuccess('hocsinh_loci', 'Học sinh Loci');
+                window._handleLocalAuthSuccess('hocsinh_loci', 'Đồng Sử Loci');
             }
         });
 
@@ -17096,7 +17077,7 @@
                 }
 
                 // Cập nhật UI ngay lập tức
-                const finalName = newName || currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Học sinh Loci');
+                const finalName = newName || currentUser.displayName || (currentUser.email ? currentUser.email.split('@')[0] : 'Đồng Sử Loci');
                 userName.textContent = finalName;
                 modalUserName.textContent = finalName;
 
@@ -17213,6 +17194,7 @@
 
     <!-- HỆ THỐNG NHẮC HẸN ÔN TẬP WEB 1-3-7 (EBBINGHAUS) -->
     <script src="app/reminder_137.js?v=2.2"></script>
+    <script src="app/loci_progression.js" onerror="this.onerror=null;this.src='loci_progression.js'"></script>
     <script src="app/loci_students_data.js" onerror="this.onerror=null;this.src='loci_students_data.js'"></script>
     <script src="app/arena_duel_engine.js" onerror="this.onerror=null;this.src='arena_duel_engine.js'"></script>
     <script src="app/olympia_loci_engine.js" onerror="this.onerror=null;this.src='olympia_loci_engine.js'"></script>
@@ -17718,7 +17700,7 @@
             { id: 's3', username: 'baoanh', name: 'Lê Bảo Anh', score: 3410, streak: 15, quiz: 95, photo: 'assets/images/avatar_baoanh.jpg', avatar: 'B', bg: '#8b5cf6', mark: 'Quý Quân Top 3', markType: 'bronze', iconKey: 'lightning', school: 'THPT Chuyên Lê Hồng Phong' },
             { id: 's4', username: 'nhathoang', name: 'Phạm Nhật Hoàng', score: 3150, streak: 14, quiz: 93, photo: 'assets/images/avatar_nhathoang.jpg', avatar: 'H', bg: '#f59e0b', mark: 'Linh Thú Bậc 4', markType: 'blue', iconKey: 'warrior', school: 'THPT Phan Đình Phùng' },
             { id: 's5', username: 'thaolinh', name: 'Hoàng Vũ Thảo Linh', score: 2980, streak: 12, quiz: 91, photo: 'assets/images/avatar_thaolinh.jpg', avatar: 'L', bg: '#10b981', mark: 'Vô Địch Olympia Loci', markType: 'green', iconKey: 'star', school: 'THPT Chuyên Lê Khiết' },
-            { id: 's6', username: 'tuankiet', name: 'Đặng Tuấn Kiệt', score: 2750, streak: 11, quiz: 90, photo: 'assets/images/avatar_tuankiet.jpg', avatar: 'K', bg: '#3b82f6', mark: 'Học Sinh Xuất Sắc', markType: 'blue', iconKey: 'compass', school: 'Quốc Học Huế' },
+            { id: 's6', username: 'tuankiet', name: 'Đặng Tuấn Kiệt', score: 2750, streak: 11, quiz: 90, photo: 'assets/images/avatar_tuankiet.jpg', avatar: 'K', bg: '#3b82f6', mark: 'Đồng Sử Xuất Sắc', markType: 'blue', iconKey: 'compass', school: 'Quốc Học Huế' },
             { id: 's7', username: 'quynhanh', name: 'Phạm Quỳnh Anh', score: 2480, streak: 10, quiz: 89, avatar: 'A', bg: '#8b5cf6', mark: 'Chuyên Cần', markType: 'green', iconKey: 'book', school: 'THPT Thăng Long' },
             { id: 's8', username: 'ductrong', name: 'Ngô Đức Trọng', score: 2250, streak: 9, quiz: 88, avatar: 'T', bg: '#3b82f6', mark: 'Thám Hiểm', markType: 'blue', iconKey: 'compass', school: 'THPT Trần Phú' },
             { id: 's9', username: 'maichi', name: 'Hoàng Mai Chi', score: 1980, streak: 8, quiz: 87, avatar: 'C', bg: '#f97316', mark: 'Cần Mẫn', markType: 'gold', iconKey: 'heart', school: 'THPT Việt Đức' }
@@ -18261,7 +18243,7 @@
                 lbPodiumWrap.innerHTML = renderPodiumHtml(top3, false);
             }
 
-            // Cho phép vuốt / cuộn xuống xem đầy đủ thứ tự xếp hạng các học sinh khác
+            // Cho phép vuốt / cuộn xuống xem đầy đủ thứ tự xếp hạng các Đồng Sử khác
             bodyEl.innerHTML = list.map((item, idx) => {
                 const stt = idx + 1;
                 let badgeHtml = '';
@@ -19425,7 +19407,7 @@
                     <div class="admin-ctrl-badge-icon">🛡️</div>
                     <div class="admin-ctrl-title-text">
                         <h3>Trung Tâm Quản Trị Hệ Thống &amp; Tài Khoản Firebase</h3>
-                        <p>Toàn quyền quản lý học sinh, kiểm duyệt &amp; phân quyền dữ liệu Cloud Firestore</p>
+                        <p>Toàn quyền quản lý Đồng Sử, kiểm duyệt &amp; phân quyền dữ liệu Cloud Firestore</p>
                     </div>
                 </div>
                 <div class="admin-ctrl-header-actions">
@@ -19474,7 +19456,7 @@
                 <select class="admin-filter-select" id="admin-role-filter" onchange="window.filterAdminUsers()">
                     <option value="all">Tất cả vai trò</option>
                     <option value="admin">Quản trị viên (Admin)</option>
-                    <option value="user">Học sinh (User)</option>
+                    <option value="user">Đồng Sử (User)</option>
                     <option value="muted">Đang bị tạm khóa</option>
                 </select>
                 <button type="button" class="btn-action-mini success" onclick="window.loadAdminUsersList()">
@@ -19487,7 +19469,7 @@
                 <table class="admin-users-table">
                     <thead>
                         <tr>
-                            <th style="min-width: 250px;">Học sinh &amp; UID</th>
+                            <th style="min-width: 250px;">Đồng Sử &amp; UID</th>
                             <th style="width: 130px;">Vai trò</th>
                             <th style="width: 140px;">Trạng thái</th>
                             <th style="width: 100px;">Tiến độ</th>
@@ -19695,7 +19677,7 @@
             const now = Date.now();
 
             tbody.innerHTML = list.map(u => {
-                const name = u.displayName || u.name || 'Học sinh LOCI';
+                const name = u.displayName || u.name || 'Đồng Sử LOCI';
                 const email = u.email || 'Chưa liên kết email';
                 const avatar = u.photoURL || '';
                 const initial = (name[0] || 'U').toUpperCase();
@@ -19728,7 +19710,7 @@
                     </td>
                     <td>
                         <span class="admin-role-badge ${isAdmin ? 'admin' : 'user'}">
-                            ${isAdmin ? ' Admin' : '🎓 Học sinh'}
+                            ${isAdmin ? ' Admin' : '🎓 Đồng Sử'}
                         </span>
                     </td>
                     <td>
@@ -19743,7 +19725,7 @@
                     </td>
                     <td>
                         <div class="admin-action-btn-group">
-                            <button class="btn-action-mini" onclick="window.toggleUserRole('${u.uid}', '${role}')" title="Đổi quyền Admin / Học sinh">
+                            <button class="btn-action-mini" onclick="window.toggleUserRole('${u.uid}', '${role}')" title="Đổi quyền Admin / Đồng Sử">
                                 🔄 ${isAdmin ? 'Hạ xuống User' : 'Nâng lên Admin'}
                             </button>
                             ${isMuted
@@ -19813,7 +19795,7 @@
             const days = parseFloat(daysStr);
             if (isNaN(days) || days <= 0) { alert('Số ngày không hợp lệ!'); return; }
 
-            const reason = prompt('Nhập lý do gửi học sinh:', 'Vi phạm tiêu chuẩn cộng đồng LOCI EDU.') || 'Vi phạm tiêu chuẩn cộng đồng.';
+            const reason = prompt('Nhập lý do gửi Đồng Sử:', 'Vi phạm tiêu chuẩn cộng đồng LOCI EDU.') || 'Vi phạm tiêu chuẩn cộng đồng.';
             const until = Date.now() + Math.round(days * 86400000);
 
             try {
@@ -19843,9 +19825,9 @@
             }
         };
 
-        // Bắn thông báo riêng tới học sinh
+        // Bắn thông báo riêng tới Đồng Sử
         window.promptSendNotice = async function (uid) {
-            const notice = prompt('Nhập nội dung thông báo gửi tới học sinh này (hiển thị khi học sinh vào Cổng):');
+            const notice = prompt('Nhập nội dung thông báo gửi tới Đồng Sử này (hiển thị khi Đồng Sử vào Cổng):');
             if (!notice || !notice.trim()) return;
 
             try {
@@ -20178,7 +20160,7 @@
                     <span>[Lưu ý] Điểm Mù Kiến Thức (Tỷ Lệ Sai Cao Nhất)</span>
                 </div>
                 <ul style="margin: 0; padding-left: 18px; font-size: 12.5px; color: #475569; line-height: 1.6;">
-                    <li><b>Kế hoạch Rơ-ve (1949) vs Kế hoạch Nava (1953):</b> 42% học sinh nhầm lẫn mục tiêu then chốt.
+                    <li><b>Kế hoạch Rơ-ve (1949) vs Kế hoạch Nava (1953):</b> 42% Đồng Sử nhầm lẫn mục tiêu then chốt.
                     </li>
                     <li><b>Ý nghĩa Chiến thắng Vạn Tường (1965):</b> Mở đầu cao trào "Tìm Mỹ mà đánh, lùng ngụy mà
                         diệt".</li>
@@ -20395,7 +20377,7 @@
                     } catch (_) { }
                 }
 
-                // 4. Đọc trực tiếp từ thẻ hiển thị tên học sinh trên topbar (#user-name)
+                // 4. Đọc trực tiếp từ thẻ hiển thị tên Đồng Sử trên topbar (#user-name)
                 if (!displayName) {
                     const userNameEl = document.getElementById('user-name');
                     const domName = userNameEl ? userNameEl.textContent.trim() : '';
@@ -20500,7 +20482,7 @@
                 });
                 const topicsStr = selectedTopics.length > 0 ? selectedTopics.join(', ') : 'Góp ý chung';
 
-                // Lấy chính xác thông tin học sinh hiện tại
+                // Lấy chính xác thông tin Đồng Sử hiện tại
                 const currUser = window.getLociCurrentUser();
                 const userDisplayName = currUser.displayName;
                 const userId = currUser.uid;
@@ -20828,7 +20810,7 @@
 
                 const uid = getCurrentUid();
                 const currUser = (window.LociFirebase && window.LociFirebase.currentUser) || window._lociLocalUser;
-                const displayName = currUser ? (currUser.displayName || 'Bạn') : 'Học sinh';
+                const displayName = currUser ? (currUser.displayName || 'Bạn') : 'Đồng Sử';
 
                 const userTag = document.getElementById('notif-user-tag');
                 if (userTag) userTag.textContent = displayName;
@@ -21043,41 +21025,47 @@
     </script>
 
     <!-- MODAL CHỌN LINH THÚ TRI THỨC (PET SELECTION MODAL) -->
-    <div id="pet-selection-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100050; align-items: center; justify-content: center; padding: 12px; overflow-y: auto; -webkit-overflow-scrolling: touch;" onclick="if(event.target===this) window.closePetSelectionModal()">
-        <div style="background: #ffffff; border-radius: 24px; max-width: 720px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 28px 32px; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.3); border: 1.5px solid rgba(255,255,255,0.8); position: relative; animation: bdtZoomIn 0.28s cubic-bezier(0.16, 1, 0.3, 1);">
-            <button type="button" onclick="window.closePetSelectionModal()" style="position: absolute; top: 20px; right: 20px; width: 34px; height: 34px; border-radius: 50%; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; font-size: 16px; cursor: pointer; display: grid; place-items: center; transition: all 0.2s;">✕</button>
+    <div id="pet-selection-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100050; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;" onclick="if(event.target===this) window.closePetSelectionModal()">
+        <div style="background: #ffffff; border-radius: 24px; max-width: 820px; width: 100%; max-height: 88vh; max-height: 88dvh; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35); border: 1.5px solid #e2e8f0; position: relative; overflow: hidden; animation: bdtZoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
             
-            <div style="text-align: center; margin-bottom: 24px;">
-                <span style="display: inline-block; font-size: 11px; font-weight: 800; color: #6366f1; background: #eef2ff; border: 1px solid #e0e7ff; padding: 3px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 8px;">
-                    HỆ THỐNG LINH THÚ TRI THỨC LOCI
-                </span>
-                <h2 style="font-size: 24px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Chọn Linh Thú Đồng Hành</h2>
-                <p style="font-size: 13.5px; color: #64748b; margin: 0; max-width: 500px; margin-left: auto; margin-right: auto;">
-                    Mỗi linh thú mang nguồn sức mạnh tri thức riêng biệt giúp bạn ghi nhớ sâu và đạt điểm tuyệt đối trong mọi kỳ thi!
-                </p>
-            </div>
-
-            <!-- Grid 4 Linh thú -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(145px, 1fr)); gap: 14px; margin-bottom: 24px;" id="pet-selection-grid">
-                <!-- Rendered by JS -->
-            </div>
-
-            <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 16px; padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; gap: 14px;">
-                <div style="font-size: 12.5px; color: #475569;">
-                    [Gợi ý] <b>Mẹo:</b> Khi học tập trong Cung điện 3D hoặc làm bài thi trắc nghiệm, Linh thú sẽ tự động nhận thêm <b>Điểm No</b> và <b>XP Năng lượng</b>!
+            <!-- STICKY HEADER WITH CLOSE BUTTON -->
+            <div style="padding: 18px 24px 14px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: #ffffff;">
+                <div>
+                    <span style="display: inline-block; font-size: 10.5px; font-weight: 800; color: #6366f1; background: #eef2ff; border: 1px solid #e0e7ff; padding: 2px 10px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                        HỆ THỐNG LINH THÚ TRI THỨC LOCI
+                    </span>
+                    <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0;">Chọn Linh Thú Tri Thức Đồng Hành</h3>
+                    <p style="font-size: 13px; color: #64748b; margin: 3px 0 0 0;">Mỗi linh thú mang một hệ nguyên tố đặc trưng, trợ lực ghi nhớ sâu trong Cung điện 3D</p>
                 </div>
-                <button type="button" onclick="window.closePetSelectionModal()" style="background: #0f172a; color: #fff; border: none; padding: 8px 18px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap;">Xong</button>
+                <button type="button" onclick="window.closePetSelectionModal()" style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; font-size: 16px; font-weight: 800; cursor: pointer; display: grid; place-items: center; transition: all 0.2s; flex-shrink: 0;" title="Đóng">✕</button>
+            </div>
+
+            <!-- SCROLLABLE GRID WITH 7 PETS -->
+            <div style="padding: 20px 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px;" id="pet-selection-grid">
+                    <!-- Rendered by JS -->
+                </div>
+            </div>
+
+            <!-- STICKY FOOTER -->
+            <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-shrink: 0; flex-wrap: wrap;">
+                <div style="font-size: 12.5px; color: #475569;">
+                    💡 <b>Mẹo:</b> Nhấp chọn Linh thú để kích hoạt ngay. Cấp độ cao hơn sẽ thức tỉnh khi bạn tích lũy đủ XP!
+                </div>
+                <button type="button" onclick="window.closePetSelectionModal()" style="background: #0f172a; color: #fff; border: none; padding: 9px 22px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background 0.2s;">
+                    Đóng &amp; Hoàn tất
+                </button>
             </div>
         </div>
     </div>
 
     <!-- LOGIC ĐỔI LINH THÚ TRI THỨC 3D PIXAR & 7 GIAI ĐOẠN TIẾN HÓA -->
     <script>
-        const PET_COMPANIONS = {
+                const PET_COMPANIONS = {
             tiger: {
                 id: 'tiger',
-                name: 'Bạch Hổ Sấm Sét',
-                title: 'Bạch Hổ Sấm Sét · Lôi Minh Đỉnh Cao',
+                name: 'Bạch Hổ Thần Tốc',
+                title: 'Bạch Hổ Thần Tốc · Lôi Minh Đỉnh Cao',
                 element: 'LÔI HỆ',
                 badgeBg: '#e0e7ff',
                 badgeColor: '#4338ca',
@@ -21085,13 +21073,33 @@
                 desc: 'Linh thú mang sức mạnh sấm sét, biểu trưng cho phản xạ nhạy bén và tốc độ xử lý đỉnh cao trong mọi kỳ thi trắc nghiệm lịch sử.',
                 perk: 'Tăng 25% tốc độ phản xạ & Nhân đôi điểm bứt phá',
                 tiers: [
-                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trong vỏ trứng thần', img: 'assets/images/pets/tiger_tier1.png', minXp: 0 },
-                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Vui đùa khám phá', img: 'assets/images/pets/tiger_tier2.png', minXp: 100 },
-                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách vỡ lòng', img: 'assets/images/pets/tiger_tier3.png', minXp: 300 },
-                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân nhỏ', img: 'assets/images/pets/tiger_tier4.png', minXp: 600 },
-                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Hào quang tri thức', img: 'assets/images/pets/tiger_tier5.png', minXp: 1200 },
-                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Bút lông học giả', img: 'assets/images/pets/tiger_tier6.png', minXp: 2000 },
-                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Vương trượng hoàng kim', img: 'assets/images/pets/tiger_tier7.png', minXp: 3200 }
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng thần sơ sinh', minXp: 0, img: 'assets/images/pets/tiger_tier1.png' },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Vui đùa khám phá', minXp: 50, img: 'assets/images/pets/tiger_tier2.png' },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách vỡ lòng', minXp: 150, img: 'assets/images/pets/tiger_tier3.png' },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân nhỏ', minXp: 300, img: 'assets/images/pets/tiger_tier4.png' },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Hào quang tri thức', minXp: 500, img: 'assets/images/pets/tiger_tier5.png' },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Bút lông học giả', minXp: 700, img: 'assets/images/pets/tiger_tier6.png' },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Đại học giả tối cao', minXp: 1000, img: 'assets/images/pets/tiger_tier7.png' }
+                ]
+            },
+            dragon: {
+                id: 'dragon',
+                name: 'Thanh Long Thần Uy',
+                title: 'Thanh Long Trí Giác · Cổ Thụ Ký Ức',
+                element: 'MỘC HỆ',
+                badgeBg: '#ecfdf5',
+                badgeColor: '#059669',
+                badgeBorder: '#a7f3d0',
+                desc: 'Biểu tượng của sự sinh sôi tri thức, kết nối mọi sự kiện lịch sử vào các nhánh không gian 3D Loci vững chắc.',
+                perk: 'Mở rộng cung điện trí nhớ và liên kết sự kiện 3D',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng ngọc sơ sinh', minXp: 0, img: 'assets/images/pets/dragon_tier1.png' },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Tập bay lượn ngàn mây', minXp: 50, img: 'assets/images/pets/dragon_tier2.png' },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách cổ vỡ lòng', minXp: 150, img: 'assets/images/pets/dragon_tier3.png' },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân thông thái', minXp: 300, img: 'assets/images/pets/dragon_tier4.png' },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Sách ngọc thiêng liêng', minXp: 500, img: 'assets/images/pets/dragon_tier5.png' },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Bút nghiên học giả', minXp: 700, img: 'assets/images/pets/dragon_tier6.png' },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Quyền trượng & Vương miện Vua Rồng', minXp: 1000, img: 'assets/images/pets/dragon_tier7.png' }
                 ]
             },
             turtle: {
@@ -21105,73 +21113,13 @@
                 desc: 'Linh thú trấn thủ biển sâu, bảo vệ bền vững kiến thức dài hạn, kiên trì và bền bỉ trong chu kỳ ôn tập ngắt quãng 1-3-7.',
                 perk: 'Củng cố trí nhớ dài hạn Spaced Repetition vững chắc',
                 tiers: [
-                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng ngọc Lam Thủy', img: 'assets/images/pets/turtle_tier1.png', minXp: 0 },
-                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Bờ cát đại dương', img: 'assets/images/pets/turtle_tier2.png', minXp: 100 },
-                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách đại dương', img: 'assets/images/pets/turtle_tier3.png', minXp: 300 },
-                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Kính mắt học trò', img: 'assets/images/pets/turtle_tier4.png', minXp: 600 },
-                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Khí chất thiền định', img: 'assets/images/pets/turtle_tier5.png', minXp: 1200 },
-                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng cử nhân', img: 'assets/images/pets/turtle_tier6.png', minXp: 2000 },
-                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Pháp điển tri thức bất tử', img: 'assets/images/pets/turtle_tier7.png', minXp: 3200 }
-                ]
-            },
-            dragon: {
-                id: 'dragon',
-                name: 'Thanh Long Mộc Diệp',
-                title: 'Thanh Long Trí Giác · Cổ Thụ Ký Ức',
-                element: 'MỘC HỆ',
-                badgeBg: '#ecfdf5',
-                badgeColor: '#059669',
-                badgeBorder: '#a7f3d0',
-                desc: 'Biểu tượng của sự sinh sôi tri thức, kết nối mọi sự kiện lịch sử vào các nhánh không gian 3D Loci vững chắc.',
-                perk: 'Mở rộng cung điện trí nhớ và liên kết sự kiện 3D',
-                tiers: [
-                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng ngọc mầm non', img: 'assets/images/pets/dragon_tier1.png', minXp: 0 },
-                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Sải bước khám phá', img: 'assets/images/pets/dragon_tier2.png', minXp: 100 },
-                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Mê say cổ thư', img: 'assets/images/pets/dragon_tier3.png', minXp: 300 },
-                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ tốt nghiệp tinh thông', img: 'assets/images/pets/dragon_tier4.png', minXp: 600 },
-                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Sải cánh vút bay', img: 'assets/images/pets/dragon_tier5.png', minXp: 1200 },
-                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Biên niên sử hoàng gia', img: 'assets/images/pets/dragon_tier6.png', minXp: 2000 },
-                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Vương miện & Quyền trượng ngọc', img: 'assets/images/pets/dragon_tier7.png', minXp: 3200 }
-                ]
-            },
-            kirin: {
-                id: 'kirin',
-                name: 'Kỳ Lân Hoàng Quang',
-                title: 'Kỳ Lân Hoàng Quang · Giác Ngộ Trí Tuệ',
-                element: 'QUANG HỆ',
-                badgeBg: '#fef3c7',
-                badgeColor: '#d97706',
-                badgeBorder: '#fde68a',
-                desc: 'Linh thú thần thánh bảo hộ Cung Điện Trí Thức, nhân đôi điểm tập trung và mở rộng không gian 3D Loci.',
-                perk: 'Nhân đôi điểm tập trung & Bảo lưu chuỗi ngày học',
-                tiers: [
-                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng ngọc vảy mây', img: 'assets/images/pets/kirin_tier1.png', minXp: 0 },
-                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Bước nhẹ qua mây', img: 'assets/images/pets/kirin_tier2.png', minXp: 100 },
-                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Thánh thư cổ đại', img: 'assets/images/pets/kirin_tier3.png', minXp: 300 },
-                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân ánh sáng', img: 'assets/images/pets/kirin_tier4.png', minXp: 600 },
-                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Tỏa sáng tri thức', img: 'assets/images/pets/kirin_tier5.png', minXp: 1200 },
-                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Kính tri thức & Bút lông', img: 'assets/images/pets/kirin_tier6.png', minXp: 2000 },
-                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Vương miện thái dương & Sách vàng', img: 'assets/images/pets/kirin_tier7.png', minXp: 3200 }
-                ]
-            },
-            phoenix: {
-                id: 'phoenix',
-                name: 'Chu Tước Hỏa Diệm',
-                title: 'Chu Tước Hỏa Diệm · Ý Chí Bất Diệt',
-                element: 'HỎA HỆ',
-                badgeBg: '#ffedd5',
-                badgeColor: '#ea580c',
-                badgeBorder: '#fed7aa',
-                desc: 'Biểu trưng cho ý chí kiên định và ngọn lửa nhiệt huyết tri thức lịch sử, giúp củng cố ký ức dài hạn theo chu kỳ 1-3-7.',
-                perk: 'Hồi sinh câu hỏi sai & Củng cố ký ức 1-3-7',
-                tiers: [
-                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Ngọn lửa trong vỏ trứng', img: 'assets/images/pets/phoenix_tier1.png', minXp: 0 },
-                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Tung cánh lửa non', img: 'assets/images/pets/phoenix_tier2.png', minXp: 100 },
-                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Sách ngọn lửa tri thức', img: 'assets/images/pets/phoenix_tier3.png', minXp: 300 },
-                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Vương miện học trò', img: 'assets/images/pets/phoenix_tier4.png', minXp: 600 },
-                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Đôi cánh lửa thần rực rỡ', img: 'assets/images/pets/phoenix_tier5.png', minXp: 1200 },
-                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng hoàng gia', img: 'assets/images/pets/phoenix_tier6.png', minXp: 2000 },
-                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Ngọn lửa bất tử & Quyền trượng', img: 'assets/images/pets/phoenix_tier7.png', minXp: 3200 }
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng thần lam thủy nứt vỏ', minXp: 0, img: 'assets/images/pets/turtle_tier1.png' },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Bò trên bờ cát tri thức', minXp: 50, img: 'assets/images/pets/turtle_tier2.png' },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách vỡ lòng đáy biển', minXp: 150, img: 'assets/images/pets/turtle_tier3.png' },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Kính mắt cử nhân nhỏ', minXp: 300, img: 'assets/images/pets/turtle_tier4.png' },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Khám phá thư viện cổ hải dương', minXp: 500, img: 'assets/images/pets/turtle_tier5.png' },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Học giả uyên bác biển sâu', minXp: 700, img: 'assets/images/pets/turtle_tier6.png' },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Đại pháp sư râu bạc & Gậy ngọn lửa', minXp: 1000, img: 'assets/images/pets/turtle_tier7.png' }
                 ]
             },
             fox: {
@@ -21185,13 +21133,73 @@
                 desc: 'Linh thú hồ ly hồng 9 đuôi huyền thoại, mang trí tuệ siêu phàm giúp giải mã nhanh chóng các câu hỏi lịch sử đánh lừa và tối ưu hóa phản xạ trí nhớ.',
                 perk: 'Tăng 30% tốc độ giải mã & Nhân đôi điểm may mắn',
                 tiers: [
-                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Hồ ly non trong vỏ trứng sao', img: 'assets/images/pets/fox_tier1.png', minXp: 0 },
-                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Chập chững khám phá', img: 'assets/images/pets/fox_tier2.png', minXp: 100 },
-                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc truyện cổ tích', img: 'assets/images/pets/fox_tier3.png', minXp: 300 },
-                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ tốt nghiệp tinh nghịch', img: 'assets/images/pets/fox_tier4.png', minXp: 600 },
-                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Vòng cổ thạch anh & Nhiều đuôi', img: 'assets/images/pets/fox_tier5.png', minXp: 1200 },
-                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng tím & Bút lông ngọc', img: 'assets/images/pets/fox_tier6.png', minXp: 2000 },
-                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Cửu Vĩ Linh Hồ Pháp Sư Tối Thượng', img: 'assets/images/pets/fox_tier7.png', minXp: 3200 }
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Hồ ly con nứt trứng hồng', minXp: 0, img: 'assets/images/pets/fox_tier1.png' },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Tập đi chập chững', minXp: 50, img: 'assets/images/pets/fox_tier2.png' },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách truyện vỡ lòng', minXp: 150, img: 'assets/images/pets/fox_tier3.png' },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân thông minh', minXp: 300, img: 'assets/images/pets/fox_tier4.png' },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Bốn đuôi thức tỉnh', minXp: 500, img: 'assets/images/pets/fox_tier5.png' },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng tím học giả', minXp: 700, img: 'assets/images/pets/fox_tier6.png' },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Chín đuôi rực rỡ & Quyền trượng trí tuệ', minXp: 1000, img: 'assets/images/pets/fox_tier7.png' }
+                ]
+            },
+            kirin: {
+                id: 'kirin',
+                name: 'Kỳ Lân Hoàng Quang',
+                title: 'Kỳ Lân Hoàng Quang · Giác Ngộ Trí Tuệ',
+                element: 'QUANG HỆ',
+                badgeBg: '#fef3c7',
+                badgeColor: '#d97706',
+                badgeBorder: '#fde68a',
+                desc: 'Linh thú thần thánh bảo hộ Cung Điện Trí Thức, nhân đôi điểm tập trung và mở rộng không gian 3D Loci.',
+                perk: 'Nhân đôi điểm tập trung & Bảo lưu chuỗi ngày học',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng thần sơ sinh', minXp: 0, img: 'assets/images/pets/kirin_tier1.png' },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Vui đùa khám phá', minXp: 50, img: 'assets/images/pets/kirin_tier2.png' },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách vỡ lòng', minXp: 150, img: 'assets/images/pets/kirin_tier3.png' },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân nhỏ', minXp: 300, img: 'assets/images/pets/kirin_tier4.png' },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Hào quang tri thức', minXp: 500, img: 'assets/images/pets/kirin_tier5.png' },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Bút lông học giả', minXp: 700, img: 'assets/images/pets/kirin_tier6.png' },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Đại học giả tối cao', minXp: 1000, img: 'assets/images/pets/kirin_tier7.png' }
+                ]
+            },
+            phoenix: {
+                id: 'phoenix',
+                name: 'Chu Tước Hỏa Diệm',
+                title: 'Chu Tước Hỏa Diệm · Ý Chí Bất Diệt',
+                element: 'HỎA HỆ',
+                badgeBg: '#ffedd5',
+                badgeColor: '#ea580c',
+                badgeBorder: '#fed7aa',
+                desc: 'Biểu trưng cho ý chí kiên định và ngọn lửa nhiệt huyết tri thức lịch sử, giúp củng cố ký ức dài hạn theo chu kỳ 1-3-7.',
+                perk: 'Hồi sinh câu hỏi sai & Củng cố ký ức 1-3-7',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng phượng hoàng lửa', minXp: 0, img: 'assets/images/pets/phoenix_tier1.png' },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Vỗ cánh ngọn lửa nhỏ', minXp: 50, img: 'assets/images/pets/phoenix_tier2.png' },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách vỡ lòng', minXp: 150, img: 'assets/images/pets/phoenix_tier3.png' },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân lửa đỏ', minXp: 300, img: 'assets/images/pets/phoenix_tier4.png' },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Hào quang lửa bất diệt', minXp: 500, img: 'assets/images/pets/phoenix_tier5.png' },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng cử nhân hoàng gia', minXp: 700, img: 'assets/images/pets/phoenix_tier6.png' },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Đại sư phụ ngọn lửa bất tử', minXp: 1000, img: 'assets/images/pets/phoenix_tier7.png' }
+                ]
+            },
+            owl: {
+                id: 'owl',
+                name: 'Cú Tím Cử Nhân',
+                title: 'Noctua Scholar · Cử Nhân Trí Tuệ',
+                element: 'TUỆ HỆ',
+                badgeBg: '#f3e8ff',
+                badgeColor: '#7c3aed',
+                badgeBorder: '#e9d5ff',
+                desc: 'Linh thú cú tím uyên bác, biểu trưng cho trực giác sắc bén, bảo hộ Cung điện Ký ức Loci và tăng 25% tốc độ truy xuất sự kiện lịch sử.',
+                perk: 'Tăng 25% tốc độ truy xuất & Tối ưu hóa phản xạ Loci',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Cú tím non trong vỏ trứng sao', minXp: 0, img: 'assets/images/pets/owl_scholar.png' },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Tập bay lượn thư phòng', minXp: 50, img: 'assets/images/pets/owl_scholar.png' },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách cổ vỡ lòng', minXp: 150, img: 'assets/images/pets/owl_scholar.png' },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân thông thái', minXp: 300, img: 'assets/images/pets/owl_scholar.png' },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Hào quang minh triết Loci', minXp: 500, img: 'assets/images/pets/owl_scholar.png' },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng cử nhân hoàng gia', minXp: 700, img: 'assets/images/pets/owl_scholar.png' },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Đại sư phụ Cung điện Loci', minXp: 1000, img: 'assets/images/pets/owl_scholar.png' }
                 ]
             }
         };
@@ -21247,7 +21255,19 @@
 
         window.closePetSelectionModal = function() {
             const modal = document.getElementById('pet-selection-modal');
-            if (modal) modal.style.display = 'none';
+            if (modal) {
+                modal.style.display = 'none';
+            }
+            const oldModal = document.getElementById('pet-adoption-modal');
+            if (oldModal) {
+                oldModal.classList.remove('open');
+                oldModal.style.display = 'none';
+            }
+            const coModal = document.getElementById('pet-cocare-modal');
+            if (coModal) {
+                coModal.classList.remove('open');
+                coModal.style.display = 'none';
+            }
         };
 
         window.previewPetTier = function(petId, tierLevel) {
@@ -21327,18 +21347,21 @@
                         </div>
                     `;
                 } else {
-                    // CẤP ĐỘ CHƯA MỞ KHÓA: HIỂN THỊ KHÓA BÍ ẨN 🔒 (KHÔNG TIẾT LỘ ẢNH, KHÔNG DÙNG ĐEN TRẮNG)
+                    // CẤP ĐỘ CHƯA MỞ KHÓA: TUYỆT ĐỐI KHÔNG TIẾT LỘ ẢNH MÀU, CHỈ HIỆN BÓNG MỜ ĐEN TRẮNG BÍ ẨN + Ổ KHÓA
                     return `
                         <div class="pet-tier-card is-locked" onclick="window.previewPetTier('${pet.id}', ${tier.level})"
                              style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 16px; padding: 12px 10px; text-align: center; cursor: pointer; transition: transform 0.15s; position: relative;">
                             <div style="font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px;">
                                 ${tier.name}
                             </div>
-                            <div style="width: 80px; height: 80px; margin: 0 auto 8px; display: grid; place-items: center; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border-radius: 14px; border: 1px solid #e2e8f0;">
-                                <div style="font-size: 26px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));">🔒</div>
+                            <div style="width: 80px; height: 80px; margin: 0 auto 8px; display: grid; place-items: center; background: linear-gradient(135deg, #0f172a, #1e293b); border-radius: 14px; border: 1px solid #334155; position: relative; overflow: hidden;">
+                                <img src="${tier.img}" alt="Bí ẩn" style="width: 76px; height: 76px; object-fit: contain; filter: grayscale(100%) contrast(180%) brightness(0.18); opacity: 0.35; pointer-events: none;">
+                                <div style="position: absolute; inset: 0; display: grid; place-items: center; background: rgba(15, 23, 42, 0.4);">
+                                    <span style="font-size: 24px; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5));">🔒</span>
+                                </div>
                             </div>
                             <div style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">
-                                Bí Ẩn · ???
+                                Bí Ẩn · Chưa Thức Tỉnh
                             </div>
                             <span style="display: inline-block; font-size: 9.5px; font-weight: 700; color: #64748b; background: #ffffff; border: 1px solid #cbd5e1; padding: 2px 6px; border-radius: 99px;">
                                 Cần ${tier.minXp} XP
@@ -21354,6 +21377,11 @@
             if (!pet) return;
 
             localStorage.setItem('loci_selected_pet', pet.id);
+            if (window.LociPet && window.LociPet.petData) {
+                window.LociPet.petData.speciesId = pet.id;
+                window.LociPet.petData.name = pet.name;
+                try { localStorage.setItem('loci_companion_pet_data_v1', JSON.stringify(window.LociPet.petData)); } catch (_) {}
+            }
 
             const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
                 ? window.LociAccountManager.getUser() 
@@ -21361,7 +21389,7 @@
             const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
 
-            // Update DOM (nhẹ nhàng, không gây giật lag)
+            // Update DOM
             const imgEl = document.getElementById('active-mascot-img');
             const nameEl = document.getElementById('active-mascot-name');
             const descEl = document.getElementById('active-mascot-desc');
@@ -21387,6 +21415,9 @@
             // Render 7 Evolution Tiers
             window.renderPetEvolutionGrid(pet, activeTier.level, userXp);
 
+            // Luôn đóng modal sau khi chọn xong
+            window.closePetSelectionModal();
+
             if (!isSilent) {
                 try {
                     if (typeof window.playTingTing === 'function') {
@@ -21398,7 +21429,6 @@
                     }
                 } catch (_) {}
 
-                window.closePetSelectionModal();
                 if (typeof showToast === 'function') {
                     showToast(`Đã chọn linh thú đồng hành: ${pet.name} (${activeTier.name})!`, 'success', 2500);
                 }
@@ -21658,11 +21688,11 @@
             const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
                 ? window.LociAccountManager.getUser() 
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            const isAdmin = user && (user.isAdmin || user.role === 'admin' || user.username === 'admin');
+            const canBypass = user && (user.isSuperAdmin || user.canBypassLocks || user.role === 'admin' || user.role === 'superadmin' || user.username === 'quantri' || user.username === 'admin');
 
-            if (!isAdmin && lessonId && !window.isLessonUnlocked(lessonId)) {
+            if (!canBypass && lessonId && !window.isLessonUnlocked(lessonId)) {
                 const prevName = lessonId === 'bai_7' ? 'Bài 6 (Cách mạng tháng Tám)' : 'Bài 7 (Kháng chiến chống Pháp)';
-                const msg = `🔒 Bài học đang khóa! Bạn cần hoàn thành ${prevName} (ôn trạm 3D, thẻ nhớ & đề thi) trước khi mở bài tiếp theo. (Tài khoản Ban Giám Khảo admin/admin123 được toàn quyền trải nghiệm).`;
+                const msg = `🔒 Bạn cần hoàn thiện các bài học trước để mở khóa.`;
                 if (typeof showToast === 'function') {
                     showToast(msg, 'warning', 5000);
                 } else {
@@ -21732,7 +21762,7 @@
             </div>
             <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
                 <p style="font-size: 13.5px; color: #475569; margin: 0; line-height: 1.5;">
-                    Biệt danh này xuất hiện trên Bảng Vinh Danh Loci, Báo cáo Nghiên cứu và Hồ sơ Học sinh của bạn.
+                    Biệt danh này xuất hiện trên Bảng Vinh Danh Loci, Báo cáo Nghiên cứu và Hồ sơ Đồng Sử của bạn.
                 </p>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
                     <label style="font-size: 12.5px; font-weight: 700; color: #0f172a;">Biệt danh / Tên hiển thị:</label>

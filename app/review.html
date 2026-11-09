@@ -2850,6 +2850,7 @@
     <script src="app/flashcard_formats.js" onerror="this.onerror=null;this.src='flashcard_formats.js'"></script>
     <script src="app/review_engine.js" onerror="this.onerror=null;this.src='review_engine.js'"></script>
     <script src="app/reminder_137.js?v=2.2" onerror="this.onerror=null;this.src='reminder_137.js?v=2.2'"></script>
+    <script src="app/loci_progression.js" onerror="this.onerror=null;this.src='loci_progression.js'"></script>
     <!-- 3D Model Viewer & Interactive 3D Model Examination Engine -->
     <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
     <script src="app/model3d_exam_engine.js" onerror="this.onerror=null;this.src='model3d_exam_engine.js'"></script>
@@ -3102,18 +3103,19 @@
                     </div>
                 </div>
 
-                <!-- ĐÚNG 3 TAB TƯƠNG ỨNG 3 BÀI -->
+                <!-- ĐÚNG 3 TAB TƯƠNG ỨNG 3 BÀI (HỆ THỐNG MỞ KHÓA TUẦN TỰ LOCI) -->
                 <div class="trio-tabs-nav">
                     ${ALLOWED_LESSONS.map(k => {
                     const lData = rawLessons.find(r => r.lesson.id === k);
                     const qCount = lData ? lData.qs.length : 90;
                     const m = lessonMeta[k];
                     const isActive = activeLessonFilter === k;
+                    const isUnlocked = window.LociProgression ? window.LociProgression.isLessonUnlocked(k) : (k === 'bai_6');
                     return `
-                        <button type="button" class="trio-tab-btn ${isActive ? 'active' : ''}" data-lesson="${k}" aria-pressed="${isActive}">
-                            <span class="trio-tab-badge">${m.badge}</span>
+                        <button type="button" class="trio-tab-btn ${isActive ? 'active' : ''} ${!isUnlocked ? 'locked' : ''}" data-lesson="${k}" data-locked="${!isUnlocked}" aria-pressed="${isActive}" title="${!isUnlocked ? 'Cần hoàn thành bài học trước đó để mở khóa' : ''}">
+                            <span class="trio-tab-badge">${!isUnlocked ? '🔒 ' : ''}${m.badge}</span>
                             <span class="trio-tab-title">${m.short}</span>
-                            <span class="trio-tab-count">${qCount} câu</span>
+                            <span class="trio-tab-count">${!isUnlocked ? 'Chưa mở' : `${qCount} câu`}</span>
                         </button>`;
                 }).join('')}
                 </div>
@@ -3337,110 +3339,69 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                         <div>
                             <div style="display: inline-flex; align-items: center; gap: 8px; background: #fef3c7; color: #b45309; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; margin-bottom: 6px;">
-                                <span>🎮 Đấu Trường & Game Học Tập 3D</span>
+                                <span>🏁 ĐƯỜNG ĐUA HỌC TẬP</span>
                             </div>
-                            <h3 style="font-size: 21px; font-weight: 800; color: #0f172a; margin: 0;">Đấu Trường Tri Thức & Games Lịch Sử 3D</h3>
+                            <h3 style="font-size: 21px; font-weight: 800; color: #0f172a; margin: 0;">Đường Đua Học Tập · Đấu Trí & Chinh Phục Cúp Loci</h3>
                             <p style="font-size: 13.5px; color: #64748b; margin: 4px 0 0 0;">Thi đấu đối kháng thời gian thực, leo núi Olympia 4 thí sinh và trải nghiệm các game nhập vai 3D.</p>
                         </div>
                     </div>
 
                     <!-- GRID 5 GAMES -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
-                        <!-- GAME 1: ĐƯỜNG LÊN ĐỈNH LOCI (4 THÍ SINH - OLYMPIA) -->
-                        <div class="arcade-game-card" style="background: linear-gradient(135deg, #fefce8 0%, #ffffff 100%); border: 2px solid #facc15; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(234, 179, 8, 0.15);">
-                            <div style="position: absolute; top: 12px; right: 12px; background: #eab308; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
-                                4 THÍ SINH · OLYMPIA
-                            </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px;">
+                        <!-- ĐƯỜNG ĐUA TRI THỨC 1V1 -->
+                        <div style="background: linear-gradient(135deg, #f0f9ff, #ffffff); border: 1.5px solid #bae6fd; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 24px rgba(2, 132, 199, 0.08);">
                             <div>
-                                <div style="font-size: 38px; margin-bottom: 8px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg></div>
-                                <h4 style="font-size: 17px; font-weight: 800; color: #854d0e; margin: 0 0 6px 0;">Đường Lên Đỉnh Loci</h4>
-                                <p style="font-size: 13px; color: #713f12; line-height: 1.45; margin: 0 0 16px 0;">
-                                    Tranh tài cùng 3 bạn học xuất sắc qua 4 vòng thi Olympia: Khởi động, Vượt chướng ngại vật, Tăng tốc, Về đích & Trao Vòng Nguyệt Quế!
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <span style="background: #0284c7; color: #fff; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px;">ĐỐI KHÁNG 1V1</span>
+                                    <span style="font-size: 12px; font-weight: 700; color: #0284c7;">+0.5 XP / Câu Đúng</span>
+                                </div>
+                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 8px;">⚔️ Đường Đua Tri Thức (1v1)</h4>
+                                <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 0 0 16px;">
+                                    Thử thách phản xạ tốc độ với các câu hỏi Lịch sử 12 ngẫu nhiên cùng bạn bè hoặc AI thông minh. Tích lũy chuỗi thắng nhận Huy hiệu Tri Thức.
                                 </p>
                             </div>
-                            <button type="button" class="btn-game-play" data-action="olympia"
-                                style="background: linear-gradient(135deg, #eab308, #ca8a04); color: #fff; border: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(202, 138, 4, 0.35);">
-                                <span>Vào Thi Đấu 4 Người Ngay ➔</span>
+                            <button type="button" onclick="window.ArenaDuelEngine ? window.ArenaDuelEngine.open() : (window.location.href='portal_v2.html#arena')" style="background: #0284c7; color: #fff; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>Vào Đua Ngay ➔</span>
                             </button>
                         </div>
 
-                        <!-- GAME 2: ĐẤU TRƯỜNG TRI THỨC 1v1 -->
-                        <div class="arcade-game-card" style="background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%); border: 2px solid #38bdf8; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden; box-shadow: 0 4px 16px rgba(2, 132, 199, 0.12);">
-                            <div style="position: absolute; top: 12px; right: 12px; background: #0284c7; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
-                                1v1 REALTIME · 30S
-                            </div>
+                        <!-- CÚP LOCI (OLYMPIA) -->
+                        <div style="background: linear-gradient(135deg, #fefce8, #ffffff); border: 1.5px solid #fef08a; border-radius: 20px; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; box-shadow: 0 8px 24px rgba(234, 179, 8, 0.1);">
                             <div>
-                                <div style="font-size: 38px; margin-bottom: 8px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg></div>
-                                <h4 style="font-size: 17px; font-weight: 800; color: #0369a1; margin: 0 0 6px 0;">Đấu Trường Tri Thức (1v1)</h4>
-                                <p style="font-size: 13px; color: #075985; line-height: 1.45; margin: 0 0 16px 0;">
-                                    Ghép trận online 1v1 đối kháng, cùng chiếu 1 câu hỏi trong 30s, tích lũy điểm thắng mở khóa 5 cấp Huy Hiệu Trí Nhớ và Bảng Vàng.
+                                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                                    <span style="background: #eab308; color: #713f12; font-size: 11px; font-weight: 800; padding: 4px 10px; border-radius: 99px;">ĐẠI HỘI 4 NGƯỜI</span>
+                                    <span style="font-size: 12px; font-weight: 800; color: #ca8a04;">+70 XP Vô Địch</span>
+                                </div>
+                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 8px;">🏆 Cúp Loci (Olympia Lịch Sử)</h4>
+                                <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 0 0 16px;">
+                                    Đại hội 4 vòng thi nghẹt thở: Khởi động, Vượt chướng ngại vật, Tăng tốc và Về đích. Giành Vòng nguyệt quế vinh quang và ghi tên lên Bảng Vàng.
                                 </p>
                             </div>
-                            <button type="button" class="btn-game-play" data-action="arena"
-                                style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);">
-                                <span>Ghép Trận 1v1 Ngay ➔</span>
+                            <button type="button" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : (window.location.href='portal_v2.html#olympia')" style="background: #eab308; color: #713f12; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                <span>Tham Gia Cúp Loci ➔</span>
                             </button>
-                        </div>
-
-                        <!-- GAME 3: MỤC TIÊU TRI THỨC 3D -->
-                        <div class="arcade-game-card" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 12px; right: 12px; background: #64748b; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
-                                RUNNER 3D
-                            </div>
-                            <div>
-                                <div style="font-size: 38px; margin-bottom: 8px;">🎯</div>
-                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Mục Tiêu Tri Thức 3D</h4>
-                                <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0 0 16px 0;">
-                                    Game hành động đường chạy vô tận, né chướng ngại vật và bắn hạ các mục tiêu câu hỏi Lịch sử tiếp năng lượng.
-                                </p>
-                            </div>
-                            <a href="game_muc_tieu_tri_thuc.html" style="background: #0f172a; color: #fff; text-decoration: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <span>Vào Chơi Game ➔</span>
-                            </a>
-                        </div>
-
-                        <!-- GAME 4: TRƯỜNG SƠN ĐỔ LỬA 3D -->
-                        <div class="arcade-game-card" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 12px; right: 12px; background: #b45309; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
-                                LÁI XE VẬN TẢI 3D
-                            </div>
-                            <div>
-                                <div style="font-size: 38px; margin-bottom: 8px;">🚛</div>
-                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Trường Sơn Đổ Lửa 3D</h4>
-                                <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0 0 16px 0;">
-                                    Lái đoàn xe vận tải quân sự vượt đèo đá hiểm trở trên tuyến đường Trường Sơn, mở tọa độ trạm kiểm soát lịch sử.
-                                </p>
-                            </div>
-                            <a href="game_truong_son_do_lua.html" style="background: #0f172a; color: #fff; text-decoration: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <span>Vào Chơi Game ➔</span>
-                            </a>
-                        </div>
-
-                        <!-- GAME 5: CHIẾN HÀO LỊCH SỬ 3D -->
-                        <div class="arcade-game-card" style="background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 18px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; position: relative; overflow: hidden;">
-                            <div style="position: absolute; top: 12px; right: 12px; background: #047857; color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px;">
-                                MÊ CUNG 3D
-                            </div>
-                            <div>
-                                <div style="font-size: 38px; margin-bottom: 8px;">💣</div>
-                                <h4 style="font-size: 17px; font-weight: 800; color: #0f172a; margin: 0 0 6px 0;">Chiến Hào Lịch Sử 3D</h4>
-                                <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0 0 16px 0;">
-                                    Nhập vai chiến sĩ vượt mê cung chiến hào hầm ngầm cứ điểm Điện Biên Phủ, giải đố mật mã lịch sử để chiến thắng.
-                                </p>
-                            </div>
-                            <a href="game_chien_hao_3d.html" style="background: #0f172a; color: #fff; text-decoration: none; padding: 11px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <span>Vào Chơi Game ➔</span>
-                            </a>
                         </div>
                     </div>
                 </div>
 
             `;
 
-                // Chọn bài: chỉ phản hồi khi click (không re-render theo hover)
+                // Chọn bài: kiểm tra khóa mở tuần tự theo quy chuẩn Loci
                 root.querySelectorAll('.trio-tab-btn').forEach(btn => {
                     const targetLesson = btn.dataset.lesson;
+                    const isLocked = btn.dataset.locked === 'true';
                     btn.onclick = () => {
+                        if (isLocked) {
+                            if (window.LociProgression && typeof window.LociProgression.showLockedModal === 'function') {
+                                window.LociProgression.showLockedModal(targetLesson, (continueLesson) => {
+                                    activeLessonFilter = continueLesson;
+                                    home();
+                                });
+                            } else {
+                                alert('Bài học này đang bị khóa. Bạn cần hoàn thành bài học trước đó theo đúng quy trình Loci!');
+                            }
+                            return;
+                        }
                         if (activeLessonFilter === targetLesson) return;
                         activeLessonFilter = targetLesson;
                         home();
@@ -4062,6 +4023,16 @@
                     try {
                         if (window.LociReminder137 && percent >= 50) {
                             window.LociReminder137.recordLessonCompleted(x.lesson.id, percent);
+                        }
+                    } catch (e) { }
+
+                    // Ghi nhận vào hệ thống mở khóa tuần tự LociProgression
+                    try {
+                        if (window.LociProgression) {
+                            window.LociProgression.recordFlashcardReviewed(x.lesson.id);
+                            if (actualTotal >= 5) {
+                                window.LociProgression.recordQuizScore(x.lesson.id, percent);
+                            }
                         }
                     } catch (e) { }
 

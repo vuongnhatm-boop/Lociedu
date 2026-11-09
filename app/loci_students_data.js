@@ -1523,6 +1523,28 @@
     window.LOCI_STUDENTS_POOL = LOCI_STUDENTS_POOL;
     window.lociStudentsPool = LOCI_STUDENTS_POOL;
 
+    // Danh sách 18 hoạt động thực tế dày đặc của học sinh ôn thi Sử (10/10/2026 - 07/11/2026)
+    window.LOCI_STUDENT_ACTIVITIES = [
+        { studentId: "student_hist_7", name: "Hoàng Huyền Trân", classRoom: "12A1", action: "Đạt điểm 10 tuyệt đối đề thi thử TN Sử 2026 cấu trúc mới", date: "2026-11-07T19:45:00.000Z" },
+        { studentId: "student_hist_1", name: "Đặng Thùy Dương", classRoom: "12C1", action: "Chia sẻ sơ đồ Loci 3 miền Bắc - Trung - Nam khởi nghĩa tháng 8", date: "2026-11-06T14:20:00.000Z" },
+        { studentId: "student_hist_4", name: "Lý Văn Đoàn", classRoom: "12C1", action: "Vô địch tuần Cúp Loci câu xe tăng 390 Dinh Độc Lập 1975", date: "2026-11-05T21:10:00.000Z" },
+        { studentId: "student_hist_5", name: "Nùng Thị Thanh", classRoom: "12A1", action: "Hoàn thành chu kỳ nhắc học 1-3-7 của Bài 7 tại bàn học", date: "2026-11-04T16:30:00.000Z" },
+        { studentId: "student_hist_3", name: "Lưu Phương Linh", classRoom: "12A1", action: "Hoàn thành ảnh 360 tự chụp phòng học gắn 9 trạm Loci Bài 6", date: "2026-11-03T20:05:00.000Z" },
+        { studentId: "student_hist_2", name: "Giàng Thị Dùa", classRoom: "12A1", action: "Linh thú Bạch Hổ Thần Tốc thăng cấp 2 Tập đi / Ấu thơ", date: "2026-11-02T15:15:00.000Z" },
+        { studentId: "student_hist_9", name: "La Hoàng Uyên", classRoom: "12A1", action: "So sánh bước ngoặt Biên giới 1950 và Điện Biên Phủ 1954", date: "2026-11-01T09:30:00.000Z" },
+        { studentId: "student_hist_8", name: "Lý Huyền Trân", classRoom: "12A1", action: "Đạt 9.5 điểm đề thi trắc nghiệm thử số 03 môn Sử", date: "2026-10-30T21:40:00.000Z" },
+        { studentId: "student_hist_13", name: "Sùng Thị Hoa", classRoom: "12A2", action: "Cửu Vĩ Linh Hồ đạt Cấp 3 mầm non đọc sách trong phòng 3D", date: "2026-10-28T17:20:00.000Z" },
+        { studentId: "student_hist_4", name: "Long Minh Phương", classRoom: "12A1", action: "Phân biệt Tuyên ngôn Độc lập Ba Đình và Lời kêu gọi Vạn Phúc", date: "2026-10-26T08:45:00.000Z" },
+        { studentId: "student_hist_14", name: "Vàng Thị Khứ", classRoom: "12A2", action: "Giữ chuỗi học tập Loci 14 ngày liên tiếp không đứt đoạn", date: "2026-10-24T20:15:00.000Z" },
+        { studentId: "student_hist_6", name: "Phạm Ngọc Thuỳ Trang", classRoom: "12A1", action: "Đi bộ ảo WASD trong phòng 360 ôn 9 trạm trước giờ kiểm tra", date: "2026-10-22T15:30:00.000Z" },
+        { studentId: "student_hist_12", name: "Chảo Mùi Ghến", classRoom: "12A2", action: "Hoàn thành Bài 6 và chính thức mở khóa Bài 7", date: "2026-10-20T10:25:00.000Z" },
+        { studentId: "student_hist_1", name: "Lò Thị Chuyển", classRoom: "12A1", action: "Luyện thẻ đảo chiều nguyên nhân - kết quả Cách mạng tháng Tám", date: "2026-10-18T21:15:00.000Z" },
+        { studentId: "student_hist_10", name: "Má Thị Dua", classRoom: "12A2", action: "Rồng Xanh ấp nở thành công cấp 1 sơ sinh trong phòng 3D", date: "2026-10-16T16:40:00.000Z" },
+        { studentId: "student_hist_11", name: "Thào Thị Dung", classRoom: "12A2", action: "Gắn 4 tỉnh giành chính quyền sớm nhất vào 4 góc bàn học", date: "2026-10-14T19:50:00.000Z" },
+        { studentId: "student_hist_15", name: "Nguyễn Ngọc Lan", classRoom: "12A2", action: "Ôn tập SM-2 dạng điền khuyết Lời thề độc lập Trường Sơn", date: "2026-10-12T14:10:00.000Z" },
+        { studentId: "student_hist_4", name: "Long Minh Phương", classRoom: "12A1", action: "Khởi tạo Cung điện Loci trong phòng 360, gắn mốc Nhật đầu hàng", date: "2026-10-10T09:15:00.000Z" }
+    ];
+
     // Helper functions cho Đấu trường & Olympia
     window.getRandomBotStudents = function(count = 3, excludeId = null) {
         const filtered = LOCI_STUDENTS_POOL.filter(s => s.id !== excludeId);

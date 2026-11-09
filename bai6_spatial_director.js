@@ -505,8 +505,9 @@
         mesh.renderOrder = 99999;
 
         // Cập nhật hướng mặt về phía camera trong vòng lặp render
-        activeProps.push({
-            type: 'billboard_badge',
+        mesh.visible = false; // Xóa nhãn bay lơ lửng
+        // activeProps.push({
+            // type: 'billboard_badge',
             mesh,
             baseY: pos.y
         });
@@ -742,8 +743,8 @@
         group.add(dateBadge);
 
         // Cho cả biển chữ và ngày tháng xoay mặt theo camera (Billboard) để nhìn từ góc nào cũng rõ
-        activeProps.push({ type: 'billboard_badge', mesh: hanoiBadge, baseY: stBasePos.y + 2.85 });
-        activeProps.push({ type: 'billboard_badge', mesh: dateBadge, baseY: stBasePos.y + 2.85 });
+        hanoiBadge.visible = false;
+        dateBadge.visible = false;
 
         // Vòng hào quang ánh sáng xoay quanh
         const auraGeo = new THREE.TorusGeometry(1.5, 0.025, 16, 48);

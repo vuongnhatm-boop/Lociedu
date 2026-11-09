@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * LOCI EDU - UNIFIED ACCOUNT & PROGRESS MANAGER (BACKEND CORE)
- * Quản lý đồng bộ tập trung: Tài khoản, Căn cước học sinh, Tiến độ học, XP,
+ * Quản lý đồng bộ tập trung: Tài khoản, Thẻ Căn Cước Đồng Sử, Tiến độ học, XP,
  * Cấp bậc Loci, Thống kê làm bài và Trạng thái xác thực.
  * Hoạt động mượt mà cả Offline (Local) và Real-time Cloud (Firestore).
  * ============================================================================
@@ -21,6 +21,28 @@
   };
 
   const DEFAULT_SEED_ACCOUNTS = {
+    "quantri": {
+      uid: "loci_superadmin_quantri",
+      username: "quantri",
+      displayName: "Quản Trị Viên Tối Cao",
+      email: "quantri@loci.edu.vn",
+      password: (typeof global.btoa === 'function' ? global.btoa('quantri123') : 'quantri123'),
+      photoURL: "assets/images/loci_avatar.jpg",
+      avatar: "assets/images/loci_avatar.jpg",
+      school: "Hệ Thống Loci Edu",
+      role: "superadmin",
+      isAdmin: true,
+      isSuperAdmin: true,
+      canBypassLocks: true,
+      xp: 999999,
+      level: 7,
+      streak: 999,
+      honorRole: "Tổng Quản Trị Hệ Thống Toàn Quyền",
+      petName: "Thanh Long Thần Uy",
+      petTier: 7,
+      lociCups: 999,
+      registeredAt: "2026-01-01T00:00:00.000Z"
+    },
     "admin": {
       uid: "loci_admin_bgk",
       username: "admin",
@@ -138,7 +160,7 @@
       xp: 3120,
       level: 4,
       streak: 14,
-      honorRole: "Học sinh Tích cực · 3,120 pts",
+      honorRole: "Đồng Sử Tích cực · 3,120 pts",
       petName: "Kỳ Lân Trí Tuệ",
       petTier: 2,
       registeredAt: "2026-08-28T10:10:00.000Z"
@@ -172,7 +194,7 @@
       xp: 2850,
       level: 3,
       streak: 10,
-      honorRole: "Học sinh Tiên tiến · 2,850 pts",
+      honorRole: "Đồng Sử Tiên tiến · 2,850 pts",
       petName: "Cửu Vĩ Linh Hồ",
       petTier: 2,
       registeredAt: "2026-09-22T13:20:00.000Z"
@@ -206,7 +228,7 @@
       xp: 2540,
       level: 3,
       streak: 7,
-      honorRole: "Học sinh Triển vọng · 2,540 pts",
+      honorRole: "Đồng Sử Triển vọng · 2,540 pts",
       petName: "Kỳ Lân Trí Tuệ",
       petTier: 1,
       registeredAt: "2026-10-18T18:00:00.000Z"
@@ -387,7 +409,7 @@
       const uname = src.username || (src.email ? src.email.split('@')[0] : 'hocsinh');
       const cleanUname = String(uname).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
       const isAdminUser = cleanUname === 'admin' || src.role === 'admin' || !!src.isAdmin;
-      const dname = src.displayName || (isAdminUser ? 'Ban Giám Khảo Loci' : uname) || 'Học sinh Loci';
+      const dname = src.displayName || (isAdminUser ? 'Ban Giám Khảo Loci' : uname) || 'Đồng Sử Loci';
       const uid = src.uid || ('loci_' + cleanUname);
       const email = src.email || (cleanUname + '@loci.edu.vn');
       const xp = isAdminUser ? 99999 : parseInt(src.xp || (src.stats && src.stats.xp) || 50, 10);

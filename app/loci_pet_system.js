@@ -13,6 +13,34 @@
     'use strict';
 
     const STORAGE_KEY = 'loci_companion_pet_data_v1';
+
+    // TIÊU CHUẨN XP NUÔI DƯỠNG LINH THÚ TRI THỨC (7 CẤP ĐỘ TIẾN HÓA)
+    const PET_TIER_THRESHOLDS = [
+        { level: 1, name: 'Cấp 1: Sơ sinh', minXp: 0, title: 'Trứng thần sơ sinh' },
+        { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', minXp: 50, title: 'Khám phá thế giới' },
+        { level: 3, name: 'Cấp 3: Mầm non', minXp: 150, title: 'Đọc sách vỡ lòng' },
+        { level: 4, name: 'Cấp 4: Tiểu học', minXp: 300, title: 'Mũ cử nhân nhỏ' },
+        { level: 5, name: 'Cấp 5: Thiếu niên', minXp: 500, title: 'Hào quang tri thức' },
+        { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', minXp: 700, title: 'Bút lông học giả' },
+        { level: 7, name: 'Cấp 7: Bác học / Giáo sư', minXp: 1000, title: 'Đại học giả tối cao' }
+    ];
+
+    function calculatePetLevel(petXp) {
+        let lvl = 1;
+        for (let i = PET_TIER_THRESHOLDS.length - 1; i >= 0; i--) {
+            if (petXp >= PET_TIER_THRESHOLDS[i].minXp) {
+                lvl = PET_TIER_THRESHOLDS[i].level;
+                break;
+            }
+        }
+        return lvl;
+    }
+
+    function getNextTierXp(currentLevel) {
+        const nextTier = PET_TIER_THRESHOLDS.find(t => t.level === currentLevel + 1);
+        return nextTier ? nextTier.minXp : 1000;
+    }
+
     const AUDIO_PATH = 'assets/audio/ting_ting.mp3';
 
     // Âm thanh thông báo "tính tinh" chuẩn
@@ -26,16 +54,56 @@
 
     // Danh mục 3 Linh thú tri thức thần thoại được vẽ vector chuẩn xác
         // Danh mục 4 Linh thú tri thức 3D Pixar chất lượng cao
-    const PET_SPECIES = {
-        owl: {
-            id: 'owl',
-            name: 'Cú Tím Cử Nhân',
-            subName: 'Noctua Scholar · Đại Hội Thần Tốc',
-            desc: 'Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 25% tốc độ truy xuất sự kiện.',
-            color: '#7c3aed',
-            colorGrad: 'linear-gradient(135deg, #6d28d9, #8b5cf6)',
-            badge: 'TUỆ HỆ · ĐẠI HỘI THẦN TỐC',
-            image: 'assets/images/pets/owl_scholar.png'
+        const PET_SPECIES = {
+        tiger: {
+            id: 'tiger',
+            name: 'Bạch Hổ Thần Tốc',
+            subName: 'Solar White Tiger · Linh Thú Phản Xạ',
+            desc: 'Linh thú biểu trưng cho phản xạ nhạy bén và tốc độ xử lý đỉnh cao trong mọi kỳ thi thử và đề trắc nghiệm lịch sử.',
+            color: '#4f46e5',
+            colorGrad: 'linear-gradient(135deg, #4338ca, #6366f1)',
+            badge: 'LÔI HỆ · TĂNG PHẢN XẠ THI CỬ',
+            image: 'assets/images/pets/tiger_tier1.png'
+        },
+        dragon: {
+            id: 'dragon',
+            name: 'Thanh Long Thần Uy',
+            subName: 'Thanh Long Trí Giác · Cổ Thụ Ký Ức',
+            desc: 'Biểu tượng của sự sinh sôi tri thức, kết nối mọi sự kiện lịch sử vào các nhánh không gian 3D Loci vững chắc.',
+            color: '#059669',
+            colorGrad: 'linear-gradient(135deg, #059669, #10b981)',
+            badge: 'MỘC HỆ · MỞ RỘNG CUNG ĐIỆN 3D',
+            image: 'assets/images/pets/dragon_tier1.png'
+        },
+        turtle: {
+            id: 'turtle',
+            name: 'Huyền Vũ Lam Thủy',
+            subName: 'Huyền Vũ Thông Thái · Ký Ức Biển Sâu',
+            desc: 'Linh thú trấn thủ biển sâu, bảo vệ bền vững kiến thức dài hạn, kiên trì và bền bỉ trong chu kỳ ôn tập ngắt quãng 1-3-7.',
+            color: '#0284c7',
+            colorGrad: 'linear-gradient(135deg, #0284c7, #06b6d4)',
+            badge: 'THỦY HỆ · CỦNG CỐ TRÍ NHỚ 1-3-7',
+            image: 'assets/images/pets/turtle_tier1.png'
+        },
+        fox: {
+            id: 'fox',
+            name: 'Cửu Vĩ Linh Hồ',
+            subName: 'Hồ Ly Trí Tuệ · Giác Ngộ Cung Điện',
+            desc: 'Linh thú hồ ly hồng 9 đuôi huyền thoại, mang trí tuệ siêu phàm giúp giải mã nhanh chóng các câu hỏi lịch sử đánh lừa và tối ưu hóa phản xạ trí nhớ.',
+            color: '#db2777',
+            colorGrad: 'linear-gradient(135deg, #db2777, #f43f5e)',
+            badge: 'ẢO HỆ · PHÂN TÍCH SUY LUẬN ĐỈNH CAO',
+            image: 'assets/images/pets/fox_tier1.png'
+        },
+        kirin: {
+            id: 'kirin',
+            name: 'Kỳ Lân Hoàng Quang',
+            subName: 'Aureus Kirin · Linh Thú Trí Tuệ',
+            desc: 'Linh thú thần thánh bảo hộ Cung Điện Trí Thức. Nhân đôi điểm tập trung và mở rộng không gian 3D Loci.',
+            color: '#d97706',
+            colorGrad: 'linear-gradient(135deg, #d97706, #f59e0b)',
+            badge: 'QUANG HỆ · NHÂN ĐÔI TẬP TRUNG',
+            image: 'assets/images/pets/kirin_tier1.png'
         },
         phoenix: {
             id: 'phoenix',
@@ -45,27 +113,17 @@
             color: '#ea580c',
             colorGrad: 'linear-gradient(135deg, #ea580c, #f59e0b)',
             badge: 'HỎA HỆ · TĂNG TRUY XUẤT',
-            image: 'assets/images/pets/phoenix_fire.png'
+            image: 'assets/images/pets/phoenix_tier1.png'
         },
-        kirin: {
-            id: 'kirin',
-            name: 'Kỳ Lân Hoàng Quang',
-            subName: 'Aureus Kirin · Linh Thú Trí Tuệ',
-            desc: 'Linh thú thần thánh bảo hộ Cung Điện Trí Thức. Nhân đôi điểm tập trung và mở rộng không gian 3D Loci.',
-            color: '#0284c7',
-            colorGrad: 'linear-gradient(135deg, #0284c7, #06b6d4)',
-            badge: 'QUANG HỆ · NHÂN ĐÔI TẬP TRUNG',
-            image: 'assets/images/pets/kirin_aura.png'
-        },
-        tiger: {
-            id: 'tiger',
-            name: 'Bạch Hổ Thần Tốc',
-            subName: 'Solar White Tiger · Linh Thú Phản Xạ',
-            desc: 'Linh thú biểu trưng cho phản xạ nhạy bén và tốc độ xử lý đỉnh cao trong mọi kỳ thi thử và đề trắc nghiệm lịch sử.',
-            color: '#4f46e5',
-            colorGrad: 'linear-gradient(135deg, #4338ca, #6366f1)',
-            badge: 'LÔI HỆ · TĂNG PHẢN XẠ THI CỬ',
-            image: 'assets/images/pets/tiger_speed.png'
+        owl: {
+            id: 'owl',
+            name: 'Cú Tím Cử Nhân',
+            subName: 'Noctua Scholar · Đại Hội Thần Tốc',
+            desc: 'Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 25% tốc độ truy xuất sự kiện.',
+            color: '#7c3aed',
+            colorGrad: 'linear-gradient(135deg, #6d28d9, #8b5cf6)',
+            badge: 'TUỆ HỆ · ĐẠI HỘI THẦN TỐC',
+            image: 'assets/images/pets/owl_scholar.png'
         }
     };
 
@@ -92,7 +150,7 @@
                         happiness: 85,
                         roomCode: 'LOCI-PET-2027',
                         lastFed: Date.now(),
-                        coCareMembers: ['Bạn (Trưởng nhóm)'],
+                        coCareMembers: ['Đồng Sử (Trưởng nhóm)'],
                         history: [
                             { time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}), act: 'Đồng hành cùng bạn ôn tập' }
                         ]
@@ -123,7 +181,7 @@
                 happiness: 85, // Hạnh phúc
                 roomCode: roomCode || ('LOCI-PET-' + Math.floor(1000 + Math.random() * 9000)),
                 lastFed: Date.now(),
-                coCareMembers: ['Bạn (Trưởng nhóm)'],
+                coCareMembers: ['Đồng Sử (Trưởng nhóm)'],
                 history: [
                     { time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}), act: 'Nhận nuôi thành công Linh thú!' }
                 ]
@@ -155,24 +213,34 @@
             this.saveData();
         }
 
-        addExp(amount, reason = '') {
-            this.petData.exp += amount;
+                addExp(amount, reason = '') {
+            if (!this.petData) return;
+            const prevLevel = this.petData.level || 1;
+            this.petData.exp = (this.petData.exp || 0) + amount;
+
             if (reason) {
                 this.petData.history.unshift({
                     time: new Date().toLocaleTimeString('vi-VN', {hour: '2-digit', minute:'2-digit'}),
-                    act: `${reason} (+${amount} XP)`
+                    act: `${reason} (+${amount} XP nuôi Linh thú)`
                 });
                 if (this.petData.history.length > 8) this.petData.history.pop();
             }
 
-            // Thăng cấp
-            while (this.petData.exp >= this.petData.maxExp) {
-                this.petData.exp -= this.petData.maxExp;
-                this.petData.level += 1;
-                this.petData.maxExp = Math.round(this.petData.maxExp * 1.5);
+            // Tính toán cấp độ theo đúng thang điểm chuẩn: 0 -> 50 -> 150 -> 300 -> 500 -> 700 -> 1000
+            const newLevel = calculatePetLevel(this.petData.exp);
+            if (newLevel > prevLevel) {
+                this.petData.level = newLevel;
                 window.playTingTing();
-                this.showFloatingEffect(`THĂNG CẤP ${this.petData.level}!`);
+                this.showFloatingEffect(`🎉 LINH THÚ THĂNG CẤP ${newLevel}!`);
             }
+            this.petData.maxExp = getNextTierXp(this.petData.level);
+
+            // Cho phép nhận nuôi thêm Linh thú khi đã đạt Cấp 7 (1000 XP)
+            if (this.petData.level >= 7 && !this.petData.canAdoptNext) {
+                this.petData.canAdoptNext = true;
+                this.showFloatingEffect(`🌟 Linh thú đã đạt Cấp 7 Bác học! Đồng Sử có thể nhận nuôi thêm Thần thú mới!`);
+            }
+
             this.saveData();
         }
 
@@ -258,6 +326,15 @@
         renderUI() {
             const container = document.getElementById('loci-pet-dashboard-slot');
             if (!container) return;
+
+            // Nếu giao diện Cung điện Portal đã có khung mascot chuẩn, cập nhật mượt mà và không ghi đè HTML
+            if (document.getElementById('active-mascot-img')) {
+                const savedPet = localStorage.getItem('loci_selected_pet') || (this.petData ? this.petData.speciesId : 'tiger');
+                if (typeof window.selectCompanionPet === 'function') {
+                    window.selectCompanionPet(savedPet, true);
+                }
+                return;
+            }
 
             if (!this.petData) {
                 // Chưa chọn pet -> Hiển thị Call-to-action chọn pet
@@ -373,74 +450,30 @@
                 window.openPetSelectionModal();
                 return;
             }
-            let modal = document.getElementById('pet-adoption-modal');
-            if (!modal) {
-                modal = document.createElement('div');
-                modal.id = 'pet-adoption-modal';
-                modal.className = 'loci-pet-modal-overlay';
-                document.body.appendChild(modal);
+            const modal = document.getElementById('pet-selection-modal');
+            if (modal) {
+                modal.style.display = 'flex';
+                return;
             }
-
-            modal.innerHTML = `
-                <div class="loci-pet-modal-card" style="padding: 32px 28px; text-align: left;">
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 18px;">
-                        <div>
-                            <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0;">Chọn Linh Thú Tri Thức Đồng Hành</h3>
-                            <p style="font-size: 13px; color: #64748b; margin: 4px 0 0;">Lựa chọn một linh thú thần thoại phù hợp với phong cách học tập của bạn</p>
-                        </div>
-                        <button type="button" onclick="document.getElementById('pet-adoption-modal').classList.remove('open')" style="background:#f1f5f9; border:none; width:32px; height:32px; border-radius:50%; cursor:pointer;">✕</button>
-                    </div>
-
-                    <!-- 3 Cards chọn linh thú -->
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px;">
-                        ${Object.values(PET_SPECIES).map((sp, idx) => `
-                            <div class="pet-pick-card" onclick="window.LociPet.selectSpecies('${sp.id}', this)" style="border: 2px solid ${idx === 0 ? sp.color : '#e2e8f0'}; background: ${idx === 0 ? 'rgba(2,132,199,0.04)' : '#fff'}; border-radius: 16px; padding: 16px; cursor: pointer; text-align: center; transition: all 0.2s;" data-species="${sp.id}">
-                                <div style="width: 100px; height: 100px; margin: 0 auto 8px; display: grid; place-items: center;">
-                                    <img src="${sp.image}" alt="${sp.name}" style="width: 95px; height: 95px; object-fit: contain; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.18));">
-                                </div>
-                                <div style="font-size: 14.5px; font-weight: 800; color: #0f172a;">${sp.name}</div>
-                                <div style="font-size: 11px; font-weight: 700; color: ${sp.color}; margin: 4px 0;">${sp.badge}</div>
-                                <div style="font-size: 11.5px; color: #64748b; line-height: 1.4;">${sp.desc}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-
-                    <!-- Ô đặt tên & mã phòng nuôi chung -->
-                    <div style="margin-bottom: 16px;">
-                        <label style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Đặt tên cho Linh Thú</label>
-                        <input type="text" id="pet-custom-name" placeholder="Ví dụ: Phượng Hoàng Lộc, Bạch Hổ 12A..." style="width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none;">
-                    </div>
-
-                    <div style="display: flex; gap: 10px; justify-content: flex-end;">
-                        <button type="button" onclick="document.getElementById('pet-adoption-modal').classList.remove('open')" style="padding: 10px 18px; border: 1px solid #cbd5e1; background: #fff; border-radius: 10px; font-weight: 700; cursor: pointer;">Hủy</button>
-                        <button type="button" onclick="window.LociPet.confirmAdoption()" style="padding: 10px 24px; background: #0284c7; color: #fff; border: none; border-radius: 10px; font-weight: 700; cursor: pointer;">Xác Nhận Nhận Nuôi ➔</button>
-                    </div>
-                </div>
-            `;
-            modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
-            modal.classList.add('open');
-            this.selectedSpeciesId = 'tiger';
         }
 
-        selectSpecies(speciesId, cardEl) {
-            this.selectedSpeciesId = speciesId;
-            document.querySelectorAll('.pet-pick-card').forEach(c => {
-                c.style.borderColor = '#e2e8f0';
-                c.style.background = '#ffffff';
-            });
-            const sp = PET_SPECIES[speciesId];
-            if (cardEl && sp) {
-                cardEl.style.borderColor = sp.color;
-                cardEl.style.background = 'rgba(2,132,199,0.05)';
+        selectSpecies(speciesId) {
+            if (typeof window.selectCompanionPet === 'function') {
+                window.selectCompanionPet(speciesId);
             }
+            if (typeof window.closePetSelectionModal === 'function') {
+                window.closePetSelectionModal();
+            }
+            const oldModal = document.getElementById('pet-adoption-modal');
+            if (oldModal) oldModal.classList.remove('open');
         }
 
         confirmAdoption() {
-            const nameInput = document.getElementById('pet-custom-name');
-            const nickname = nameInput ? nameInput.value.trim() : '';
-            this.createNewPet(this.selectedSpeciesId || 'owl', nickname);
-            const modal = document.getElementById('pet-adoption-modal');
-            if (modal) modal.classList.remove('open');
+            if (typeof window.closePetSelectionModal === 'function') {
+                window.closePetSelectionModal();
+            }
+            const oldModal = document.getElementById('pet-adoption-modal');
+            if (oldModal) oldModal.classList.remove('open');
         }
 
         openCoCareModal() {

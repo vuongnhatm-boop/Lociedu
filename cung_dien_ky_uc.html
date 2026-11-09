@@ -3755,7 +3755,8 @@ function _decodeGeminiKey(s) {
       sprite.scale.set(0.68, 0.17, 1);
       sprite.position.y = 0.46; // Bay lơ lửng trên đầu mốc
       sprite.renderOrder = 1000;
-      group.add(sprite);
+      sprite.visible = false; // Xóa thanh tên bay lơ lửng theo yêu cầu
+      // group.add(sprite);
 
       // 6. Invisible Hitbox for Easy Clicking
       const hitGeo = new THREE.SphereGeometry(0.5, 12, 12);
@@ -7426,7 +7427,7 @@ function _decodeGeminiKey(s) {
 
     // Shortcut: Press 'B' or 'M' key to trigger Voice Assistant / AI Drawer
     window.addEventListener('keydown', (e) => {
-      if ((e.code === 'KeyM' || e.code === 'KeyB') && !isModalOpen() && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      if ((e.code === 'KeyB') && !isModalOpen() && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
         e.preventDefault();
         showPlasmaWidget();
         ai.toggleListening();

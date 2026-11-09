@@ -33,8 +33,7 @@
 
 
     <meta charset="UTF-8">
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="viewport" content="width=1280, initial-scale=0.35, maximum-scale=3.0, user-scalable=yes">
 
     <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
     <script id="desktop-scale-meta-controller">
@@ -46,6 +45,7 @@ function _decodeGeminiKey(s) {
 
     (function enforceDesktopProportionOnMobile() {
         try {
+            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
             var screenW = window.screen.width;
             var targetW = 1200; // Layout chuẩn máy tính (PC)
             if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
@@ -1892,24 +1892,75 @@ function _decodeGeminiKey(s) {
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
     
-        /* --- CHỮ MỐC NHỎ GỌN TRÁNH CHE MÔ HÌNH 3D --- */
+        /* --- CHỮ MỐC NHỎ GỌN TINH TẾ TRÁNH CHE KHÔNG GIAN 360 & MÔ HÌNH 3D --- */
+        .marker {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            pointer-events: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px !important;
+            cursor: pointer;
+            z-index: 5;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
         .marker .dot {
-            width: 28px !important;
-            height: 28px !important;
-            font-size: 13px !important;
+            width: 26px !important;
+            height: 26px !important;
+            font-size: 11.5px !important;
+            font-weight: 800 !important;
             border-width: 2px !important;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35) !important;
+            border-radius: 50% !important;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4), 0 0 10px rgba(56, 189, 248, 0.5) !important;
+            display: grid !important;
+            place-items: center !important;
         }
 
         .marker .lab {
-            padding: 3px 10px !important;
+            padding: 2.5px 8px !important;
             border-radius: 99px !important;
-            font-size: 11.5px !important;
+            font-size: 10.5px !important;
             font-weight: 700 !important;
-            max-width: 180px !important;
-            border: 1px solid rgba(255, 255, 255, 0.35) !important;
+            max-width: 140px !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            border: 1px solid rgba(255, 255, 255, 0.25) !important;
+            background: rgba(15, 23, 42, 0.88) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
             letter-spacing: 0.1px !important;
+            pointer-events: none !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            gap: 4px !important;
+            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1) !important;
+        }
+
+        .marker .marker-loc-badge {
+            color: #38bdf8 !important;
+            font-weight: 800 !important;
+            font-size: 10px !important;
+            flex-shrink: 0 !important;
+        }
+
+        .marker .marker-title-text {
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            white-space: nowrap !important;
+        }
+
+        .marker:hover .lab,
+        .marker.sel .lab {
+            max-width: 300px !important;
+            background: rgba(15, 23, 42, 0.98) !important;
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.6) !important;
+            transform: scale(1.05) translateY(-2px) !important;
+            z-index: 100 !important;
         }
 
         /* --- CHẾ ĐỘ MÁY TÍNH (DESKTOP): CHỈ HIỆN ĐẶT MỐC, DI CHUYỂN & PHÓNG TO MỐC --- */
@@ -2695,7 +2746,7 @@ function _decodeGeminiKey(s) {
                 'b7_m1': { title: '3 ông Đồng minh & Tình thế ngàn cân treo sợi tóc', url: 'assets/models/bai7/tram1/3ooong.glb', scale: 0.85 },
                 'b7_m2': { title: 'Mít tinh Sài Gòn Pháp đánh', url: 'assets/models/bai7/tram2/mit_tinh_saigon_phap_danh.glb', scale: 0.85 },
                 'b7_m3': { title: 'Bác Hồ ký Tạm ước & Hiệp định', url: 'assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb', scale: 0.85 },
-                'b7_m4': { title: 'Chiến sĩ chiến đấu & Vượt sông Hồng', url: 'assets/models/bai7/tram4/chien_si_chien_dau.glb', scale: 0.85 },
+                'b7_m4': { title: 'Đồng Sử chiến đấu & Vượt sông Hồng', url: 'assets/models/bai7/tram4/chien_si_chien_dau.glb', scale: 0.85 },
                 'b7_m5': { title: 'Tập luyện chiến dịch Việt Bắc', url: 'assets/models/bai7/tram5/tap_luyen_chien_dich_vbtd.glb', scale: 0.85 },
                 'b7_m6': { title: 'Bác Hồ chỉ đạo chiến dịch Biên giới', url: 'assets/models/bai7/tram6/bac_ho_chi_dao_bien_gioi.glb', scale: 0.85 },
                 'b7_m7': { title: 'Xe đạp thồ tiếp tế Điện Biên', url: 'assets/models/bai7/tram7/xe_dap_tho.glb', scale: 0.85 },
@@ -2981,7 +3032,8 @@ function _decodeGeminiKey(s) {
                     customAnchors: space.customAnchors || [],
                     spatial: space.spatial || null,
                     thumb: space.thumb || (space.image && space.image.startsWith('http') ? space.image : null),
-                    imageURL: space.image && space.image.startsWith('http') ? space.image : null
+                    imageURL: space.image && space.image.startsWith('http') ? space.image : null,
+                    markerNotes: space.markerNotes || {}
                 });
                 localStorage.setItem(META_KEY, JSON.stringify(list));
 
@@ -3138,7 +3190,7 @@ function _decodeGeminiKey(s) {
                 sBanner.innerHTML = `
                     <span style="display:flex; align-items:center; gap:6px;">
                         <span>🌐</span>
-                        <span>Không gian trực tuyến của <b id="shared-author-txt" style="color:#38bdf8;">${esc(sharedData.authorName || 'Học sinh LOCI')}</b></span>
+                        <span>Không gian trực tuyến của <b id="shared-author-txt" style="color:#38bdf8;">${esc(sharedData.authorName || 'Đồng Sử LOCI')}</b></span>
                     </span>
                     <button id="btn-clone-shared" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:99px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:all 0.2s;">
                         <span>📥</span> Lưu bản sao về máy
@@ -3147,7 +3199,7 @@ function _decodeGeminiKey(s) {
                 $('viewer').appendChild(sBanner);
             } else {
                 sBanner.style.display = 'flex';
-                $('shared-author-txt').textContent = sharedData.authorName || 'Học sinh LOCI';
+                $('shared-author-txt').textContent = sharedData.authorName || 'Đồng Sử LOCI';
                 const cloneBtn = $('btn-clone-shared');
                 cloneBtn.innerHTML = '<span>📥</span> Lưu bản sao về máy';
                 cloneBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
@@ -7013,6 +7065,11 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                 async function openViewer(sp, isNew = false) {
                     space = sp;
+                    space.markerNotes = space.markerNotes || sp.markerNotes || {};
+                    try {
+                        const localCustomNotes = JSON.parse(localStorage.getItem('loci_room_anchor_notes') || '{}');
+                        space.markerNotes = Object.assign({}, localCustomNotes, space.markerNotes);
+                    } catch (_) {}
                     if (!space.nodes || !space.nodes.length) space.nodes = [{ id: 'n0', name: 'Điểm 1', markers: space.markers || {}, links: [] }];
                     space.nodes.forEach(n => { n.markers = n.markers || {}; n.links = n.links || []; });
                     ensureNodePositions();
@@ -7130,6 +7187,31 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     const custom = space.customAnchors || [];
                     return [...predefined, ...custom];
                 };
+
+                // Trợ thủ lấy ghi chú vị trí neo phòng thực tế (Loci physical anchor cue)
+                window.getAnchorLocationNote = function(lessonId, anchorId, order) {
+                    if (window.space && window.space.markerNotes && window.space.markerNotes[anchorId]) {
+                        return window.space.markerNotes[anchorId];
+                    }
+                    try {
+                        const stored = JSON.parse(localStorage.getItem('loci_room_anchor_notes') || '{}');
+                        if (stored[anchorId]) return stored[anchorId];
+                    } catch (_) {}
+
+                    const defaultNotes = {
+                        1: 'Cửa ra vào',
+                        2: 'Góc giá sách',
+                        3: 'Bức tranh tường',
+                        4: 'Bàn học',
+                        5: 'Cửa sổ đón nắng',
+                        6: 'Tủ sách Lịch sử',
+                        7: 'Góc đèn học',
+                        8: 'Bàn phụ / Ghế',
+                        9: 'Kệ lưu niệm'
+                    };
+                    return defaultNotes[order] || ('Trạm neo ' + (order || 1));
+                };
+
                 const findAnchorById = id => {
                     if (space && space.customAnchors) {
                         const custom = space.customAnchors.find(a => a.id === id);
@@ -7146,10 +7228,14 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     $('alist').innerHTML = list.map((a, i) => {
                         const isDone = space.markers && space.markers[a.id];
                         const isSelected = selId === a.id;
+                        const locNote = getAnchorLocationNote(space.lesson, a.id, a.order || (i + 1));
                         return `
-            <button class="ai ${isDone ? 'done' : ''} ${isSelected ? 'sel' : ''}" data-id="${a.id}">
+            <button class="ai ${isDone ? 'done' : ''} ${isSelected ? 'sel' : ''}" data-id="${a.id}" style="display:flex; align-items:center; gap:8px;">
                 <span class="n">${a.order || (i + 1)}</span>
-                <span>${esc(a.title)}</span>
+                <span style="display:flex; flex-direction:column; gap:2px; flex:1; text-align:left; overflow:hidden;">
+                    <span style="font-weight:700; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${esc(a.title)}</span>
+                    <span style="font-size:10.5px; color:#38bdf8; font-weight:700;">📍 ${esc(locNote)}</span>
+                </span>
             </button>
         `;
                     }).join('');
@@ -8122,11 +8208,17 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         const pos = space.markers && space.markers[a.id];
                         if (!pos) return;
 
+                        const locNote = getAnchorLocationNote(space.lesson, a.id, a.order || (i + 1));
+                        const cleanTitle = (a.title || '').replace(/^Trạm\s*\d+\s*:\s*/i, '');
+
                         const el = document.createElement('div');
                         el.className = 'marker';
                         el.innerHTML = `
             <div class="dot">${a.order || (i + 1)}</div>
-            <div class="lab">${esc(a.title)}</div>
+            <div class="lab" title="Trạm ${a.order || (i + 1)}: ${esc(a.title)} [Neo tại: ${esc(locNote)}]">
+                <span class="marker-loc-badge">📍 ${esc(locNote)}</span>
+                <span class="marker-title-text">${esc(cleanTitle)}</span>
+            </div>
         `;
                         el.onclick = () => showLocusDetail(a);
                         box.appendChild(el);
@@ -8155,6 +8247,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     renderAnchorsList();
                     try { window.LociMentor && LociMentor.track('locus_open', { id: a.id, title: a.title }); } catch (_) { }
 
+                    const locNote = getAnchorLocationNote(space.lesson, a.id, a.order || 1);
                     const info = $('info');
 
                     // Lấy ảnh tư liệu lịch sử tương ứng từ anchor
@@ -8187,15 +8280,49 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             <button class="x" id="info-x" aria-label="Đóng">✕</button>
         </div>
         <h3 style="margin-top:8px;">${esc(a.title)}</h3>
-        ${photoUrl ? `
-            <div class="info-photo-box" style="margin: 12px 0 16px; border-radius: 16px; overflow: hidden; border: 1.5px solid rgba(56, 189, 248, 0.4); box-shadow: 0 10px 25px rgba(0,0,0,0.15); background:#0f172a; position: relative;">
-                <img src="${esc(photoUrl)}" style="width: 100%; height: 180px; object-fit: cover; display: block;" alt="${esc(photoTitle || a.title)}">
-                <div style="padding: 8px 12px; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); color: #f8fafc; font-size: 11.5px; font-weight: 600; line-height: 1.4;">
-                    📸 ${esc(photoTitle || 'Tư liệu lịch sử')}
-                    ${photoCaption ? `<div style="font-size: 10.5px; color: #94a3b8; font-weight: 400; margin-top: 2px;">${esc(photoCaption)}</div>` : ''}
-                </div>
+        <div class="info-loc-note-box" style="margin: 10px 0 14px; padding: 10px 12px; background: rgba(56, 189, 248, 0.12); border: 1.5px dashed rgba(56, 189, 248, 0.5); border-radius: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+                <span style="font-size: 11.5px; font-weight: 800; color: #38bdf8; display:flex; align-items:center; gap:5px;">
+                    <span>📍 VỊ TRÍ NEO TRONG PHÒNG:</span>
+                </span>
+                <span style="font-size: 10.5px; color: #94a3b8; font-weight:600;">Gợi nhớ Loci 1-3-7</span>
             </div>
-        ` : ''}
+            <div style="display:flex; gap:6px;">
+                <input id="inp-loc-note" type="text" value="${esc(locNote)}" placeholder="Ví dụ: Bàn học, Cửa ra vào, Cửa sổ..." style="flex:1; background:rgba(15,23,42,0.85); border:1px solid rgba(56,189,248,0.4); border-radius:8px; padding:6px 10px; color:#fff; font-size:12.5px; font-weight:700; outline:none;">
+                <button id="btn-save-loc-note" style="padding:6px 14px; font-size:11.5px; font-weight:700; border-radius:8px; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#fff; border:none; cursor:pointer;">Lưu</button>
+            </div>
+        </div>
+        ${(() => {
+        const cfg3d = getStation3DConfig(space.lesson, a, 0);
+        return `
+            <div id="station-media-box" style="margin: 12px 0 16px; border-radius: 16px; overflow: hidden; border: 1.5px solid rgba(56, 189, 248, 0.4); box-shadow: 0 10px 25px rgba(0,0,0,0.15); background:#0f172a; position: relative;">
+                ${photoUrl ? `
+                <div id="station-photo-view">
+                    <img id="station-main-img" src="${esc(photoUrl)}" style="width: 100%; height: 180px; object-fit: cover; display: block;" alt="${esc(photoTitle || a.title)}">
+                    <div style="padding: 8px 12px; background: rgba(15,23,42,0.85); backdrop-filter: blur(8px); color: #f8fafc; font-size: 11.5px; font-weight: 600; line-height: 1.4;">
+                        ${esc((photoTitle || 'Tư liệu lịch sử').replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '').trim())}
+                        ${photoCaption ? `<div style="font-size: 10.5px; color: #94a3b8; font-weight: 400; margin-top: 2px;">${esc(photoCaption)}</div>` : ''}
+                    </div>
+                </div>
+                ` : ''}
+                ${cfg3d && cfg3d.url ? `
+                <div id="station-3d-inplace-view" style="display:none; width:100%; height: 230px; background:#020617; position:relative;">
+                    <model-viewer id="station-inplace-mv" src="${cfg3d.url}" auto-rotate camera-controls shadow-intensity="1" exposure="1.1" style="width:100%; height:100%; outline:none;"></model-viewer>
+                </div>
+                ` : ''}
+            </div>
+            ${cfg3d && cfg3d.url ? `
+            <div style="display:flex; gap:8px; margin: 10px 0 14px;">
+                <button type="button" id="btn-inspect-inplace-3d" style="flex:1; font-size:13px; font-weight:700; padding:10px 14px; border-radius:12px; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#fff; border:none; display:flex; align-items:center; justify-content:center; gap:6px; cursor:pointer; box-shadow:0 4px 12px rgba(2,132,199,0.3);">
+                    <span>Xem mô hình 3D cụ thể</span>
+                </button>
+                <button type="button" id="btn-inplace-revert-photo" style="display:none; flex:1; font-size:13px; font-weight:700; padding:10px 14px; border-radius:12px; background:#334155; color:#fff; border:none; align-items:center; justify-content:center; gap:6px; cursor:pointer;">
+                    <span>↩️ Thu về xem ảnh</span>
+                </button>
+            </div>
+            ` : ''}
+        `;
+    })()}
         ${a.summary ? `<div class="info-summary-box"><p>${esc(a.summary)}</p></div>` : ''}
         ${a.keyPoints?.length ? `
             <div class="info-sec-title">📌 Ý CHÍNH CỐT LÕI</div>
@@ -8227,6 +8354,54 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
         </div>
     `;
                     info.classList.add('on');
+
+                    // Ghi nhận tiến trình học tập trạm Loci
+                    if (window.LociProgression && typeof window.LociProgression.recordStationVisit === 'function') {
+                        try { window.LociProgression.recordStationVisit(space.lesson, a.id); } catch (_) {}
+                    }
+
+                    // Lắng nghe sự kiện lưu ghi chú vị trí neo Loci
+                    
+                    // Xử lý nút Chuyển đổi mô hình 3D thế vào chỗ ảnh & nút Thu về
+                    const btnInspect3d = $('btn-inspect-inplace-3d');
+                    const btnRevertPhoto = $('btn-inplace-revert-photo');
+                    const photoView = $('station-photo-view');
+                    const view3d = $('station-3d-inplace-view');
+
+                    if (btnInspect3d && btnRevertPhoto && view3d) {
+                        btnInspect3d.onclick = () => {
+                            if (photoView) photoView.style.display = 'none';
+                            view3d.style.display = 'block';
+                            btnInspect3d.style.display = 'none';
+                            btnRevertPhoto.style.display = 'flex';
+                        };
+                        btnRevertPhoto.onclick = () => {
+                            view3d.style.display = 'none';
+                            if (photoView) photoView.style.display = 'block';
+                            btnRevertPhoto.style.display = 'none';
+                            btnInspect3d.style.display = 'flex';
+                        };
+                    }
+    
+                    const btnSaveLoc = $('btn-save-loc-note');
+                    if (btnSaveLoc) {
+                        btnSaveLoc.onclick = () => {
+                            const inp = $('inp-loc-note');
+                            if (!inp) return;
+                            const val = inp.value.trim() || locNote;
+                            if (!space.markerNotes) space.markerNotes = {};
+                            space.markerNotes[a.id] = val;
+                            try {
+                                const stored = JSON.parse(localStorage.getItem('loci_room_anchor_notes') || '{}');
+                                stored[a.id] = val;
+                                localStorage.setItem('loci_room_anchor_notes', JSON.stringify(stored));
+                            } catch (_) {}
+                            persistCurrentSpace();
+                            renderMarkersOnPano();
+                            renderAnchorsList();
+                            toast(`✓ Đã lưu vị trí neo "${val}" cho Trạm ${a.order || ''}!`);
+                        };
+                    }
 
                     $('info-x').onclick = () => info.classList.remove('on');
 
@@ -8819,7 +8994,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                             sBanner.innerHTML = `
                         <span style="display:flex; align-items:center; gap:6px;">
                             <span>🌐</span>
-                            <span>Chia sẻ bởi <b id="shared-author-txt" style="color:#38bdf8;">${esc(sharedData.authorName || 'Học sinh LOCI')}</b></span>
+                            <span>Chia sẻ bởi <b id="shared-author-txt" style="color:#38bdf8;">${esc(sharedData.authorName || 'Đồng Sử LOCI')}</b></span>
                         </span>
                         <button id="btn-clone-shared" style="background:linear-gradient(135deg, #10b981, #059669); color:#fff; border:none; padding:6px 14px; border-radius:99px; font-weight:700; font-size:12px; cursor:pointer; display:flex; align-items:center; gap:5px; box-shadow:0 2px 8px rgba(16,185,129,0.35); transition:all 0.2s;">
                             <span>📥</span> Lưu bản sao về máy
@@ -8828,7 +9003,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                             $('viewer').appendChild(sBanner);
                         } else {
                             sBanner.style.display = 'flex';
-                            $('shared-author-txt').textContent = sharedData.authorName || 'Học sinh LOCI';
+                            $('shared-author-txt').textContent = sharedData.authorName || 'Đồng Sử LOCI';
                             const cloneBtn = $('btn-clone-shared');
                             cloneBtn.innerHTML = '<span>📥</span> Lưu bản sao về máy';
                             cloneBtn.style.background = 'linear-gradient(135deg, #10b981, #059669)';
