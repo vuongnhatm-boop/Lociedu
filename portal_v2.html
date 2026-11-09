@@ -17301,6 +17301,11 @@
                 floatingFeedback.style.setProperty('display', (tabName === 'ai') ? 'none' : 'flex', 'important');
             }
 
+            // Lưu tab đang chọn vào sessionStorage để khi F5 vẫn giữ đúng tab
+            try {
+                sessionStorage.setItem('loci_active_portal_tab', tabName);
+            } catch (_) {}
+
             if (tabName === 'overview') {
                 if (vOverview) {
                     vOverview.classList.add('active');
@@ -17309,7 +17314,6 @@
                     vOverview.scrollTop = 0;
                 }
                 if (window.renderOverviewTop3) window.renderOverviewTop3();
-                history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
             } else if (tabName === 'pet') {
                 if (vPet) {
                     vPet.classList.add('active');
@@ -17317,7 +17321,6 @@
                     applyAnim(vPet);
                     vPet.scrollTop = 0;
                 }
-                history.replaceState(null, '', '#pet');
             } else if (tabUrls[tabName]) {
                 if (vFrameContainer && vAppFrame) {
                     vFrameContainer.classList.add('active');
@@ -17328,8 +17331,12 @@
                         vAppFrame.src = tabUrls[tabName];
                     }
                 }
-                history.replaceState(null, '', '#' + tabName);
             }
+
+            // CLEAN URL 100%: Tuyệt đối không để lại bất kỳ đuôi # nào (#overview, #pet, #ai, #spaces, #review, #exam, #connect) trên thanh địa chỉ
+            try {
+                history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
+            } catch (_) {}
         }
 
         window.switchPortalTab = switchPortalTab;
@@ -17449,8 +17456,10 @@
             });
         }
 
-        // Khôi phục tab nếu URL có hash
-        const initialHash = location.hash.replace('#', '');
+        // Khôi phục tab từ sessionStorage hoặc URL
+        let savedTab = '';
+        try { savedTab = sessionStorage.getItem('loci_active_portal_tab') || ''; } catch (_) {}
+        const initialHash = (location.hash || '').replace('#', '').trim() || savedTab;
         if (initialHash === 'pet') {
             switchPortalTab('pet');
         } else if (initialHash === 'leaderboard') {
@@ -17460,6 +17469,12 @@
         } else if (initialHash && tabUrls[initialHash]) {
             switchPortalTab(initialHash);
         }
+        // Xóa sạch mọi hash trên thanh địa chỉ ngay khi tải trang
+        try {
+            if (window.location.hash) {
+                history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
+            }
+        } catch (_) {}
 
         // ==========================================
         // 5. THUẬT TOÁN SPACED REPETITION (1-3-7) & RENDER UI
