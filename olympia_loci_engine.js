@@ -295,7 +295,59 @@
             this.ensureModal();
         },
 
+                // NHẢY NHANH ĐẾN VÒNG THI (HỖ TRỢ TEST & PHÍM TẮT Q1, Q2, Q3, Q4)
+        jumpToRound(roundNum) {
+            this.clearTimer();
+            if (this.currentRoundIndex === 0) {
+                // Đảm bảo đối thủ đã nạp
+                if (window.LociStudentBotEngine && typeof window.LociStudentBotEngine.getOlympiaOpponents === 'function') {
+                    const opponents = window.LociStudentBotEngine.getOlympiaOpponents(3);
+                    for (let i = 0; i < 3; i++) {
+                        this.players[i + 1] = opponents[i];
+                    }
+                }
+                if (OLYMPIA_DATA.obstacles && OLYMPIA_DATA.obstacles.length > 0) {
+                    const randObs = OLYMPIA_DATA.obstacles[Math.floor(Math.random() * OLYMPIA_DATA.obstacles.length)];
+                    this.state.obstacle = JSON.parse(JSON.stringify(randObs));
+                }
+            }
+
+            if (roundNum === 1) {
+                this.startRound1Warmup();
+            } else if (roundNum === 2) {
+                this.startRound2Obstacle();
+            } else if (roundNum === 3) {
+                this.startRound3Speedup();
+            } else if (roundNum === 4) {
+                this.startRound4Finish();
+            }
+        },
+
+        bindTestShortcuts() {
+            if (this._hasBoundShortcuts) return;
+            this._hasBoundShortcuts = true;
+            let keyBuf = '';
+            let keyTimer = null;
+
+            window.addEventListener('keydown', (e) => {
+                const modal = document.getElementById('olympia-modal-overlay');
+                if (!modal || !modal.classList.contains('open')) return;
+                if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
+
+                const k = e.key.toLowerCase();
+                keyBuf += k;
+                clearTimeout(keyTimer);
+                keyTimer = setTimeout(() => { keyBuf = ''; }, 900);
+
+                if (keyBuf.endsWith('q1')) { keyBuf = ''; this.jumpToRound(1); }
+                else if (keyBuf.endsWith('q2')) { keyBuf = ''; this.jumpToRound(2); }
+                else if (keyBuf.endsWith('q3')) { keyBuf = ''; this.jumpToRound(3); }
+                else if (keyBuf.endsWith('q4')) { keyBuf = ''; this.jumpToRound(4); }
+            });
+        },
+
         open() {
+            this.bindTestShortcuts();
             OlympiaAudio.init();
             this.init();
             this.syncMyUser();
@@ -810,27 +862,13 @@
                         <b style="color:#38bdf8;">Khởi Động</b> ➔ <b style="color:#34d399;">Vượt Chướng Ngại Vật</b> ➔ <b style="color:#f59e0b;">Tăng Tốc</b> ➔ <b style="color:#f43f5e;">Về Đích & Vòng Nguyệt Quế</b>!
                     </p>
 
-                    <!-- CHỌN CHẾ ĐỘ THI ĐẤU -->
-                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 24px; text-align: left;">
-                        <div style="background: rgba(30, 41, 59, 0.85); border: 2px solid #38bdf8; border-radius: 18px; padding: 20px; cursor: pointer; transition: all 0.2s;"
-                             onclick="window.OlympiaLociEngine.setMode(false)" id="mode-opt-ai">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                <span style="font-size: 28px;">🤖</span>
-                                <span style="background: #0284c7; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 99px;">PHỔ BIẾN</span>
-                            </div>
-                            <h3 style="font-size: 17px; font-weight: 800; color: #f8fafc; margin: 0 0 4px 0;">Đấu Với 3 Thủ Khoa Trường Chuyên</h3>
-                            <p style="font-size: 12.5px; color: #94a3b8; margin: 0;">Tranh tài trực diện cùng 3 bạn học xuất sắc (Amsterdam, Lê Hồng Phong, Quốc Học Huế) với thuật toán bấm chuông thông minh.</p>
-                        </div>
-
-                        <div style="background: rgba(30, 41, 59, 0.85); border: 2px solid rgba(148, 163, 184, 0.3); border-radius: 18px; padding: 20px; cursor: pointer; transition: all 0.2s;"
-                             onclick="window.OlympiaLociEngine.setMode(true)" id="mode-opt-party">
-                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px;">
-                                <span style="font-size: 28px;">👥</span>
-                                <span style="background: rgba(255,255,255,0.15); color: #e2e8f0; font-size: 11px; font-weight: 800; padding: 3px 10px; border-radius: 99px;">HỌC NHÓM</span>
-                            </div>
-                            <h3 style="font-size: 17px; font-weight: 800; color: #f8fafc; margin: 0 0 4px 0;">Chơi 4 Bạn Cùng 1 Máy (Party Mode)</h3>
-                            <p style="font-size: 12.5px; color: #94a3b8; margin: 0;">Cả 4 bạn ngồi cùng 1 thiết bị, tự đặt tên và lần lượt bấm chuông/gõ phím giải mã câu hỏi ngay trên lớp hoặc thư viện.</p>
-                        </div>
+                    <!-- THANH HƯỚNG DẪN TEST NHANH VÒNG THI (Q1 - Q4) -->
+                    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 24px; flex-wrap: wrap;">
+                        <span style="font-size: 12px; color: #94a3b8; font-weight: 700;">Nhảy nhanh vòng test:</span>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="background: rgba(56, 189, 248, 0.15); border: 1px solid #38bdf8; color: #38bdf8; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q1: Khởi Động</button>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="background: rgba(52, 211, 153, 0.15); border: 1px solid #34d399; color: #34d399; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q2: Vượt CNV</button>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="background: rgba(245, 158, 11, 0.15); border: 1px solid #f59e0b; color: #f59e0b; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q3: Tăng Tốc</button>
+                        <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="background: rgba(244, 63, 94, 0.15); border: 1px solid #f43f5e; color: #f43f5e; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q4: Về Đích</button>
                     </div>
 
                     <!-- NÚT BẮT ĐẦU VÒNG KHỞI ĐỘNG -->
@@ -897,10 +935,10 @@
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn active">VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn">VÒNG 3: TĂNG TỐC</span>
-                    <span class="round-step-btn">VÒNG 4: VỀ ĐÍCH</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4)</span>
                 </div>
 
                 <div class="olympia-q-card">
@@ -1005,10 +1043,10 @@
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn">VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn active">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn">VÒNG 3: TĂNG TỐC</span>
-                    <span class="round-step-btn">VÒNG 4: VỀ ĐÍCH</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4)</span>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 24px; align-items: start;">
@@ -1181,10 +1219,10 @@ Bạn nhận được +${bonus} điểm!`);
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn">VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn active">VÒNG 3: TĂNG TỐC (${this.state.speedupQuestionIdx + 1}/4)</span>
-                    <span class="round-step-btn">VÒNG 4: VỀ ĐÍCH</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3 - ${this.state.speedupQuestionIdx + 1}/4)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4)</span>
                 </div>
 
                 <div class="olympia-q-card">
@@ -1309,10 +1347,10 @@ Bạn nhận được +${bonus} điểm!`);
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn">VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn">VÒNG 3: TĂNG TỐC</span>
-                    <span class="round-step-btn active">VÒNG 4: VỀ ĐÍCH (${p.name})</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(1)" style="cursor:pointer;" title="Phím tắt: Q1">VÒNG 1: KHỞI ĐỘNG (Q1)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(2)" style="cursor:pointer;" title="Phím tắt: Q2">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT (Q2)</span>
+                    <span class="round-step-btn" onclick="window.OlympiaLociEngine.jumpToRound(3)" style="cursor:pointer;" title="Phím tắt: Q3">VÒNG 3: TĂNG TỐC (Q3)</span>
+                    <span class="round-step-btn active" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="cursor:pointer;" title="Phím tắt: Q4">VÒNG 4: VỀ ĐÍCH (Q4 - ${p.name})</span>
                 </div>
 
                 <div class="olympia-q-card">

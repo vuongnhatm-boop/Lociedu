@@ -426,6 +426,13 @@
             if (!modal) return;
             modal.classList.add('open');
             modal.style.display = 'grid';
+            try {
+                const lastUser = localStorage.getItem('loci_last_login_user');
+                const emailInp = document.getElementById('login-email');
+                if (lastUser && emailInp && !emailInp.value) {
+                    emailInp.value = lastUser;
+                }
+            } catch (_) {}
 
             const user = (window.LociFirebase && window.LociFirebase.currentUser) || window._lociLocalUser;
             const guestPanel = document.getElementById('auth-panel-guest');
@@ -14713,6 +14720,7 @@
                 localStorage.setItem('loci_current_user', JSON.stringify(localUser));
                 localStorage.setItem('loci_user_profile', JSON.stringify(localUser));
                 localStorage.setItem('loci_active_student_uid', localUser.uid);
+                localStorage.setItem('loci_last_login_user', localUser.username || cleanUname);
             } catch (_) {}
 
             // 1. ẨN HERO GATE (GIỮ NGUYÊN DOM ĐỂ KHI ĐĂNG XUẤT CÓ THỂ HIỂN THỊ LẠI)
@@ -15156,8 +15164,8 @@
                         username: cleanName,
                         displayName: displayName,
                         password: btoa(pass),
-                        hasCustomNickname: true,
-                        lastNicknameChangeDate: new Date().toISOString(),
+                        hasCustomNickname: false,
+                        lastNicknameChangeDate: null,
                         createdAt: new Date().toISOString()
                     };
                     localStorage.setItem('loci_accounts', JSON.stringify(accounts));
@@ -19961,7 +19969,11 @@
                     const decision = localStorage.getItem(STORAGE_DECISION_PREFIX + currentUserId);
 
                     if (decision === null) {
-                        // Người dùng chưa từng quyết định -> Hiện Thông Báo Từ Hệ Thống sau 700ms
+                        // CHỈ HIỆN THÔNG BÁO KHI NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (KHÔNG HIỆN VỚI KHÁCH VÃNG LAI)
+                        const isAuth = (typeof window.isUserLoggedIn === 'function' && window.isUserLoggedIn()) || 
+                                       localStorage.getItem('loci_auth_session') === 'active';
+                        if (!isAuth) return;
+
                         setTimeout(() => {
                             const modal = document.getElementById('system-tracking-notice-modal');
                             if (modal) {

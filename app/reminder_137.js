@@ -341,6 +341,15 @@
     function checkReminders() {
         if (isEmbedded) return;
 
+        // TUYỆT ĐỐI KHÔNG HIỆN THÔNG BÁO CHO NGƯỜI DÙNG CHƯA ĐĂNG NHẬP
+        try {
+            const isAuth = (typeof window !== 'undefined' && typeof window.isUserLoggedIn === 'function' && window.isUserLoggedIn()) ||
+                           (typeof localStorage !== 'undefined' && localStorage.getItem('loci_auth_session') === 'active');
+            if (!isAuth) return;
+        } catch (_) {
+            return;
+        }
+
         const settings = getSettings();
         if (!settings.enabled) return;
 

@@ -335,8 +335,8 @@
         displayName: realDisplayName,
         email: cleanName + '@loci.edu.vn',
         password: password ? (typeof global.btoa === 'function' ? global.btoa(password) : password) : '',
-        hasCustomNickname: true,
-        lastNicknameChangeDate: new Date().toISOString(),
+        hasCustomNickname: false,
+        lastNicknameChangeDate: null,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -349,8 +349,8 @@
         username: cleanName,
         displayName: realDisplayName,
         email: cleanName + '@loci.edu.vn',
-        hasCustomNickname: true,
-        lastNicknameChangeDate: new Date().toISOString(),
+        hasCustomNickname: false,
+        lastNicknameChangeDate: null,
         xp: 50,
         level: 1,
         tierName: 'Tập sự Loci'
@@ -358,6 +358,12 @@
 
       this._currentUser = profile;
       this._persistAll(profile);
+      try {
+        localStorage.setItem('loci_last_login_user', cleanName);
+      } catch (_) {}
+      try {
+        localStorage.setItem('loci_last_login_user', cleanName);
+      } catch (_) {}
       this._notify(profile);
 
       return profile;
@@ -452,6 +458,12 @@
 
       this._currentUser = profile;
       this._persistAll(profile);
+      try {
+        localStorage.setItem('loci_last_login_user', cleanName);
+      } catch (_) {}
+      try {
+        localStorage.setItem('loci_last_login_user', cleanName);
+      } catch (_) {}
       this._notify(profile);
 
       return profile;
@@ -480,10 +492,11 @@
     canChangeNickname() {
       const u = this.getUser();
       if (!u) return { canChange: false, reason: 'Chưa đăng nhập' };
-      if (!u.lastNicknameChangeDate) {
+      // Lần đầu tiên luôn được đổi tên thoải mái
+      if (!u.hasCustomNickname || !u.lastNicknameChangeDate) {
         return {
           canChange: true,
-          isFirstTime: !u.hasCustomNickname,
+          isFirstTime: true,
           daysRemaining: 0,
           nextEligibleDate: null
         };

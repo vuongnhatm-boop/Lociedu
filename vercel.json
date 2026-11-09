@@ -1,37 +1,100 @@
 {
   "cleanUrls": true,
+  "trailingSlash": false,
   "redirects": [
-    { "source": "/", "destination": "/portal_v2.html", "permanent": false }
+    {
+      "source": "/portal_v2.html",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portal_v2",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/portal",
+      "destination": "/",
+      "permanent": true
+    },
+    {
+      "source": "/index.html",
+      "destination": "/",
+      "permanent": true
+    }
   ],
   "rewrites": [
-    { "source": "/portal", "destination": "/portal_v2.html" },
-    { "source": "/3d", "destination": "/index.html" },
-    { "source": "/trinh-chieu", "destination": "/trinh_chieu_loci.html" },
-    { "source": "/slide", "destination": "/trinh_chieu_loci.html" },
-    { "source": "/so-do", "destination": "/trinh_chieu_loci.html" },
-    { "source": "/360", "destination": "/khong_gian_360.html" },
-    { "source": "/chat", "destination": "/chat.html" },
-    { "source": "/de-thi", "destination": "/de_thi.html" },
-    { "source": "/review", "destination": "/review.html" }
+    {
+      "source": "/3d",
+      "destination": "/app/index.html"
+    },
+    {
+      "source": "/trinh-chieu",
+      "destination": "/trinh_chieu_loci.html"
+    },
+    {
+      "source": "/slide",
+      "destination": "/trinh_chieu_loci.html"
+    },
+    {
+      "source": "/so-do",
+      "destination": "/trinh_chieu_loci.html"
+    },
+    {
+      "source": "/360",
+      "destination": "/khong_gian_360.html"
+    },
+    {
+      "source": "/chat",
+      "destination": "/chat.html"
+    },
+    {
+      "source": "/de-thi",
+      "destination": "/de_thi.html"
+    },
+    {
+      "source": "/review",
+      "destination": "/review.html"
+    },
+    {
+      "source": "/ket-noi",
+      "destination": "/ket_noi.html"
+    },
+    {
+      "source": "/olympia",
+      "destination": "/game_duong_len_dinh_loci.html"
+    }
   ],
   "headers": [
     {
       "source": "/(.*)",
       "headers": [
-        { "key": "Access-Control-Allow-Origin", "value": "*" },
-        { "key": "Permissions-Policy", "value": "xr-spatial-tracking=*, microphone=*" }
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "xr-spatial-tracking=*, microphone=*"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
       "source": "/(.*)\\.(glb|gltf|bin|webp|png|jpg|jpeg|svg|mp3|ogg|wav|pdf)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     }
   ]
