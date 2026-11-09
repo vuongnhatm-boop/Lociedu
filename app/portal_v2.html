@@ -21155,6 +21155,26 @@
                     { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng hoàng gia', img: 'assets/images/pets/phoenix_tier6.png', minXp: 2000 },
                     { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Ngọn lửa bất tử & Quyền trượng', img: 'assets/images/pets/phoenix_tier7.png', minXp: 3200 }
                 ]
+            },
+            fox: {
+                id: 'fox',
+                name: 'Cửu Vĩ Linh Hồ',
+                title: 'Cửu Vĩ Linh Hồ · Giác Ngộ Cung Điện',
+                element: 'ẢO HỆ',
+                badgeBg: '#fdf2f8',
+                badgeColor: '#db2777',
+                badgeBorder: '#fbcfe8',
+                desc: 'Linh thú hồ ly hồng 9 đuôi huyền thoại, mang trí tuệ siêu phàm giúp giải mã nhanh chóng các câu hỏi lịch sử đánh lừa và tối ưu hóa phản xạ trí nhớ.',
+                perk: 'Tăng 30% tốc độ giải mã & Nhân đôi điểm may mắn',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Hồ ly non trong vỏ trứng sao', img: 'assets/images/pets/fox_tier1.png', minXp: 0 },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Chập chững khám phá', img: 'assets/images/pets/fox_tier2.png', minXp: 100 },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc truyện cổ tích', img: 'assets/images/pets/fox_tier3.png', minXp: 300 },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ tốt nghiệp tinh nghịch', img: 'assets/images/pets/fox_tier4.png', minXp: 600 },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Vòng cổ thạch anh & Nhiều đuôi', img: 'assets/images/pets/fox_tier5.png', minXp: 1200 },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng tím & Bút lông ngọc', img: 'assets/images/pets/fox_tier6.png', minXp: 2000 },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Cửu Vĩ Linh Hồ Pháp Sư Tối Thượng', img: 'assets/images/pets/fox_tier7.png', minXp: 3200 }
+                ]
             }
         };
 
@@ -21187,15 +21207,15 @@
                 const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
                 return `
                     <div class="pet-choice-card ${isActive ? 'active' : ''}" onclick="window.selectCompanionPet('${pet.id}')"
-                         style="background: #ffffff; border: 2px solid ${isActive ? '#6366f1' : '#e2e8f0'}; border-radius: 18px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: ${isActive ? '0 8px 24px rgba(99, 102, 241, 0.2)' : '0 2px 8px rgba(0,0,0,0.03)'};">
-                        <div style="width: 105px; height: 105px; margin: 0 auto 10px; display: grid; place-items: center; position: relative;">
-                            <img src="${activeTier.img}" alt="${pet.name}" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12)); border-radius: 12px;">
+                         style="background: #ffffff; border: 2px solid ${isActive ? '#6366f1' : '#e2e8f0'}; border-radius: 18px; padding: 14px 10px; text-align: center; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: ${isActive ? '0 8px 24px rgba(99, 102, 241, 0.2)' : '0 2px 8px rgba(0,0,0,0.03)'};">
+                        <div style="width: 95px; height: 95px; margin: 0 auto 10px; display: grid; place-items: center; position: relative;">
+                            <img src="${activeTier.img}" alt="${pet.name}" loading="lazy" style="width: 90px; height: 90px; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12)); border-radius: 12px;">
                             <span style="position: absolute; bottom: 0; right: 0; background: #0f172a; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px;">Cấp ${activeTier.level}</span>
                         </div>
-                        <span style="display: inline-block; font-size: 10.5px; font-weight: 800; color: ${pet.badgeColor}; background: ${pet.badgeBg}; border: 1px solid ${pet.badgeBorder}; padding: 3px 8px; border-radius: 99px; margin-bottom: 6px;">
+                        <span style="display: inline-block; font-size: 10px; font-weight: 800; color: ${pet.badgeColor}; background: ${pet.badgeBg}; border: 1px solid ${pet.badgeBorder}; padding: 2px 8px; border-radius: 99px; margin-bottom: 5px;">
                             ${pet.element}
                         </span>
-                        <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">${pet.name}</div>
+                        <div style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">${pet.name}</div>
                         <div style="font-size: 11px; color: #64748b; line-height: 1.35; margin-bottom: 8px;">${pet.perk}</div>
                         <div style="font-size: 11.5px; font-weight: 800; color: ${isActive ? '#6366f1' : '#0284c7'};">
                             ${isActive ? '✓ Đang đồng hành' : 'Chọn linh thú ➔'}
@@ -21218,6 +21238,22 @@
             const tier = pet.tiers.find(t => t.level === tierLevel);
             if (!tier) return;
 
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
+                ? window.LociAccountManager.getUser() 
+                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
+            const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
+            const isUnlocked = userXp >= tier.minXp;
+
+            // NẾU CẤP ĐỘ ĐANG BỊ KHÓA: TUYỆT ĐỐI KHÔNG TIẾT LỘ HÌNH ẢNH (BẢO LƯU SỰ TÒ MÒ)
+            if (!isUnlocked) {
+                if (typeof showToast === 'function') {
+                    showToast(`🔒 Cấp độ ${tier.name} đang bị khóa! Tích lũy đủ ${tier.minXp} XP để giải mã diện mạo bí mật này!`, 'warning', 3500);
+                } else {
+                    alert(`🔒 Cấp độ ${tier.name} đang bị khóa! Tích lũy đủ ${tier.minXp} XP để giải mã diện mạo bí mật này!`);
+                }
+                return;
+            }
+
             const imgEl = document.getElementById('active-mascot-img');
             const nameEl = document.getElementById('active-mascot-name');
             const descEl = document.getElementById('active-mascot-desc');
@@ -21226,15 +21262,13 @@
             if (imgEl) {
                 imgEl.src = tier.img;
                 imgEl.alt = `${pet.name} - ${tier.name}`;
-                imgEl.style.transform = 'scale(0.88)';
-                setTimeout(() => { imgEl.style.transform = 'scale(1)'; }, 150);
             }
             if (nameEl) nameEl.textContent = `${pet.name} · ${tier.name}`;
             if (descEl) descEl.textContent = `${tier.sub}. ${pet.desc}`;
             if (lvlBadge) lvlBadge.textContent = `Cấp độ ${tier.level} / 7`;
 
             if (typeof showToast === 'function') {
-                showToast(`Xem trước ${pet.name} (${tier.name})!`, 'info', 2000);
+                showToast(`Đang xem ${pet.name} (${tier.name})!`, 'info', 2000);
             }
         };
 
@@ -21250,33 +21284,54 @@
             grid.innerHTML = pet.tiers.map(tier => {
                 const isUnlocked = userXp >= tier.minXp;
                 const isCurrent = tier.level === curLevel;
-                const borderCol = isCurrent ? '#6366f1' : (isUnlocked ? '#10b981' : '#e2e8f0');
+                const borderCol = isCurrent ? '#6366f1' : (isUnlocked ? '#10b981' : '#cbd5e1');
                 const statusBg = isCurrent ? '#eff6ff' : (isUnlocked ? '#ecfdf5' : '#f8fafc');
-                const statusColor = isCurrent ? '#2563eb' : (isUnlocked ? '#059669' : '#94a3b8');
-                const statusText = isCurrent ? '★ Hiện tại' : (isUnlocked ? '✓ Đã đạt' : `Khóa (${tier.minXp} XP)`);
+                const statusColor = isCurrent ? '#2563eb' : (isUnlocked ? '#059669' : '#64748b');
+                const statusText = isCurrent ? '★ Đang dùng' : (isUnlocked ? '✓ Đã mở' : `Khóa (${tier.minXp} XP)`);
 
-                return `
-                    <div class="pet-tier-card" onclick="window.previewPetTier('${pet.id}', ${tier.level})"
-                         style="background: ${statusBg}; border: 2px solid ${borderCol}; border-radius: 16px; padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative;">
-                        <div style="font-size: 11px; font-weight: 800; color: ${statusColor}; margin-bottom: 6px;">
-                            ${tier.name}
+                if (isUnlocked) {
+                    return `
+                        <div class="pet-tier-card" onclick="window.previewPetTier('${pet.id}', ${tier.level})"
+                             style="background: ${statusBg}; border: 2px solid ${borderCol}; border-radius: 16px; padding: 12px 10px; text-align: center; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; position: relative;">
+                            <div style="font-size: 11px; font-weight: 800; color: ${statusColor}; margin-bottom: 6px;">
+                                ${tier.name}
+                            </div>
+                            <div style="width: 80px; height: 80px; margin: 0 auto 8px; display: grid; place-items: center; position: relative;">
+                                <img src="${tier.img}" alt="${tier.name}" loading="lazy"
+                                     style="width: 76px; height: 76px; object-fit: contain; border-radius: 10px;">
+                            </div>
+                            <div style="font-size: 11px; font-weight: 700; color: #0f172a; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${tier.sub}">
+                                ${tier.sub}
+                            </div>
+                            <span style="display: inline-block; font-size: 10px; font-weight: 800; color: ${statusColor}; background: #ffffff; border: 1px solid ${borderCol}; padding: 2px 7px; border-radius: 99px;">
+                                ${statusText}
+                            </span>
                         </div>
-                        <div style="width: 80px; height: 80px; margin: 0 auto 8px; display: grid; place-items: center; position: relative;">
-                            <img src="${tier.img}" alt="${tier.name}" 
-                                 style="width: 76px; height: 76px; object-fit: contain; border-radius: 10px; filter: ${isUnlocked ? 'none' : 'grayscale(80%) opacity(0.65)'};">
+                    `;
+                } else {
+                    // CẤP ĐỘ CHƯA MỞ KHÓA: HIỂN THỊ KHÓA BÍ ẨN 🔒 (KHÔNG TIẾT LỘ ẢNH, KHÔNG DÙNG ĐEN TRẮNG)
+                    return `
+                        <div class="pet-tier-card is-locked" onclick="window.previewPetTier('${pet.id}', ${tier.level})"
+                             style="background: #f8fafc; border: 1.5px dashed #cbd5e1; border-radius: 16px; padding: 12px 10px; text-align: center; cursor: pointer; transition: transform 0.15s; position: relative;">
+                            <div style="font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 6px;">
+                                ${tier.name}
+                            </div>
+                            <div style="width: 80px; height: 80px; margin: 0 auto 8px; display: grid; place-items: center; background: linear-gradient(135deg, #f1f5f9, #e2e8f0); border-radius: 14px; border: 1px solid #e2e8f0;">
+                                <div style="font-size: 26px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.12));">🔒</div>
+                            </div>
+                            <div style="font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 4px;">
+                                Bí Ẩn · ???
+                            </div>
+                            <span style="display: inline-block; font-size: 9.5px; font-weight: 700; color: #64748b; background: #ffffff; border: 1px solid #cbd5e1; padding: 2px 6px; border-radius: 99px;">
+                                Cần ${tier.minXp} XP
+                            </span>
                         </div>
-                        <div style="font-size: 11px; font-weight: 700; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${tier.sub}">
-                            ${tier.sub}
-                        </div>
-                        <span style="display: inline-block; font-size: 10px; font-weight: 800; color: ${statusColor}; background: #ffffff; border: 1px solid ${borderCol}; padding: 2px 6px; border-radius: 99px;">
-                            ${statusText}
-                        </span>
-                    </div>
-                `;
+                    `;
+                }
             }).join('');
         };
 
-        window.selectCompanionPet = function(petId) {
+        window.selectCompanionPet = function(petId, isSilent) {
             const pet = PET_COMPANIONS[petId] || PET_COMPANIONS['tiger'];
             if (!pet) return;
 
@@ -21288,7 +21343,7 @@
             const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
 
-            // Update DOM
+            // Update DOM (nhẹ nhàng, không gây giật lag)
             const imgEl = document.getElementById('active-mascot-img');
             const nameEl = document.getElementById('active-mascot-name');
             const descEl = document.getElementById('active-mascot-desc');
@@ -21298,8 +21353,6 @@
             if (imgEl) {
                 imgEl.src = activeTier.img;
                 imgEl.alt = `${pet.name} (${activeTier.name})`;
-                imgEl.style.transform = 'scale(0.85)';
-                setTimeout(() => { imgEl.style.transform = 'scale(1)'; }, 150);
             }
             if (nameEl) nameEl.textContent = `${pet.name} · ${activeTier.name}`;
             if (descEl) descEl.textContent = `${activeTier.sub}. ${pet.desc}`;
@@ -21316,26 +21369,28 @@
             // Render 7 Evolution Tiers
             window.renderPetEvolutionGrid(pet, activeTier.level, userXp);
 
-            try {
-                if (typeof window.playTingTing === 'function') {
-                    window.playTingTing();
-                } else {
-                    const audio = new Audio('assets/audio/ting_ting.mp3');
-                    audio.volume = 0.8;
-                    audio.play().catch(() => {});
-                }
-            } catch (_) {}
+            if (!isSilent) {
+                try {
+                    if (typeof window.playTingTing === 'function') {
+                        window.playTingTing();
+                    } else {
+                        const audio = new Audio('assets/audio/ting_ting.mp3');
+                        audio.volume = 0.6;
+                        audio.play().catch(() => {});
+                    }
+                } catch (_) {}
 
-            window.closePetSelectionModal();
-            if (typeof showToast === 'function') {
-                showToast(`Đã chọn linh thú đồng hành: ${pet.name} (${activeTier.name})!`, 'success', 2500);
+                window.closePetSelectionModal();
+                if (typeof showToast === 'function') {
+                    showToast(`Đã chọn linh thú đồng hành: ${pet.name} (${activeTier.name})!`, 'success', 2500);
+                }
             }
         };
 
-        // Khởi tạo linh thú đã lưu khi tải trang
+        // Khởi tạo linh thú mượt mà không lag khi tải trang
         document.addEventListener('DOMContentLoaded', () => {
             const saved = localStorage.getItem('loci_selected_pet') || 'tiger';
-            window.selectCompanionPet(saved);
+            window.selectCompanionPet(saved, true);
         });
     </script>
 
