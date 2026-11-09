@@ -2666,7 +2666,88 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             text-align: center;
             margin-top: 8px;
         }
-    </style>
+    
+        /* ACADEMIC SCIENTIFIC RESPONSE FORMATTING */
+        .date-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: #e0f2fe;
+            color: #0369a1;
+            font-weight: 800;
+            font-size: 13px;
+            padding: 2px 7px;
+            border-radius: 6px;
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            letter-spacing: 0.2px;
+            white-space: nowrap;
+        }
+
+        body.dark-mode .date-chip {
+            background: rgba(2, 132, 199, 0.25);
+            color: #7dd3fc;
+            border-color: rgba(56, 189, 248, 0.3);
+        }
+
+        .academic-h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0369a1;
+            margin: 14px 0 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .academic-h2 {
+            font-size: 18px;
+            font-weight: 900;
+            color: #0f172a;
+            margin: 16px 0 10px 0;
+        }
+
+        .academic-p {
+            margin: 0 0 10px 0;
+            line-height: 1.65;
+            color: #1e293b;
+            font-size: 15px;
+        }
+
+        .academic-list, .academic-list-num {
+            margin: 6px 0 12px 20px;
+            padding: 0;
+            line-height: 1.65;
+            color: #334155;
+        }
+
+        .academic-list li, .academic-list-num li {
+            margin-bottom: 6px;
+        }
+
+        .academic-callout {
+            background: #f8fafc;
+            border-left: 4px solid #0284c7;
+            padding: 10px 14px;
+            border-radius: 0 12px 12px 0;
+            margin: 10px 0;
+            color: #334155;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        /* Composer fix centering and no overflow */
+        .composer-wrap {
+            max-width: 860px !important;
+            margin: 0 auto !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+        }
+
+        .composer-chatgpt-box {
+            margin: 0 auto !important;
+        }
+
+</style>
 
 </head>
 
@@ -2676,7 +2757,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
         <div class="sidebar-header-row">
             <a class="sidebar-brand" href="portal_v2.html" target="_top">
                 <img src="assets/images/logo_loci_edu.png" alt="LOCI">
-                <span>LOCI EDU GPT</span>
+                <span>LOCI EDU AI</span>
             </a>
             <button type="button" class="btn-sidebar-toggle" id="btn-sidebar-collapse" title="Thu gọn thanh bên" onclick="window.toggleSidebar()">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
@@ -2897,20 +2978,61 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
 
         // Safe Markdown -> HTML
         function md(src) {
+            if (!src) return '';
+            let text = src;
+            
+            // Xử lý an toàn các thẻ in đậm/nghiêng chưa đóng khi đang gõ/stream để không bị lỗi raw **
+            text = text.replace(/\*\*(.*?)\*\*|\*\*(.*?)$/g, (m, g1, g2) => `<strong>${g1 || g2 || ''}</strong>`);
+            text = text.replace(/\*(.*?)\*|\*(.*?)$/g, (m, g1, g2) => `<em>${g1 || g2 || ''}</em>`);
+
             const blocks = [];
-            let t = esc(src).replace(/```[a-z]*\n?([\s\S]*?)```/g, (_, c) => { blocks.push(`<pre><code>${c.replace(/\n$/, '')}</code></pre>`); return `\u0000${blocks.length - 1}\u0000`; });
-            const inline = s => s.replace(/`([^`]+)`/g, '<code>$1</code>').replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>').replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
-            const out = []; let list = null;
+            let t = esc(text).replace(/```([a-z]*)\n?([\s\S]*?)```/g, (_, lang, c) => {
+                blocks.push(`<pre class="code-block"><div class="code-header"><span>${lang || 'CODE'}</span></div><code>${c.replace(/\n$/, '')}</code></pre>`);
+                return `\u0000${blocks.length - 1}\u0000`;
+            });
+
+            const inline = s => {
+                let res = s
+                    .replace(/`([^`]+)`/g, '<code class="inline-code">$1</code>')
+                    .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+                    .replace(/(^|[^*])\*([^*\n]+)\*/g, '$1<em>$2</em>');
+                
+                // Tự động đóng khung năm và mốc lịch sử thành thẻ date-chip khoa học
+                res = res.replace(/\b(\d{1,2}\/\d{1,2}\/\d{4})\b/g, '<span class="date-chip">📅 $1</span>');
+                res = res.replace(/\b(194[0-9]|195[0-9]|196[0-9]|197[0-9]|198[0-9])\b(?![^<]*>)/g, '<span class="date-chip">$1</span>');
+                return res;
+            };
+
+            const out = [];
+            let list = null;
             const close = () => { if (list) { out.push(`</${list}>`); list = null; } };
+
             t.split('\n').forEach(line => {
                 let m;
-                if ((m = line.match(/^\s*[-*•]\s+(.*)/))) { if (list !== 'ul') { close(); out.push('<ul>'); list = 'ul'; } out.push(`<li>${inline(m[1])}</li>`); }
-                else if ((m = line.match(/^\s*\d+[.)]\s+(.*)/))) { if (list !== 'ol') { close(); out.push('<ol>'); list = 'ol'; } out.push(`<li>${inline(m[1])}</li>`); }
-                else if ((m = line.match(/^#{1,4}\s+(.*)/))) { close(); out.push(`<h3>${inline(m[1])}</h3>`); }
-                else if (!line.trim()) { close(); }
-                else { close(); out.push(`<p>${inline(line)}</p>`); }
+                if ((m = line.match(/^###\s*(.*)/))) {
+                    close();
+                    out.push(`<h3 class="academic-h3">${inline(m[1])}</h3>`);
+                } else if ((m = line.match(/^##\s*(.*)/))) {
+                    close();
+                    out.push(`<h2 class="academic-h2">${inline(m[1])}</h2>`);
+                } else if ((m = line.match(/^\s*[-*•]\s+(.*)/))) {
+                    if (list !== 'ul') { close(); out.push('<ul class="academic-list">'); list = 'ul'; }
+                    out.push(`<li>${inline(m[1])}</li>`);
+                } else if ((m = line.match(/^\s*\d+[.)]\s+(.*)/))) {
+                    if (list !== 'ol') { close(); out.push('<ol class="academic-list-num">'); list = 'ol'; }
+                    out.push(`<li>${inline(m[1])}</li>`);
+                } else if ((m = line.match(/^>\s*(.*)/))) {
+                    close();
+                    out.push(`<div class="academic-callout">${inline(m[1])}</div>`);
+                } else if (!line.trim()) {
+                    close();
+                } else {
+                    close();
+                    out.push(`<p class="academic-p">${inline(line)}</p>`);
+                }
             });
             close();
+
             return out.join('').replace(/\u0000(\d+)\u0000/g, (_, i) => blocks[i]);
         }
 
@@ -3639,7 +3761,7 @@ Mình hiểu việc ôn thi Lịch sử với hàng chục mốc niên biểu c�
 • **Đại thắng mùa Xuân 1975:**
   - 3 chiến dịch: Tây Nguyên ➔ Huế - Đà Nẵng ➔ Chiến dịch Hồ Chí Minh lịch sử.
   - **11 giờ 30 phút ngày 30/4/1975:** Cờ giải phóng tung bay trên nóc Dinh Độc Lập, non sông thu về một mối!
-• **Mẹo Loci:** Neo hình ảnh xe tăng 390 húc đổ cổng Dinh lên chiếc **Màn Hình Tivi**!
+• **Mẹo Loci:** Neo hình ảnh xe tăng 390 húc đổ cánh cổng sắt Dinh Độc Lập tại **Trạm 9 (Dinh Độc Lập & Đại thắng Mùa Xuân 1975)** trong Cung điện 3D!
 [ACTION:TELEPORT:ho_chi_minh] [ACTION:TELEPORT:dong_khoi]`;
             }
 
@@ -3665,7 +3787,7 @@ Mình hiểu việc ôn thi Lịch sử với hàng chục mốc niên biểu c�
 
 Bạn có thể hỏi mình:
 • 📖 **Kiến thức trọng tâm:** Diễn biến, ý nghĩa, bài học của Bài 6 (CMT8 1945), Bài 7 (K/c Pháp), Bài 8 (K/c Mĩ) hoặc Bài 9 (Bảo vệ Tổ quốc).
-• 🏛️ **Mẹo Cung điện Loci:** Cách gắn xe tăng 390 lên Tivi, cờ đỏ Ba Đình lên Cửa chính...
+• 🏛️ **Mẹo Cung điện Loci:** Phương pháp định vị mốc lịch sử chuẩn xác vào 9 trạm của 3 Cung điện 3D (Bài 6: CMT8, Bài 7: Điện Biên Phủ, Bài 8: Đại thắng 1975)...
 • 📝 **Khảo bài:** Gõ *"Khảo bài tôi đi"* để mình đố bạn vài câu trắc nghiệm thú vị!`;
         }
 
@@ -3746,7 +3868,7 @@ BẮT BUỘC phân tích cặn kẽ theo đúng cấu trúc 5 tầng nhận th�
      * Bàn trà trung tâm (lòng chảo Mường Thanh): Chiến dịch Điện Biên Phủ (1954) [ACTION:TELEPORT:dien_bien_phu]
      * Kệ sách lớn: Hiệp định Giơ-ne-vơ (1954) [ACTION:TELEPORT:gio_ne_vo]
      * Cửa sổ kính lớn: Phong trào Đồng Khởi (1960) [ACTION:TELEPORT:dong_khoi]
-     * Màn hình Tivi: Chiến dịch Hồ Chí Minh (1975) [ACTION:TELEPORT:ho_chi_minh]`;
+     * Trạm 9 (Dinh Độc Lập - Xe tăng 390): Chiến dịch Hồ Chí Minh toàn thắng (1975) [ACTION:TELEPORT:ho_chi_minh]`;
                 }
 
                 let docxKnowledge = '';

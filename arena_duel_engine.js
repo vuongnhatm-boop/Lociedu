@@ -843,7 +843,12 @@
 
         onMatchFound() {
             // Chọn ngẫu nhiên 1 đối thủ trong danh sách học sinh
-            const bot = this.OPPONENT_BOTS[Math.floor(Math.random() * this.OPPONENT_BOTS.length)];
+            let bot = null;
+            if (window.LociStudentBotEngine && typeof window.LociStudentBotEngine.getOpponent === 'function') {
+                bot = window.LociStudentBotEngine.getOpponent();
+            } else {
+                bot = this.OPPONENT_BOTS[Math.floor(Math.random() * this.OPPONENT_BOTS.length)];
+            }
             const myUser = this.getMyUser();
 
             this.gameState.myProfile = myUser;
@@ -880,7 +885,7 @@
 
                         <div>
                             <div style="width: 80px; height: 80px; border-radius: 50%; border: 3px solid #f59e0b; margin: 0 auto 10px; overflow: hidden; box-shadow: 0 8px 24px rgba(245, 158, 11, 0.3);">
-                                <img src="${bot.avatar}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/images/pets/owl_scholar.png'">
+                                <img src="${bot.avatar}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='assets/images/loci_avatar.jpg'">
                             </div>
                             <div style="font-size: 16px; font-weight: 800; color: #0f172a;">${bot.name}</div>
                             <div style="font-size: 12px; font-weight: 600; color: #64748b;">${bot.school}</div>
@@ -993,7 +998,7 @@
                     <!-- Player 2 (Opponent) -->
                     <div class="player-box right">
                         <div class="player-avatar-wrap">
-                            <img class="player-avatar-img" src="${opp.avatar}" onerror="this.src='assets/images/pets/owl_scholar.png'">
+                            <img class="player-avatar-img" src="${opp.avatar}" onerror="this.src='assets/images/loci_avatar.jpg'">
                             <span class="player-status-badge status-thinking" id="p2-status">Suy nghĩ</span>
                         </div>
                         <div>
@@ -1440,9 +1445,15 @@
                 );
             }
 
-            // Trộn ngẫu nhiên câu hỏi
+            // Trộn ngẫu nhiên câu hỏi và đảo thứ tự các phương án (A, B, C, D)
             const shuffled = [...raw].sort(() => 0.5 - Math.random());
-            return shuffled.slice(0, count);
+            return shuffled.slice(0, count).map(q => {
+                const cloned = { ...q };
+                if (cloned.options && Array.isArray(cloned.options)) {
+                    cloned.options = [...cloned.options].sort(() => 0.5 - Math.random());
+                }
+                return cloned;
+            });
         },
 
         getMyUser() {

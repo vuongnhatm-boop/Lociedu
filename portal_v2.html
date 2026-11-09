@@ -12915,10 +12915,10 @@
                             <span>Linh Thú Tri Thức</span>
                         </button>
                                                 <button class="topbar-dropdown-item" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'">
-                            <span>🌿 Đường Lên Đỉnh Loci (4 Thí Sinh)</span>
+                            <span>Đường Lên Đỉnh Loci (4 Thí Sinh)</span>
                         </button>
                         <button class="topbar-dropdown-item" onclick="window.ArenaDuelEngine && window.ArenaDuelEngine.open()">
-                            <span>⚔️ Đấu Trường Tri Thức (1v1)</span>
+                            <span>Đấu Trường Tri Thức (1v1)</span>
                         </button>
                     </div>
                 </div>
@@ -13328,7 +13328,7 @@
             <!-- BANNER NỔI BẬT: ĐƯỜNG LÊN ĐỈNH LOCI & ĐẤU TRƯỜNG OLYMPIA 4 NGƯỜI -->
             <section style="margin-top: 24px; margin-bottom: 24px; background: linear-gradient(135deg, #fefce8 0%, #ffffff 50%, #fffbeb 100%); border: 2px solid #facc15; border-radius: 20px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(234, 179, 8, 0.12); display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 260px;">
-                    <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.4);">🌿</div>
+                    <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.4);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg></div>
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
                             <span style="font-size: 11px; font-weight: 800; color: #854d0e; background: #fef08a; padding: 2px 8px; border-radius: 99px; text-transform: uppercase;">4 Thí Sinh · Olympia</span>
@@ -17177,6 +17177,7 @@
 
     <!-- HỆ THỐNG NHẮC HẸN ÔN TẬP WEB 1-3-7 (EBBINGHAUS) -->
     <script src="app/reminder_137.js?v=2.2"></script>
+    <script src="app/loci_students_data.js" onerror="this.onerror=null;this.src='loci_students_data.js'"></script>
     <script src="app/arena_duel_engine.js" onerror="this.onerror=null;this.src='arena_duel_engine.js'"></script>
     <script src="app/olympia_loci_engine.js" onerror="this.onerror=null;this.src='olympia_loci_engine.js'"></script>
 
@@ -17253,6 +17254,16 @@
                 v.classList.remove('active');
                 v.style.setProperty('display', 'none', 'important');
             });
+
+            // Tự động ẩn cả 2 nút bong bóng AI và Góp ý khi đang mở tab Gia Sư AI để không che khuất ô nhập và nút gửi
+            const floatingMascot = document.getElementById('loci-floating-ai-mascot');
+            const floatingFeedback = document.getElementById('floating-feedback-btn');
+            if (floatingMascot) {
+                floatingMascot.style.setProperty('display', (tabName === 'ai') ? 'none' : 'flex', 'important');
+            }
+            if (floatingFeedback) {
+                floatingFeedback.style.setProperty('display', (tabName === 'ai') ? 'none' : 'flex', 'important');
+            }
 
             if (tabName === 'overview') {
                 if (vOverview) {

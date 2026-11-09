@@ -89,29 +89,83 @@
         ],
 
         // Vòng 2: Vượt chướng ngại vật (Gói hoàn chỉnh)
-        obstacles: [
+                obstacles: [
             {
+                id: "cmt8",
                 keyword: "CÁCH MẠNG THÁNG TÁM",
                 charCount: "16 CHỮ CÁI",
-                hintImg: "assets/images/bai6/tram5_nha_hat_lon.jpg",
+                hintImg: "assets/images/bai6/tram5_nha_hat_lon_hanoi.jpg",
                 imageCaption: "Mít tinh ngày 19/8/1945 tại Quảng trường Nhà hát Lớn Hà Nội",
                 rows: [
-                    { id: 1, q: "Hàng ngang 1 (7 chữ cái): Địa danh căn cứ địa tại Tuyên Quang nơi Bác Hồ và Trung ương triệu tập Hội nghị toàn quốc và Đại hội Quốc dân tháng 8/1945?", answer: "TÂN TRÀO", clue: "Gợi ý: Cây đa lịch sử, mái đình Tân Trào." },
-                    { id: 2, q: "Hàng ngang 2 (5 chữ cái): Trung tâm đầu não giành chính quyền thắng lợi vào ngày 19/8/1945 vang dội khắp cả nước?", answer: "HÀ NỘI", clue: "Gợi ý: Thủ đô ngàn năm văn hiến." },
-                    { id: 3, q: "Hàng ngang 3 (8 chữ cái): Tên gọi mặt trận dân tộc thống nhất do Đảng thành lập năm 1941 lãnh đạo quần chúng khởi nghĩa?", answer: "VIỆT MINH", clue: "Gợi ý: Tên viết tắt của Việt Nam Độc lập Đồng minh." },
-                    { id: 4, q: "Hàng ngang 4 (4 chữ cái): Năm dương lịch diễn ra sự kiện trọng đại khai sinh ra nước Việt Nam Dân chủ Cộng hòa?", answer: "1945", clue: "Gợi ý: Mốc son chói lọi thế kỷ 20." }
+                    { id: 1, q: "Hàng ngang 1 (7 chữ cái): Căn cứ địa tại Tuyên Quang nơi Bác Hồ triệu tập Quốc dân Đại hội tháng 8/1945?", answer: "TÂN TRÀO", clue: "Gợi ý: Cây đa lịch sử, mái đình Tân Trào." },
+                    { id: 2, q: "Hàng ngang 2 (5 chữ cái): Trung tâm đầu não giành chính quyền thắng lợi rực rỡ vào ngày 19/8/1945?", answer: "HÀ NỘI", clue: "Gợi ý: Thủ đô ngàn năm văn hiến." },
+                    { id: 3, q: "Hàng ngang 3 (8 chữ cái): Mặt trận dân tộc thống nhất do Đảng thành lập năm 1941 lãnh đạo quần chúng?", answer: "VIỆT MINH", clue: "Gợi ý: Việt Nam Độc lập Đồng minh." },
+                    { id: 4, q: "Hàng ngang 4 (4 chữ cái): Năm dương lịch khai sinh ra nước Việt Nam Dân chủ Cộng hòa?", answer: "1945", clue: "Gợi ý: Mốc son chói lọi thế kỷ 20." }
                 ]
             },
             {
+                id: "dbp",
+                keyword: "ĐIỆN BIÊN PHỦ",
+                charCount: "12 CHỮ CÁI",
+                hintImg: "assets/images/post_dienbienphu.jpg",
+                imageCaption: "Lá cờ Quyết chiến Quyết thắng tung bay trên nóc hầm Đờ Cát chiều 7/5/1954",
+                rows: [
+                    { id: 1, q: "Hàng ngang 1 (6 chữ cái): Cứ điểm mở màn bị tiêu diệt ngày 13/3/1954 trong đợt tiến công thứ nhất?", answer: "HIM LAM", clue: "Gợi ý: Phân khu Bắc của tập đoàn cứ điểm." },
+                    { id: 2, q: "Hàng ngang 2 (5 chữ cái): Điểm cao phía Đông nơi diễn ra cuộc giao tranh công kiên ác liệt nhất?", answer: "ĐỒI A1", clue: "Gợi ý: Khối bộc phá ngàn cân nổ rền vang." },
+                    { id: 3, q: "Hàng ngang 3 (5 chữ cái): Tướng chỉ huy tập đoàn cứ điểm Pháp bị bắt sống tại căn hầm chỉ huy?", answer: "ĐỜ CÁT", clue: "Gợi ý: Christian de Castries." },
+                    { id: 4, q: "Hàng ngang 4 (10 chữ cái): Thời gian diễn ra chiến dịch Điện Biên Phủ từ 13/3 đến 7/5/1954?", answer: "56 NGÀY ĐÊM", clue: "Gợi ý: 'Năm mươi sáu ngày đêm khoét núi, ngủ hầm...'" }
+                ]
+            },
+            {
+                id: "dtmx",
                 keyword: "ĐẠI THẮNG MÙA XUÂN",
                 charCount: "16 CHỮ CÁI",
-                hintImg: "assets/images/bai8/tram9_cong_dinh_doc_lap.jpg",
-                imageCaption: "Xe tăng Giải phóng tiến vào Dinh Độc Lập trưa ngày 30/4/1975",
+                hintImg: "assets/images/post_xetang_1975.jpg",
+                imageCaption: "Xe tăng 390 húc đổ cổng Dinh Độc Lập trưa ngày 30/4/1975",
                 rows: [
-                    { id: 1, q: "Hàng ngang 1 (9 chữ cái): Địa bàn chiến lược miền Trung mở màn cho cuộc Tổng tiến công tháng 3/1975?", answer: "TÂY NGUYÊN", clue: "Gợi ý: Đòn điểm huyệt Buôn Ma Thuột rung chuyển." },
-                    { id: 2, q: "Hàng ngang 2 (11 chữ cái): Chiến dịch mang tên Bác là chiến dịch quyết chiến giải phóng hoàn toàn miền Nam?", answer: "HỒ CHÍ MINH", clue: "Gợi ý: Vị cha già kính yêu của dân tộc." },
-                    { id: 3, q: "Hàng ngang 3 (10 chữ cái): Biểu tượng cơ quan đầu não ngụy quyền Sài Gòn bị xe tăng 390 húc đổ trưa 30/4/1975?", answer: "DINH ĐỘC LẬP", clue: "Gợi ý: Tọa độ cuối cùng kết thúc chiến tranh." },
-                    { id: 4, q: "Hàng ngang 4 (7 chữ cái): Phương tiện cơ giới dẫn đầu thọc sâu đánh chiếm Dinh Độc Lập ngày 30/4?", answer: "XE TĂNG", clue: "Gợi ý: Thiết giáp thép số hiệu 390 và 843." }
+                    { id: 1, q: "Hàng ngang 1 (9 chữ cái): Địa bàn chiến lược miền Trung mở màn cuộc Tổng tiến công tháng 3/1975?", answer: "TÂY NGUYÊN", clue: "Gợi ý: Đòn điểm huyệt Buôn Ma Thuột rung chuyển." },
+                    { id: 2, q: "Hàng ngang 2 (11 chữ cái): Chiến dịch giải phóng Sài Gòn mang tên vị lãnh tụ vĩ đại của dân tộc?", answer: "HỒ CHÍ MINH", clue: "Gợi ý: Chiến dịch quyết chiến chiến lược cuối cùng." },
+                    { id: 3, q: "Hàng ngang 3 (10 chữ cái): Biểu tượng cơ quan đầu não chính quyền Sài Gòn bị giải phóng trưa 30/4?", answer: "DINH ĐỘC LẬP", clue: "Gợi ý: Tọa độ cắm cờ chiến thắng." },
+                    { id: 4, q: "Hàng ngang 4 (7 chữ cái): Phương tiện cơ giới dẫn đầu húc đổ cánh cổng sắt Dinh Độc Lập?", answer: "XE TĂNG", clue: "Gợi ý: Thiết giáp thép số hiệu 390 và 843." }
+                ]
+            },
+            {
+                id: "tndl",
+                keyword: "TUYÊN NGÔN ĐỘC LẬP",
+                charCount: "16 CHỮ CÁI",
+                hintImg: "assets/images/post_tuyenngondoclap.jpg",
+                imageCaption: "Chủ tịch Hồ Chí Minh đọc bản Tuyên ngôn Độc lập tại Quảng trường Ba Đình (2/9/1945)",
+                rows: [
+                    { id: 1, q: "Hàng ngang 1 (6 chữ cái): Tên quảng trường lịch sử nơi hàng vạn đồng bào lắng nghe Tuyên ngôn Độc lập?", answer: "BA ĐÌNH", clue: "Gợi ý: Trái tim của thủ đô Hà Nội." },
+                    { id: 2, q: "Hàng ngang 2 (11 chữ cái): Người soạn thảo và đọc bản Tuyên ngôn Độc lập ngày 2/9/1945?", answer: "HỒ CHÍ MINH", clue: "Gợi ý: Vị cha già kính yêu của dân tộc." },
+                    { id: 3, q: "Hàng ngang 3 (4 chữ cái): Giá trị thiêng liêng gắn liền với Độc lập trong tiêu ngữ Quốc gia?", answer: "TỰ DO", clue: "Gợi ý: 'Không có gì quý hơn Độc lập,...'" },
+                    { id: 4, q: "Hàng ngang 4 (5 chữ cái): Thủ đô ngàn năm văn hiến nơi sự kiện lịch sử 2/9 diễn ra?", answer: "HÀ NỘI", clue: "Gợi ý: Trung tâm chính trị, văn hóa của cả nước." }
+                ]
+            },
+            {
+                id: "truongson",
+                keyword: "ĐƯỜNG TRƯỜNG SƠN",
+                charCount: "14 CHỮ CÁI",
+                hintImg: "assets/images/post_duongtruongson.jpg",
+                imageCaption: "Tuyến vận tải chiến lược huyền thoại mang tên Bác chi viện cho chiến trường miền Nam",
+                rows: [
+                    { id: 1, q: "Hàng ngang 1 (7 chữ cái): Đơn vị bộ đội đặc biệt thành lập tháng 5/1959 chịu trách nhiệm mở đường Trường Sơn?", answer: "ĐOÀN 559", clue: "Gợi ý: Đoàn vận tải quân sự chiến lược." },
+                    { id: 2, q: "Hàng ngang 2 (5 chữ cái): Hai từ mở đầu câu thơ nổi tiếng: '... Trường Sơn đi cứu nước mà lòng phơi phới dậy tương lai'?", answer: "XẺ DỌC", clue: "Gợi ý: Thơ Tố Hữu." },
+                    { id: 3, q: "Hàng ngang 3 (6 chữ cái): Phương tiện cơ giới băng đạn bom tiếp tế vũ khí, lương thực cho tiền tuyến?", answer: "XE TẢI", clue: "Gợi ý: 'Tiểu đội xe không kính' của Phạm Tiến Duật." },
+                    { id: 4, q: "Hàng ngang 4 (7 chữ cái): Mục tiêu chiến lược huyết mạch nhằm đưa sức người, sức của từ Bắc vào Nam?", answer: "CHI VIỆN", clue: "Gợi ý: Tiếp sức không ngừng nghỉ cho tiền tuyến lớn." }
+                ]
+            },
+            {
+                id: "paris",
+                keyword: "HIỆP ĐỊNH PARIS",
+                charCount: "13 CHỮ CÁI",
+                hintImg: "Ảnh/Hiệp định Paris.jpg",
+                imageCaption: "Lễ ký kết Hiệp định Paris chấm dứt chiến tranh lập lại hòa bình ở Việt Nam (27/1/1973)",
+                rows: [
+                    { id: 1, q: "Hàng ngang 1 (4 chữ cái): Năm ký kết chính thức Hiệp định Paris buộc quân đội Mỹ rút về nước?", answer: "1973", clue: "Gợi ý: Sau thất bại Điện Biên Phủ trên không 1972 của Mỹ." },
+                    { id: 2, q: "Hàng ngang 2 (7 chữ cái): Nghĩa vụ quân sự then chốt mà quân Mỹ phải hoàn thành trong 60 ngày sau ký kết?", answer: "RÚT QUÂN", clue: "Gợi ý: Rút toàn bộ quân đội và căn cứ về nước." },
+                    { id: 3, q: "Hàng ngang 3 (9 chữ cái): Cố vấn đặc biệt của phái đoàn Việt Nam Dân chủ Cộng hòa tại đàm phán Paris?", answer: "LÊ ĐỨC THỌ", clue: "Gợi ý: Nhà ngoại giao kiệt xuất đàm phán trực tiếp với Kissinger." },
+                    { id: 4, q: "Hàng ngang 4 (7 chữ cái): Mục tiêu cao đẹp mà nhân dân ta kiên cường đấu tranh để lập lại trên đất nước?", answer: "HOÀ BÌNH", clue: "Gợi ý: Chấm dứt chiến tranh, lập lại..." }
                 ]
             }
         ],
@@ -726,6 +780,21 @@
         renderLobby() {
             this.currentRoundIndex = 0;
             this.players.forEach(p => p.score = 0);
+
+            // Nạp 3 đối thủ thủ khoa từ pool 120 học sinh thật toàn quốc
+            if (window.LociStudentBotEngine && typeof window.LociStudentBotEngine.getOlympiaOpponents === 'function') {
+                const opponents = window.LociStudentBotEngine.getOlympiaOpponents(3);
+                for (let i = 0; i < 3; i++) {
+                    this.players[i + 1] = opponents[i];
+                }
+            }
+
+            // Chọn ngẫu nhiên 1 bộ Chướng Ngại Vật phong phú
+            if (OLYMPIA_DATA.obstacles && OLYMPIA_DATA.obstacles.length > 0) {
+                const randObs = OLYMPIA_DATA.obstacles[Math.floor(Math.random() * OLYMPIA_DATA.obstacles.length)];
+                this.state.obstacle = JSON.parse(JSON.stringify(randObs));
+            }
+
             this.renderPodium();
             const stage = document.getElementById('olympia-main-stage');
             if (!stage) return;
@@ -828,10 +897,10 @@
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn active">⚡ VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn">🧱 VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn">🚀 VÒNG 3: TĂNG TỐC</span>
-                    <span class="round-step-btn">🎯 VÒNG 4: VỀ ĐÍCH</span>
+                    <span class="round-step-btn active">VÒNG 1: KHỞI ĐỘNG</span>
+                    <span class="round-step-btn">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
+                    <span class="round-step-btn">VÒNG 3: TĂNG TỐC</span>
+                    <span class="round-step-btn">VÒNG 4: VỀ ĐÍCH</span>
                 </div>
 
                 <div class="olympia-q-card">
@@ -845,12 +914,18 @@
                     <div class="olympia-q-text">${q.q}</div>
 
                     <div class="olympia-options-grid">
-                        ${q.opts.map((opt, i) => `
-                            <button type="button" class="olympia-opt-btn" onclick="window.OlympiaLociEngine.answerRound1('${this.escapeHtml(opt)}', '${this.escapeHtml(q.a)}', this)">
-                                <span class="olympia-opt-tag">${String.fromCharCode(65 + i)}</span>
-                                <span>${opt}</span>
-                            </button>
-                        `).join('')}
+                        ${(() => {
+                            if (!q.shuffledOpts || q._shuffleKey !== ('w_' + this.state.warmupQuestionIdx)) {
+                                q._shuffleKey = 'w_' + this.state.warmupQuestionIdx;
+                                q.shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
+                            }
+                            return q.shuffledOpts.map((opt, i) => `
+                                <button type="button" class="olympia-opt-btn" onclick="window.OlympiaLociEngine.answerRound1('${this.escapeHtml(opt)}', '${this.escapeHtml(q.a)}', this)">
+                                    <span class="olympia-opt-tag">${String.fromCharCode(65 + i)}</span>
+                                    <span>${opt}</span>
+                                </button>
+                            `).join('');
+                        })()}
                     </div>
                 </div>
             `;
@@ -930,10 +1005,10 @@
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn">⚡ VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn active">🧱 VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn">🚀 VÒNG 3: TĂNG TỐC</span>
-                    <span class="round-step-btn">🎯 VÒNG 4: VỀ ĐÍCH</span>
+                    <span class="round-step-btn">VÒNG 1: KHỞI ĐỘNG</span>
+                    <span class="round-step-btn active">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
+                    <span class="round-step-btn">VÒNG 3: TĂNG TỐC</span>
+                    <span class="round-step-btn">VÒNG 4: VỀ ĐÍCH</span>
                 </div>
 
                 <div style="display: grid; grid-template-columns: 1fr 1.15fr; gap: 24px; align-items: start;">
@@ -1106,10 +1181,10 @@ Bạn nhận được +${bonus} điểm!`);
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn">⚡ VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn">🧱 VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn active">🚀 VÒNG 3: TĂNG TỐC (${this.state.speedupQuestionIdx + 1}/4)</span>
-                    <span class="round-step-btn">🎯 VÒNG 4: VỀ ĐÍCH</span>
+                    <span class="round-step-btn">VÒNG 1: KHỞI ĐỘNG</span>
+                    <span class="round-step-btn">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
+                    <span class="round-step-btn active">VÒNG 3: TĂNG TỐC (${this.state.speedupQuestionIdx + 1}/4)</span>
+                    <span class="round-step-btn">VÒNG 4: VỀ ĐÍCH</span>
                 </div>
 
                 <div class="olympia-q-card">
@@ -1123,12 +1198,18 @@ Bạn nhận được +${bonus} điểm!`);
                     <div class="olympia-q-text">${q.q}</div>
 
                     <div class="olympia-options-grid">
-                        ${q.opts.map((opt, i) => `
-                            <button type="button" class="olympia-opt-btn" onclick="window.OlympiaLociEngine.selectSpeedupAnswer('${this.escapeHtml(opt)}')">
-                                <span class="olympia-opt-tag">${String.fromCharCode(65 + i)}</span>
-                                <span>${opt}</span>
-                            </button>
-                        `).join('')}
+                        ${(() => {
+                            if (!q.shuffledOpts || q._shuffleKey !== ('s_' + this.state.speedupQuestionIdx)) {
+                                q._shuffleKey = 's_' + this.state.speedupQuestionIdx;
+                                q.shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
+                            }
+                            return q.shuffledOpts.map((opt, i) => `
+                                <button type="button" class="olympia-opt-btn" onclick="window.OlympiaLociEngine.selectSpeedupAnswer('${this.escapeHtml(opt)}')">
+                                    <span class="olympia-opt-tag">${String.fromCharCode(65 + i)}</span>
+                                    <span>${opt}</span>
+                                </button>
+                            `).join('');
+                        })()}
                     </div>
                 </div>
             `;
@@ -1228,10 +1309,10 @@ Bạn nhận được +${bonus} điểm!`);
 
             stage.innerHTML = `
                 <div class="olympia-round-track">
-                    <span class="round-step-btn">⚡ VÒNG 1: KHỞI ĐỘNG</span>
-                    <span class="round-step-btn">🧱 VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
-                    <span class="round-step-btn">🚀 VÒNG 3: TĂNG TỐC</span>
-                    <span class="round-step-btn active">🎯 VÒNG 4: VỀ ĐÍCH (${p.name})</span>
+                    <span class="round-step-btn">VÒNG 1: KHỞI ĐỘNG</span>
+                    <span class="round-step-btn">VÒNG 2: VƯỢT CHƯỚNG NGẠI VẬT</span>
+                    <span class="round-step-btn">VÒNG 3: TĂNG TỐC</span>
+                    <span class="round-step-btn active">VÒNG 4: VỀ ĐÍCH (${p.name})</span>
                 </div>
 
                 <div class="olympia-q-card">
@@ -1250,12 +1331,18 @@ Bạn nhận được +${bonus} điểm!`);
                     <div class="olympia-q-text">${q.q}</div>
 
                     <div class="olympia-options-grid">
-                        ${q.opts.map((opt, i) => `
-                            <button type="button" class="olympia-opt-btn" onclick="window.OlympiaLociEngine.answerRound4('${this.escapeHtml(opt)}', '${this.escapeHtml(q.a)}', ${q.points})">
-                                <span class="olympia-opt-tag">${String.fromCharCode(65 + i)}</span>
-                                <span>${opt}</span>
-                            </button>
-                        `).join('')}
+                        ${(() => {
+                            if (!q.shuffledOpts || q._shuffleKey !== ('f_' + this.state.finishQuestionIdx)) {
+                                q._shuffleKey = 'f_' + this.state.finishQuestionIdx;
+                                q.shuffledOpts = [...q.opts].sort(() => Math.random() - 0.5);
+                            }
+                            return q.shuffledOpts.map((opt, i) => `
+                                <button type="button" class="olympia-opt-btn" onclick="window.OlympiaLociEngine.answerRound4('${this.escapeHtml(opt)}', '${this.escapeHtml(q.a)}', ${q.points})">
+                                    <span class="olympia-opt-tag">${String.fromCharCode(65 + i)}</span>
+                                    <span>${opt}</span>
+                                </button>
+                            `).join('');
+                        })()}
                     </div>
                 </div>
             `;

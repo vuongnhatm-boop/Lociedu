@@ -872,7 +872,7 @@ BẮT BUỘC phân tích cặn kẽ theo đúng cấu trúc 5 tầng nhận th�
      * Bàn trà trung tâm (lòng chảo Mường Thanh): Chiến dịch Điện Biên Phủ (1954) [ACTION:TELEPORT:dien_bien_phu]
      * Kệ sách lớn: Hiệp định Giơ-ne-vơ (1954) [ACTION:TELEPORT:gio_ne_vo]
      * Cửa sổ kính lớn: Phong trào Đồng Khởi (1960) [ACTION:TELEPORT:dong_khoi]
-     * Màn hình Tivi: Chiến dịch Hồ Chí Minh (1975) [ACTION:TELEPORT:ho_chi_minh]
+     * Trạm 9 (Dinh Độc Lập - Xe tăng 390): Chiến dịch Hồ Chí Minh (1975) [ACTION:TELEPORT:ho_chi_minh]
 
 ĐỊNH DẠNG: Trình bày Markdown sinh động với tiêu đề H3 (###) rõ ràng, danh sách gạch đầu dòng mạch lạc và **IN ĐẬM TẤT CẢ TỪ KHÓA, NIÊN ĐẠI, SỐ LIỆU VÀ ĐỊA DANH QUAN TRỌNG**.`;
     }
@@ -912,7 +912,7 @@ Bạn là "Loci" (phát âm tiếng Việt: "lo-xi") — Người bạn đồng 
      + 🚩 CMT8 (1945): Gắn tại CỬA CHÍNH RA VÀO (mở toang kỷ nguyên độc lập).
      + 📜 Hiệp định Giơ-ne-vơ (1954): Gắn tại KỆ SÁCH LỚN (văn bản sách vở pháp lý).
      + 🌴 Phong trào Đồng Khởi (1960): Gắn tại CỬA SỔ KÍNH (ngọn gió cách mạng lan tỏa).
-     + 🎖️ Chiến dịch Hồ Chí Minh (1975): Gắn tại MÀN HÌNH TIVI (bản tin 30/4 toàn thắng).
+     + 🎖️ Chiến dịch Hồ Chí Minh (1975): Gắn tại TRẠM 9 (Dinh Độc Lập - Cổng sắt nơi xe tăng 390 húc đổ trưa 30/4).
    - Chỉ chèn tag [ACTION:TELEPORT:<id_mốc>] khi cần đưa học sinh tới vị trí cụ thể đó.
 
 ${depthDirective}
@@ -1479,7 +1479,7 @@ Não bộ con người ghi nhớ vị trí không gian và hình ảnh trực qu
 2. 🏔️ **Bàn trà trung tâm** ➔ **Chiến dịch Điện Biên Phủ (1954)**: Mặt bàn trũng phẳng như lòng chảo Mường Thanh "chấn động địa cầu".
 3. 📜 **Kệ sách lớn góc phòng** ➔ **Hiệp định Giơ-ne-vơ (1954)**: Nơi lưu giữ các văn bản pháp lý quốc tế công nhận quyền dân tộc cơ bản.
 4. 🌴 **Khung cửa sổ kính** ➔ **Phong trào Đồng Khởi (1960)**: Ngọn gió bão táp cách mạng thổi bùng từ Bến Tre ra toàn miền Nam.
-5. 🎖️ **Màn hình Tivi lớn** ➔ **Chiến dịch Hồ Chí Minh (1975)**: Bản tin toàn thắng 11h30 trưa ngày 30/4/1975 rực rỡ non sông!
+5. 🎖️ **Trạm 9 (Dinh Độc Lập)** ➔ **Chiến dịch Hồ Chí Minh (1975)**: Xe tăng 390 húc đổ cổng Dinh, cờ Mặt trận tung bay trưa 30/4/1975!
 
 💡 **Cách dùng:** Mỗi khi cần nhớ lại kiến thức, bạn chỉ cần nhắm mắt và "đi dạo" một vòng quanh phòng, hình ảnh sự kiện sẽ tự động ùa về sống động!`;
       this.onMessage({ role: 'assistant', text: reply });
@@ -1639,7 +1639,7 @@ ${modelDetail}
 - **Thời khắc lịch sử:** Đúng **10h45 ngày 30/4/1975**, xe tăng 390 húc đổ cổng Dinh Độc Lập; **11h30**, cờ giải phóng tung bay trên nóc Dinh Độc Lập, chiến dịch toàn thắng.
 - **Ý nghĩa lịch sử:** Kết thúc vẻ vang 21 năm kháng chiến chống Mĩ cứu nước và 30 năm chiến tranh giải phóng dân tộc (1945 - 1975), giải phóng hoàn toàn miền Nam, thống nhất non sông, đưa cả nước đi lên CNXH.
 
-💡 **Gợi nhớ Loci:** Gắn tại **Màn hình Tivi lớn phòng khách** (nơi phát đi bản tin toàn thắng 30/4). [ACTION:TELEPORT:chien_dich_ho_chi_minh]`;
+💡 **Gợi nhớ Loci:** Gắn tại **Trạm 9 (Dinh Độc Lập)** — nơi xe tăng 390 húc đổ cổng trưa 30/4/1975. [ACTION:TELEPORT:chien_dich_ho_chi_minh]`;
       this.onMessage({ role: 'assistant', text: reply });
       this.speak(reply);
       return;
