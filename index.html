@@ -12,16 +12,37 @@
                 // Sandbox file:// hoặc cross-origin: giữ an toàn nhưng đã ẩn topbar
             }
         }
+        window.getCookie = function(name) {
+            try {
+                const cname = name + "=";
+                const decodedCookie = decodeURIComponent(document.cookie);
+                const ca = decodedCookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1);
+                    if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
+                }
+            } catch (_) {}
+            return "";
+        };
+
         window.isUserLoggedIn = function() {
             try {
                 if (window._isUserExplicitlyLoggedIn) return true;
                 if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
                 if (window.LociAccountManager && window.LociAccountManager._currentUser) return true;
+                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                    if (window.LociAccountManager.isLoggedIn()) return true;
+                }
                 const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
                 const localUserStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
                 if (sessionActive && localUserStr) return true;
-                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
-                    if (window.LociAccountManager.isLoggedIn()) return true;
+
+                // Kiểm tra Cookie lưu trữ 365 ngày
+                const cookieSession = window.getCookie('loci_auth_session');
+                const cookieUser = window.getCookie('loci_active_user');
+                if (cookieSession === 'active' && cookieUser) {
+                    return true;
                 }
                 if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
                     return true;
@@ -13522,6 +13543,27 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- BẢNG 7 CẤP ĐỘ TIẾN HÓA LINH THÚ TRI THỨC -->
+                <div id="loci-pet-evolution-card" style="margin-top: 24px; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 22px; padding: 26px 28px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);">
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                        <div>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <span style="font-size: 22px;">👑</span>
+                                <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0;">7 Giai Đoạn Tiến Hóa Linh Thú Tri Thức</h3>
+                            </div>
+                            <p style="font-size: 13.5px; color: #64748b; margin: 4px 0 0 0;">Linh thú trưởng thành qua từng cấp độ học tập, tăng cường năng lượng bảo hộ cung điện ký ức.</p>
+                        </div>
+                        <div id="pet-evolution-summary-badge" style="background: #eff6ff; color: #0284c7; border: 1px solid #bae6fd; padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 800;">
+                            Đang ở Cấp 1 / 7
+                        </div>
+                    </div>
+
+                    <!-- Grid 7 ô tiến hóa -->
+                    <div id="loci-pet-tiers-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 12px;">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -21011,57 +21053,122 @@
         </div>
     </div>
 
-    <!-- LOGIC ĐỔI LINH THÚ TRI THỨC 3D PIXAR -->
+    <!-- LOGIC ĐỔI LINH THÚ TRI THỨC 3D PIXAR & 7 GIAI ĐOẠN TIẾN HÓA -->
     <script>
         const PET_COMPANIONS = {
-            owl: {
-                id: 'owl',
-                name: 'Cú Tím Cử Nhân',
-                title: 'Cú Tím Cử Nhân · Đại Hội Thần Tốc',
-                element: 'TUỆ HỆ',
-                badgeBg: '#f3e8ff',
-                badgeColor: '#7c3aed',
-                badgeBorder: '#e9d5ff',
-                image: 'assets/images/pets/owl_scholar.png',
-                desc: 'Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 20% phản xạ truy xuất sự kiện.',
-                perk: 'Tăng 20% phản xạ truy xuất sự kiện'
+            tiger: {
+                id: 'tiger',
+                name: 'Bạch Hổ Sấm Sét',
+                title: 'Bạch Hổ Sấm Sét · Lôi Minh Đỉnh Cao',
+                element: 'LÔI HỆ',
+                badgeBg: '#e0e7ff',
+                badgeColor: '#4338ca',
+                badgeBorder: '#c7d2fe',
+                desc: 'Linh thú mang sức mạnh sấm sét, biểu trưng cho phản xạ nhạy bén và tốc độ xử lý đỉnh cao trong mọi kỳ thi trắc nghiệm lịch sử.',
+                perk: 'Tăng 25% tốc độ phản xạ & Nhân đôi điểm bứt phá',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trong vỏ trứng thần', img: 'assets/images/pets/tiger_tier1.png', minXp: 0 },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Vui đùa khám phá', img: 'assets/images/pets/tiger_tier2.png', minXp: 100 },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách vỡ lòng', img: 'assets/images/pets/tiger_tier3.png', minXp: 300 },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân nhỏ', img: 'assets/images/pets/tiger_tier4.png', minXp: 600 },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Hào quang tri thức', img: 'assets/images/pets/tiger_tier5.png', minXp: 1200 },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Bút lông học giả', img: 'assets/images/pets/tiger_tier6.png', minXp: 2000 },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Vương trượng hoàng kim', img: 'assets/images/pets/tiger_tier7.png', minXp: 3200 }
+                ]
             },
-            phoenix: {
-                id: 'phoenix',
-                name: 'Phượng Hoàng Lửa',
-                title: 'Phượng Hoàng Lửa · Ý Chí Bất Diệt',
-                element: 'HỎA HỆ',
-                badgeBg: '#ffedd5',
-                badgeColor: '#ea580c',
-                badgeBorder: '#fed7aa',
-                image: 'assets/images/pets/phoenix_fire.png',
-                desc: 'Biểu trưng cho ý chí kiên định và sự tái sinh của tri thức lịch sử, giúp củng cố ký ức dài hạn theo chu kỳ 1-3-7.',
-                perk: 'Củng cố ký ức Spaced Repetition'
+            turtle: {
+                id: 'turtle',
+                name: 'Huyền Vũ Lam Thủy',
+                title: 'Huyền Vũ Thông Thái · Ký Ức Biển Sâu',
+                element: 'THỦY HỆ',
+                badgeBg: '#e0f2fe',
+                badgeColor: '#0369a1',
+                badgeBorder: '#bae6fd',
+                desc: 'Linh thú trấn thủ biển sâu, bảo vệ bền vững kiến thức dài hạn, kiên trì và bền bỉ trong chu kỳ ôn tập ngắt quãng 1-3-7.',
+                perk: 'Củng cố trí nhớ dài hạn Spaced Repetition vững chắc',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng ngọc Lam Thủy', img: 'assets/images/pets/turtle_tier1.png', minXp: 0 },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Bờ cát đại dương', img: 'assets/images/pets/turtle_tier2.png', minXp: 100 },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Đọc sách đại dương', img: 'assets/images/pets/turtle_tier3.png', minXp: 300 },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Kính mắt học trò', img: 'assets/images/pets/turtle_tier4.png', minXp: 600 },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Khí chất thiền định', img: 'assets/images/pets/turtle_tier5.png', minXp: 1200 },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng cử nhân', img: 'assets/images/pets/turtle_tier6.png', minXp: 2000 },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Pháp điển tri thức bất tử', img: 'assets/images/pets/turtle_tier7.png', minXp: 3200 }
+                ]
+            },
+            dragon: {
+                id: 'dragon',
+                name: 'Thanh Long Mộc Diệp',
+                title: 'Thanh Long Trí Giác · Cổ Thụ Ký Ức',
+                element: 'MỘC HỆ',
+                badgeBg: '#ecfdf5',
+                badgeColor: '#059669',
+                badgeBorder: '#a7f3d0',
+                desc: 'Biểu tượng của sự sinh sôi tri thức, kết nối mọi sự kiện lịch sử vào các nhánh không gian 3D Loci vững chắc.',
+                perk: 'Mở rộng cung điện trí nhớ và liên kết sự kiện 3D',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng ngọc mầm non', img: 'assets/images/pets/dragon_tier1.png', minXp: 0 },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Sải bước khám phá', img: 'assets/images/pets/dragon_tier2.png', minXp: 100 },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Mê say cổ thư', img: 'assets/images/pets/dragon_tier3.png', minXp: 300 },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ tốt nghiệp tinh thông', img: 'assets/images/pets/dragon_tier4.png', minXp: 600 },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Sải cánh vút bay', img: 'assets/images/pets/dragon_tier5.png', minXp: 1200 },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Biên niên sử hoàng gia', img: 'assets/images/pets/dragon_tier6.png', minXp: 2000 },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Vương miện & Quyền trượng ngọc', img: 'assets/images/pets/dragon_tier7.png', minXp: 3200 }
+                ]
             },
             kirin: {
                 id: 'kirin',
                 name: 'Kỳ Lân Hoàng Quang',
                 title: 'Kỳ Lân Hoàng Quang · Giác Ngộ Trí Tuệ',
                 element: 'QUANG HỆ',
-                badgeBg: '#e0f2fe',
-                badgeColor: '#0284c7',
-                badgeBorder: '#bae6fd',
-                image: 'assets/images/pets/kirin_aura.png',
+                badgeBg: '#fef3c7',
+                badgeColor: '#d97706',
+                badgeBorder: '#fde68a',
                 desc: 'Linh thú thần thánh bảo hộ Cung Điện Trí Thức, nhân đôi điểm tập trung và mở rộng không gian 3D Loci.',
-                perk: 'Nhân đôi điểm tập trung không gian 3D'
+                perk: 'Nhân đôi điểm tập trung & Bảo lưu chuỗi ngày học',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Trứng ngọc vảy mây', img: 'assets/images/pets/kirin_tier1.png', minXp: 0 },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Bước nhẹ qua mây', img: 'assets/images/pets/kirin_tier2.png', minXp: 100 },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Thánh thư cổ đại', img: 'assets/images/pets/kirin_tier3.png', minXp: 300 },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Mũ cử nhân ánh sáng', img: 'assets/images/pets/kirin_tier4.png', minXp: 600 },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Tỏa sáng tri thức', img: 'assets/images/pets/kirin_tier5.png', minXp: 1200 },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Kính tri thức & Bút lông', img: 'assets/images/pets/kirin_tier6.png', minXp: 2000 },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Vương miện thái dương & Sách vàng', img: 'assets/images/pets/kirin_tier7.png', minXp: 3200 }
+                ]
             },
-            tiger: {
-                id: 'tiger',
-                name: 'Bạch Hổ Thần Tốc',
-                title: 'Bạch Hổ Thần Tốc · Phản Xạ Đỉnh Cao',
-                element: 'LÔI HỆ',
-                badgeBg: '#e0e7ff',
-                badgeColor: '#4338ca',
-                badgeBorder: '#c7d2fe',
-                image: 'assets/images/pets/tiger_speed.png',
-                desc: 'Biểu trưng cho phản xạ nhạy bén và tốc độ xử lý đỉnh cao trong mọi kỳ thi thử và đề trắc nghiệm lịch sử.',
-                perk: 'Tăng tốc phản xạ thi cử trắc nghiệm'
+            phoenix: {
+                id: 'phoenix',
+                name: 'Chu Tước Hỏa Diệm',
+                title: 'Chu Tước Hỏa Diệm · Ý Chí Bất Diệt',
+                element: 'HỎA HỆ',
+                badgeBg: '#ffedd5',
+                badgeColor: '#ea580c',
+                badgeBorder: '#fed7aa',
+                desc: 'Biểu trưng cho ý chí kiên định và ngọn lửa nhiệt huyết tri thức lịch sử, giúp củng cố ký ức dài hạn theo chu kỳ 1-3-7.',
+                perk: 'Hồi sinh câu hỏi sai & Củng cố ký ức 1-3-7',
+                tiers: [
+                    { level: 1, name: 'Cấp 1: Sơ sinh', sub: 'Ngọn lửa trong vỏ trứng', img: 'assets/images/pets/phoenix_tier1.png', minXp: 0 },
+                    { level: 2, name: 'Cấp 2: Tập đi / Ấu thơ', sub: 'Tung cánh lửa non', img: 'assets/images/pets/phoenix_tier2.png', minXp: 100 },
+                    { level: 3, name: 'Cấp 3: Mầm non', sub: 'Sách ngọn lửa tri thức', img: 'assets/images/pets/phoenix_tier3.png', minXp: 300 },
+                    { level: 4, name: 'Cấp 4: Tiểu học', sub: 'Vương miện học trò', img: 'assets/images/pets/phoenix_tier4.png', minXp: 600 },
+                    { level: 5, name: 'Cấp 5: Thiếu niên', sub: 'Đôi cánh lửa thần rực rỡ', img: 'assets/images/pets/phoenix_tier5.png', minXp: 1200 },
+                    { level: 6, name: 'Cấp 6: Trưởng thành / Cao học', sub: 'Áo choàng hoàng gia', img: 'assets/images/pets/phoenix_tier6.png', minXp: 2000 },
+                    { level: 7, name: 'Cấp 7: Bác học / Giáo sư', sub: 'Ngọn lửa bất tử & Quyền trượng', img: 'assets/images/pets/phoenix_tier7.png', minXp: 3200 }
+                ]
             }
+        };
+
+        window.getPetTier = function(pet, xp) {
+            if (!pet || !pet.tiers || pet.tiers.length === 0) return null;
+            const curXp = parseInt(xp || 0, 10);
+            let activeTier = pet.tiers[0];
+            for (let i = pet.tiers.length - 1; i >= 0; i--) {
+                if (curXp >= pet.tiers[i].minXp) {
+                    activeTier = pet.tiers[i];
+                    break;
+                }
+            }
+            return activeTier;
         };
 
         window.openPetSelectionModal = function() {
@@ -21069,21 +21176,29 @@
             const grid = document.getElementById('pet-selection-grid');
             if (!modal || !grid) return;
 
-            const currentPetId = localStorage.getItem('loci_selected_pet') || 'owl';
+            const currentPetId = localStorage.getItem('loci_selected_pet') || 'tiger';
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
+                ? window.LociAccountManager.getUser() 
+                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
+            const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
+
             grid.innerHTML = Object.values(PET_COMPANIONS).map(pet => {
                 const isActive = pet.id === currentPetId;
+                const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
                 return `
-                    <div class="pet-choice-card ${isActive ? 'active' : ''}" onclick="window.selectCompanionPet('${pet.id}')">
-                        <div style="width: 100px; height: 100px; margin: 0 auto 10px; display: grid; place-items: center;">
-                            <img src="${pet.image}" alt="${pet.name}" style="width: 95px; height: 95px; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12));">
+                    <div class="pet-choice-card ${isActive ? 'active' : ''}" onclick="window.selectCompanionPet('${pet.id}')"
+                         style="background: #ffffff; border: 2px solid ${isActive ? '#6366f1' : '#e2e8f0'}; border-radius: 18px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1); box-shadow: ${isActive ? '0 8px 24px rgba(99, 102, 241, 0.2)' : '0 2px 8px rgba(0,0,0,0.03)'};">
+                        <div style="width: 105px; height: 105px; margin: 0 auto 10px; display: grid; place-items: center; position: relative;">
+                            <img src="${activeTier.img}" alt="${pet.name}" style="width: 100px; height: 100px; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12)); border-radius: 12px;">
+                            <span style="position: absolute; bottom: 0; right: 0; background: #0f172a; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px;">Cấp ${activeTier.level}</span>
                         </div>
-                        <span style="display: inline-block; font-size: 10px; font-weight: 800; color: ${pet.badgeColor}; background: ${pet.badgeBg}; border: 1px solid ${pet.badgeBorder}; padding: 2px 7px; border-radius: 99px; margin-bottom: 4px;">
+                        <span style="display: inline-block; font-size: 10.5px; font-weight: 800; color: ${pet.badgeColor}; background: ${pet.badgeBg}; border: 1px solid ${pet.badgeBorder}; padding: 3px 8px; border-radius: 99px; margin-bottom: 6px;">
                             ${pet.element}
                         </span>
-                        <div style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">${pet.name}</div>
+                        <div style="font-size: 14px; font-weight: 800; color: #0f172a; margin-bottom: 4px;">${pet.name}</div>
                         <div style="font-size: 11px; color: #64748b; line-height: 1.35; margin-bottom: 8px;">${pet.perk}</div>
-                        <div style="font-size: 11px; font-weight: 700; color: ${isActive ? '#6366f1' : '#94a3b8'};">
-                            ${isActive ? '✓ Đang đồng hành' : 'Chọn linh thú'}
+                        <div style="font-size: 11.5px; font-weight: 800; color: ${isActive ? '#6366f1' : '#0284c7'};">
+                            ${isActive ? '✓ Đang đồng hành' : 'Chọn linh thú ➔'}
                         </div>
                     </div>
                 `;
@@ -21097,32 +21212,109 @@
             if (modal) modal.style.display = 'none';
         };
 
-        window.selectCompanionPet = function(petId) {
+        window.previewPetTier = function(petId, tierLevel) {
             const pet = PET_COMPANIONS[petId];
+            if (!pet || !pet.tiers) return;
+            const tier = pet.tiers.find(t => t.level === tierLevel);
+            if (!tier) return;
+
+            const imgEl = document.getElementById('active-mascot-img');
+            const nameEl = document.getElementById('active-mascot-name');
+            const descEl = document.getElementById('active-mascot-desc');
+            const lvlBadge = document.getElementById('active-mascot-level-badge');
+
+            if (imgEl) {
+                imgEl.src = tier.img;
+                imgEl.alt = `${pet.name} - ${tier.name}`;
+                imgEl.style.transform = 'scale(0.88)';
+                setTimeout(() => { imgEl.style.transform = 'scale(1)'; }, 150);
+            }
+            if (nameEl) nameEl.textContent = `${pet.name} · ${tier.name}`;
+            if (descEl) descEl.textContent = `${tier.sub}. ${pet.desc}`;
+            if (lvlBadge) lvlBadge.textContent = `Cấp độ ${tier.level} / 7`;
+
+            if (typeof showToast === 'function') {
+                showToast(`Xem trước ${pet.name} (${tier.name})!`, 'info', 2000);
+            }
+        };
+
+        window.renderPetEvolutionGrid = function(pet, curLevel, userXp) {
+            const grid = document.getElementById('loci-pet-tiers-grid');
+            const summaryBadge = document.getElementById('pet-evolution-summary-badge');
+            if (!grid || !pet || !pet.tiers) return;
+
+            if (summaryBadge) {
+                summaryBadge.textContent = `Linh Thú: Cấp ${curLevel} / 7 (${userXp} XP)`;
+            }
+
+            grid.innerHTML = pet.tiers.map(tier => {
+                const isUnlocked = userXp >= tier.minXp;
+                const isCurrent = tier.level === curLevel;
+                const borderCol = isCurrent ? '#6366f1' : (isUnlocked ? '#10b981' : '#e2e8f0');
+                const statusBg = isCurrent ? '#eff6ff' : (isUnlocked ? '#ecfdf5' : '#f8fafc');
+                const statusColor = isCurrent ? '#2563eb' : (isUnlocked ? '#059669' : '#94a3b8');
+                const statusText = isCurrent ? '★ Hiện tại' : (isUnlocked ? '✓ Đã đạt' : `Khóa (${tier.minXp} XP)`);
+
+                return `
+                    <div class="pet-tier-card" onclick="window.previewPetTier('${pet.id}', ${tier.level})"
+                         style="background: ${statusBg}; border: 2px solid ${borderCol}; border-radius: 16px; padding: 12px 10px; text-align: center; cursor: pointer; transition: all 0.2s; position: relative;">
+                        <div style="font-size: 11px; font-weight: 800; color: ${statusColor}; margin-bottom: 6px;">
+                            ${tier.name}
+                        </div>
+                        <div style="width: 80px; height: 80px; margin: 0 auto 8px; display: grid; place-items: center; position: relative;">
+                            <img src="${tier.img}" alt="${tier.name}" 
+                                 style="width: 76px; height: 76px; object-fit: contain; border-radius: 10px; filter: ${isUnlocked ? 'none' : 'grayscale(80%) opacity(0.65)'};">
+                        </div>
+                        <div style="font-size: 11px; font-weight: 700; color: #0f172a; margin-bottom: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${tier.sub}">
+                            ${tier.sub}
+                        </div>
+                        <span style="display: inline-block; font-size: 10px; font-weight: 800; color: ${statusColor}; background: #ffffff; border: 1px solid ${borderCol}; padding: 2px 6px; border-radius: 99px;">
+                            ${statusText}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.selectCompanionPet = function(petId) {
+            const pet = PET_COMPANIONS[petId] || PET_COMPANIONS['tiger'];
             if (!pet) return;
 
-            localStorage.setItem('loci_selected_pet', petId);
+            localStorage.setItem('loci_selected_pet', pet.id);
+
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
+                ? window.LociAccountManager.getUser() 
+                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
+            const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
+            const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
 
             // Update DOM
             const imgEl = document.getElementById('active-mascot-img');
             const nameEl = document.getElementById('active-mascot-name');
             const descEl = document.getElementById('active-mascot-desc');
             const elementBadge = document.getElementById('active-mascot-element-badge');
+            const levelBadge = document.getElementById('active-mascot-level-badge');
 
             if (imgEl) {
-                imgEl.src = pet.image;
-                imgEl.alt = pet.name;
+                imgEl.src = activeTier.img;
+                imgEl.alt = `${pet.name} (${activeTier.name})`;
                 imgEl.style.transform = 'scale(0.85)';
                 setTimeout(() => { imgEl.style.transform = 'scale(1)'; }, 150);
             }
-            if (nameEl) nameEl.textContent = pet.title;
-            if (descEl) descEl.textContent = pet.desc;
+            if (nameEl) nameEl.textContent = `${pet.name} · ${activeTier.name}`;
+            if (descEl) descEl.textContent = `${activeTier.sub}. ${pet.desc}`;
+            if (levelBadge) {
+                levelBadge.textContent = `Cấp ${activeTier.level} / 7`;
+            }
             if (elementBadge) {
                 elementBadge.textContent = pet.element;
                 elementBadge.style.color = pet.badgeColor;
                 elementBadge.style.background = pet.badgeBg;
                 elementBadge.style.borderColor = pet.badgeBorder;
             }
+
+            // Render 7 Evolution Tiers
+            window.renderPetEvolutionGrid(pet, activeTier.level, userXp);
 
             try {
                 if (typeof window.playTingTing === 'function') {
@@ -21136,32 +21328,51 @@
 
             window.closePetSelectionModal();
             if (typeof showToast === 'function') {
-                showToast(`Đã chọn linh thú đồng hành: ${pet.name}!`, 'success', 2500);
+                showToast(`Đã chọn linh thú đồng hành: ${pet.name} (${activeTier.name})!`, 'success', 2500);
             }
         };
 
         // Khởi tạo linh thú đã lưu khi tải trang
         document.addEventListener('DOMContentLoaded', () => {
-            const saved = localStorage.getItem('loci_selected_pet');
-            if (saved && PET_COMPANIONS[saved]) {
-                window.selectCompanionPet(saved);
-            }
+            const saved = localStorage.getItem('loci_selected_pet') || 'tiger';
+            window.selectCompanionPet(saved);
         });
     </script>
 
     <!-- LOGIC HERO GATE & BẢO VỆ KHÔNG GIAN 3D (YÊU CẦU ĐĂNG NHẬP + CHỐNG BOT) -->
     <script>
         // Kiểm tra xem người dùng đã đăng nhập hay chưa (chuẩn xác tuyệt đối, không giả lập)
+        window.getCookie = function(name) {
+            try {
+                const cname = name + "=";
+                const decodedCookie = decodeURIComponent(document.cookie);
+                const ca = decodedCookie.split(';');
+                for (let i = 0; i < ca.length; i++) {
+                    let c = ca[i];
+                    while (c.charAt(0) === ' ') c = c.substring(1);
+                    if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
+                }
+            } catch (_) {}
+            return "";
+        };
+
         window.isUserLoggedIn = function() {
             try {
                 if (window._isUserExplicitlyLoggedIn) return true;
                 if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
                 if (window.LociAccountManager && window.LociAccountManager._currentUser) return true;
+                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
+                    if (window.LociAccountManager.isLoggedIn()) return true;
+                }
                 const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
                 const localUserStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
                 if (sessionActive && localUserStr) return true;
-                if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
-                    if (window.LociAccountManager.isLoggedIn()) return true;
+
+                // Kiểm tra Cookie lưu trữ 365 ngày
+                const cookieSession = window.getCookie('loci_auth_session');
+                const cookieUser = window.getCookie('loci_active_user');
+                if (cookieSession === 'active' && cookieUser) {
+                    return true;
                 }
                 if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
                     return true;
@@ -21417,15 +21628,20 @@
                 }
             }
     
-            const gate = document.getElementById('hero-landing-gate');
-            if (gate) {
-                if (window.isUserLoggedIn()) {
-                    gate.style.display = 'none';
-                    gate.classList.add('gate-hidden');
-                } else {
-                    gate.style.display = 'flex';
-                    gate.classList.remove('gate-hidden');
+            // Tự động giải phóng Hero Gate ngay lập tức nếu đã đăng nhập từ trước (qua Cookie hoặc LocalStorage)
+            if (window.isUserLoggedIn()) {
+                window.dismissHeroGate(true);
+                if (window.LociAccountManager && typeof window.LociAccountManager.loadSession === 'function') {
+                    const u = window.LociAccountManager.loadSession();
+                    if (u) {
+                        const userNameEl = document.getElementById('user-name');
+                        if (userNameEl) userNameEl.textContent = u.displayName || u.username;
+                        const topbarUserLabel = document.querySelector('.topbar-user-name');
+                        if (topbarUserLabel) topbarUserLabel.textContent = u.displayName || u.username;
+                    }
                 }
+            } else {
+                window.showHeroGate();
             }
         });
     </script>

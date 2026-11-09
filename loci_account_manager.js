@@ -180,6 +180,42 @@
     };
   }
 
+  function setCookie(name, value, days = 365) {
+    try {
+      if (typeof document === 'undefined') return;
+      const d = new Date();
+      d.setTime(d.getTime() + (days * 24 * 60 * 60 * 1000));
+      const expires = "expires=" + d.toUTCString();
+      document.cookie = name + "=" + encodeURIComponent(value) + ";" + expires + ";path=/;SameSite=Lax";
+    } catch (_) {}
+  }
+
+  function getCookie(name) {
+    try {
+      if (typeof document === 'undefined') return "";
+      const cname = name + "=";
+      const decodedCookie = decodeURIComponent(document.cookie);
+      const ca = decodedCookie.split(';');
+      for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') {
+          c = c.substring(1);
+        }
+        if (c.indexOf(cname) === 0) {
+          return c.substring(cname.length, c.length);
+        }
+      }
+    } catch (_) {}
+    return "";
+  }
+
+  function deleteCookie(name) {
+    try {
+      if (typeof document === 'undefined') return;
+      document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax";
+    } catch (_) {}
+  }
+
   const LociAccountManager = {
     _currentUser: null,
     _listeners: [],
@@ -214,16 +250,49 @@
 
     loadSession() {
       try {
-        const sessionActive = localStorage.getItem(STORAGE_KEYS.SESSION) === 'active';
+        let sessionActive = false;
+        if (typeof localStorage !== 'undefined') {
+          sessionActive = localStorage.getItem(STORAGE_KEYS.SESSION) === 'active';
+        }
+        
+        // Kiểm tra cookie dài hạn 365 ngày (nếu trình duyệt xóa localStorage hoặc vào từ subdomain/domain mới)
+        const cookieSession = getCookie('loci_auth_session');
+        const cookieUser = getCookie('loci_active_user');
+        if (cookieSession === 'active' && cookieUser) {
+          sessionActive = true;
+          try {
+            localStorage.setItem(STORAGE_KEYS.SESSION, 'active');
+            localStorage.setItem('loci_last_login_user', cookieUser);
+          } catch (_) {}
+        }
+
         if (!sessionActive) {
           this._currentUser = null;
           this._notify(null);
           return null;
         }
 
-        const raw = localStorage.getItem(STORAGE_KEYS.PROFILE) ||
-                    localStorage.getItem(STORAGE_KEYS.LOCAL_USER) ||
-                    localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+        let raw = null;
+        try {
+          raw = localStorage.getItem(STORAGE_KEYS.PROFILE) ||
+                localStorage.getItem(STORAGE_KEYS.LOCAL_USER) ||
+                localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+        } catch (_) {}
+
+        // Nếu localStorage chưa có profile nhưng có cookie hoặc last login, tự phục hồi từ danh sách accounts
+        if (!raw && cookieUser) {
+          try {
+            const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
+            const target = accounts[cookieUser] || DEFAULT_SEED_ACCOUNTS[cookieUser];
+            if (target) {
+              const restoredProfile = this._normalizeProfile(target);
+              this._currentUser = restoredProfile;
+              this._persistAll(restoredProfile);
+              this._notify(restoredProfile);
+              return restoredProfile;
+            }
+          } catch (_) {}
+        }
 
         if (!raw) {
           this._currentUser = null;
@@ -297,6 +366,13 @@
         localStorage.setItem(STORAGE_KEYS.CURRENT_USER, json);
         localStorage.setItem(STORAGE_KEYS.ACTIVE_UID, profile.uid);
         localStorage.setItem(STORAGE_KEYS.SESSION, 'active');
+        localStorage.setItem('loci_last_login_user', profile.username);
+
+        // Lưu Cookie 365 ngày để ghi nhớ đăng nhập vĩnh viễn
+        setCookie('loci_auth_session', 'active', 365);
+        setCookie('loci_active_user', profile.username, 365);
+        setCookie('loci_user_uid', profile.uid, 365);
+        setCookie('loci_user_display', profile.displayName, 365);
 
         // Also register into accounts list (bảo lưu mật khẩu và quy tắc đổi tên)
         const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
@@ -505,6 +581,11 @@
         localStorage.removeItem(STORAGE_KEYS.LOCAL_USER);
         localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
         localStorage.removeItem(STORAGE_KEYS.ACTIVE_UID);
+        
+        deleteCookie('loci_auth_session');
+        deleteCookie('loci_active_user');
+        deleteCookie('loci_user_uid');
+        deleteCookie('loci_user_display');
       } catch (_) {}
 
       this._currentUser = null;

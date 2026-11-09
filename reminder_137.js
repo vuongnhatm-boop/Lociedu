@@ -341,6 +341,32 @@
     function checkReminders() {
         if (isEmbedded) return;
 
+        // TUYỆT ĐỐI KHÔNG HIỆN THÔNG BÁO CHO NGƯỜI DÙNG CHƯA ĐĂNG NHẬP HOẶC TÀI KHOẢN CHƯA HỌC BÀI NÀO
+        try {
+            const isAuth = (typeof window !== 'undefined' && typeof window.isUserLoggedIn === 'function' && window.isUserLoggedIn());
+            if (!isAuth) return;
+
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
+                ? window.LociAccountManager.getUser() 
+                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
+            
+            if (!user) return;
+
+            // Kiểm tra xem học sinh đã từng học bài nào chưa
+            const answeredCount = (user.stats && user.stats.answered) ? parseInt(user.stats.answered, 10) : 0;
+            const completedCount = (user.completedLessons && Array.isArray(user.completedLessons)) ? user.completedLessons.length : 0;
+            const stationsCount = (user.completedStations && typeof user.completedStations === 'object') 
+                ? Object.values(user.completedStations).reduce((acc, curr) => acc + (Array.isArray(curr) ? curr.length : 0), 0) 
+                : 0;
+
+            // Nếu tài khoản chưa học gì (0 câu trả lời, 0 trạm, 0 bài xong) -> CHẶN 100% POPUP
+            if (answeredCount === 0 && completedCount === 0 && stationsCount === 0) {
+                return;
+            }
+        } catch (_) {
+            return;
+        }
+
         const settings = getSettings();
         if (!settings.enabled) return;
 
@@ -357,8 +383,14 @@
         const currentTimeStr = `${hours}:${minutes}`;
         const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
 
-        // 1. Kiểm tra giờ hẹn hàng ngày
+        // 1. Kiểm tra giờ hẹn hàng ngày (CHỈ NHẮC KHI ĐÃ CÓ BÀI BẮT ĐẦU HỌC)
         if (currentTimeStr === settings.time && settings.lastNotifiedDate !== todayStr) {
+            const hasStartedLesson = ['bai_6', 'bai_7', 'bai_8'].some(lid => {
+                const stat = getLessonCycleStatus(lid);
+                return stat && stat.hasStarted;
+            });
+            if (!hasStartedLesson) return;
+
             settings.lastNotifiedDate = todayStr;
             saveSettings(settings);
 
