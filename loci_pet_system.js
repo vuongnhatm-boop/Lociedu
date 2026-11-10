@@ -483,7 +483,10 @@
                 modal = document.createElement('div');
                 modal.id = 'pet-cocare-modal';
                 modal.className = 'loci-pet-modal-overlay';
+                modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
                 document.body.appendChild(modal);
+            } else {
+                modal.onclick = (e) => { if (e.target === modal) modal.classList.remove('open'); };
             }
 
             modal.innerHTML = `
