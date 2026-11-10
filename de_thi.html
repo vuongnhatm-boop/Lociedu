@@ -115,16 +115,17 @@
         }
 
         .brand-mark {
-            width: 30px;
-            height: 30px;
+            width: 32px;
+            height: 32px;
             border-radius: 9px;
-            background: linear-gradient(135deg, var(--primary), var(--accent));
-            color: #fff;
-            display: grid;
-            place-items: center;
-            font-size: 14px;
-            font-weight: 800;
-            letter-spacing: -.5px;
+            object-fit: contain;
+            display: block;
+            flex-shrink: 0;
+            box-shadow: 0 2px 8px rgba(2, 132, 199, 0.2);
+        }
+
+        body.dark-mode .brand-mark {
+            filter: brightness(0) invert(1) drop-shadow(0 0 6px rgba(56, 189, 248, 0.6));
         }
 
         .brand small {
@@ -1340,8 +1341,8 @@
 <body>
     <header class="topbar">
         <a class="brand" href="portal_v2.html" target="_top" id="btn-topbar-brand">
-            <span class="brand-mark">Lo</span>
-            <span>Loci EDU<small>Phòng Đề ôn tập Lịch sử</small></span>
+            <img class="brand-mark" src="assets/images/logo_loci_edu.png" alt="LOCI EDU Logo">
+            <span>LOCI EDU<small>Phòng Đề ôn tập Lịch sử</small></span>
         </a>
         <div class="topbar-spacer"></div>
         <a href="review.html" id="btn-back-review" class="btn ghost" style="text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-weight:600; font-size:13px; padding:7px 14px; border-radius:99px;" title="Về Trung tâm Thẻ ôn tập Đa dạng">
