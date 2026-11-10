@@ -2865,13 +2865,13 @@
                         window.top.switchPortalTab('overview');
                         return false;
                     }
-                } catch (_) {}
-                try {
-                    window.top.location = 'portal_v2.html#overview';
-                    return false;
+                    if (window.parent && typeof window.parent.switchPortalTab === 'function') {
+                        window.parent.switchPortalTab('overview');
+                        return false;
+                    }
                 } catch (_) {}
             }
-            window.location.href = 'portal_v2.html#overview';
+            window.location.href = 'portal_v2.html';
             return false;
         };
 
@@ -3014,7 +3014,11 @@
                     if (btnLogin) {
                         btnLogin.onclick = () => {
                             if (window.self !== window.top) {
-                                window.parent.postMessage({ type: 'LOCI_OPEN_LOGIN' }, '*');
+                                if (window.parent && typeof window.parent.openLoginGate === 'function') {
+                                    window.parent.openLoginGate('login');
+                                } else {
+                                    window.parent.postMessage({ type: 'LOCI_OPEN_LOGIN' }, '*');
+                                }
                             } else {
                                 window.location.href = 'portal_v2.html?need_login=1';
                             }
@@ -3360,7 +3364,7 @@
                                     Thử thách phản xạ tốc độ với các câu hỏi Lịch sử 12 ngẫu nhiên cùng bạn bè hoặc AI thông minh. Tích lũy chuỗi thắng nhận Huy hiệu Tri Thức.
                                 </p>
                             </div>
-                            <button type="button" onclick="window.ArenaDuelEngine ? window.ArenaDuelEngine.open() : (window.location.href='portal_v2.html#arena')" style="background: #0284c7; color: #fff; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <button type="button" onclick="((window.ArenaDuelEngine && window.ArenaDuelEngine.open) ? window.ArenaDuelEngine.open() : ((window.parent && window.parent.ArenaDuelEngine && window.parent.ArenaDuelEngine.open) ? window.parent.ArenaDuelEngine.open() : ((window.parent && window.parent.switchPortalTab) ? window.parent.switchPortalTab('connect') : (window.location.href='portal_v2.html'))))" style="background: #0284c7; color: #fff; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                                 <span>Vào Đua Ngay ➔</span>
                             </button>
                         </div>
@@ -3377,7 +3381,7 @@
                                     Đại hội 4 vòng thi nghẹt thở: Khởi động, Vượt chướng ngại vật, Tăng tốc và Về đích. Giành Vòng nguyệt quế vinh quang và ghi tên lên Bảng Vàng.
                                 </p>
                             </div>
-                            <button type="button" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : (window.location.href='portal_v2.html#olympia')" style="background: #eab308; color: #713f12; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                            <button type="button" onclick="((window.OlympiaLociEngine && window.OlympiaLociEngine.open) ? window.OlympiaLociEngine.open() : ((window.parent && window.parent.OlympiaLociEngine && window.parent.OlympiaLociEngine.open) ? window.parent.OlympiaLociEngine.open() : ((window.parent && window.parent.switchPortalTab) ? window.parent.switchPortalTab('connect') : (window.location.href='portal_v2.html'))))" style="background: #eab308; color: #713f12; border: none; padding: 12px 18px; border-radius: 12px; font-weight: 800; font-size: 13.5px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
                                 <span>Tham Gia Cúp Loci ➔</span>
                             </button>
                         </div>
@@ -3438,16 +3442,24 @@
                         e.stopPropagation();
                         const action = btn.dataset.action;
                                                 if (action === 'olympia') {
-                            if (window.OlympiaLociEngine) {
+                            if (window.OlympiaLociEngine && window.OlympiaLociEngine.open) {
                                 window.OlympiaLociEngine.open();
+                            } else if (window.parent && window.parent.OlympiaLociEngine && window.parent.OlympiaLociEngine.open) {
+                                window.parent.OlympiaLociEngine.open();
+                            } else if (window.parent && typeof window.parent.switchPortalTab === 'function') {
+                                window.parent.switchPortalTab('connect');
                             } else {
                                 window.location.href = 'game_duong_len_dinh_loci.html';
                             }
                             return;
                         }
                         if (action === 'arena') {
-                            if (window.ArenaDuelEngine) {
+                            if (window.ArenaDuelEngine && window.ArenaDuelEngine.open) {
                                 window.ArenaDuelEngine.open();
+                            } else if (window.parent && window.parent.ArenaDuelEngine && window.parent.ArenaDuelEngine.open) {
+                                window.parent.ArenaDuelEngine.open();
+                            } else if (window.parent && typeof window.parent.switchPortalTab === 'function') {
+                                window.parent.switchPortalTab('connect');
                             } else {
                                 alert('Đang khởi tạo Đấu Trường Tri Thức, vui lòng thử lại sau giây lát!');
                             }
@@ -3465,7 +3477,11 @@
                         if (action === 'exam') {
                             const curLesson = (currentData && currentData.lesson && currentData.lesson.id) || activeLessonFilter || 'all';
                             const param = curLesson && curLesson !== 'all' ? `?lesson=${encodeURIComponent(curLesson)}` : '';
-                            window.location.href = `de_thi.html${param}`;
+                            if (window.parent && typeof window.parent.switchPortalTab === 'function') {
+                                window.parent.switchPortalTab('exam');
+                            } else {
+                                window.location.href = `de_thi.html${param}`;
+                            }
                             return;
                         }
                         const format = btn.dataset.format || 'all';

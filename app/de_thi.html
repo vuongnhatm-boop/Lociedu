@@ -1303,7 +1303,11 @@
                     if (btnLogin) {
                         btnLogin.onclick = () => {
                             if (window.self !== window.top) {
-                                window.parent.postMessage({ type: 'LOCI_OPEN_LOGIN' }, '*');
+                                if (window.parent && typeof window.parent.openLoginGate === 'function') {
+                                    window.parent.openLoginGate('login');
+                                } else {
+                                    window.parent.postMessage({ type: 'LOCI_OPEN_LOGIN' }, '*');
+                                }
                             } else {
                                 window.location.href = 'portal_v2.html?need_login=1';
                             }

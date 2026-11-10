@@ -3,14 +3,9 @@
 
 <head>
     <script>
-        // 1. Chống lồng lặp iframe & Ẩn Topbar kép (Bảo vệ tuyệt đối chống hiện 2 thanh điều hướng)
+        // 1. Chống lồng lặp iframe & Ẩn Topbar kép (An toàn, không chiếm đoạt window.top gây reload/đẩy người dùng ra)
         if (window.top !== window.self) {
             document.documentElement.classList.add('is-in-iframe');
-            try {
-                window.top.location = window.location.href;
-            } catch (e) {
-                // Sandbox file:// hoặc cross-origin: giữ an toàn nhưng đã ẩn topbar
-            }
         }
         window.getCookie = function(name) {
             try {
@@ -30,18 +25,35 @@
             try {
                 if (window._isUserExplicitlyLoggedIn) return true;
                 if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
-                if (window.LociAccountManager && window.LociAccountManager._currentUser) return true;
+                if (window.LociAccountManager && (window.LociAccountManager._currentUser || (typeof window.LociAccountManager.getUser === 'function' && window.LociAccountManager.getUser()))) return true;
                 if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
                     if (window.LociAccountManager.isLoggedIn()) return true;
                 }
-                const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
+                const sessionActive = localStorage.getItem('loci_auth_session') === 'active' || localStorage.getItem('loci_auth_session') === 'true';
                 const localUserStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
-                if (sessionActive && localUserStr) return true;
+                if (sessionActive || localUserStr) {
+                    if (localUserStr) {
+                        try {
+                            const p = JSON.parse(localUserStr);
+                            if (p && (p.uid || p.username || p.displayName || p.email || p.role)) return true;
+                        } catch(_) {}
+                    }
+                    if (sessionActive) return true;
+                }
+
+                // Kiểm tra tài khoản trong danh sách tài khoản đã lưu
+                const accountsStr = localStorage.getItem('loci_accounts');
+                if (accountsStr && sessionActive) {
+                    try {
+                        const accs = JSON.parse(accountsStr);
+                        if (accs && Object.keys(accs).length > 0) return true;
+                    } catch(_) {}
+                }
 
                 // Kiểm tra Cookie lưu trữ 365 ngày
                 const cookieSession = window.getCookie('loci_auth_session');
                 const cookieUser = window.getCookie('loci_active_user');
-                if (cookieSession === 'active' && cookieUser) {
+                if ((cookieSession === 'active' || cookieSession === 'true') && cookieUser) {
                     return true;
                 }
                 if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
@@ -50,6 +62,29 @@
             } catch (_) {}
             return false;
         };
+
+        // LẮNG NGHE POSTMESSAGE TỪ TẤT CẢ CÁC TRANG CON / IFRAME TRÁNH NÚT BỊ TREO
+        window.addEventListener('message', function(e) {
+            if (!e.data || typeof e.data !== 'object') return;
+            const data = e.data;
+            if (data.type === 'LOCI_SWITCH_TAB' && data.tab) {
+                if (typeof window.switchPortalTab === 'function') {
+                    window.switchPortalTab(data.tab);
+                }
+            } else if (data.type === 'LOCI_OPEN_LOGIN') {
+                if (typeof window.openLoginGate === 'function') {
+                    window.openLoginGate(data.mode || 'login');
+                }
+            } else if (data.type === 'LOCI_OPEN_NICKNAME') {
+                if (typeof window.openNicknameModal === 'function') {
+                    window.openNicknameModal();
+                }
+            } else if (data.type === 'LOCI_ENTER_SPACE' && data.href) {
+                if (typeof window.enterSpatialRoom === 'function') {
+                    window.enterSpatialRoom(data.href, data.name, data.lesson);
+                }
+            }
+        });
 
         document.addEventListener('DOMContentLoaded', function () {
             if (window.top !== window.self) {
@@ -13498,7 +13533,7 @@
                             <!-- Hai nút hành động ở chân cột phải -->
                             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                                 <button type="button"
-                                    onclick="window.openSpacedRepetitionModal ? window.openSpacedRepetitionModal() : window.switchPortalTab('review')"
+                                    onclick="if (window.LociReminder137 && typeof window.LociReminder137.openReminderModal === 'function') { window.LociReminder137.openReminderModal(); } else { window.switchPortalTab('review'); }"
                                     style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
                                         stroke-width="2.2">
@@ -13510,7 +13545,7 @@
                                     Xem kế hoạch
                                 </button>
                                 <button type="button"
-                                    onclick="window.openCloudAuthModal ? window.openCloudAuthModal() : alert('Đang mở thống kê cá nhân')"
+                                    onclick="window.scrollToLociSection('loci-pet-evolution-card')"
                                     style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981"
                                         stroke-width="2.2">
@@ -13944,7 +13979,7 @@
                     <div class="user-panel-tabs"
                         style="display:flex; gap:20px; border-bottom:1.5px solid #f1f5f9; padding-bottom:10px; margin-bottom:18px;">
                         <button type="button" class="user-panel-tab active" data-tab="tab-pane-profile"
-                            id="tab-btn-profile"
+                            id="tab-btn-profile" onclick="window.switchUserPanelTab('tab-pane-profile', this)"
                             style="background:none; border:none; padding:6px 0; font-weight:800; font-size:14px; color:#0284c7; border-bottom:2.5px solid #0284c7; cursor:pointer; display:flex; align-items:center; gap:6px;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
@@ -13956,6 +13991,7 @@
                             <span>Vào Cấp Độ</span>
                         </button>
                         <button type="button" class="user-panel-tab" data-tab="tab-pane-badges" id="tab-btn-badges"
+                            onclick="window.switchUserPanelTab('tab-pane-badges', this)"
                             style="background:none; border:none; padding:6px 0; font-weight:700; font-size:14px; color:#64748b; cursor:pointer; display:flex; align-items:center; gap:6px;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
@@ -13964,6 +14000,7 @@
                             <span>Huy Hiệu</span>
                         </button>
                         <button type="button" class="user-panel-tab" data-tab="tab-pane-notes" id="tab-btn-notes"
+                            onclick="window.switchUserPanelTab('tab-pane-notes', this)"
                             style="background:none; border:none; padding:6px 0; font-weight:700; font-size:14px; color:#64748b; cursor:pointer; display:flex; align-items:center; gap:6px;">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                 stroke-width="2">
@@ -16639,29 +16676,36 @@
             });
         }
 
-        // --- BẮT SỰ KIỆN CHUYỂN TAB TRONG PANEL USER ---
-        document.querySelectorAll('.user-panel-tab').forEach(tabBtn => {
-            tabBtn.addEventListener('click', () => {
-                const targetPaneId = tabBtn.getAttribute('data-tab');
-                document.querySelectorAll('.user-panel-tab').forEach(b => {
-                    b.classList.remove('active');
-                    b.style.color = '#64748b';
-                    b.style.fontWeight = '700';
-                    b.style.borderBottom = 'none';
-                });
-                document.querySelectorAll('.user-tab-pane').forEach(p => {
-                    p.classList.remove('active');
-                    p.style.display = 'none';
-                });
+        // --- HÀM TOÀN CỤC CHUYỂN TAB TRONG PANEL USER ---
+        window.switchUserPanelTab = function(targetPaneId, tabBtn) {
+            document.querySelectorAll('.user-panel-tab').forEach(b => {
+                b.classList.remove('active');
+                b.style.color = '#64748b';
+                b.style.fontWeight = '700';
+                b.style.borderBottom = 'none';
+            });
+            document.querySelectorAll('.user-tab-pane').forEach(p => {
+                p.classList.remove('active');
+                p.style.display = 'none';
+            });
+            if (tabBtn) {
                 tabBtn.classList.add('active');
                 tabBtn.style.color = '#0284c7';
                 tabBtn.style.fontWeight = '800';
                 tabBtn.style.borderBottom = '2.5px solid #0284c7';
-                const targetPane = document.getElementById(targetPaneId);
-                if (targetPane) {
-                    targetPane.classList.add('active');
-                    targetPane.style.display = 'block';
-                }
+            }
+            const targetPane = document.getElementById(targetPaneId);
+            if (targetPane) {
+                targetPane.classList.add('active');
+                targetPane.style.display = 'block';
+            }
+        };
+
+        // --- BẮT SỰ KIỆN CHUYỂN TAB TRONG PANEL USER ---
+        document.querySelectorAll('.user-panel-tab').forEach(tabBtn => {
+            tabBtn.addEventListener('click', () => {
+                const targetPaneId = tabBtn.getAttribute('data-tab');
+                window.switchUserPanelTab(targetPaneId, tabBtn);
             });
         });
 
@@ -21463,18 +21507,35 @@
             try {
                 if (window._isUserExplicitlyLoggedIn) return true;
                 if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
-                if (window.LociAccountManager && window.LociAccountManager._currentUser) return true;
+                if (window.LociAccountManager && (window.LociAccountManager._currentUser || (typeof window.LociAccountManager.getUser === 'function' && window.LociAccountManager.getUser()))) return true;
                 if (window.LociAccountManager && typeof window.LociAccountManager.isLoggedIn === 'function') {
                     if (window.LociAccountManager.isLoggedIn()) return true;
                 }
-                const sessionActive = localStorage.getItem('loci_auth_session') === 'active';
+                const sessionActive = localStorage.getItem('loci_auth_session') === 'active' || localStorage.getItem('loci_auth_session') === 'true';
                 const localUserStr = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
-                if (sessionActive && localUserStr) return true;
+                if (sessionActive || localUserStr) {
+                    if (localUserStr) {
+                        try {
+                            const p = JSON.parse(localUserStr);
+                            if (p && (p.uid || p.username || p.displayName || p.email || p.role)) return true;
+                        } catch(_) {}
+                    }
+                    if (sessionActive) return true;
+                }
+
+                // Kiểm tra tài khoản trong danh sách tài khoản đã lưu
+                const accountsStr = localStorage.getItem('loci_accounts');
+                if (accountsStr && sessionActive) {
+                    try {
+                        const accs = JSON.parse(accountsStr);
+                        if (accs && Object.keys(accs).length > 0) return true;
+                    } catch(_) {}
+                }
 
                 // Kiểm tra Cookie lưu trữ 365 ngày
                 const cookieSession = window.getCookie('loci_auth_session');
                 const cookieUser = window.getCookie('loci_active_user');
-                if (cookieSession === 'active' && cookieUser) {
+                if ((cookieSession === 'active' || cookieSession === 'true') && cookieUser) {
                     return true;
                 }
                 if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {

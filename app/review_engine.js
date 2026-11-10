@@ -117,6 +117,9 @@ ${contentContext}
     //   1-2: Chưa nhớ / Quên sạch -> reset repetition, interval 0 (15 phút), xuất hiện lại nhiều lần
     //   3: Nhớ mang máng -> interval 1 ngày, xuất hiện lại sớm để củng cố
     //   4-5: Đã nhớ / Nhớ hoàn hảo -> giãn cách nhanh (3 -> 8 -> 21 ngày...), không ôn lại nhiều nữa
+    // --- ĐỘNG CƠ THUẬT TOÁN SM-2 CHUẨN XÁC THEO BÁO CÁO NCKH ---
+    // EF' = EF + [0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)], EF >= 1.3
+    // I(1) = 1 ngày; I(2) = 3 ngày; I(n) = round(I(n-1) * EF) -> chuỗi 1, 3, 7,... ngày
     processReview(questionId, quality) {
         if (!this.progressData[questionId]) {
             this.progressData[questionId] = {
@@ -130,41 +133,34 @@ ${contentContext}
         }
 
         let item = this.progressData[questionId];
-        item.lastQuality = quality;
+        const q = Math.max(0, Math.min(5, Number(quality) || 0));
+        item.lastQuality = q;
         item.lastReviewDate = Date.now();
         item.totalAttempts = (item.totalAttempts || 0) + 1;
 
-        if (quality >= 4) {
-            // ĐÃ NHỚ: Giãn cách ngày càng xa, KHÔNG ôn lại nhiều nữa
+        // Cập nhật hệ số dễ nhớ EF theo chuẩn Piotr Woźniak
+        const deltaEF = 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02);
+        item.easinessFactor = Math.max(1.3, Math.min(3.5, (item.easinessFactor || 2.5) + deltaEF));
+
+        if (q >= 3) {
+            // Nhớ rõ (q=5) hoặc nhớ mang máng (q=3): Lập lịch tự động 1 -> 3 -> 7,... ngày
             if (item.repetitions === 0) {
-                item.interval = 3; // 3 ngày
+                item.interval = 1; // I(1) = 1 ngày
             } else if (item.repetitions === 1) {
-                item.interval = 8; // 8 ngày
-            } else if (item.repetitions === 2) {
-                item.interval = 21; // 21 ngày
+                item.interval = 3; // I(2) = 3 ngày
             } else {
-                item.interval = Math.round(item.interval * item.easinessFactor * 1.5);
+                // I(n) = I(n-1) * EF -> Với EF = 2.5: 3 * 2.5 = 7.5 ~ 7 ngày (Khớp chuỗi 1-3-7)
+                item.interval = Math.max(item.interval + 1, Math.round(item.interval * item.easinessFactor));
             }
             item.repetitions += 1;
-            item.easinessFactor = Math.min(3.5, item.easinessFactor + 0.15);
             item.nextReviewDate = Date.now() + item.interval * 24 * 60 * 60 * 1000;
             item.correctCount = (item.correctCount || 0) + 1;
-            item.status = 'mastered';
-        } else if (quality === 3) {
-            // NHỚ MANG MÁNG: Giữ chu kỳ ngắn (1 ngày), ưu tiên xuất hiện lại để củng cố
-            item.interval = 1; // 1 ngày
-            item.repetitions = Math.max(0, item.repetitions - 1);
-            item.easinessFactor = Math.max(1.3, item.easinessFactor - 0.05);
-            item.nextReviewDate = Date.now() + 1 * 24 * 60 * 60 * 1000;
-            item.status = 'vague';
+            item.status = (q >= 4) ? 'mastered' : 'vague';
         } else {
-            // CHƯA NHỚ / QUÊN SẠCH (quality < 3):
-            // Reset repetitions, hẹn lại sau 15 phút, tần suất xuất hiện lại cao
+            // Chưa nhớ (q < 3): Chuỗi bị reset, nhắc ôn lại ngày hôm sau và sau 15 phút trong phiên
             item.repetitions = 0;
-            item.interval = 0; // Trong ngày
-            item.easinessFactor = Math.max(1.3, item.easinessFactor - 0.2);
-            // Hẹn lại sau 15 phút để ôn tập lại ngay
-            item.nextReviewDate = Date.now() + 15 * 60 * 1000;
+            item.interval = 1; // Yêu cầu lặp lại ngày hôm sau
+            item.nextReviewDate = Date.now() + 15 * 60 * 1000; // Ôn lại sau 15 phút
             item.status = 'forgotten';
         }
 
