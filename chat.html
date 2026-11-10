@@ -2629,6 +2629,11 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             max-height: 160px;
             min-height: 24px;
             padding: 6px 4px;
+            pointer-events: auto !important;
+            cursor: text !important;
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            z-index: 2;
         }
 
         .btn-send-round-gpt {
@@ -2862,7 +2867,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
 
         <!-- COMPOSER PILL CHATGPT (CÓ TẢI TÀI LIỆU) -->
         <div class="composer-wrap">
-            <div class="composer-chatgpt-box">
+            <div class="composer-chatgpt-box" onclick="if(event.target!==document.getElementById('input') &amp;&amp; !event.target.closest('button')) document.getElementById('input')?.focus()">
                 <!-- Document Attachment Preview Chip -->
                 <div class="attached-doc-preview" id="attached-doc-preview" style="display:none;">
                     <div class="adp-icon" id="adp-icon">📄</div>
@@ -3069,10 +3074,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 else if (type === 'RELAX_STORY') acts.push({ label: '🎧 Nghe chuyện Lịch sử', query: 'Kể cho mình nghe một mẩu chuyện lịch sử ngắn và nhẹ nhàng nhé' });
                 else if (type === 'RELAX_FLASHCARD') acts.push({ label: '🃏 Thử 1 Flashcard vui 1 phút', query: 'Cho mình xem 1 flashcard vui nhộn siêu ngắn 1 phút thôi nhé' });
                 return '';
-            }).replace(/
-{3,}/g, '
-
-').trim();
+            }).replace(/\n{3,}/g, '\n\n').trim();
             return { clean, acts };
         }
 

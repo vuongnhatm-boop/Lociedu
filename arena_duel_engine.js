@@ -775,6 +775,7 @@
         },
 
         close() {
+            this.stopLobbyBgm();
             if (this.gameState.timerInterval) clearInterval(this.gameState.timerInterval);
             const modal = document.getElementById('arena-duel-modal');
             if (modal) modal.classList.remove('open');
@@ -873,6 +874,7 @@
 
         // 2. TÌM KIẾM ĐỐI THỦ (MATCHMAKING)
         startMatchmaking() {
+            this.stopLobbyBgm();
             const body = document.getElementById('arena-main-body');
             if (!body) return;
 
@@ -900,11 +902,34 @@
         },
 
         onMatchFound() {
-            // Chọn ngẫu nhiên 1 đối thủ trong danh sách học sinh
+            this.stopLobbyBgm();
+            // Chọn ngẫu nhiên 1 đối thủ trong danh sách học sinh (ưu tiên pool học sinh thật)
             let bot = null;
             if (window.LociStudentBotEngine && typeof window.LociStudentBotEngine.getOpponent === 'function') {
                 bot = window.LociStudentBotEngine.getOpponent();
-            } else {
+            } else if (typeof window.getRandomBotStudents === 'function') {
+                const randList = window.getRandomBotStudents(1);
+                if (randList && randList.length > 0) {
+                    const s = randList[0];
+                    bot = {
+                        name: 'Đồng Sử ' + s.name,
+                        school: 'Đồng Sử Loci',
+                        avatar: s.avatar || 'assets/images/loci_avatar.jpg',
+                        accuracy: 0.78,
+                        title: 'Đồng Sử'
+                    };
+                }
+            } else if (window.LOCI_STUDENTS_POOL && window.LOCI_STUDENTS_POOL.length > 0) {
+                const s = window.LOCI_STUDENTS_POOL[Math.floor(Math.random() * window.LOCI_STUDENTS_POOL.length)];
+                bot = {
+                    name: 'Đồng Sử ' + s.name,
+                    school: 'Đồng Sử Loci',
+                    avatar: s.avatar || 'assets/images/loci_avatar.jpg',
+                    accuracy: 0.78,
+                    title: 'Đồng Sử'
+                };
+            }
+            if (!bot) {
                 bot = this.OPPONENT_BOTS[Math.floor(Math.random() * this.OPPONENT_BOTS.length)];
             }
             const myUser = this.getMyUser();

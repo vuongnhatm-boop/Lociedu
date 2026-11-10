@@ -1652,6 +1652,22 @@
         <!-- CỘT TRÁI: BẢNG TIN (FEED) -->
         <div class="feed-section">
             <div id="feed-content" style="display: flex; flex-direction: column; gap: 18px;">
+                <!-- THANH TÌM KIẾM ĐỒNG SỬ & KẾT BẠN -->
+                <div class="user-search-card" style="background: #ffffff; border-radius: 18px; padding: 14px 18px; border: 1.5px solid var(--border); box-shadow: 0 4px 16px rgba(0,0,0,0.04);">
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span style="font-size: 18px;">🔍</span>
+                        <input type="text" id="mxh-user-search-input" 
+                            placeholder="Tìm kiếm Đồng Sử (theo tên hoặc mã học sinh) để kết bạn & trò chuyện..."
+                            style="flex: 1; border: none; outline: none; font-size: 14px; background: transparent; font-family: inherit; color: #0f172a;"
+                            oninput="window.handleUserSearch(this.value)">
+                        <button type="button" onclick="document.getElementById('mxh-user-search-input').value=''; window.handleUserSearch('')"
+                            style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 14px;">✕</button>
+                    </div>
+                    <!-- Danh sách kết quả tìm kiếm -->
+                    <div id="mxh-search-results" style="display: none; margin-top: 14px; padding-top: 12px; border-top: 1px solid #e2e8f0; max-height: 280px; overflow-y: auto; flex-direction: column; gap: 8px;">
+                    </div>
+                </div>
+
                 <!-- Tạo bài viết -->
                 <div class="create-post">
                     <div class="create-post-header">
@@ -1870,68 +1886,17 @@
                 <div class="popup-header-title">
                     <span>💬</span>
                     <span>Tin nhắn & Bạn bè</span>
-                    <span style="font-size: 11px; background: rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 99px;">3 Online</span>
+                    <span id="popup-online-badge" style="font-size: 11px; background: rgba(255,255,255,0.25); padding: 2px 7px; border-radius: 99px;">Online</span>
                 </div>
                 <button class="popup-close-btn" onclick="window.toggleChatPopup()" title="Đóng cửa sổ">✕</button>
             </div>
-            <div class="popup-friend-list">
-                <!-- Thầy Giáo / Cố vấn AI -->
-                <div class="popup-friend-item" onclick="window.openFriendChat('Thầy Giáo Lịch Sử', 'Thầy giáo', '👨‍🏫', '#0284c7', 'Thầy có thể giúp gì cho em về Cung điện Loci hôm nay?')">
-                    <div class="popup-friend-avatar" style="background-image: url('https://ui-avatars.com/api/?name=Thầy+Giáo&background=0284c7&color=fff');">
-                        <div class="online-dot"></div>
-                    </div>
-                    <div class="popup-friend-info">
-                        <div class="popup-friend-name">
-                            <span>Thầy Giáo Lịch Sử</span>
-                            <span class="popup-friend-role">Cố Vấn</span>
-                        </div>
-                        <div class="popup-friend-msg">Em nhớ ôn bài Dinh Độc Lập nhé!</div>
-                    </div>
-                </div>
-
-                <!-- Nguyễn Minh Khang (Top 1) -->
-                <div class="popup-friend-item" onclick="window.openFriendChat('Nguyễn Minh Khang', 'Quán quân Top 1', 'K', '#f59e0b', 'Bí quyết phòng Loci của mình là liên tưởng hình ảnh cực dị và hài hước!')">
-                    <div class="popup-friend-avatar" style="background: #f59e0b;">
-                        K
-                        <div class="online-dot"></div>
-                    </div>
-                    <div class="popup-friend-info">
-                        <div class="popup-friend-name">
-                            <span>Nguyễn Minh Khang</span>
-                            <span class="popup-friend-role" style="background:#fef3c7; color:#b45309;">Top 1</span>
-                        </div>
-                        <div class="popup-friend-msg">Bí quyết nhớ Loci của mình là...</div>
-                    </div>
-                </div>
-
-                <!-- Trần Phương Linh (Top 2) -->
-                <div class="popup-friend-item" onclick="window.openFriendChat('Trần Phương Linh', 'Á quân Top 2', 'L', '#10b981', 'Chào bạn! Hôm nay bạn đã vượt qua được bao nhiêu mốc lịch sử rồi?')">
-                    <div class="popup-friend-avatar" style="background: #10b981;">
-                        L
-                        <div class="online-dot"></div>
-                    </div>
-                    <div class="popup-friend-info">
-                        <div class="popup-friend-name">
-                            <span>Trần Phương Linh</span>
-                            <span class="popup-friend-role" style="background:#dcfce7; color:#15803d;">Top 2</span>
-                        </div>
-                        <div class="popup-friend-msg">Cậu ôn bài Cách Mạng Tháng 8 chưa?</div>
-                    </div>
-                </div>
-
-                <!-- Nhóm Ôn Thi THPT Quốc Gia -->
-                <div class="popup-friend-item" onclick="window.openFriendChat('Nhóm Ôn Thi THPT 2027', 'Nhóm học tập', '👥', '#6366f1', 'Chào mừng bạn vào nhóm ôn thi! Tối nay 8h mọi người cùng làm bài nhé!')">
-                    <div class="popup-friend-avatar" style="background: #6366f1;">
-                        👥
-                        <div class="online-dot"></div>
-                    </div>
-                    <div class="popup-friend-info">
-                        <div class="popup-friend-name">
-                            <span>Nhóm Ôn Thi THPT 2027</span>
-                        </div>
-                        <div class="popup-friend-msg">Mọi người làm đề số 4 chưa?</div>
-                    </div>
-                </div>
+            <div style="padding: 8px 12px; background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
+                <input type="text" id="popup-friend-search-input" placeholder="🔍 Tìm nhanh bạn bè..." 
+                    style="width: 100%; padding: 6px 12px; border-radius: 99px; border: 1px solid #cbd5e1; font-size: 12.5px; outline: none; background: #fff;"
+                    oninput="window.renderPopupFriendList(this.value)">
+            </div>
+            <div class="popup-friend-list" id="popup-friend-list">
+                <!-- Nạp tự động từ window.renderPopupFriendList() -->
             </div>
         </div>
 
@@ -3797,9 +3762,177 @@
         }
 
         // ========================================================
-        // 3. ĐIỀU KHIỂN CỬA SỔ POP-UP CHAT & TIN NHẮN BẠN BÈ
+        // 3. ĐIỀU KHIỂN TÌM KIẾM ĐỒNG SỬ, BẠN BÈ & CHAT POP-UP 1v1
         // ========================================================
         let currentChatFriend = null;
+
+        function getFriendsList() {
+            try {
+                return JSON.parse(localStorage.getItem('loci_friends_list') || '[]');
+            } catch (_) {
+                return [];
+            }
+        }
+
+        function saveFriendsList(list) {
+            try {
+                localStorage.setItem('loci_friends_list', JSON.stringify(list));
+            } catch (_) {}
+        }
+
+        window.handleUserSearch = function(query) {
+            const resultsBox = document.getElementById('mxh-search-results');
+            if (!resultsBox) return;
+            const q = (query || '').trim().toLowerCase();
+            if (!q) {
+                resultsBox.style.display = 'none';
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            const pool = (typeof window.LOCI_STUDENTS_POOL !== 'undefined' && Array.isArray(window.LOCI_STUDENTS_POOL))
+                ? window.LOCI_STUDENTS_POOL
+                : [];
+
+            const friends = getFriendsList();
+            const friendMap = new Map(friends.map(f => [f.id || f.name, f]));
+
+            // Tìm kiếm theo tên hoặc id hoặc lớp
+            const matches = pool.filter(s => {
+                const name = (s.name || '').toLowerCase();
+                const id = (s.id || '').toLowerCase();
+                const cls = (s.classRoom || '').toLowerCase();
+                return name.includes(q) || id.includes(q) || cls.includes(q);
+            }).slice(0, 8);
+
+            if (matches.length === 0) {
+                resultsBox.style.display = 'flex';
+                resultsBox.innerHTML = `
+                    <div style="text-align: center; color: #94a3b8; font-size: 13px; padding: 12px;">
+                        Không tìm thấy Đồng Sử nào khớp với từ khóa "<b>${esc(q)}</b>". Hãy thử tìm tên khác nhé!
+                    </div>
+                `;
+                return;
+            }
+
+            resultsBox.style.display = 'flex';
+            resultsBox.innerHTML = matches.map(s => {
+                const isFriend = friendMap.has(s.id) || friendMap.has(s.name);
+                const safeName = esc(s.name);
+                const safeCls = esc(s.classRoom || '12');
+                const avatarUrl = s.avatar || 'assets/images/loci_avatar.jpg';
+
+                return `
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #f8fafc; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div style="display: flex; align-items: center; gap: 10px; min-width: 0;">
+                            <img src="${avatarUrl}" style="width: 38px; height: 38px; border-radius: 50%; object-fit: cover; flex-shrink: 0; border: 1.5px solid #0284c7;" onerror="this.src='assets/images/loci_avatar.jpg'">
+                            <div style="min-width: 0;">
+                                <div style="font-size: 13.5px; font-weight: 800; color: #0f172a; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                    Đồng Sử ${safeName}
+                                </div>
+                                <div style="font-size: 11.5px; color: #64748b;">
+                                    Lớp ${safeCls} · Đồng Sử Loci
+                                </div>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                            ${isFriend ? `
+                                <button type="button" class="btn" style="background: #0284c7; color: #ffffff; padding: 6px 14px; font-size: 12px; font-weight: 800; border-radius: 99px; border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(2, 132, 199, 0.25);"
+                                    onclick="window.startDirectChat('${safeName}', '${avatarUrl}')">
+                                    💬 Trò chuyện
+                                </button>
+                            ` : `
+                                <button type="button" class="btn" id="btn-add-${s.id}" style="background: #10b981; color: #ffffff; padding: 6px 14px; font-size: 12px; font-weight: 800; border-radius: 99px; border: none; cursor: pointer; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);"
+                                    onclick="window.sendFriendRequest('${s.id}', '${safeName}', '${avatarUrl}', '${safeCls}')">
+                                    ➕ Kết bạn
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        };
+
+        window.sendFriendRequest = function(id, name, avatar, classRoom) {
+            const list = getFriendsList();
+            if (!list.some(f => f.id === id || f.name === name)) {
+                list.push({ id, name, avatar, classRoom, addedAt: Date.now() });
+                saveFriendsList(list);
+            }
+            if (typeof showToast === 'function') {
+                showToast(`Đã kết bạn thành công với Đồng Sử ${name}! Bạn có thể nhắn tin ngay bây giờ.`, 'success', 3500);
+            } else {
+                alert(`Đã kết bạn thành công với Đồng Sử ${name}! Bạn có thể nhắn tin ngay bây giờ.`);
+            }
+            const curQ = document.getElementById('mxh-user-search-input')?.value || '';
+            window.handleUserSearch(curQ);
+            window.renderPopupFriendList();
+        };
+
+        window.startDirectChat = function(name, avatar) {
+            const popup = document.getElementById('chat-popup-window');
+            if (popup && !popup.classList.contains('active')) {
+                popup.classList.add('active');
+            }
+            window.openFriendChat(
+                'Đồng Sử ' + name.replace(/^Đồng Sử\s*/i, ''),
+                'Bạn bè · Đồng Sử Loci',
+                name[0].toUpperCase(),
+                '#0284c7',
+                `Chào bạn! Rất vui được kết nối cùng bạn ôn thi môn Lịch Sử 12!`
+            );
+        };
+
+        window.renderPopupFriendList = function(filterQuery = '') {
+            const container = document.getElementById('popup-friend-list');
+            if (!container) return;
+
+            const q = (filterQuery || '').trim().toLowerCase();
+            const friends = getFriendsList();
+
+            const defaultContacts = [
+                { id: 'mentor_teacher', name: 'Thầy Giáo Lịch Sử', role: 'Cố Vấn 24/7', avatar: 'https://ui-avatars.com/api/?name=Thầy+Giáo&background=0284c7&color=fff', msg: 'Em nhớ ôn bài Dinh Độc Lập nhé!' },
+                { id: 'top_khang', name: 'Đồng Sử Nguyễn Minh Khang', role: 'Top 1 BXH', avatar: 'https://ui-avatars.com/api/?name=Minh+Khang&background=f59e0b&color=fff', msg: 'Bí quyết nhớ Loci của mình là...' },
+                { id: 'top_linh', name: 'Đồng Sử Trần Phương Linh', role: 'Top 2 BXH', avatar: 'https://ui-avatars.com/api/?name=Phương+Linh&background=10b981&color=fff', msg: 'Chào bạn! Hôm nay ôn mốc nào rồi?' }
+            ];
+
+            const allContacts = [
+                ...defaultContacts,
+                ...friends.map(f => ({
+                    id: f.id,
+                    name: 'Đồng Sử ' + f.name.replace(/^Đồng Sử\s*/i, ''),
+                    role: 'Bạn bè · Lớp ' + (f.classRoom || '12'),
+                    avatar: f.avatar || 'assets/images/loci_avatar.jpg',
+                    msg: 'Đang online · Chạm để trò chuyện'
+                }))
+            ];
+
+            const filtered = q ? allContacts.filter(c => c.name.toLowerCase().includes(q)) : allContacts;
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; color: #94a3b8; font-size: 13px; padding: 20px;">
+                        Không tìm thấy bạn bè nào khớp với "${esc(q)}".
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = filtered.map(c => `
+                <div class="popup-friend-item" onclick="window.openFriendChat('${esc(c.name)}', '${esc(c.role)}', '${esc(c.name[0])}', '#0284c7', 'Chào bạn! Cùng thảo luận Lịch Sử 12 nhé!')">
+                    <div class="popup-friend-avatar" style="background-image: url('${c.avatar}'); background-size: cover; background-position: center;">
+                        <div class="online-dot"></div>
+                    </div>
+                    <div class="popup-friend-info">
+                        <div class="popup-friend-name">
+                            <span>${esc(c.name)}</span>
+                            <span class="popup-friend-role">${esc(c.role)}</span>
+                        </div>
+                        <div class="popup-friend-msg">${esc(c.msg)}</div>
+                    </div>
+                </div>
+            `).join('');
+        };
 
         window.toggleChatPopup = function() {
             const popup = document.getElementById('chat-popup-window');
@@ -3808,9 +3941,9 @@
             popup.classList.toggle('active');
 
             if (isOpening) {
-                // Giảm badge tin nhắn
                 const badge = document.getElementById('chat-fab-badge');
                 if (badge) badge.style.display = 'none';
+                window.renderPopupFriendList();
             }
         };
 
@@ -3826,11 +3959,23 @@
 
             document.getElementById('popup-cw-init-msg').textContent = welcomeMsg || 'Xin chào bạn!';
 
-            // Xóa các tin nhắn trước (chỉ giữ tin mở đầu)
             const msgs = document.getElementById('popup-chat-messages');
             while (msgs.children.length > 1) {
                 msgs.removeChild(msgs.lastChild);
             }
+
+            // Nạp lịch sử tin nhắn đã lưu
+            try {
+                const k = 'loci_chat_hist_' + encodeURIComponent(name);
+                const hist = JSON.parse(localStorage.getItem(k) || '[]');
+                hist.forEach(m => {
+                    const bubble = document.createElement('div');
+                    bubble.className = 'message-bubble ' + (m.role === 'me' ? 'message-outgoing' : 'message-incoming');
+                    bubble.textContent = m.text;
+                    msgs.appendChild(bubble);
+                });
+            } catch (_) {}
+            msgs.scrollTop = msgs.scrollHeight;
 
             // Chuyển sang View 2
             document.getElementById('popup-friend-list-view').style.display = 'none';
@@ -3845,6 +3990,7 @@
         window.backToFriendList = function() {
             document.getElementById('popup-chat-view').style.display = 'none';
             document.getElementById('popup-friend-list-view').style.display = 'flex';
+            window.renderPopupFriendList();
         };
 
         window.sendPopupChat = async function() {
@@ -3882,6 +4028,16 @@
             outMsg.textContent = text;
             msgs.appendChild(outMsg);
 
+            // Lưu vào localStorage
+            if (currentChatFriend && currentChatFriend.name) {
+                try {
+                    const k = 'loci_chat_hist_' + encodeURIComponent(currentChatFriend.name);
+                    const hist = JSON.parse(localStorage.getItem(k) || '[]');
+                    hist.push({ role: 'me', text, ts: Date.now() });
+                    localStorage.setItem(k, JSON.stringify(hist));
+                } catch (_) {}
+            }
+
             input.value = '';
             msgs.scrollTop = msgs.scrollHeight;
 
@@ -3897,11 +4053,29 @@
                     reply = "Tuyệt vời bạn ơi! Cứ liên tưởng mốc sự kiện thành hình ảnh thật sống động trong phòng 360° là nhớ mãi không quên!";
                 } else if (currentChatFriend && currentChatFriend.name.includes('Nhóm')) {
                     reply = "Chào mừng bạn! Mọi người trong nhóm đã ghi nhận câu hỏi, lát nữa thảo luận cùng nhau nhé!";
+                } else {
+                    const friendReplies = [
+                        "Chào bạn! Mình cũng đang ôn thi phần Lịch Sử 12 này, cùng quyết tâm đạt 10 điểm nhé!",
+                        "Ý kiến hay đó bạn! Mình thấy đặt mốc vào Cung điện 360° nhớ dai hơn cách học vẹt nhiều!",
+                        "Cảm ơn bạn nhé! Lát nữa mình rảnh sẽ vào Đấu trường Tri thức giao lưu 1 trận cùng bạn!",
+                        "Bạn làm bộ đề thi thử 28 câu mới chưa? Có nhiều câu thực tế hay lắm đó!"
+                    ];
+                    reply = friendReplies[Math.floor(Math.random() * friendReplies.length)];
                 }
 
                 inMsg.textContent = reply;
                 msgs.appendChild(inMsg);
                 msgs.scrollTop = msgs.scrollHeight;
+
+                // Lưu phản hồi vào localStorage
+                if (currentChatFriend && currentChatFriend.name) {
+                    try {
+                        const k = 'loci_chat_hist_' + encodeURIComponent(currentChatFriend.name);
+                        const hist = JSON.parse(localStorage.getItem(k) || '[]');
+                        hist.push({ role: 'them', text: reply, ts: Date.now() });
+                        localStorage.setItem(k, JSON.stringify(hist));
+                    } catch (_) {}
+                }
             }, 900);
         };
 
@@ -3924,8 +4098,10 @@
         // Khởi động render
         document.addEventListener('DOMContentLoaded', () => {
             window.renderHonorBoard();
+            if (typeof window.renderPopupFriendList === 'function') window.renderPopupFriendList();
         });
         window.renderHonorBoard();
+        if (typeof window.renderPopupFriendList === 'function') window.renderPopupFriendList();
     </script>
     <!-- BOT GIÁM SÁT KẾT NỐI & KIỂM DUYỆT NỘI DUNG LỊCH SỬ -->
     <script src="history_sentinel_bot.js"></script>

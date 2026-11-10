@@ -543,6 +543,7 @@
 
                 // NHẢY NHANH ĐẾN VÒNG THI (HỖ TRỢ TEST & PHÍM TẮT Q1, Q2, Q3, Q4)
         jumpToRound(roundNum) {
+            this.stopLobbyTheme();
             this.isExamLockActive = true;
             this.bindAntiCheatLock();
             this.clearTimer();
@@ -607,6 +608,7 @@
         },
 
         close() {
+            this.stopLobbyTheme();
             this.clearTimer();
             const modal = document.getElementById('olympia-modal-overlay');
             if (modal) modal.classList.remove('open');
@@ -1070,7 +1072,7 @@
                         <img src="${p.avatar}" alt="${p.name}" class="podium-avatar-img" onerror="this.src='assets/images/loci_avatar.jpg'">
                     </div>
                     <div class="podium-pname" title="${p.name}">${p.isUser ? '⭐ ' : ''}${p.name}</div>
-                    <div class="podium-pschool" title="${p.school}">${p.school}</div>
+                    <div class="podium-pschool" title="Đồng Sử Loci">Đồng Sử Loci</div>
                     <div class="podium-pscore-box" id="podium-score-${p.id}">${p.score}</div>
                 </div>
             `).join('');
@@ -1120,13 +1122,133 @@
                         <button type="button" onclick="window.OlympiaLociEngine.jumpToRound(4)" style="background: rgba(244, 63, 94, 0.15); border: 1px solid #f43f5e; color: #f43f5e; padding: 4px 12px; border-radius: 8px; font-size: 12px; font-weight: 800; cursor: pointer;">Q4: Lấy Cúp</button>
                     </div>
 
-                    <!-- NÚT BẮT ĐẦU VÒNG KHỞI ĐỘNG -->
-                    <button type="button" onclick="window.OlympiaLociEngine.startRound1Warmup()"
+                    <!-- NÚT BẮT ĐẦU GHÉP TRẬN -->
+                    <button type="button" onclick="window.OlympiaLociEngine.startMatchmaking()"
                         style="background: linear-gradient(135deg, #0284c7, #0369a1); border: 2px solid #38bdf8; border-radius: 99px; padding: 14px 44px; font-size: 17px; font-weight: 900; color: #ffffff; cursor: pointer; box-shadow: 0 0 30px rgba(56, 189, 248, 0.5); letter-spacing: 0.5px; transition: all 0.2s;">
-                        BƯỚC VÀO TRẬN ĐẤU (VÒNG 1: LÀM NÓNG) ➔
+                        BƯỚC VÀO TRẬN ĐẤU (GHÉP TRẬN 4 NGƯỜI) ➔
                     </button>
                 </div>
             `;
+        },
+
+        startMatchmaking() {
+            this.stopLobbyTheme();
+            const stage = document.getElementById('olympia-main-stage');
+            if (!stage) return;
+
+            // Nạp 3 đối thủ ảo từ danh sách học sinh
+            let opponents = [];
+            if (window.LociStudentBotEngine && typeof window.LociStudentBotEngine.getOlympiaOpponents === 'function') {
+                opponents = window.LociStudentBotEngine.getOlympiaOpponents(3);
+            } else if (typeof window.getRandomBotStudents === 'function') {
+                const randList = window.getRandomBotStudents(3);
+                opponents = randList.map((b, i) => ({
+                    id: b.id || ('bot_' + i),
+                    name: 'Đồng Sử ' + b.name,
+                    school: 'Đồng Sử Loci',
+                    avatar: b.avatar || 'assets/images/loci_avatar.jpg',
+                    score: 0,
+                    isUser: false,
+                    speed: 2.0,
+                    accuracy: 0.75
+                }));
+            }
+            if (!opponents || opponents.length < 3) {
+                opponents = [
+                    { id: 'bot_1', name: 'Đồng Sử Hoàng Huyền Trân', school: 'Đồng Sử Loci', avatar: 'assets/images/loci_avatar.jpg', score: 0, isUser: false, speed: 2.2, accuracy: 0.8 },
+                    { id: 'bot_2', name: 'Đồng Sử Đặng Thùy Dương', school: 'Đồng Sử Loci', avatar: 'assets/images/loci_avatar.jpg', score: 0, isUser: false, speed: 2.5, accuracy: 0.75 },
+                    { id: 'bot_3', name: 'Đồng Sử Lý Văn Đoàn', school: 'Đồng Sử Loci', avatar: 'assets/images/loci_avatar.jpg', score: 0, isUser: false, speed: 2.8, accuracy: 0.7 }
+                ];
+            }
+
+            stage.innerHTML = `
+                <div style="text-align: center; max-width: 650px; margin: 20px auto; padding: 24px; background: rgba(15, 23, 42, 0.7); border-radius: 20px; border: 1.5px solid rgba(56, 189, 248, 0.35); backdrop-filter: blur(16px);">
+                    <div style="font-size: 42px; margin-bottom: 12px; animation: starGlow 1.5s infinite alternate;">📡</div>
+                    <h3 style="font-size: 22px; font-weight: 900; color: #fde047; margin: 0 0 8px 0; text-shadow: 0 0 16px rgba(253, 224, 71, 0.4);">
+                        Đang Tìm Kiếm 3 Đồng Sử Tranh Cúp Loci...
+                    </h3>
+                    <p style="font-size: 13.5px; color: #cbd5e1; margin: 0 0 24px 0;">Hệ thống đang quét phòng thi đấu trực tuyến trên toàn mạng lưới học sinh ôn thi Sử...</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 24px;">
+                        <div style="background: rgba(2, 132, 199, 0.25); border: 2px solid #38bdf8; border-radius: 16px; padding: 14px 6px; text-align: center;">
+                            <img src="${this.players[0].avatar}" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid #38bdf8;" onerror="this.src='assets/images/loci_avatar.jpg'">
+                            <div style="font-size: 13px; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${this.players[0].name}</div>
+                            <div style="font-size: 11px; color: #38bdf8; font-weight: 700;">(Bạn - Sẵn sàng)</div>
+                        </div>
+                        <div id="match-slot-1" style="background: rgba(255, 255, 255, 0.05); border: 1.5px dashed rgba(255, 255, 255, 0.25); border-radius: 16px; padding: 14px 6px; text-align: center;">
+                            <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.1); display: grid; place-items: center; margin: 0 auto 8px; font-size: 20px;">⏳</div>
+                            <div style="font-size: 12px; color: #94a3b8;">Đang tìm...</div>
+                        </div>
+                        <div id="match-slot-2" style="background: rgba(255, 255, 255, 0.05); border: 1.5px dashed rgba(255, 255, 255, 0.25); border-radius: 16px; padding: 14px 6px; text-align: center;">
+                            <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.1); display: grid; place-items: center; margin: 0 auto 8px; font-size: 20px;">⏳</div>
+                            <div style="font-size: 12px; color: #94a3b8;">Đang tìm...</div>
+                        </div>
+                        <div id="match-slot-3" style="background: rgba(255, 255, 255, 0.05); border: 1.5px dashed rgba(255, 255, 255, 0.25); border-radius: 16px; padding: 14px 6px; text-align: center;">
+                            <div style="width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.1); display: grid; place-items: center; margin: 0 auto 8px; font-size: 20px;">⏳</div>
+                            <div style="font-size: 12px; color: #94a3b8;">Đang tìm...</div>
+                        </div>
+                    </div>
+
+                    <div id="match-status-msg" style="font-size: 14px; font-weight: 700; color: #38bdf8; margin-bottom: 18px;">
+                        ⏳ Đang tìm kiếm đối thủ xứng tầm trong mạng lưới...
+                    </div>
+
+                    <button type="button" onclick="window.OlympiaLociEngine.renderLobby()"
+                        style="background: transparent; border: 1.5px solid rgba(255,255,255,0.3); color: #cbd5e1; border-radius: 99px; padding: 8px 24px; font-size: 13px; font-weight: 700; cursor: pointer;">
+                        Hủy ghép trận
+                    </button>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const s1 = document.getElementById('match-slot-1');
+                if (s1 && opponents[0]) {
+                    this.players[1] = opponents[0];
+                    s1.style.borderColor = '#10b981';
+                    s1.style.background = 'rgba(16, 185, 129, 0.15)';
+                    s1.innerHTML = `
+                        <img src="${opponents[0].avatar}" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid #10b981;" onerror="this.src='assets/images/loci_avatar.jpg'">
+                        <div style="font-size: 13px; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${opponents[0].name}</div>
+                        <div style="font-size: 11px; color: #10b981; font-weight: 700;">✓ Đã vào phòng</div>
+                    `;
+                    this.renderPodium();
+                }
+            }, 800);
+
+            setTimeout(() => {
+                const s2 = document.getElementById('match-slot-2');
+                if (s2 && opponents[1]) {
+                    this.players[2] = opponents[1];
+                    s2.style.borderColor = '#10b981';
+                    s2.style.background = 'rgba(16, 185, 129, 0.15)';
+                    s2.innerHTML = `
+                        <img src="${opponents[1].avatar}" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid #10b981;" onerror="this.src='assets/images/loci_avatar.jpg'">
+                        <div style="font-size: 13px; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${opponents[1].name}</div>
+                        <div style="font-size: 11px; color: #10b981; font-weight: 700;">✓ Đã vào phòng</div>
+                    `;
+                    this.renderPodium();
+                }
+            }, 1600);
+
+            setTimeout(() => {
+                const s3 = document.getElementById('match-slot-3');
+                const msg = document.getElementById('match-status-msg');
+                if (s3 && opponents[2]) {
+                    this.players[3] = opponents[2];
+                    s3.style.borderColor = '#10b981';
+                    s3.style.background = 'rgba(16, 185, 129, 0.15)';
+                    s3.innerHTML = `
+                        <img src="${opponents[2].avatar}" style="width: 52px; height: 52px; border-radius: 50%; object-fit: cover; margin-bottom: 8px; border: 2px solid #10b981;" onerror="this.src='assets/images/loci_avatar.jpg'">
+                        <div style="font-size: 13px; font-weight: 800; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${opponents[2].name}</div>
+                        <div style="font-size: 11px; color: #10b981; font-weight: 700;">✓ Đã vào phòng</div>
+                    `;
+                    this.renderPodium();
+                    if (msg) msg.innerHTML = '🎉 <b style="color:#10b981;">ĐÃ ĐỦ 4 ĐỒNG SỬ! VÀO VÒNG 1: LÀM NÓNG SAU 1.5 GIÂY...</b>';
+                    setTimeout(() => {
+                        this.startRound1Warmup();
+                    }, 1500);
+                }
+            }, 2400);
         },
 
         setMode(isParty) {
@@ -1154,6 +1276,7 @@
         // VÒNG 1: LÀM NÓNG (60 GIÂY - CÂU HỎI NHANH DỒN DẬP)
         // =========================================================================
         startRound1Warmup() {
+            this.stopLobbyTheme();
             this.isExamLockActive = true;
             this.bindAntiCheatLock();
             if (typeof showToast === 'function') {
