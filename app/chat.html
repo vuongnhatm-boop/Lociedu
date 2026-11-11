@@ -2944,6 +2944,28 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
     <script src="loci_anchors_data.js"></script>
     <script src="history_knowledge_base.js"></script>
     <script src="history_sentinel_bot.js"></script>
+    <script>
+        // EARLY GLOBAL SUBMIT CONTROLLER: Đảm bảo không bao giờ lỗi submitChatForm
+        window.submitChatForm = function() {
+            const input = document.getElementById('input');
+            const val = (input && input.value ? input.value : '').trim();
+            if (typeof window.__realSubmitChatForm === 'function') {
+                window.__realSubmitChatForm();
+            } else if (val || window.currentAttachment) {
+                window.__pendingMessage = val;
+                if (input) input.value = '';
+                const sendBtn = document.getElementById('send');
+                if (sendBtn) sendBtn.disabled = true;
+                const timer = setInterval(() => {
+                    if (typeof window.__realSubmitChatForm === 'function') {
+                        clearInterval(timer);
+                        window.__realSubmitChatForm(window.__pendingMessage);
+                        window.__pendingMessage = null;
+                    }
+                }, 100);
+            }
+        };
+    </script>
     <script type="module">
         let LociFirebase = null;
         try {
@@ -4280,9 +4302,14 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
             }
         }
 
-        // Khởi tạo instance của AI (Ưu tiên module app/ai_assistant.js, tự động fallback DirectGeminiTutor khi chạy file://)
+        // Khởi tạo instance của AI (Ưu tiên module ai_assistant.js, tự động fallback DirectGeminiTutor khi chạy file://)
         try {
-            const mod = await import('./app/ai_assistant.js');
+            let mod;
+            try {
+                mod = await import('./ai_assistant.js');
+            } catch (_) {
+                mod = await import('./app/ai_assistant.js');
+            }
             ai = new mod.LociAIAssistant({
                 getContext: buildContext,
                 onMessage: m => { 
@@ -4670,8 +4697,8 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
             if (!txt) $('send').disabled = true;
         };
 
-        window.submitChatForm = function() {
-            const val = ($('input')?.value || '').trim();
+        window.__realSubmitChatForm = function(customVal) {
+            const val = customVal !== undefined ? customVal : ($('input')?.value || '').trim();
             if ((val || window.currentAttachment) && !busy) {
                 const toSend = val;
                 $('input').value = '';
@@ -4679,6 +4706,7 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
                 ask(toSend);
             }
         };
+        window.submitChatForm = window.__realSubmitChatForm;
 
         window.toggleSidebar = function() {
             document.body.classList.toggle('sidebar-collapsed');

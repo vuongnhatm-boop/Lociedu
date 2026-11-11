@@ -3524,6 +3524,7 @@ function _decodeGeminiKey(s) {
   <script type="module">
     import * as THREE from 'three';
     import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+      import { DRACOLoader } from 'three/addons/loaders/DRACOLoader.js';
     import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
     import { LociAIAssistant } from './ai_assistant.js';
     import { PlasmaRingVisualizer } from './plasma_ring.js';
@@ -3992,7 +3993,17 @@ function _decodeGeminiKey(s) {
     updateJourneyUI();
 
     /* --- MODEL LOADING --- */
-    const gltfLoader = new GLTFLoader();
+    let dracoLoader = null;
+      let gltfLoader = null;
+      try {
+        dracoLoader = new DRACOLoader();
+        dracoLoader.setDecoderPath('https://www.gstatic.com/draco/versioned/decoders/1.5.6/');
+        gltfLoader = new GLTFLoader();
+        gltfLoader.setDRACOLoader(dracoLoader);
+      } catch (e) {
+        console.warn('Lỗi khởi tạo DRACOLoader:', e);
+        gltfLoader = new GLTFLoader();
+      }
     const MODEL_PATHS = [
       './loft_13_living_room_interior.glb',
       '../loft_13_living_room_interior.glb',
