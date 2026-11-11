@@ -1664,12 +1664,13 @@
             const myBadge = this.getCurrentBadge(myWins);
 
             const mockTop = [
-                { name: 'Nguyễn Minh Khang', school: 'Đồng Sử K12', wins: 28, points: 3420, avatar: 'assets/images/pets/phoenix_fire.png', badgeIcon: '👑', badgeName: 'Huyền Thoại' },
-                { name: 'Lê Hoàng Yến', school: 'Đồng Sử K12', wins: 22, points: 2890, avatar: 'assets/images/pets/kirin_aura.png', badgeIcon: '👑', badgeName: 'Huyền Thoại' },
-                { name: 'Trần Gia Bảo', school: 'Đồng Sử K12', wins: 17, points: 2150, avatar: 'assets/images/pets/tiger_speed.png', badgeIcon: '💎', badgeName: 'Đại Kiện Tướng' },
-                { name: 'Vũ Đức Trọng', school: 'Đồng Sử K12', wins: 12, points: 1780, avatar: 'assets/images/pets/owl_scholar.png', badgeIcon: '💎', badgeName: 'Đại Kiện Tướng' },
-                { name: 'Phạm Thu Thảo', school: 'Đồng Sử K12', wins: 8, points: 1240, avatar: 'assets/images/loci_avatar.jpg', badgeIcon: '🥇', badgeName: 'Quán Quân' },
-                { name: myUser.name, isMe: true, wins: myWins, points: myWins * 120, avatar: myUser.avatar, badgeIcon: myBadge.icon, badgeName: myBadge.name }
+                { name: 'Hoàng Huyền Trân', school: 'Lớp 12A1', wins: 28, points: 3950, avatar: 'assets/images/avatars/student_2.jpg', badgeIcon: '👑', badgeName: 'Quán Quân Top 1' },
+                { name: 'Lưu Phương Linh', school: 'Lớp 12A1', wins: 25, points: 3820, avatar: 'assets/images/avatars/student_3.jpg', badgeIcon: '👑', badgeName: 'Á Quân Top 2' },
+                { name: 'Trần Đức Toàn', school: 'Lớp 12A3', wins: 23, points: 3740, avatar: 'assets/images/avatars/student_10.jpg', badgeIcon: '💎', badgeName: 'Quý Quân Top 3' },
+                { name: 'Sùng Ngọc Duy', school: 'Lớp 12A3', wins: 20, points: 3590, avatar: 'assets/images/avatars/student_12.jpg', badgeIcon: '💎', badgeName: 'Chiến Binh Loci' },
+                { name: 'Má Thị Dua', school: 'Lớp 12A2', wins: 18, points: 3460, avatar: 'assets/images/avatars/student_4.jpg', badgeIcon: '🥇', badgeName: 'Học Thần Loci' },
+                { name: 'Lò Thị Chuyển', school: 'Lớp 12A1', wins: 16, points: 3350, avatar: 'assets/images/avatars/student_1.jpg', badgeIcon: '🥇', badgeName: 'Chuyên Cần Loci' },
+                { name: 'Chảo San Mẩy', school: 'Lớp 12A2', wins: 15, points: 3210, avatar: 'assets/images/avatars/student_5.jpg', badgeIcon: '🥇', badgeName: 'Kỷ Lục Gia 3D' }
             ];
 
             // Sắp xếp theo số trận thắng giảm dần

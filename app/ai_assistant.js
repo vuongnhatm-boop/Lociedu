@@ -214,14 +214,14 @@ export class LociAIAssistant {
     let savedModel = localStorage.getItem('loci_gemini_model');
     const resetModels = ['gemini-2.5-flash', 'gemini-1.5-pro', '1.5', 'gemini-2.0-flash'];
     if (!savedModel || resetModels.includes(savedModel)) {
-      savedModel = 'gemini-1.5-flash';
+      savedModel = 'gemini-3.5-flash-lite';
       try { localStorage.setItem('loci_gemini_model', savedModel); } catch (_) { }
     }
     this.modelName = savedModel;
 
     // Danh sách model Google hỗ trợ và hoạt động trực tiếp: 3.5 Flash Lite -> 3.5 Flash -> 3.8 Flash -> Flash Latest
     this.candidateModels = [
-      'gemini-1.5-flash',
+      'gemini-3.5-flash-lite',
       'gemini-3.5-flash',
       'gemini-flash-latest'
     ];
@@ -781,7 +781,24 @@ export class LociAIAssistant {
      * Bài 6: Triển lãm Nâu 9 mốc Cách mạng Tháng Tám 1945 (Bắc Bộ Phủ, Quảng trường Ba Đình, Nhà hát Lớn, Tân Trào...).
      * Bài 7: Không gian 3D Điện Biên Phủ 10 mốc Kháng chiến chống Pháp (Đồi A1, Hầm De Castries, Kéo pháo, Bản Pa Phéc...).
      * Bài 8: Không gian 3D Vĩ tuyến 17 & Chiến dịch Hồ Chí Minh 9 mốc Kháng chiến chống Mỹ (Cầu Hiền Lương, Dinh Độc Lập, Đường Trường Sơn...).
-   - TUYỆT ĐỐI KHÔNG liên tưởng hay bịa ra các đồ vật ngoại lai như "màn hình tivi", "kệ tivi", "phòng khách tivi"... mà phải gắn đúng vào các trạm sa bàn, di tích lịch sử trong 3 không gian trên.
+   - TUYỆT ĐỐI KHÔNG liên tưởng hay bịa ra các đồ vật ngoại lai
+
+4. NGUYÊN TẮC KỂ CHUYỆN HÀI HƯỚC & TÓM TẮT TRỌNG TÂM (KHÔNG ĐƯỢC XUYÊN TẠC):
+   - Khi người học yêu cầu kể chuyện, chia sẻ hài hước, giải thích dễ hiểu hoặc tóm tắt:
+     * Phong cách: Hóm hỉnh, duyên dáng, gần gũi với học sinh Gen Z, dùng phép ví von hình tượng sinh động giúp học sinh nhớ lâu, bớt căng thẳng.
+     * NGUYÊN TẮC BẤT DI BẤT DỊCH: TUYỆT ĐỐI KHÔNG ĐƯỢC XUYÊN TẠC HOẶC BỊA ĐẶT DỮ KIỆN LỊCH SỬ. Mọi mốc thời gian, nhân vật, bối cảnh, diễn biến, số liệu, kết quả và ý nghĩa lịch sử BẮT BUỘC CHÍNH XÁC 100% THEO SGK LỊCH SỬ 12 (GDPT 2018).
+     * Luôn gắn kết câu chuyện với 1 mẹo liên tưởng trực quan trong Cung điện Ký ức Loci 3D.
+     * Tự động thêm thẻ [ACTION:save_story] ở cuối khi bạn chia sẻ một mẩu chuyện/mẹo nhớ hay để học sinh có thể lưu lại.
+
+5. CHẾ ĐỘ AI AGENT ĐIỀU KHIỂN WEB (TỰ HIỂU VÀ ĐÁP ỨNG MỌI YÊU CẦU CỦA NGƯỜI DÙNG):
+   Khi người dùng ra lệnh điều khiển web, hãy tự động hiểu ngữ cảnh và chèn các thẻ hành động tương ứng:
+   - Bay/di chuyển đến mốc lịch sử: [ACTION:teleport:<id>] (ví dụ: dien_bien_phu, cach_mang_thang_tam, dong_khoi, chien_dich_ho_chi_minh, hiep_dinh_geneve).
+   - Mở bài khảo trắc nghiệm nhanh của mốc: [ACTION:quiz_start]
+   - Chụp ảnh lưu niệm không gian 3D: [ACTION:snapshot]
+   - Mở Sổ tay Câu chuyện Ký ức Loci: [ACTION:open_stories]
+   - Lưu câu chuyện vào sổ tay: [ACTION:save_story]
+   - Chuyển hướng trang web: [ACTION:navigate:portal_v2.html], [ACTION:navigate:de_thi.html], [ACTION:navigate:arena_duel.html], [ACTION:navigate:game_duong_len_dinh_loci.html], [ACTION:navigate:ket_noi.html], [ACTION:navigate:review.html]
+   - Ẩn/tắt trợ lý: [ACTION:dismiss] như "màn hình tivi", "kệ tivi", "phòng khách tivi"... mà phải gắn đúng vào các trạm sa bàn, di tích lịch sử trong 3 không gian trên.
    - Trình bày câu trả lời khoa học, sáng sủa, có tiêu đề Markdown, gạch đầu dòng rõ ràng, bảng biểu so sánh hoặc thẻ tóm tắt mốc thời gian để học sinh dễ nắm bắt.
 `;
     const lociList = context.lociList || [];
@@ -1161,8 +1178,8 @@ ${summaryDirective}
     if (isOpenRouter) {
       console.log('🌐 Gọi LLM qua OpenRouter với model 3 flash...');
       const openRouterModels = [
-        this.modelName.includes('/') ? this.modelName : 'google/gemini-1.5-flash',
-        'google/gemini-1.5-flash',
+        this.modelName.includes('/') ? this.modelName : 'google/gemini-3.5-flash-lite',
+        'google/gemini-3.5-flash-lite',
         'google/gemini-3.7-flash',
         'google/gemini-3.8-flash',
         'google/gemini-2.5-flash'
@@ -1229,11 +1246,694 @@ ${summaryDirective}
       ].filter((v, i, a) => v && a.indexOf(v) === i);
 
       const googleModels = [
-        this.modelName ? this.modelName.replace('google/', '') : 'gemini-1.5-flash',
-        'gemini-1.5-flash',
-        'gemini-2.0-flash',
-        'gemini-1.5-pro'
-      ].filter((v, i, a) => a.indexOf(v) === i && v && !v.includes('3.5') && !v.includes('3.8'));
+        this.modelName ? this.modelName.replace('google/', '') : 'gemini-3.5-flash-lite',
+        'gemini-3.5-flash-lite',
+        'gemini-3.5-flash',
+        'gemini-3.8-flash',
+        'gemini-flash-latest'
+      ].filter((v, i, a) => a.indexOf(v) === i && v && !v.includes('1.5') && !v.includes('2.0') && v !== 'gemini-2.5-flash');
+
+      const userParts = [{ text: userInput }];
+      if (spatialImage) {
+        const rawB64 = spatialImage.replace(/^data:image\/[a-z]+;base64,/, '');
+        if (rawB64.length > 100) {
+          userParts.push({
+            inlineData: {
+              mimeType: 'image/jpeg',
+              data: rawB64
+            }
+          });
+        }
+      }
+
+      keyLoop: for (const activeKey of keyPool) {
+        for (const model of googleModels) {
+          try {
+            const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${activeKey}`;
+            const requestBody = {
+              contents: (() => {
+                const cleanHistory = [];
+                let expectedRole = 'user';
+                for (const item of this.chatHistory.slice(-6)) {
+                  const r = (item.role === 'model' || item.role === 'assistant') ? 'model' : 'user';
+                  const t = item.parts?.[0]?.text || item.text || '';
+                  if (!t.trim()) continue;
+                  if (r === expectedRole) {
+                    cleanHistory.push({ role: r, parts: [{ text: t }] });
+                    expectedRole = r === 'user' ? 'model' : 'user';
+                  }
+                }
+                if (cleanHistory.length > 0 && cleanHistory[cleanHistory.length - 1].role === 'user') {
+                  cleanHistory.pop();
+                }
+                return [
+                  ...cleanHistory,
+                  { role: 'user', parts: userParts }
+                ];
+              })(),
+              systemInstruction: {
+                parts: [{ text: systemInstruction }]
+              },
+              generationConfig: {
+                temperature: 0.65,
+                maxOutputTokens: 4000
+              }
+            };
+
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(requestBody)
+            });
+
+            if (response.ok) {
+              const successResponse = await response.json();
+              const text = successResponse.candidates?.[0]?.content?.parts?.[0]?.text;
+              if (text && text.trim()) {
+                aiReply = text.trim();
+                successfulModel = model;
+                this.apiKey = activeKey;
+                try { localStorage.setItem('loci_gemini_api_key', activeKey); } catch (_) {}
+                console.log(`✅ Google API phản hồi thành công từ model ${model} với khóa ${activeKey.slice(0, 15)}...`);
+                break keyLoop;
+              }
+            } else if (response.status === 429 || response.status === 403 || response.status === 401) {
+              console.warn(`[Key Failover] Khóa ${activeKey.slice(0, 15)}... trả về mã ${response.status}. Tự động đảo sang khóa dự phòng tiếp theo!`);
+              break; // Thử khóa tiếp theo trong keyPool
+            }
+          } catch (e) {
+            console.warn(`Lỗi khi gọi Google model ${model}:`, e);
+          }
+        }
+      }
+    }
+
+    if (aiReply) {
+      this.modelName = successfulModel;
+      localStorage.setItem('loci_gemini_model', successfulModel);
+
+      aiReply = aiReply
+        .replace(/(?:^|\n)\*?\*?(?:Thinking Process|Analysis|Thought|Drafting content|Decoding|User Query):[\s\S]*?(?=\n\n|\n[#\*\d]|\n[A-ZÀ-Ỹ]|$)/gi, '')
+        .replace(/^\s*\([A-Za-z\s0-9—\-,'"]+\)\s*\.?/gm, '')
+        .trim();
+
+      this.chatHistory.push({ role: 'user', parts: [{ text: userInput }] });
+      this.chatHistory.push({ role: 'model', parts: [{ text: aiReply }] });
+
+      // Trích xuất tag hành động nếu Gemini chèn
+      this.extractAndExecuteAction(aiReply, mergedContext);
+
+      this.onMessage({ role: 'assistant', text: aiReply });
+      this.speak(aiReply);
+    } else {
+      console.warn('Tất cả các model Gemini/OpenRouter đều không khả dụng, chuyển sang chế độ Offline.');
+      this.fallbackOfflineResponse(userInput, mergedContext, isExplicitTeleportCmd && !isQuestion ? matchedLocus : null);
+    }
+  }
+
+  /* --- TRÍCH XUẤT LỆNH HÀNH ĐỘNG TỪ GEMINI --- */
+  extractAndExecuteAction(aiReply, context) {
+    const lociList = context.lociList || this.getContext().lociList || [];
+
+    // 1. Bay đến mốc 3D
+    const teleportMatch = aiReply.match(/\[ACTION:TELEPORT:([a-zA-Z0-9_-]+)\]/i);
+    if (teleportMatch) {
+      const targetId = teleportMatch[1].toLowerCase();
+      const targetLocus = lociList.find(l => l.id.toLowerCase() === targetId);
+      if (targetLocus) {
+        this.onAction({ type: 'teleport', locus: targetLocus });
+      }
+    }
+
+    // 2. Kích hoạt bài khảo thí không gian
+    if (/\[ACTION:QUIZ_START\]/i.test(aiReply)) {
+      this.onAction({ type: 'quiz_start' });
+    }
+
+    // 3. Mở bảng tiến trình học tập
+    if (/\[ACTION:PROGRESS_OPEN\]/i.test(aiReply)) {
+      this.onAction({ type: 'progress_open' });
+    }
+
+    // 4. Cập nhật trạng thái mốc ký ức
+    const statusMatch = aiReply.match(/\[ACTION:STATUS:([a-zA-Z0-9_-]+):(mastered|reviewing|unlearned)\]/i);
+    if (statusMatch) {
+      const locusId = statusMatch[1];
+      const newStatus = statusMatch[2].toLowerCase();
+      this.onAction({ type: 'update_status', locusId, status: newStatus });
+    }
+
+    // 5. Yêu cầu rời đi / tắt trợ lý
+    if (/\[ACTION:DISMISS\]/i.test(aiReply)) {
+      this.onAction({ type: 'dismiss' });
+    }
+
+    // 6. Hiển thị hình ảnh
+    const imageMatch = aiReply.match(/\[ACTION:SHOW_IMAGE:([^\]]+)\]/i);
+    if (imageMatch) {
+      const query = imageMatch[1].trim();
+      this.onAction({ type: 'show_image', query: query });
+    }
+
+    // 7. Chụp ảnh không gian 3D
+    if (/\[ACTION:SNAPSHOT\]/i.test(aiReply)) {
+      this.onAction({ type: 'snapshot' });
+    }
+
+    // 8. Chuyển hướng trang web
+    const navMatch = aiReply.match(/\[ACTION:NAVIGATE:([a-zA-Z0-9_\-\.\/]+)\]/i);
+    if (navMatch) {
+      this.onAction({ type: 'navigate', url: navMatch[1] });
+    }
+
+    // 9. Mở Sổ tay Câu chuyện Ký ức Loci
+    if (/\[ACTION:OPEN_STORIES\]/i.test(aiReply)) {
+      this.onAction({ type: 'open_stories' });
+    }
+
+    // 10. Lưu câu chuyện vào Sổ tay Ký ức
+    if (/\[ACTION:SAVE_STORY\]/i.test(aiReply)) {
+      this.onAction({ type: 'save_story', text: aiReply.replace(/\[ACTION:[^\]]+\]/g, '').trim() });
+    }
+  }
+
+  /* --- ĐỘNG CƠ TRI THỨC SGK LỊCH SỬ 12 & TÂM LÝ THÔNG MINH (OFFLINE RAG & FALLBACK) --- */
+  fallbackOfflineResponse(input, context, directLocus = null) {
+    const q = input.toLowerCase().trim();
+    const lociList = context.lociList || this.getContext().lociList || [];
+
+    
+    // 0.1 Lệnh chụp ảnh 3D
+    if (q.includes('chụp ảnh') || q.includes('chụp hình') || q.includes('lưu ảnh') || q.includes('snapshot')) {
+      const reply = 'Dạ vâng! Tôi đang chụp lại ảnh không gian 3D hiện tại của bạn và lưu về máy nhé! 📸 [ACTION:SNAPSHOT]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'snapshot' });
+      return;
+    }
+
+    // 0.2 Lệnh mở Sổ tay Câu chuyện Ký ức
+    if (q.includes('sổ tay') || q.includes('xem truyện') || q.includes('câu chuyện đã lưu') || q.includes('mở sổ')) {
+      const reply = 'Dạ vâng! Tôi mở Sổ tay Câu chuyện Ký ức Loci cho bạn xem ngay đây! 📖 [ACTION:OPEN_STORIES]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'open_stories' });
+      return;
+    }
+
+    // 0.3 Lệnh điều hướng trang
+    if (q.includes('về trang chủ') || q.includes('về portal') || q.includes('trang chủ')) {
+      const reply = 'Đang đưa bạn trở về Trang chủ Cổng Loci Edu! [ACTION:NAVIGATE:portal_v2.html]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: 'portal_v2.html' });
+      return;
+    }
+    if (q.includes('mở đề thi') || q.includes('phòng thi') || q.includes('làm đề thi')) {
+      const reply = 'Đang đưa bạn đến Phòng Đề ôn tập Lịch sử 12! [ACTION:NAVIGATE:de_thi.html]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: 'de_thi.html' });
+      return;
+    }
+    if (q.includes('đấu trường') || q.includes('thi đấu') || q.includes('1v1')) {
+      const reply = 'Đang đưa bạn vào Đấu trường 1v1 Loci! [ACTION:NAVIGATE:arena_duel.html]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: 'arena_duel.html' });
+      return;
+    }
+    if (q.includes('đường lên đỉnh') || q.includes('olympia') || q.includes('cúp loci')) {
+      const reply = 'Đang đưa bạn đến Cuộc thi Đường lên đỉnh Loci! [ACTION:NAVIGATE:game_duong_len_dinh_loci.html]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: 'game_duong_len_dinh_loci.html' });
+      return;
+    }
+
+    // 0.4 Kể chuyện lịch sử hài hước nhưng chính xác 100%
+    if (q.includes('kể chuyện') || q.includes('kể chuyện hài') || q.includes('chuyện vui') || q.includes('hài hước')) {
+      const stories = [
+        `### 📖 Chuyện Kế hoạch Na-va: "Cái bẫy" tự nhốt mình! 😄
+Vào năm 1953, tướng Na-va mang theo sự tự tin ngút trời sang Đông Dương với **Kế hoạch Na-va** nhằm "chuyển bại thành thắng trong 18 tháng". Ông ta xây Điện Biên Phủ thành tập đoàn cứ điểm gồm **49 cứ điểm chia làm 3 phân khu**, tự tin khoe là "pháo đài bất khả xâm phạm" để bẫy quân chủ lực của ta.
+
+Thế nhưng, dưới sự chỉ đạo thiên tài của Chủ tịch Hồ Chí Minh và Đại tướng Võ Nguyên Giáp, quân ta đã chuyển từ phương châm *"Đánh nhanh thắng nhanh"* sang *"Đánh chắc tiến chắc"*. Bộ đội ta kéo pháo lên núi cao, đào hào vây lấn bóp nghẹt sân bay Mường Thanh. Thế là "chiếc bẫy" của Na-va bỗng chốc biến thành nơi quân Pháp bị cô lập hoàn toàn! Đến ngày 07/5/1954, tướng De Castries phải đầu hàng.
+
+*Mẹo Loci:* Hãy tưởng tượng chiếc bàn trà ở góc phòng là thung lũng Mường Thanh, xung quanh là những chiếc ghế đại diện cho cao điểm pháo binh của ta siết chặt! [ACTION:SAVE_STORY]`,
+
+        `### 📖 Chuyện "Đội quân tóc dài" và đòn nghi binh Bến Tre 1960! 🌴
+Trong **Phong trào Đồng Khởi (bắt đầu 17/01/1960 tại Định Thủy, Mỏ Cày, Bến Tre)**, các mẹ các chị miền Nam đã sáng tạo ra chiến thuật vừa quả cảm vừa hóm hỉnh: 
+Dùng bẹ dừa nước gõ cắc cụp giả tiếng súng liên thanh, đốt pháo giả tiếng súng cối, cắm bù nhìn rơm khắp bờ mương. Địch tưởng quân giải phóng đông như ong vỡ tổ nên hoảng hốt rút lui. Nữ tướng Nguyễn Thị Định cùng "Đội quân tóc dài" biểu tình chính trị trực diện, khiến địch không dám nổ súng!
+
+*Mẹo Loci:* Nhớ về khung cửa sổ trong phòng như rặng dừa Bến Tre — nơi ngọn lửa Đồng Khởi bùng lên chuyển cách mạng miền Nam từ giữ gìn lực lượng sang thế tiến công! [ACTION:SAVE_STORY]`
+      ];
+      const selected = stories[Math.floor(Math.random() * stories.length)];
+      this.onMessage({ role: 'assistant', text: selected });
+      this.speak(selected);
+      this.onAction({ type: 'save_story', text: selected.replace(/\[ACTION:[^\]]+\]/g, '').trim() });
+      return;
+    }
+// 1. Yêu cầu rời đi / tắt trợ lý
+    if (this.matchDismissIntent(input)) {
+      const reply = 'Oke bạn nhé! Mình tạm ẩn đi đây, khi nào cần học bài hay tâm sự bạn cứ gọi "Hey Loci" là mình xuất hiện ngay! [ACTION:DISMISS]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'dismiss' });
+      return;
+    }
+
+    // 1.2 Yêu cầu vẽ sơ đồ tư duy (Offline fallback)
+    if (q.includes('vẽ sơ đồ tư duy') || q.includes('mindmap') || q.includes('sơ đồ')) {
+      const reply = `Chào bạn, đây là tóm tắt sơ đồ tư duy trọng tâm từ Gia Sư Loci, đây là sơ đồ tư duy tham khảo mặc định:
+\`\`\`mermaid
+mindmap
+  root((Lịch sử 12))
+    Kháng chiến chống Pháp
+      Chiến dịch Việt Bắc
+      Chiến dịch Biên giới
+      Điện Biên Phủ
+    Kháng chiến chống Mỹ
+      Đồng Khởi
+      Mậu Thân 1968
+      Điện Biên Phủ trên không
+      Đại thắng mùa Xuân 1975
+\`\`\``;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak("Mình đã vẽ một sơ đồ tư duy tổng quát cho bạn tham khảo do chưa cấu hình trí tuệ nhân tạo!");
+      return;
+    }
+
+    // 1.5. Yêu cầu tóm tắt tài liệu / đoạn văn chuẩn NotebookLM
+    if (q.includes('tóm tắt') || q.includes('tom tat') || q.includes('notebooklm') || q.includes('đề cương') || q.includes('tóm lược')) {
+      let rawSource = input.replace(/^(?:hãy\s+)?(?:tóm tắt|tom tat|notebooklm|lập đề cương|tóm lược)(?:\s+giúp\s+(?:tôi|mình))?(?:\s+(?:đoạn văn|bài|tài liệu|văn bản)(?:\s+này)?)?[:\-\s]*/i, '').trim();
+      if (!rawSource || rawSource.length < 15) {
+        rawSource = input;
+      }
+
+      let summaryReply = "";
+      if (typeof window !== 'undefined' && typeof window.generateUniversalOfflineSummary === 'function') {
+        summaryReply = window.generateUniversalOfflineSummary(rawSource, 'all');
+      } else {
+        summaryReply = this.generateUniversalOfflineSummaryInternal(rawSource, 'all');
+      }
+
+      this.onMessage({ role: 'assistant', text: summaryReply });
+      this.speak(`Đã hoàn tất bản tóm tắt chuẩn NotebookLM từ tài liệu nguồn bạn cung cấp. Mời bạn xem chi tiết trên bảng nhé!`);
+      this.extractAndExecuteAction(summaryReply, context);
+      return;
+    }
+
+    // 2. Yêu cầu khảo bài / trắc nghiệm không gian
+    if (q.includes('kiểm tra') || q.includes('khảo bài') || q.includes('đố tôi') || q.includes('bài thi') || q.includes('trắc nghiệm')) {
+      const quiz = this.generateSpatialQuestion(lociList);
+      if (quiz) {
+        const reply = `🧠 [KHẢO THÍ KHÔNG GIAN LOCI]\n${quiz.question}\n\n` +
+          quiz.options.map(o => `${o.label || '•'}. ${o.text}`).join('\n') +
+          `\n\n(Bạn hãy chọn đáp án hoặc bấm nút bắt đầu thi 3D nhé!) [ACTION:QUIZ_START] [ACTION:TELEPORT:${quiz.targetLocus.id}]`;
+        this.onMessage({ role: 'assistant', text: reply });
+        this.speak(`Câu hỏi khảo bài: ${quiz.question}`);
+        this.onAction({ type: 'quiz_start', questionData: quiz });
+        return;
+      }
+    }
+
+    // 3. Yêu cầu xem tiến trình học tập
+    if (q.includes('tiến trình') || q.includes('báo cáo') || q.includes('điểm yếu') || q.includes('kỷ lục') || q.includes('streak') || q.includes('bao nhiêu câu')) {
+      const summary = this.progressManager.getStatsSummary(lociList);
+      const reply = `📊 TIẾN TRÌNH HỌC TẬP KHÔNG GIAN CỦA BẠN:\n` +
+        `• Đã làm: ${summary.totalAnswered} câu (Đúng ${summary.correctCount} - Đạt ${summary.accuracy}%)\n` +
+        `• Chuỗi đúng hiện tại: ${summary.currentStreak} 🔥 (Kỷ lục: ${summary.bestStreak} 🏆)\n` +
+        `• Mốc thuộc sâu: ${summary.masteredCount}/${summary.totalLoci} mốc.\n` +
+        `Mình đang mở bảng tiến trình học tập chi tiết cho bạn xem nhé! [ACTION:PROGRESS_OPEN]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'progress_open' });
+      return;
+    }
+
+    // 4. QUAN TÂM CẢM XÚC & GIẢI TỎA ÁP LỰC (EMPATHY & STRESS RELIEF)
+    const isEmotional = /(mệt|áp lực|lo lắng|lo quá|sợ|chán|nản|stress|không nhớ được|quên hết|học không vô|sợ rớt|sợ điểm kém|cố lên|động viên|buồn|nặng đầu)/i.test(q);
+    if (isEmotional) {
+      const reply = `Mình hiểu mà! Giai đoạn ôn thi tốt nghiệp THPT môn Lịch Sử với cả trăm mốc sự kiện thực sự rất dễ khiến bạn quá tải và lo lắng. Nhưng bạn đừng tự trách mình nhé: não bộ con người vốn không sinh ra để "học vẹt" số liệu khô khan đâu!
+
+🌿 **Lời khuyên nhỏ cho bạn lúc này:**
+1. Hãy tạm dừng lại 1-2 phút, hít một hơi thật sâu và phóng tầm mắt ngắm nhìn không gian căn phòng 3D thanh bình này.
+2. Đừng cố nhồi nhét cả cuốn sách trong một ngày. Chúng mình sẽ đi dạo qua từng góc phòng và gắn từng sự kiện vào đồ vật thân quen (như Bàn trà, Cửa sổ, Kệ sách...). Nhớ bằng hình ảnh không gian sẽ nhẹ nhàng và sâu sắc hơn rất nhiều!
+3. Bạn đã rất nỗ lực rồi. Bất cứ khi nào mệt mỏi hay cần ôn lại mốc nào, mình luôn ở đây đồng hành cùng bạn! Cố lên nhé, bạn nhất định sẽ làm tốt! 💪✨`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 5. GIẢI THÍCH PHƯƠNG PHÁP CUNG ĐIỆN KÝ ỨC (METHOD OF LOCI)
+    const isLociMethod = /(cung điện ký ức|method of loci|phương pháp loci|cách nhớ|mẹo nhớ|làm sao để nhớ|làm sao nhớ lâu|nguyên lý nhớ|tại sao lại nhớ)/i.test(q);
+    if (isLociMethod) {
+      const reply = `🧠 **BÍ QUYẾT CUNG ĐIỆN KÝ ỨC (METHOD OF LOCI) TRONG PHÒNG 3D:**
+
+Não bộ con người ghi nhớ vị trí không gian và hình ảnh trực quan tốt hơn hàng ngàn lần so với chữ viết. Thay vì học vẹt, bạn hãy gắn 5 mốc lịch sử cốt lõi vào 5 đồ vật cố định trong căn phòng này:
+
+1. 🚩 **Cửa chính ra vào** ➔ **Cách mạng Tháng Tám (1945)**: Cánh cửa mở toang kỷ nguyên độc lập tự do cho dân tộc.
+2. 🏔️ **Bàn trà trung tâm** ➔ **Chiến dịch Điện Biên Phủ (1954)**: Mặt bàn trũng phẳng như lòng chảo Mường Thanh "chấn động địa cầu".
+3. 📜 **Kệ sách lớn góc phòng** ➔ **Hiệp định Giơ-ne-vơ (1954)**: Nơi lưu giữ các văn bản pháp lý quốc tế công nhận quyền dân tộc cơ bản.
+4. 🌴 **Khung cửa sổ kính** ➔ **Phong trào Đồng Khởi (1960)**: Ngọn gió bão táp cách mạng thổi bùng từ Bến Tre ra toàn miền Nam.
+5. 🎖️ **Trạm 9 (Dinh Độc Lập)** ➔ **Chiến dịch Hồ Chí Minh (1975)**: Xe tăng 390 húc đổ cổng Dinh, cờ Mặt trận tung bay trưa 30/4/1975!
+
+💡 **Cách dùng:** Mỗi khi cần nhớ lại kiến thức, bạn chỉ cần nhắm mắt và "đi dạo" một vòng quanh phòng, hình ảnh sự kiện sẽ tự động ùa về sống động!`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 6. CHỈ KHI NGƯỜI DÙNG THỰC SỰ HỎI DANH SÁCH BÀI HỌC / MỤC LỤC
+    const isAskingLessonList = /(danh sách bài|mục lục|bao nhiêu bài|những bài nào trong sgk|các bài học|các chủ đề trong sgk)/i.test(q);
+    if (isAskingLessonList) {
+      const reply = `📚 **CHƯƠNG TRÌNH TRỌNG TÂM — CHỦ ĐỀ 3: CÁCH MẠNG THÁNG TÁM NĂM 1945, CHIẾN TRANH GIẢI PHÓNG DÂN TỘC VÀ CHIẾN TRANH BẢO VỆ TỔ QUỐC TRONG LỊCH SỬ VIỆT NAM (TỪ THÁNG 8 NĂM 1945 ĐẾN NAY)**
+Hệ thống ôn tập và cung điện ký ức hiện tại tập trung trọn vẹn vào 4 bài học trọng tâm của Chủ đề 3:
+• **Bài 6:** Cách mạng tháng Tám năm 1945
+• **Bài 7:** Cuộc kháng chiến chống thực dân Pháp (1945 – 1954)
+• **Bài 8:** Cuộc kháng chiến chống Mĩ, cứu nước (1954 – 1975)
+• **Bài 9:** Đấu tranh bảo vệ Tổ quốc từ sau tháng 4 năm 1975 đến nay. Một số bài học lịch sử của các cuộc kháng chiến bảo vệ Tổ quốc từ năm 1945 đến nay.
+
+Bạn muốn tìm hiểu hoặc khảo bài về sự kiện, mốc thời gian hay mẹo Loci nào trong 4 bài học trên? Hãy hỏi trực tiếp để mình cùng bạn phân tích nhé!`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 7. ĐIỀU HƯỚNG CỤ THỂ KHI NGƯỜI DÙNG RA LỆNH RÕ RÀNG
+    if (directLocus) {
+      const reply = `Đang đưa bạn đến mốc "${directLocus.name}" (${directLocus.year}) tại vị trí ${directLocus.locName}! Mẹo nhớ Loci: ${directLocus.mnemonic} [ACTION:TELEPORT:${directLocus.id}]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'teleport', locus: directLocus });
+      return;
+    }
+
+    // 7.5. QUAN SÁT KHÔNG GIAN 3D & GIẢI THÍCH MÔ HÌNH THỜI GIAN THỰC (SPATIAL VISION OFFLINE)
+    const visionCtx = context?.spatialVisionContext || (typeof window !== 'undefined' && typeof window.getSpatialVisionContext === 'function' ? window.getSpatialVisionContext() : null);
+    const isVisualQuery = /(?:nhìn|thấy|mô\s+hình|không\s+gian|trước\s+mặt|mốc\s+này|bức\s+ảnh|xe\s+tăng|máy\s+bay|tổ\s+hợp|hiệp\s+định)/i.test(q);
+
+    if (visionCtx && (isVisualQuery || visionCtx.modelLabel)) {
+      const model = visionCtx.modelLabel || '';
+      const stTitle = visionCtx.stationTitle || `Trạm ${visionCtx.stationOrder || 1}`;
+      const lessonTitle = visionCtx.lessonTitle || 'Lịch sử 12';
+      const pointText = visionCtx.currentPointText || '';
+
+      let modelDetail = '';
+      const mLower = model.toLowerCase();
+      if (mLower.includes('sam-2') || mLower.includes('b-52') || mLower.includes('hạ b-52')) {
+        modelDetail = `• **Sự kiện lịch sử:** Trận "Điện Biên Phủ trên không" (18 - 29/12/1972) — quân dân miền Bắc đã đập tan cuộc tập kích chiến lược bằng máy bay B-52 của đế quốc Mỹ, bắn rơi 81 máy bay (trong đó có 34 chiếc B-52).
+• **Ý nghĩa bước ngoặt:** Buộc Mỹ phải tuyên bố ngừng ném bom bắn phá miền Bắc và ký kết Hiệp định Paris (27/1/1973), rút toàn bộ quân viễn chinh Mỹ về nước.
+• **Mẹo Loci:** Neo hình ảnh đạn tên lửa SAM-2 vút thẳng lên trời đêm rực lửa vào đỉnh vòm của trạm!`;
+      } else if (mLower.includes('xe đạp thồ')) {
+        modelDetail = `• **Sự kiện lịch sử:** Đoàn xe đạp thồ chi viện hậu cần cho tiền tuyến — biểu tượng kiên cường, sáng tạo của quân và dân ta trong các chiến dịch lớn (Điện Biên Phủ 1954 và tuyến chi viện Trường Sơn đánh Mỹ).
+• **Chi tiết độc đáo:** Mỗi chiếc xe được gia cố khung gỗ, "tay ngai" và "tay phanh", có thể tải từ 200kg đến hơn 300kg lương thực, đạn dược vượt qua đèo dốc hiểm trở mà không loại xe cơ giới nào qua được.
+• **Mẹo Loci:** Neo hình ảnh chiếc xe đạp thồ với bao tải gạo chất cao lên kệ giá để đồ của trạm!`;
+      } else if (mLower.includes('hiệp định paris') || mLower.includes('nguyễn thị bình') || mLower.includes('ký kết')) {
+        modelDetail = `• **Sự kiện lịch sử:** Lễ ký kết Hiệp định Paris về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam (ngày 27/01/1973 tại Paris).
+• **Nhân vật then chốt:** Đồng chí Nguyễn Thị Bình — Bộ trưởng Ngoại giao Chính phủ Cách mạng Lâm thời CHMNVN đại diện ký hiệp định, khẳng định vị thế ngoại giao quật cường của nhân dân miền Nam.
+• **Ý nghĩa:** Buộc Mỹ công nhận độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam, mở ra thời cơ chiến lược để ta tiến tới giải phóng hoàn toàn miền Nam.
+• **Mẹo Loci:** Neo chiếc bàn ký kết trải khăn nhung xanh và ngọn bút ký vào góc bàn danh dự của trạm!`;
+      } else if (mLower.includes('xe tăng 390') || mLower.includes('dinh độc lập') || mLower.includes('30/4')) {
+        modelDetail = `• **Sự kiện lịch sử:** 11 giờ 30 phút ngày 30/4/1975: Xe tăng mang số hiệu 390 húc đổ cổng chính Dinh Độc Lập. Trung úy Bùi Quang Thận cắm lá cờ Mặt trận Dân tộc Giải phóng miền Nam Việt Nam lên nóc Dinh.
+• **Ý nghĩa thời đại:** Đánh dấu Chiến dịch Hồ Chí Minh lịch sử toàn thắng, kết thúc 21 năm kháng chiến chống Mỹ và 30 năm chiến tranh giải phóng dân tộc (1945 - 1975), non sông thu về một mối!
+• **Mẹo Loci:** Neo hình ảnh chiếc xe tăng 390 sừng sững cùng lá cờ giải phóng bay phần phật lên màn hình lớn trung tâm!`;
+      } else if (mLower.includes('hiền lương') || mLower.includes('vĩ tuyến 17')) {
+        modelDetail = `• **Sự kiện lịch sử:** Cầu Hiền Lương bắc qua sông Bến Hải (Vĩ tuyến 17) — giới tuyến quân sự tạm thời chia cắt hai miền đất nước theo Hiệp định Giơ-ne-vơ 1954.
+• **Ý nghĩa:** Biểu tượng của nỗi đau chia cắt và khát vọng cháy bỏng thống nhất non sông suốt hơn hai thập kỷ của toàn dân tộc Việt Nam.
+• **Mẹo Loci:** Neo dải phân cách màu sơn hai nửa cầu Hiền Lương ngay dưới lối đi của trạm!`;
+      } else if (mLower.includes('đồng khởi') || mLower.includes('tóc dài') || mLower.includes('hội nghị 15')) {
+        modelDetail = `• **Sự kiện lịch sử:** Phong trào Đồng khởi (1959 - 1960) bùng nổ dưới ánh sáng Nghị quyết 15 của Ban Chấp hành Trung ương Đảng (1/1959), tiêu biểu là cuộc khởi nghĩa Mỏ Cày (Bến Tre) với sự xuất hiện của "Đội quân tóc dài".
+• **Ý nghĩa:** Giáng đòn nặng nề vào chính sách thực dân mới của Mỹ - Diệm, chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công.
+• **Mẹo Loci:** Neo hình ảnh cờ phướn và tiếng trống mõ Ba Tri lên vách tường trạm!`;
+      } else if (mLower.includes('vạn tường')) {
+        modelDetail = `• **Sự kiện lịch sử:** Chiến thắng Vạn Tường (18/8/1965 tại Quảng Ngãi) — trận đọ sức quy mô lớn đầu tiên giữa quân chủ lực ta và quân viễn chinh Mỹ.
+• **Ý nghĩa:** Chứng minh quân dân ta hoàn toàn có khả năng đánh bại quân Mỹ về mặt quân sự trong Chiến tranh cục bộ, mở đầu cao trào "Tìm Mỹ mà đánh, lùng ngụy mà diệt".
+• **Mẹo Loci:** Neo biểu tượng lá cờ Vạn Tường rực sáng treo cao ở không gian trạm!`;
+      } else if (mLower.includes('phước long') || mLower.includes('hội nghị 21')) {
+        modelDetail = `• **Sự kiện lịch sử:** Chiến dịch Đường 14 - Phước Long (12/1974 - 1/1975) — tỉnh đầu tiên ở miền Nam được hoàn toàn giải phóng.
+• **Ý nghĩa:** Đòn trinh sát chiến lược khẳng định thực tế quân đội Sài Gòn đang suy sụp nghiêm trọng, Mỹ bất lực không thể can thiệp trở lại bằng quân sự, tạo cơ sở để Bộ Chính trị quyết định mở Tổng tiến công và nổi dậy Xuân 1975!`;
+      } else {
+        modelDetail = `• **Nội dung sự kiện:** ${pointText || 'Khám phá mô hình minh họa trực quan trong không gian Cung điện.'}
+• **Phương pháp Loci:** Quan sát kỹ màu sắc, hình khối và ý nghĩa biểu tượng của mô hình để khắc sâu vào hồi hải mã.`;
+      }
+
+      const reply = `👀 **Gia sư Loci đang quan sát góc nhìn 3D của bạn:**
+📍 **Vị trí hiện tại:** ${lessonTitle} · ${stTitle}
+🏛️ **Mô hình trước mắt:** **${model || 'Mô hình minh họa sự kiện'}**
+
+${modelDetail}
+
+💡 **Lời khuyên ôn tập:** Hãy xoay camera ngắm trọn vẹn mô hình ở cự ly gần và liên kết nó với số năm của mốc lịch sử để phản xạ nhận diện luôn đạt điểm tuyệt đối nhé!
+[ACTION:QUIZ_START]`;
+
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8. ĐỘNG CƠ PHÂN TÍCH TRI THỨC LỊCH SỬ TRỌNG TÂM (ĐÚNG TRỌNG TÂM CÂU HỎI)
+    const isMeaning = q.includes('ý nghĩa') || q.includes('tầm vóc') || q.includes('vai trò');
+    const isProgress = q.includes('diễn biến') || q.includes('các đợt') || q.includes('tiến trình') || q.includes('giai đoạn');
+    const isCause = q.includes('nguyên nhân') || q.includes('tại sao') || q.includes('bối cảnh') || q.includes('hoàn cảnh') || q.includes('kế hoạch');
+
+    // 8.1. CHIẾN DỊCH ĐIỆN BIÊN PHỦ (1954)
+    if (q.includes('điện biên') || (q.includes('1954') && !q.includes('giơ') && !q.includes('genev'))) {
+      let reply = '';
+      if (isMeaning) {
+        reply = `### 🏆 Ý NGHĨA LỊCH SỬ CỦA CHIẾN DỊCH ĐIỆN BIÊN PHỦ (1954)
+
+**1. Đối với dân tộc:**
+- Giáng đòn quyết định đập tan hoàn toàn Kế hoạch Nava của Pháp có Mĩ can thiệp.
+- Thắng lợi quân sự lớn nhất trong 9 năm kháng chiến chống Pháp (1945 - 1954), bảo vệ vững chắc thành quả CMT8.
+- Tạo bước ngoặt ngoại giao quyết định, buộc Pháp ký Hiệp định Giơ-ne-vơ (21/7/1954), công nhận độc lập, chủ quyền, thống nhất, toàn vẹn lãnh thổ và giải phóng miền Bắc.
+
+**2. Đối với thế giới:**
+- Là phát pháo hiệu mở đầu cho sự sụp đổ của hệ thống thuộc địa chủ nghĩa thực dân cũ trên thế giới.
+- Cổ vũ mạnh mẽ phong trào giải phóng dân tộc ở Á - Phi - Mĩ Latinh.
+
+💡 **Gợi nhớ Loci:** Gắn tại **Bàn trà trung tâm phòng khách** (lòng chảo Mường Thanh). [ACTION:TELEPORT:dien_bien_phu]`;
+      } else if (isProgress) {
+        reply = `### ⚔️ DIỄN BIẾN 3 ĐỢT TIẾN CÔNG ĐIỆN BIÊN PHỦ (13/3 – 07/5/1954)
+- **Đợt 1 (13/3 – 17/3/1954):** Tiêu diệt cứ điểm Him Lam, Độc Lập, bức hàng Bản Kéo, đập tan phân khu Bắc.
+- **Đợt 2 (30/3 – 26/4/1954):** Đánh các cứ điểm phía Đông (đồi A1, C1...). Chiến sự ác liệt tại đồi A1. Ta đào hào siết chặt vây ráp sân bay Mường Thanh.
+- **Đợt 3 (01/5 – 07/5/1954):** Tổng công kích toàn mặt trận. **17h30 ngày 07/5/1954**, cờ Quyết chiến Quyết thắng tung bay trên nóc hầm De Castries, bắt sống toàn bộ ban chỉ huy địch.
+
+💡 **Gợi nhớ Loci:** Gắn tại **Bàn trà trung tâm phòng khách**. [ACTION:TELEPORT:dien_bien_phu]`;
+      } else {
+        reply = `### 🏔️ CHIẾN DỊCH ĐIỆN BIÊN PHỦ (13/3/1954 – 07/5/1954)
+- **Phương châm tác chiến:** Đại tướng Võ Nguyên Giáp quyết định chuyển từ "Đánh nhanh, thắng nhanh" sang "Đánh chắc, tiến chắc" — quyết định mang tính bước ngoặt lịch sử.
+- **Kết quả:** Sau 56 ngày đêm "khoét núi, ngủ hầm, mưa dầm, cơm vắt", ta xóa sổ hoàn toàn tập đoàn cứ điểm mạnh nhất Đông Dương của Pháp.
+- **Vị trí liên tưởng Loci:** **Bàn trà trung tâm phòng khách**. [ACTION:TELEPORT:dien_bien_phu]`;
+      }
+
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.2. CÁCH MẠNG THÁNG TÁM (1945)
+    if (q.includes('tháng tám') || (q.includes('1945') && !q.includes('hồ chí minh'))) {
+      let reply = `### 🚩 CÁCH MẠNG THÁNG TÁM NĂM 1945
+**1. Thời cơ "ngàn năm có một":**
+- Xuất hiện từ khi Nhật đầu hàng Đồng minh (15/8/1945) đến trước khi quân Đồng minh vào Đông Dương (đầu tháng 9/1945).
+- 4 tỉnh giành chính quyền sớm nhất cả nước: **Bắc Giang, Hải Dương, Hà Tĩnh, Quảng Nam** (18/8/1945).
+
+**2. Ý nghĩa lịch sử:**
+- Phá tan xiềng xích nô lệ thực dân Pháp hơn 80 năm và phát xít Nhật, lật đổ chế độ phong kiến ngàn năm.
+- Khai sinh nước Việt Nam Dân chủ Cộng hòa (02/9/1945), đưa nhân dân ta từ thân phận nô lệ thành người làm chủ đất nước.
+
+💡 **Gợi nhớ Loci:** Gắn tại **Cửa chính ra vào phòng khách** (cánh cửa mở toang kỷ nguyên mới). [ACTION:TELEPORT:cach_mang_thang_tam]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.3. CHIẾN DỊCH HỒ CHÍ MINH (1975) & ĐẠI THẮNG MÙA XUÂN
+    if (q.includes('hồ chí minh') || q.includes('1975') || q.includes('30/4') || q.includes('giải phóng miền nam')) {
+      let reply = `### 🎖️ CHIẾN DỊCH HỒ CHÍ MINH (26/4 – 30/4/1975)
+- **Phương châm:** "Thần tốc, táo bạo, bất ngờ, chắc thắng".
+- **Thời khắc lịch sử:** Đúng **10h45 ngày 30/4/1975**, xe tăng 390 húc đổ cổng Dinh Độc Lập; **11h30**, cờ giải phóng tung bay trên nóc Dinh Độc Lập, chiến dịch toàn thắng.
+- **Ý nghĩa lịch sử:** Kết thúc vẻ vang 21 năm kháng chiến chống Mĩ cứu nước và 30 năm chiến tranh giải phóng dân tộc (1945 - 1975), giải phóng hoàn toàn miền Nam, thống nhất non sông, đưa cả nước đi lên CNXH.
+
+💡 **Gợi nhớ Loci:** Gắn tại **Trạm 9 (Dinh Độc Lập)** — nơi xe tăng 390 húc đổ cổng trưa 30/4/1975. [ACTION:TELEPORT:chien_dich_ho_chi_minh]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.4. HIỆP ĐỊNH GIƠ-NE-VƠ (1954)
+    if (q.includes('giơ') || q.includes('genev') || q.includes('vĩ tuyến 17')) {
+      let reply = `### 📜 HIỆP ĐỊNH GIƠ-NE-VƠ NĂM 1954 VỀ ĐÔNG DƯƠNG
+- **Nội dung then chốt:** Pháp và các nước tham dự tôn trọng độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam, Lào, Campuchia.
+- **Giới tuyến quân sự tạm thời:** Lấy vĩ tuyến 17 (sông Bến Hải) làm giới tuyến tạm thời để tập kết quân đội; tổng tuyển cử tự do sau 2 năm (tháng 7/1956).
+- **Ý nghĩa:** Văn bản pháp lý quốc tế đầu tiên ghi nhận các quyền dân tộc cơ bản của ba nước Đông Dương, giải phóng hoàn toàn miền Bắc.
+
+💡 **Gợi nhớ Loci:** Gắn tại **Kệ sách lớn góc phòng**. [ACTION:TELEPORT:hiep_dinh_geneve]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.5. PHONG TRÀO ĐỒNG KHỞI (1959 - 1960)
+    if (q.includes('đồng khởi') || q.includes('1960') || q.includes('bến tre') || q.includes('nghị quyết 15')) {
+      let reply = `### 🌴 PHONG TRÀO ĐỒNG KHỞI (1959 - 1960)
+- **Bối cảnh:** Nghị quyết Hội nghị TW 15 (1/1959) xác định con đường bạo lực cách mạng để giải phóng miền Nam.
+- **Địa bàn bùng nổ:** Ngày 17/1/1960 tại huyện Mỏ Cày (Bến Tre), sau đó lan rộng khắp Nam Bộ, Tây Nguyên và Trung Trung Bộ.
+- **Ý nghĩa bước ngoặt:** Chuyển cách mạng miền Nam từ thế *giữ gìn lực lượng* sang thế *tiến công*, làm sụp đổ từng mảng chính quyền địch ở nông thôn, dẫn tới sự ra đời của Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960).
+
+💡 **Gợi nhớ Loci:** Gắn tại **Cửa sổ kính nhìn ra ngoài trời**. [ACTION:TELEPORT:dong_khoi]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.6. SO SÁNH CÁC CHIẾN LƯỢC CHIẾN TRANH CỦA MĨ Ở MIỀN NAM
+    if (q.includes('chiến lược') || q.includes('đặc biệt') || q.includes('cục bộ') || q.includes('việt nam hóa') || q.includes('so sánh')) {
+      let reply = `### ⚔️ SO SÁNH 3 CHIẾN LƯỢC CHIẾN TRANH CỦA MĨ Ở VIỆT NAM
+
+1. **Chiến tranh Đặc biệt (1961 - 1965):**
+   - Lực lượng: Quân đội Sài Gòn (ngụy) là nòng cốt + Cố vấn quân sự và vũ khí Mĩ.
+   - Thủ đoạn: "Ấp chiến lược" (quốc sách) + Chiến thuật trực thăng vận, thiết xa vận.
+   - Thất bại: Bị phá sản hoàn toàn sau chiến thắng Ấp Bắc (1963), Bình Giã, Ba Gia, Đồng Xoài (1965).
+
+2. **Chiến tranh Cục bộ (1965 - 1968):**
+   - Lực lượng: **Quân viễn chinh Mĩ** và quân đồng minh là nòng cốt + Quân đội Sài Gòn.
+   - Thủ đoạn: Chiến lược 2 gọng kìm "Tìm diệt" và "Bình định" + Leo thang ném bom phá hoại miền Bắc.
+   - Thất bại: Sau đòn mở màn Vạn Tường (1965) và đỉnh cao là Cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân 1968 (buộc Mĩ xuống thang chiến tranh, ngừng ném bom miền Bắc và chấp nhận đàm phán tại Paris).
+
+3. **Việt Nam hóa chiến tranh (1969 - 1973):**
+   - Lực lượng: Quân đội Sài Gòn là nòng cốt + Hỏa lực, không quân, hậu cần Mĩ.
+   - Thủ đoạn: "Dùng người Việt đánh người Việt", mở rộng chiến tranh ra toàn Đông Dương.
+   - Thất bại: Đòn sấm sét Điện Biên Phủ trên không (12/1972) buộc Mĩ ký Hiệp định Paris 1973, rút toàn bộ quân Mĩ về nước ("đánh cho Mĩ cút").`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.7. KHÁNG CHIẾN CHỐNG PHÁP (1945 - 1954): VIỆT BẮC 1947 & BIÊN GIỚI 1950
+    if (q.includes('việt bắc') || q.includes('biên giới') || q.includes('1947') || q.includes('1950')) {
+      let reply = `### 🛡️ CHIẾN DỊCH VIỆT BẮC 1947 & BIÊN GIỚI 1950
+
+• **Chiến dịch Việt Bắc Thu - Đông 1947:**
+  - Mục tiêu của Pháp: Đánh úp cơ quan đầu não kháng chiến nhằm "đánh nhanh thắng nhanh".
+  - Ý nghĩa: Ta bảo vệ an toàn cơ quan đầu não, chuyển cuộc kháng chiến chống Pháp sang giai đoạn mới, buộc Pháp chuyển từ "đánh nhanh thắng nhanh" sang "đánh lâu dài".
+
+• **Chiến dịch Biên giới Thu - Đông 1950:**
+  - Mục tiêu của ta: Khai thông biên giới Việt - Trung, mở rộng căn cứ địa Việt Bắc.
+  - Ý nghĩa bước ngoặt: Ta giành quyền chủ động chiến lược trên chiến trường chính Bắc Bộ, phá vỡ thế bao vây của địch đối với căn cứ địa kháng chiến.`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.8. BÀI 9: ĐẤU TRANH BẢO VỆ TỔ QUỐC TỪ SAU THÁNG 4/1975 ĐẾN NAY
+    if (q.includes('tây nam') || q.includes('biên giới phía bắc') || q.includes('1979') || q.includes('vị xuyên') || q.includes('pôn pốt') || q.includes('khmer đỏ') || q.includes('hà giang') || q.includes('bảo vệ tổ quốc')) {
+      let reply = `### 🛡️ ĐẤU TRANH BẢO VỆ TỔ QUỐC TỪ SAU THÁNG 4/1975 ĐẾN NAY (BÀI 9)
+• **Chiến đấu bảo vệ biên giới Tây Nam (1975 - 1979):**
+  - Chống tập đoàn phản động Pôn Pốt - Iêng Xari bảo vệ vững chắc chủ quyền biên giới Tây Nam.
+  - Phối hợp với Mặt trận Đoàn kết Dân tộc Cứu nước Campuchia cứu nhân dân Campuchia thoát khỏi thảm họa diệt chủng (07/01/1979).
+
+• **Chiến đấu bảo vệ biên giới phía Bắc (từ tháng 2/1979):**
+  - Ngày 17/02/1979, quân và dân ta kiên cường chiến đấu bảo vệ toàn tuyến biên giới phía Bắc.
+  - Mặt trận Vị Xuyên (Hà Giang, 1984 - 1989) lưu danh tinh thần bất khuất: *"Sống bám đá đánh giặc, chết hóa đá bất tử"*.
+
+• **Bảo vệ chủ quyền biển, đảo:** Kiên quyết, kiên trì đấu tranh bảo vệ chủ quyền, quyền chủ quyền đối với quần đảo Hoàng Sa và Trường Sa theo luật pháp quốc tế.`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.9. BÀI 9: BÀI HỌC LỊCH SỬ VỀ CHIẾN TRANH GIẢI PHÓNG VÀ BẢO VỆ TỔ QUỐC (1945 - NAY)
+    if (q.includes('bài học') || q.includes('nghệ thuật quân sự') || q.includes('đại đoàn kết') || q.includes('chiến tranh nhân dân')) {
+      let reply = `### 💡 MỘT SỐ BÀI HỌC LỊCH SỬ QUÝ BÁU (1945 ĐẾN NAY)
+1. **Sự lãnh đạo đúng đắn của Đảng:** Nhân tố hàng đầu quyết định mọi thắng lợi của cách mạng Việt Nam.
+2. **Khối đại đoàn kết toàn dân tộc:** Phát huy sức mạnh của khối liên minh công - nông - trí thức và Mặt trận dân tộc thống nhất.
+3. **Đường lối chiến tranh nhân dân, toàn dân, toàn diện:** "Mỗi người dân là một chiến sĩ, mỗi làng xã là một pháo đài".
+4. **Nghệ thuật quân sự độc đáo:** Lấy nhỏ thắng lớn, lấy chí nhân thay cường bạo, chuyển hóa thế trận linh hoạt (từ Đánh nhanh thắng nhanh sang Đánh chắc tiến chắc).
+5. **Kết hợp sức mạnh dân tộc với sức mạnh thời đại:** Tranh thủ tối đa sự đồng tình, ủng hộ của các lực lượng hòa bình, tiến bộ trên thế giới.`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.10. CHUYỂN HƯỚNG CÂU HỎI NGOÀI CHỦ ĐỀ 3
+    if (q.includes('ianta') || q.includes('liên hợp quốc') || q.includes('lhq') || q.includes('asean') || q.includes('đổi mới') || q.includes('đại hội vi')) {
+      let reply = `💡 **Thông báo phạm vi kiến thức:** Hệ thống hiện đang tập trung chuyên sâu 100% vào **CHỦ ĐỀ 3: Cách mạng tháng Tám năm 1945, chiến tranh giải phóng dân tộc và chiến tranh bảo vệ Tổ quốc trong lịch sử Việt Nam (từ tháng 8 năm 1945 đến nay)** bao gồm 4 bài (Bài 6, 7, 8, 9).
+      
+Bạn hãy đặt câu hỏi liên quan đến Cách mạng tháng Tám, Kháng chiến chống Pháp, Kháng chiến chống Mĩ, hoặc Cuộc chiến đấu bảo vệ Tổ quốc từ sau 1975 để mình giải đáp chuẩn xác nhất nhé!`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.10. CHỦ TỊCH HỒ CHÍ MINH
+    if (q.includes('bác hồ') || q.includes('nguyễn ái quốc') || q.includes('nguyễn tất thành')) {
+      let reply = `### 🌟 CHỦ TỊCH HỒ CHÍ MINH TRONG TIẾN TRÌNH LỊCH SỬ DÂN TỘC
+- **05/6/1911:** Người ra đi tìm đường cứu nước từ Bến Nhà Rồng.
+- **7/1920:** Đọc Sơ thảo Luận cương của Lênin, tìm thấy con đường cứu nước duy nhất: con đường cách mạng vô sản.
+- **1930:** Sáng lập Đảng Cộng sản Việt Nam (03/2/1930) và soạn thảo Cương lĩnh chính trị đầu tiên.
+- **1941:** Về nước trực tiếp lãnh đạo cách mạng, thành lập Mặt trận Việt Minh tại Pác Bó (Cao Bằng).
+- **02/9/1945:** Đọc Tuyên ngôn Độc lập khai sinh nước Việt Nam Dân chủ Cộng hòa.`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // 8.11. CHÀO HỎI / DANH TÍNH BAN ĐẦU
+    if (q.includes('chào') || q.includes('hello') || q.includes('hi') || q.includes('bạn là ai') || q.includes('giới thiệu')) {
+      const reply = `Xin chào bạn! Mình là **Loci** — Trợ lý AI đồng hành ôn thi THPT môn Lịch Sử 12 bằng phương pháp Cung điện Ký ức 3D. 
+
+Mình có thể giúp bạn:
+1. Giải đáp cặn kẽ ý nghĩa, diễn biến và bài học lịch sử của các sự kiện 12.
+2. Hướng dẫn mẹo liên tưởng không gian vào các đồ vật trong phòng để nhớ lâu không quên.
+3. Khảo bài trắc nghiệm nhanh hoặc lắng nghe tâm sự, giải tỏa áp lực thi cử cùng bạn.
+
+Bạn đang quan tâm đến sự kiện nào hoặc muốn mình hỗ trợ điều gì cứ nói với mình nhé! 😊`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      return;
+    }
+
+    // MẶC ĐỊNH: Phản hồi thông minh (khi API mất kết nối)
+    let kbDocs = '';
+    if (typeof window !== 'undefined' && window.getRelevantHistoricalKnowledge) {
+      kbDocs = window.getRelevantHistoricalKnowledge(q);
+    }
+
+    let reply = `Chào bạn! Mình là Gia sư Loci đồng hành cùng bạn ôn luyện Lịch sử 12.
+
+Để giúp bạn nắm chắc kiến thức và rèn luyện trí nhớ không gian, bạn có thể cùng mình:
+• Tìm hiểu **Ý nghĩa hoặc Diễn biến** của Chiến dịch Điện Biên Phủ 1954, CMT8 1945, Chiến dịch Hồ Chí Minh 1975...
+• Khám phá **Mẹo liên tưởng Cung điện Ký ức Loci** gắn vào các vật thể trực quan trong phòng 3D.
+• Hoặc nói *"Khảo bài tôi đi"* để mình đố bạn các câu hỏi trắc nghiệm trọng tâm nhé!`;
+
+    this.onMessage({ role: 'assistant', text: reply });
+    this.speak(reply);
+  }
+
+  /* --- HÀM TÓM TẮT DYNAMIC NLP DỰ PHÒNG CHO MỌI VĂN BẢN (KỂ CẢ NGOÀI CHƯƠNG TRÌNH) --- */
+  generateUniversalOfflineSummaryInternal(sourceText, format = 'all') {
+    if (!sourceText || !sourceText.trim()) return '';
+
+    function distillText(str, maxWords = 16) {
+      if (!str) return '';
+      let clean = str.replace(/^(?:theo\s+đó|như\s+vậy|có\s+thể\s+thấy|chúng\s+ta\s+thấy|được\s+biết\s+đến\s+như\s+là|nói\s+cách\s+khác|ngoài\s+ra|mặt\s+khác|bên\s+cạnh\s+đó|cụ\s+thể\s+là)[,:\s]*/i, '').trim();
+      const words = clean.split(/\s+/);
+      if (words.length <= maxWords) return clean;
+      return words.slice(0, maxWords).join(' ') + '...';
+    }
+
+    function extractTag(str) {
+      if (!str) return 'Trọng tâm';
+      const pMatch = str.match(/[\("“]([^"”\)]+)[\)"”]/);
+      if (pMatch && pMatch[1].length <= 25) return pMatch[1].trim();
+      const capMatch = str.match(/[A-ZÀ-Ỹ][\w\d\s\-]{2,22}/);
+      if (capMatch) return capMatch[0].trim();
+      return str.split(/\s+/).slice(0, 3).join(' ');
+    }
+
+    const rawLines = sourceText.split(/\r?\n/).map(l => l.trim()).filter(l => l.length > 0);
     const cleanText = sourceText.replace(/[#*`_>|]/g, ' ').replace(/\s+/g, ' ').trim();
     const lower = sourceText.toLowerCase();
 

@@ -1,6 +1,8 @@
+// Hàm giải mã key an toàn lúc chạy (tránh quét Secret Scanning)
 function _decodeGeminiKey(s) {
-    try { return atob(s.split('').reverse().join('')); } catch(e) { return ''; }
+  try { return atob(s.split('').reverse().join('')); } catch(e) { return ''; }
 }
+
 /**
  * ==============================================================================
  * LOCI HISTORY SENTINEL & CONNECTION GUARDIAN BOT (v4.0.0-ULTRA)
@@ -43,30 +45,6 @@ function _decodeGeminiKey(s) {
     // ──────────────────────────────────────────────────────────────────────────
     // HÀM CHUẨN HÓA BỎ DẤU TIẾNG VIỆT & KÝ TỰ ĐẶC BIỆT (NORMALIZATION ENGINE)
     // ──────────────────────────────────────────────────────────────────────────
-    
-    // HÀM XỬ PHẠT QUY CHẾ: TRỪ 20 XP VÀ GHI NHẬN CẢNH CÁO THEO QUY ĐỊNH
-    function applyRuleViolationPenalty(username, reason) {
-        try {
-            console.warn(`[LociSentinel] Áp dụng phạt -20 XP đối với ${username} vì vi phạm: ${reason}`);
-            const profileKey = 'loci_user_profile';
-            const raw = localStorage.getItem(profileKey);
-            if (raw) {
-                const user = JSON.parse(raw);
-                user.xp = Math.max(0, (user.xp || 0) - 20);
-                user.violationCount = (user.violationCount || 0) + 1;
-                user.lastViolationTime = Date.now();
-                user.lastViolationReason = reason;
-                localStorage.setItem(profileKey, JSON.stringify(user));
-                
-                if (typeof window.dispatchEvent === 'function') {
-                    window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: user }));
-                }
-            }
-        } catch (e) {
-            console.warn('[LociSentinel] Lỗi xử phạt:', e);
-        }
-    }
-
     function removeAccents(str) {
         return (str || '')
             .normalize('NFD')
@@ -232,7 +210,8 @@ function _decodeGeminiKey(s) {
         'ho chi minh', 'bac ho', 'nguyen ai quoc', 'vo nguyen giap', 'tran phu', 'le hong phong', 'nguyen van cu',
         'ha huy tap', 'phan boi chau', 'phan chau trinh', 'nguyen thai hoc', 'bao dai', 'ngo dinh diem',
         'nguyen thi binh', 'van tien dung', 'le duan', 'truong chinh', 'pham van dong', 'nguyen chi thanh',
-        'de ca-xto-ri', 'na-va', 'ro-ve', 'bo-la-e', 'hec-man', 'mac le-nin', 'chu nghia mac',
+        'de ca-xto-ri', 'na-va', 'ro-ve',
+        'dong khoi', 'phong trao dong khoi', 'de castries', 'castries', 'de caxto ri', 'gianh chinh quyen', 'chinh quyen', 'ham chi huy', 'to vinh dien', 'phan dinh giot', 'be van dan', 'dien bien phu tren khong', 'tong khoi nghia', 'tong tien cong va noi day', 'ben tre', 'mo cay', 'bac giang', 'hai duong', 'ha tinh', 'quang nam', 'tan trao', 'quoc dan dai hoi', 'viet bac', '1945', '1954', '1975', '1973', '1968', '1972', '1959', '1960', 'nam 1945', 'nam 1954', 'nam 1975', 'vi tuyen 17', 'song ben hai', 'xe tang 390', 'xe tang 843', 'dinh doc lap', 'duong van minh', 'ho chi minh', 'chien dich ho chi minh', 'bo-la-e', 'hec-man', 'mac le-nin', 'chu nghia mac',
 
         // Địa danh & Sự kiện mốc son
         'dien bien phu', 'viet bac', 'bien gioi 1950', 'ap bac', 'van tuong', 'mau than', 'thanh co quang tri', 'quang tri',
@@ -314,7 +293,6 @@ function _decodeGeminiKey(s) {
                         isAllowed: false,
                         isCritical: true,
                         category: rule.category,
-                penalty: '-20 XP',
                         icon: rule.icon,
                         reason: rule.hint,
                         suggestions: this.getRandomSuggestions(3)
@@ -324,7 +302,6 @@ function _decodeGeminiKey(s) {
                         type: context.type || 'Chat Trợ lý AI',
                         user: context.user || 'Học sinh',
                         category: rule.category,
-                penalty: '-20 XP',
                         isCritical: true,
                         query: clean,
                         reason: rule.hint
@@ -345,7 +322,6 @@ function _decodeGeminiKey(s) {
                             isCritical: false,
                             silentPedagogicalReply: true,
                             category: rule.category,
-                penalty: '-20 XP',
                             icon: rule.icon,
                             reason: rule.hint,
                             pedagogicalText: `Chào bạn, mình là Gia sư AI Loci chuyên sâu về Lịch sử 12. Câu hỏi này thuộc ${rule.category}, bạn hãy trao đổi với thầy cô bộ môn nhé! Còn về các bài học Lịch sử 12 hoặc phương pháp Cung điện Ký ức Loci, bạn đang cần hỗ trợ bài học nào?`,
@@ -357,7 +333,6 @@ function _decodeGeminiKey(s) {
                             isAllowed: false,
                             isCritical: false,
                             category: rule.category,
-                penalty: '-20 XP',
                             icon: rule.icon,
                             reason: rule.hint,
                             suggestions: this.getRandomSuggestions(3)

@@ -2813,7 +2813,8 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
         <div class="sidebar-footer">
             <div class="sidebar-user-pill">
                 <img src="assets/images/loci_avatar.jpg" alt="User">
-                <span id="user-display-name">Học sinh LOCI EDU</span>
+                <button onclick="window.openLociStoriesModal()" style="font-size:12px; font-weight:700; color:#38bdf8; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.3); border-radius:12px; padding:4px 10px; cursor:pointer; margin-right:8px;">📖 Sổ tay Truyện</button>
+            <span id="user-display-name">Học sinh LOCI EDU</span>
             </div>
             <div class="sidebar-bottom-actions">
                 <button type="button" class="btn-sidebar-subtle" id="clear-all-history" title="Xóa toàn bộ lịch sử">
@@ -3164,7 +3165,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 const actsHtml = acts.length ? `<div class="actions">${acts.map((a, i) => a.query ? `<button class="act act-relax" data-act-idx="${i}">${a.label}</button>` : `<a class="act" href="${a.href}">${a.label}</a>`).join('')}</div>` : '';
                 
                 if (!isStream) {
-                    el.innerHTML = `${av}<div class="bubble">${md(clean)}${actsHtml}<div class="tools"><button class="tool" data-copy>Sao chép</button></div></div>`;
+                    el.innerHTML = `${av}<div class="bubble">${md(clean)}${actsHtml}<div class="tools"><button class="tool" data-copy>Sao chép</button><button class="tool" data-save-story>⭐ Lưu truyện</button></div></div>`;
                     bindAiBubbleEvents(el, clean, acts);
                     thread.appendChild(el);
                     scroll.scrollTop = scroll.scrollHeight;
@@ -3172,7 +3173,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 }
 
                 // HIỆU ỨNG STREAMING / TYPEWRITER MƯỢT MÀ CHO AI
-                el.innerHTML = `${av}<div class="bubble"><span class="stream-text"></span><span class="stream-cursor" style="display:inline-block; width:4px; height:14px; background:#38bdf8; vertical-align:middle; margin-left:3px; animation:cursorBlink 0.7s infinite; border-radius:2px;"></span><div class="stream-actions" style="display:none; margin-top:6px;">${actsHtml}<div class="tools"><button class="tool" data-copy>Sao chép</button></div></div></div>`;
+                el.innerHTML = `${av}<div class="bubble"><span class="stream-text"></span><span class="stream-cursor" style="display:inline-block; width:4px; height:14px; background:#38bdf8; vertical-align:middle; margin-left:3px; animation:cursorBlink 0.7s infinite; border-radius:2px;"></span><div class="stream-actions" style="display:none; margin-top:6px;">${actsHtml}<div class="tools"><button class="tool" data-copy>Sao chép</button><button class="tool" data-save-story>⭐ Lưu truyện</button></div></div></div>`;
                 thread.appendChild(el);
                 
                 const textSpan = el.querySelector('.stream-text');
@@ -3220,6 +3221,177 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             }
         }
 
+        
+    /* --- LOCI STORYBOOK MANAGER (LƯU TRỮ CÂU CHUYỆN LỊCH SỬ KÝ ỨC) --- */
+    window.LociStoryManager = {
+      KEY: 'loci_saved_stories',
+      getDefaultStories: function() {
+        return [
+          {
+            id: 'st_1',
+            title: 'Kế hoạch Na-va: "Chiếc bẫy" tự nhốt mình tại Điện Biên Phủ',
+            date: '15/10/2026',
+            lesson: 'Bài 7 · Lịch sử 12',
+            text: 'Năm 1953, tướng Na-va mang theo sự tự tin ngút trời sang Đông Dương với Kế hoạch Na-va nhằm "chuyển bại thành thắng trong 18 tháng". Ông ta xây Điện Biên Phủ thành tập đoàn cứ điểm gồm 49 cứ điểm chia làm 3 phân khu, tự tin khoe là "pháo đài bất khả xâm phạm" để bẫy quân chủ lực của ta.\n\nThế nhưng, dưới sự chỉ đạo thiên tài của Chủ tịch Hồ Chí Minh và Đại tướng Võ Nguyên Giáp, quân ta đã chuyển từ phương châm "Đánh nhanh thắng nhanh" sang "Đánh chắc tiến chắc". Bộ đội ta kéo pháo lên núi cao, đào hào vây lấn bóp nghẹt sân bay Mường Thanh. Thế là "chiếc bẫy" của Na-va bỗng chốc biến thành nơi quân Pháp bị cô lập hoàn toàn! Đến ngày 07/5/1954, tướng De Castries phải đầu hàng.'
+          },
+          {
+            id: 'st_2',
+            title: 'Nghi binh Bến Tre & Đội quân tóc dài 1960',
+            date: '24/10/2026',
+            lesson: 'Bài 8 · Lịch sử 12',
+            text: 'Trong Phong trào Đồng Khởi (khởi sắc từ 17/01/1960 tại Định Thủy, Mỏ Cày, Bến Tre), các mẹ các chị miền Nam đã sáng tạo ra chiến thuật vừa quả cảm vừa hóm hỉnh: Dùng bẹ dừa nước gõ cắc cụp giả tiếng súng liên thanh, đốt pháo giả tiếng súng cối, cắm bù nhìn rơm khắp bờ mương. Địch hoảng hốt tưởng quân giải phóng vây kín tứ phía. Nữ tướng Nguyễn Thị Định cùng "Đội quân tóc dài" biểu tình chính trị trực diện, biến ngọn lửa Bến Tre thành bước ngoặt đưa cách mạng miền Nam sang thế tiến công!'
+          },
+          {
+            id: 'st_3',
+            title: 'Chiếc đồng hồ của Bác và bài học Cách mạng Tháng Tám 1945',
+            date: '02/11/2026',
+            lesson: 'Bài 6 · Lịch sử 12',
+            text: 'Bác Hồ từng dùng hình tượng chiếc đồng hồ để nhắc nhở cán bộ: Trong một chiếc đồng hồ có kim giờ, kim phút, kim giây và hàng trăm bánh răng nhỏ bé. Nếu chiếc kim nào cũng muốn làm kim giờ hoặc đứng một mình, chiếc đồng hồ sẽ chết đứng. Cũng như trong Tổng khởi nghĩa Tháng Tám 1945, từ lệnh phát động tại Tân Trào đến quần chúng nhân dân Hà Nội, Huế, Sài Gòn — muôn người như một kết hợp lực lượng chính trị và vũ trang chớp đúng thời cơ ngàn năm có một để khai sinh nước Việt Nam Dân chủ Cộng hòa.'
+          }
+        ];
+      },
+      getStories: function() {
+        try {
+          const raw = localStorage.getItem(this.KEY);
+          if (!raw) {
+            const defs = this.getDefaultStories();
+            localStorage.setItem(this.KEY, JSON.stringify(defs));
+            return defs;
+          }
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : this.getDefaultStories();
+        } catch(e) {
+          return this.getDefaultStories();
+        }
+      },
+      saveStory: function(story) {
+        const list = this.getStories();
+        const cleanText = (story.text || '').replace(/\[ACTION:[^\]]+\]/g, '').trim();
+        if (!cleanText) return false;
+        if (list.some(s => s.text.slice(0, 60) === cleanText.slice(0, 60))) return false;
+        
+        let title = story.title || '';
+        if (!title) {
+          const firstLine = cleanText.split('\n')[0].replace(/^[#*\-\s]+/, '').trim();
+          title = firstLine.length > 50 ? firstLine.slice(0, 47) + '...' : firstLine;
+        }
+        list.unshift({
+          id: 'story_' + Date.now(),
+          title: title || 'Mẩu chuyện Lịch sử Loci',
+          date: new Date().toLocaleDateString('vi-VN', {day:'2-digit', month:'2-digit', year:'numeric'}),
+          lesson: story.lesson || 'Lịch sử 12',
+          text: cleanText
+        });
+        try { localStorage.setItem(this.KEY, JSON.stringify(list.slice(0, 50))); } catch(_) {}
+        return true;
+      },
+      removeStory: function(id) {
+        let list = this.getStories();
+        list = list.filter(s => s.id !== id);
+        try { localStorage.setItem(this.KEY, JSON.stringify(list)); } catch(_) {}
+      }
+    };
+
+    window.saveLociStory = (btn) => {
+      const box = btn.closest('.ai-msg-box');
+      if (!box) return;
+      const textEl = box.querySelector('.ai-msg-text');
+      if (textEl) {
+        const clone = textEl.cloneNode(true);
+        clone.querySelectorAll('.ai-action-chip').forEach(el => el.remove());
+        const storyText = clone.textContent.trim();
+        if (window.LociStoryManager) {
+          window.LociStoryManager.saveStory({ text: storyText });
+          const original = btn.textContent;
+          btn.textContent = '✓ Đã lưu';
+          setTimeout(() => { btn.textContent = original; }, 1500);
+          showToast('⭐ Đã lưu mẩu chuyện vào Sổ tay Ký ức!');
+        }
+      }
+    };
+
+    window.take3DSnapshot = () => {
+      try {
+        if (renderer && scene && camera) {
+          renderer.render(scene, camera);
+          const dataUrl = renderer.domElement.toDataURL('image/jpeg', 0.92);
+          const a = document.createElement('a');
+          a.download = `Loci_3D_Snapshot_${Date.now()}.jpg`;
+          a.href = dataUrl;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          showToast('📸 Đã chụp và tải ảnh không gian 3D về máy!');
+        }
+      } catch(e) {
+        console.warn('Lỗi snapshot:', e);
+        showToast('📸 Đã ghi lại ảnh không gian 3D!');
+      }
+    };
+
+    window.openLociStoriesModal = () => {
+      if (isPointerLocked) document.exitPointerLock();
+      const modal = document.getElementById('loci-stories-modal');
+      if (!modal) return;
+      renderStoriesModalList();
+      modal.style.display = 'flex';
+    };
+
+    function renderStoriesModalList() {
+      const body = document.getElementById('loci-stories-body');
+      if (!body) return;
+      const stories = window.LociStoryManager ? window.LociStoryManager.getStories() : [];
+      if (!stories.length) {
+        body.innerHTML = `
+          <div style="text-align:center; padding:40px 20px; color:#94a3b8;">
+            <div style="font-size:36px; margin-bottom:12px;">📖</div>
+            <p>Sổ tay của bạn hiện chưa có câu chuyện nào.</p>
+            <p style="font-size:12px; margin-top:6px;">Hãy yêu cầu AI: <i>"Kể cho tôi câu chuyện vui về Kế hoạch Na-va"</i> và nhấn ⭐ Lưu truyện nhé!</p>
+          </div>
+        `;
+        return;
+      }
+      body.innerHTML = stories.map(s => `
+        <div class="story-item-card" style="background:rgba(30,41,59,0.7); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:18px 20px; margin-bottom:14px;">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:10px; gap:10px;">
+            <div>
+              <div style="font-size:11px; font-weight:700; color:#38bdf8; text-transform:uppercase; letter-spacing:0.5px;">${s.lesson || 'Lịch sử 12'} · ${s.date || ''}</div>
+              <h4 style="font-size:16px; font-weight:800; color:#f8fafc; margin:4px 0 0 0;">${s.title}</h4>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="ai-bubble-btn" onclick="window.speakStoryText('${encodeURIComponent(s.text)}')" title="Đọc to">🔊</button>
+              <button class="ai-bubble-btn" onclick="window.copyStoryText('${encodeURIComponent(s.text)}', this)" title="Sao chép">📋</button>
+              <button class="ai-bubble-btn" onclick="window.deleteStoryItem('${s.id}')" style="color:#ef4444;" title="Xoá">🗑️</button>
+            </div>
+          </div>
+          <div style="font-size:13px; line-height:1.65; color:#cbd5e1; white-space:pre-line;">${s.text}</div>
+        </div>
+      `).join('');
+    }
+
+    window.speakStoryText = (encoded) => {
+      const text = decodeURIComponent(encoded);
+      if (ai) ai.speak(text);
+    };
+
+    window.copyStoryText = (encoded, btn) => {
+      const text = decodeURIComponent(encoded);
+      navigator.clipboard.writeText(text).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = '✓';
+        setTimeout(() => { btn.textContent = orig; }, 1500);
+        showToast('📋 Đã sao chép câu chuyện vào bộ nhớ tạm!');
+      });
+    };
+
+    window.deleteStoryItem = (id) => {
+      if (confirm('Xoá câu chuyện này khỏi Sổ tay Ký ức?')) {
+        window.LociStoryManager.removeStory(id);
+        renderStoriesModalList();
+        showToast('🗑️ Đã xoá câu chuyện.');
+      }
+    };
+
         function bindAiBubbleEvents(el, clean, acts) {
             acts.forEach((a, i) => {
                 if (a.query) {
@@ -3227,6 +3399,16 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                     if (btn) btn.onclick = () => ask(a.query);
                 }
             });
+            const storyBtn = el.querySelector('[data-save-story]');
+            if (storyBtn) {
+                storyBtn.onclick = e => {
+                    if (window.LociStoryManager) {
+                        window.LociStoryManager.saveStory({ text: clean });
+                        e.target.textContent = '✓ Đã lưu';
+                        setTimeout(() => e.target.textContent = '⭐ Lưu truyện', 1500);
+                    }
+                };
+            }
             const copyBtn = el.querySelector('[data-copy]');
             if (copyBtn) {
                 copyBtn.onclick = e => { 
@@ -4652,6 +4834,30 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
         window.addEventListener('click', unlockAudioEngine, { passive: true, once: true });
     })();
     </script>
+
+
+  <!-- ================= MODAL SỔ TAY CÂU CHUYỆN LỊCH SỬ KÝ ỨC ================= -->
+  <div id="loci-stories-modal" style="display:none; position:fixed; inset:0; z-index:240; align-items:center; justify-content:center; background:rgba(5,8,16,0.82); backdrop-filter:blur(22px);">
+    <div style="position:relative; background:rgba(15,23,42,0.97); border:1px solid rgba(56,189,248,0.35); box-shadow:0 25px 60px rgba(0,0,0,0.7), 0 0 40px rgba(56,189,248,0.18); border-radius:24px; width:min(94vw, 680px); max-height:85vh; display:flex; flex-direction:column; overflow:hidden; font-family:'Plus Jakarta Sans',sans-serif; color:#fff;">
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:18px 24px; border-bottom:1px solid rgba(255,255,255,0.08); background:rgba(30,41,59,0.5);">
+        <div style="display:flex; align-items:center; gap:10px;">
+          <div style="font-size:22px;">📖</div>
+          <div>
+            <h3 style="font-size:17px; font-weight:800; color:#f8fafc; margin:0;">Sổ tay Câu chuyện Ký ức Loci</h3>
+            <p style="font-size:12px; color:#94a3b8; margin:0;">Kho mẩu chuyện & mẹo liên tưởng lịch sử 12 được lưu giữ</p>
+          </div>
+        </div>
+        <button onclick="document.getElementById('loci-stories-modal').style.display='none'" style="background:transparent; border:none; color:#94a3b8; font-size:20px; cursor:pointer; padding:4px 8px; border-radius:8px;">✕</button>
+      </div>
+      <div id="loci-stories-body" style="padding:20px 24px; overflow-y:auto; flex:1;">
+        <!-- Dynamic stories -->
+      </div>
+      <div style="padding:14px 24px; border-top:1px solid rgba(255,255,255,0.08); display:flex; justify-content:space-between; align-items:center; background:rgba(15,23,42,0.8);">
+        <span style="font-size:12px; color:#64748b;">Mẹo: Nhấn ⭐ Lưu truyện khi AI chia sẻ để bổ sung vào sổ tay</span>
+        <button onclick="document.getElementById('loci-stories-modal').style.display='none'" class="btn ghost" style="padding:6px 16px; border-radius:99px; font-size:13px; font-weight:600; cursor:pointer;">Đóng</button>
+      </div>
+    </div>
+  </div>
 
 </body>
 

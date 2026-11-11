@@ -393,9 +393,9 @@
         // 4 Đồng Sử
         players: [
             { id: 'p1', name: 'Bạn', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/loci_avatar.jpg', isUser: true, hopeStarUsed: false },
-            { id: 'p2', name: 'Nguyễn Nhật Minh', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/pets/owl_scholar.png', isUser: false, hopeStarUsed: false },
-            { id: 'p3', name: 'Trần Bảo Vy', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/pets/phoenix_fire.png', isUser: false, hopeStarUsed: false },
-            { id: 'p4', name: 'Lê Quốc Tuấn', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/pets/tiger_speed.png', isUser: false, hopeStarUsed: false }
+            { id: 'p2', name: 'Hoàng Huyền Trân', school: 'Lớp 12A1', score: 0, avatar: 'assets/images/avatars/student_2.jpg', isUser: false, hopeStarUsed: false },
+            { id: 'p3', name: 'Trần Đức Toàn', school: 'Lớp 12A3', score: 0, avatar: 'assets/images/avatars/student_10.jpg', isUser: false, hopeStarUsed: false },
+            { id: 'p4', name: 'Má Thị Dua', school: 'Lớp 12A2', score: 0, avatar: 'assets/images/avatars/student_4.jpg', isUser: false, hopeStarUsed: false }
         ],
 
         // Trạng thái các vòng thi

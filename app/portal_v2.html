@@ -12864,6 +12864,11 @@
         <div class="hero-gate-main-body">
             <h1 class="hero-gate-headline">Mỗi kiến thức – Một dấu ấn ký ức</h1>
             <button type="button" id="hero-start-btn" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()">
+                Bắt đầu học ngay
+            </button>
+            <button type="button" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,0.3); font-size: 15px; margin-top: 10px; padding: 12px 28px;">
+                🚀 Trải nghiệm nhanh (Khách & Giám khảo)
+            </button>
                 Start
             </button>
         </div>
@@ -15515,6 +15520,17 @@
             else if (s.lesson === 'bai_7') badge = '5 MỐC 3D • ĐIỆN BIÊN PHỦ';
             else if (s.lesson === 'bai_8') badge = '9 MỐC 3D • VĨ TUYẾN 17';
 
+                        const isLockedLesson = (s.lesson === 'bai_7' || s.lesson === 'bai_8');
+            const footerActionHtml = isLockedLesson ? `
+                    <div class="space-footer-action" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                        <span class="space-tour-btn" onclick="event.preventDefault(); event.stopPropagation(); window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}', true);" style="font-size:12px; font-weight:800; color:#0284c7; background:rgba(2,132,199,0.12); padding:5px 12px; border-radius:99px; border:1px solid #bae6fd; cursor:pointer;" title="Chế độ Giám khảo / Khách tham quan 3D">👁️ Tham quan 3D</span>
+                        <span class="space-enter-btn">Vào học ➔</span>
+                    </div>` : `
+                    <div class="space-footer-action">
+                        <span class="space-status-ready">● Sẵn sàng ôn luyện</span>
+                        <span class="space-enter-btn">Vào phòng ➔</span>
+                    </div>`;
+
             return `<a class="space" href="javascript:void(0)" onclick="window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}')">
                 <div class="space-thumb" style="${thumbStyle}">
                     <span class="space-pill-top">${badge}</span>
@@ -15523,10 +15539,7 @@
                 <div class="space-body">
                     <b>${s.name}</b>
                     <small>${s.note}</small>
-                    <div class="space-footer-action">
-                        <span class="space-status-ready">● Sẵn sàng ôn luyện</span>
-                        <span class="space-enter-btn">Vào phòng ➔</span>
-                    </div>
+                    ${footerActionHtml}
                 </div>
             </a>`;
         }).join('');
@@ -17739,16 +17752,327 @@
         };
 
         const LEADERBOARD_STUDENTS = [
-            { id: 's1', username: 'quangminh', name: 'Trần Quang Minh', score: 3850, streak: 21, quiz: 98, photo: 'assets/images/avatar_quangminh.jpg', avatar: 'M', bg: '#0284c7', mark: 'Quán Quân Top 1', markType: 'gold', iconKey: 'crown', school: 'THPT Chu Văn An' },
-            { id: 's2', username: 'hamy', name: 'Nguyễn Hà My', score: 3620, streak: 18, quiz: 96, photo: 'assets/images/avatar_hamy.jpg', avatar: 'M', bg: '#ec4899', mark: 'Á Quân Top 2', markType: 'silver', iconKey: 'temple', school: 'THPT Chuyên Hà Nội - Ams' },
-            { id: 's3', username: 'baoanh', name: 'Lê Bảo Anh', score: 3410, streak: 15, quiz: 95, photo: 'assets/images/avatar_baoanh.jpg', avatar: 'B', bg: '#8b5cf6', mark: 'Quý Quân Top 3', markType: 'bronze', iconKey: 'lightning', school: 'THPT Chuyên Lê Hồng Phong' },
-            { id: 's4', username: 'nhathoang', name: 'Phạm Nhật Hoàng', score: 3150, streak: 14, quiz: 93, photo: 'assets/images/avatar_nhathoang.jpg', avatar: 'H', bg: '#f59e0b', mark: 'Linh Thú Bậc 4', markType: 'blue', iconKey: 'warrior', school: 'THPT Phan Đình Phùng' },
-            { id: 's5', username: 'thaolinh', name: 'Hoàng Vũ Thảo Linh', score: 2980, streak: 12, quiz: 91, photo: 'assets/images/avatar_thaolinh.jpg', avatar: 'L', bg: '#10b981', mark: 'Vô Địch Olympia Loci', markType: 'green', iconKey: 'star', school: 'THPT Chuyên Lê Khiết' },
-            { id: 's6', username: 'tuankiet', name: 'Đặng Tuấn Kiệt', score: 2750, streak: 11, quiz: 90, photo: 'assets/images/avatar_tuankiet.jpg', avatar: 'K', bg: '#3b82f6', mark: 'Đồng Sử Xuất Sắc', markType: 'blue', iconKey: 'compass', school: 'Quốc Học Huế' },
-            { id: 's7', username: 'quynhanh', name: 'Phạm Quỳnh Anh', score: 2480, streak: 10, quiz: 89, avatar: 'A', bg: '#8b5cf6', mark: 'Chuyên Cần', markType: 'green', iconKey: 'book', school: 'THPT Thăng Long' },
-            { id: 's8', username: 'ductrong', name: 'Ngô Đức Trọng', score: 2250, streak: 9, quiz: 88, avatar: 'T', bg: '#3b82f6', mark: 'Thám Hiểm', markType: 'blue', iconKey: 'compass', school: 'THPT Trần Phú' },
-            { id: 's9', username: 'maichi', name: 'Hoàng Mai Chi', score: 1980, streak: 8, quiz: 87, avatar: 'C', bg: '#f97316', mark: 'Cần Mẫn', markType: 'gold', iconKey: 'heart', school: 'THPT Việt Đức' }
-        ];
+        {
+                "id": "s1",
+                "username": "student_1",
+                "name": "Hoàng Huyền Trân",
+                "school": "Lớp 12A1",
+                "classRoom": "12A1",
+                "score": 3950,
+                "streak": 24,
+                "quiz": 98,
+                "avatar": "T",
+                "photo": "assets/images/avatars/student_7.jpg",
+                "bg": "#0284c7",
+                "mark": "Quán Quân Top 1",
+                "markType": "gold",
+                "iconKey": "crown"
+        },
+        {
+                "id": "s2",
+                "username": "student_2",
+                "name": "Lưu Phương Linh",
+                "school": "Lớp 12A1",
+                "classRoom": "12A1",
+                "score": 3820,
+                "streak": 22,
+                "quiz": 97,
+                "avatar": "L",
+                "photo": "assets/images/avatars/student_3.jpg",
+                "bg": "#ec4899",
+                "mark": "Á Quân Top 2",
+                "markType": "silver",
+                "iconKey": "temple"
+        },
+        {
+                "id": "s3",
+                "username": "student_3",
+                "name": "Trần Đức Toàn",
+                "school": "Lớp 12A3",
+                "classRoom": "12A3",
+                "score": 3740,
+                "streak": 21,
+                "quiz": 96,
+                "avatar": "T",
+                "photo": "assets/images/avatars/student_11.jpg",
+                "bg": "#f59e0b",
+                "mark": "Quý Quân Top 3",
+                "markType": "bronze",
+                "iconKey": "lightning"
+        },
+        {
+                "id": "s4",
+                "username": "student_4",
+                "name": "Sùng Ngọc Duy",
+                "school": "Lớp 12A3",
+                "classRoom": "12A3",
+                "score": 3590,
+                "streak": 20,
+                "quiz": 95,
+                "avatar": "D",
+                "photo": "assets/images/avatars/student_4.jpg",
+                "bg": "#6366f1",
+                "mark": "Linh Thú Bậc 5",
+                "markType": "blue",
+                "iconKey": "warrior"
+        },
+        {
+                "id": "s5",
+                "username": "student_5",
+                "name": "Má Thị Dua",
+                "school": "Lớp 12A2",
+                "classRoom": "12A2",
+                "score": 3460,
+                "streak": 19,
+                "quiz": 94,
+                "avatar": "D",
+                "photo": "assets/images/avatars/student_10.jpg",
+                "bg": "#10b981",
+                "mark": "Học Thần Loci",
+                "markType": "green",
+                "iconKey": "star"
+        },
+        {
+                "id": "s6",
+                "username": "student_6",
+                "name": "Lò Thị Chuyển",
+                "school": "Lớp 12A1",
+                "classRoom": "12A1",
+                "score": 3350,
+                "streak": 18,
+                "quiz": 93,
+                "avatar": "C",
+                "photo": "assets/images/avatars/student_1.jpg",
+                "bg": "#d97706",
+                "mark": "Chuyên Cần Loci",
+                "markType": "gold",
+                "iconKey": "compass"
+        },
+        {
+                "id": "s7",
+                "username": "student_7",
+                "name": "Chảo San Mẩy",
+                "school": "Lớp 12A2",
+                "classRoom": "12A2",
+                "score": 3210,
+                "streak": 17,
+                "quiz": 92,
+                "avatar": "M",
+                "photo": "assets/images/avatars/student_16.jpg",
+                "bg": "#059669",
+                "mark": "Kỷ Lục Gia 3D",
+                "markType": "silver",
+                "iconKey": "book"
+        },
+        {
+                "id": "s8",
+                "username": "student_8",
+                "name": "Long Minh Phương",
+                "school": "Lớp 12A1",
+                "classRoom": "12A1",
+                "score": 3100,
+                "streak": 16,
+                "quiz": 92,
+                "avatar": "P",
+                "photo": "assets/images/avatars/student_4.jpg",
+                "bg": "#e11d48",
+                "mark": "Thần Nhớ SM-2",
+                "markType": "bronze",
+                "iconKey": "heart"
+        },
+        {
+                "id": "s9",
+                "username": "student_9",
+                "name": "Long Kiều Chinh",
+                "school": "Lớp 12A3",
+                "classRoom": "12A3",
+                "score": 2980,
+                "streak": 15,
+                "quiz": 91,
+                "avatar": "C",
+                "photo": "assets/images/avatars/student_1.jpg",
+                "bg": "#2563eb",
+                "mark": "Chiến Binh Loci",
+                "markType": "blue",
+                "iconKey": "lightning"
+        },
+        {
+                "id": "s10",
+                "username": "student_10",
+                "name": "Chảo Thị Vân Anh",
+                "school": "Lớp 12C1",
+                "classRoom": "12C1",
+                "score": 2890,
+                "streak": 14,
+                "quiz": 90,
+                "avatar": "A",
+                "photo": "assets/images/avatars/student_14.jpg",
+                "bg": "#16a34a",
+                "mark": "Vô Địch Cúp Loci",
+                "markType": "green",
+                "iconKey": "crown"
+        },
+        {
+                "id": "s11",
+                "username": "student_11",
+                "name": "Nguyễn Ngọc Lan",
+                "school": "Lớp 12A2",
+                "classRoom": "12A2",
+                "score": 2780,
+                "streak": 14,
+                "quiz": 90,
+                "avatar": "L",
+                "photo": "assets/images/avatars/student_15.jpg",
+                "bg": "#ca8a04",
+                "mark": "Đồng Sử Tiên Phong",
+                "markType": "gold",
+                "iconKey": "star"
+        },
+        {
+                "id": "s12",
+                "username": "student_12",
+                "name": "Giàng Thị Dùa",
+                "school": "Lớp 12A1",
+                "classRoom": "12A1",
+                "score": 2690,
+                "streak": 13,
+                "quiz": 89,
+                "avatar": "D",
+                "photo": "assets/images/avatars/student_2.jpg",
+                "bg": "#9333ea",
+                "mark": "Bậc Thầy Không Gian",
+                "markType": "silver",
+                "iconKey": "temple"
+        },
+        {
+                "id": "s13",
+                "username": "student_13",
+                "name": "Sầm Thu Phương",
+                "school": "Lớp 12A2",
+                "classRoom": "12A2",
+                "score": 2580,
+                "streak": 12,
+                "quiz": 88,
+                "avatar": "P",
+                "photo": "assets/images/avatar_baoanh.jpg",
+                "bg": "#0284c7",
+                "mark": "Chiến Tướng Loci",
+                "markType": "blue",
+                "iconKey": "warrior"
+        },
+        {
+                "id": "s14",
+                "username": "student_14",
+                "name": "Lý Ngọc Anh",
+                "school": "Lớp 12C1",
+                "classRoom": "12C1",
+                "score": 2490,
+                "streak": 12,
+                "quiz": 88,
+                "avatar": "A",
+                "photo": "assets/images/avatars/student_15.jpg",
+                "bg": "#ea580c",
+                "mark": "Nhà Leo Núi Loci",
+                "markType": "bronze",
+                "iconKey": "compass"
+        },
+        {
+                "id": "s15",
+                "username": "student_15",
+                "name": "Phạm Ngọc Thuỳ Trang",
+                "school": "Lớp 12A1",
+                "classRoom": "12A1",
+                "score": 2410,
+                "streak": 11,
+                "quiz": 87,
+                "avatar": "T",
+                "photo": "assets/images/avatars/student_6.jpg",
+                "bg": "#15803d",
+                "mark": "Ong Vàng Chăm Chỉ",
+                "markType": "green",
+                "iconKey": "book"
+        },
+        {
+                "id": "s16",
+                "username": "student_16",
+                "name": "Thào Thị Dung",
+                "school": "Lớp 12A2",
+                "classRoom": "12A2",
+                "score": 2340,
+                "streak": 11,
+                "quiz": 87,
+                "avatar": "D",
+                "photo": "assets/images/avatars/student_11.jpg",
+                "bg": "#b45309",
+                "mark": "Tinh Anh Lịch Sử",
+                "markType": "gold",
+                "iconKey": "lightning"
+        },
+        {
+                "id": "s17",
+                "username": "student_17",
+                "name": "Hoàng Phương Thảo",
+                "school": "Lớp 12A3",
+                "classRoom": "12A3",
+                "score": 2280,
+                "streak": 10,
+                "quiz": 86,
+                "avatar": "T",
+                "photo": "assets/images/avatars/student_10.jpg",
+                "bg": "#4f46e5",
+                "mark": "Tiên Phong Khám Phá",
+                "markType": "silver",
+                "iconKey": "star"
+        },
+        {
+                "id": "s18",
+                "username": "student_18",
+                "name": "Hàng Thị Chấn",
+                "school": "Lớp 12C1",
+                "classRoom": "12C1",
+                "score": 2210,
+                "streak": 10,
+                "quiz": 86,
+                "avatar": "C",
+                "photo": "assets/images/avatars/student_16.jpg",
+                "bg": "#0891b2",
+                "mark": "Đồng Sử Xuất Sắc",
+                "markType": "blue",
+                "iconKey": "heart"
+        },
+        {
+                "id": "s19",
+                "username": "student_19",
+                "name": "Nùng Thị Thanh",
+                "school": "Lớp 12A1",
+                "classRoom": "12A1",
+                "score": 2150,
+                "streak": 9,
+                "quiz": 85,
+                "avatar": "T",
+                "photo": "assets/images/avatars/student_5.jpg",
+                "bg": "#c026d3",
+                "mark": "Kỷ Lục Ghi Nhớ",
+                "markType": "bronze",
+                "iconKey": "temple"
+        },
+        {
+                "id": "s20",
+                "username": "student_20",
+                "name": "Vàng Thị Khứ",
+                "school": "Lớp 12A2",
+                "classRoom": "12A2",
+                "score": 2090,
+                "streak": 9,
+                "quiz": 85,
+                "avatar": "K",
+                "photo": "assets/images/avatars/student_14.jpg",
+                "bg": "#15803d",
+                "mark": "Chiến Binh Bền Bỉ",
+                "markType": "green",
+                "iconKey": "warrior"
+        }
+];
 
         function getCurrentUserEntry() {
             let streak = 0, weekMin = 0, answered = 0, accuracy = null;
@@ -21611,19 +21935,25 @@
 
         // Xử lý nút START trên Hero Gate (Chỉ cho phép khi đã đăng nhập)
         window.handleHeroStartClick = function() {
-            const defaultModel = 'trien_lam_nau.glb';
-            const defaultName = 'Triển lãm Nâu (Bài 6)';
-            const href = 'app/index.html?model=' + encodeURIComponent(defaultModel) + '&name=' + encodeURIComponent(defaultName) + '&lesson=bai_6&skip_start=1&direct=1';
-
+            // TỰ ĐỘNG CẤP PHIÊN KHÁCH ĐỂ NGƯỜI DÙNG VÀO KHÁM PHÁ NGAY MÀ KHÔNG BỊ CHẶN POPUP
             if (!window.isUserLoggedIn()) {
                 try {
-                    sessionStorage.setItem('loci_redirect_after_login', href);
+                    var guestUser = {
+                        uid: 'guest_' + Date.now().toString(36),
+                        displayName: 'Học sinh Khách (Trải nghiệm)',
+                        username: 'khach',
+                        role: 'guest',
+                        isGuest: true
+                    };
+                    localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
+                    localStorage.setItem('loci_auth_session', 'active');
+                    window._isUserExplicitlyLoggedIn = true;
                 } catch (_) {}
-                window.openLoginGate('login');
-                return false;
             }
             window.dismissHeroGate(true);
-            window.location.href = href;
+            if (typeof showToast === 'function') {
+                showToast('Chào mừng bạn đến với Cung điện Tri thức Loci Edu!', 'success', 2500);
+            }
             return true;
         };
 
@@ -21735,29 +22065,39 @@
         };
 
         // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP & KIỂM TRA MỞ KHÓA TIẾN TRÌNH
-        window.enterSpatialRoom = function(href, spaceName, lessonId) {
+        window.enterSpatialRoom = function(href, spaceName, lessonId, isTourMode) {
+            // 1. Tự động cấp quyền Khách nếu chưa đăng nhập (không chặn cửa, không ép popup)
             if (!window.isUserLoggedIn()) {
-                if (typeof showToast === 'function') {
-                    showToast(`Bạn cần Đăng nhập / Đăng ký tài khoản Loci để vào "${spaceName || 'Không gian 3D'}"!`, 'warning', 3500);
-                } else {
-                    alert(`Bạn cần Đăng nhập / Đăng ký tài khoản Loci để vào "${spaceName || 'Không gian 3D'}"!`);
-                }
-                window.openLoginGate('login');
+                try {
+                    var guestUser = {
+                        uid: 'guest_' + Date.now().toString(36),
+                        displayName: 'Học sinh Khách (Trải nghiệm)',
+                        username: 'khach',
+                        role: 'guest',
+                        isGuest: true
+                    };
+                    localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
+                    localStorage.setItem('loci_auth_session', 'active');
+                    window._isUserExplicitlyLoggedIn = true;
+                } catch(_) {}
+            }
+
+            // 2. Chế độ Tham quan 3D (dành cho Khách & Giám khảo xem trước mô hình không tính điểm)
+            if (isTourMode) {
+                window.location.href = href + (href.includes('?') ? '&' : '?') + 'mode=tour&preview=guest';
                 return;
             }
 
             const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
                 ? window.LociAccountManager.getUser() 
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            const canBypass = user && (user.isSuperAdmin || user.canBypassLocks || user.role === 'admin' || user.role === 'superadmin' || user.username === 'quantri' || user.username === 'admin');
+            const canBypass = user && (user.isSuperAdmin || user.canBypassLocks || user.role === 'admin' || user.role === 'superadmin' || user.username === 'quantri' || user.username === 'admin' || user.isGuest);
 
+            // 3. Giữ kỷ luật sư phạm cho học sinh, nhưng cho phép Giám khảo/Khách vào tham quan
             if (!canBypass && lessonId && !window.isLessonUnlocked(lessonId)) {
-                const prevName = lessonId === 'bai_7' ? 'Bài 6 (Cách mạng tháng Tám)' : 'Bài 7 (Kháng chiến chống Pháp)';
-                const msg = `🔒 Bạn cần hoàn thiện các bài học trước để mở khóa.`;
-                if (typeof showToast === 'function') {
-                    showToast(msg, 'warning', 5000);
-                } else {
-                    alert(msg);
+                const confirmTour = confirm(`🔒 Bài học "${spaceName}" yêu cầu học tuần tự Bài 6 để tích lũy điểm Bảng Vàng.\n\nBạn có muốn vào THAM QUAN THỬ KHÔNG GIAN 3D (Chế độ Trải nghiệm Giám khảo) không?`);
+                if (confirmTour) {
+                    window.location.href = href + (href.includes('?') ? '&' : '?') + 'mode=tour&preview=guest';
                 }
                 return;
             }
@@ -21780,15 +22120,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Kiểm tra nếu chuyển hướng từ không gian 3D do chưa đăng nhập
             const urlParams = new URLSearchParams(window.location.search);
+            // KHÔNG TỰ ĐỘNG BẬT POPUP ĐĂNG NHẬP GÂY PHIỀN NGƯỜI DÙNG KHI CHƯA CHỌN BÀI
             if (urlParams.get('need_login') === '1' || urlParams.get('auth_required') === '1') {
-                if (!window.isUserLoggedIn()) {
-                    window.showHeroGate();
-                    setTimeout(() => {
-                        if (typeof showToast === 'function') {
-                            showToast('Vui lòng Đăng nhập tài khoản Loci Edu để bước vào Không gian 3D!', 'warning', 4000);
-                        }
-                        window.openLoginGate('login');
-                    }, 400);
+                if (typeof showToast === 'function') {
+                    showToast('Đã vào chế độ Học sinh Khách · Bạn có thể tự do khám phá toàn bộ không gian!', 'info', 3000);
                 }
             }
     
