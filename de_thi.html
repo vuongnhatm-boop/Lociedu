@@ -1279,6 +1279,18 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             if (!isUserAuthenticated()) {
+                try {
+                    localStorage.setItem('loci_auth_session', 'active');
+                    localStorage.setItem('loci_local_user', JSON.stringify({
+                        uid: 'guest_' + Date.now().toString(36),
+                        displayName: 'Học sinh Khách (Trải nghiệm)',
+                        username: 'khach',
+                        role: 'guest',
+                        isGuest: true
+                    }));
+                } catch (_) {}
+            }
+            if (false && !isUserAuthenticated()) {
                 const setupScreen = document.getElementById('screen-setup');
                 if (setupScreen) {
                     setupScreen.innerHTML = `

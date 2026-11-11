@@ -12864,6 +12864,11 @@
         <div class="hero-gate-main-body">
             <h1 class="hero-gate-headline">Mỗi kiến thức – Một dấu ấn ký ức</h1>
             <button type="button" id="hero-start-btn" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()">
+                Bắt đầu học ngay
+            </button>
+            <button type="button" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,0.3); font-size: 15px; margin-top: 10px; padding: 12px 28px;">
+                🚀 Trải nghiệm nhanh (Khách & Giám khảo)
+            </button>
                 Start
             </button>
         </div>
@@ -15515,6 +15520,17 @@
             else if (s.lesson === 'bai_7') badge = '5 MỐC 3D • ĐIỆN BIÊN PHỦ';
             else if (s.lesson === 'bai_8') badge = '9 MỐC 3D • VĨ TUYẾN 17';
 
+                        const isLockedLesson = (s.lesson === 'bai_7' || s.lesson === 'bai_8');
+            const footerActionHtml = isLockedLesson ? `
+                    <div class="space-footer-action" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                        <span class="space-tour-btn" onclick="event.preventDefault(); event.stopPropagation(); window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}', true);" style="font-size:12px; font-weight:800; color:#0284c7; background:rgba(2,132,199,0.12); padding:5px 12px; border-radius:99px; border:1px solid #bae6fd; cursor:pointer;" title="Chế độ Giám khảo / Khách tham quan 3D">👁️ Tham quan 3D</span>
+                        <span class="space-enter-btn">Vào học ➔</span>
+                    </div>` : `
+                    <div class="space-footer-action">
+                        <span class="space-status-ready">● Sẵn sàng ôn luyện</span>
+                        <span class="space-enter-btn">Vào phòng ➔</span>
+                    </div>`;
+
             return `<a class="space" href="javascript:void(0)" onclick="window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}')">
                 <div class="space-thumb" style="${thumbStyle}">
                     <span class="space-pill-top">${badge}</span>
@@ -15523,10 +15539,7 @@
                 <div class="space-body">
                     <b>${s.name}</b>
                     <small>${s.note}</small>
-                    <div class="space-footer-action">
-                        <span class="space-status-ready">● Sẵn sàng ôn luyện</span>
-                        <span class="space-enter-btn">Vào phòng ➔</span>
-                    </div>
+                    ${footerActionHtml}
                 </div>
             </a>`;
         }).join('');
@@ -21611,19 +21624,25 @@
 
         // Xử lý nút START trên Hero Gate (Chỉ cho phép khi đã đăng nhập)
         window.handleHeroStartClick = function() {
-            const defaultModel = 'trien_lam_nau.glb';
-            const defaultName = 'Triển lãm Nâu (Bài 6)';
-            const href = 'app/index.html?model=' + encodeURIComponent(defaultModel) + '&name=' + encodeURIComponent(defaultName) + '&lesson=bai_6&skip_start=1&direct=1';
-
+            // TỰ ĐỘNG CẤP PHIÊN KHÁCH ĐỂ NGƯỜI DÙNG VÀO KHÁM PHÁ NGAY MÀ KHÔNG BỊ CHẶN POPUP
             if (!window.isUserLoggedIn()) {
                 try {
-                    sessionStorage.setItem('loci_redirect_after_login', href);
+                    var guestUser = {
+                        uid: 'guest_' + Date.now().toString(36),
+                        displayName: 'Học sinh Khách (Trải nghiệm)',
+                        username: 'khach',
+                        role: 'guest',
+                        isGuest: true
+                    };
+                    localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
+                    localStorage.setItem('loci_auth_session', 'active');
+                    window._isUserExplicitlyLoggedIn = true;
                 } catch (_) {}
-                window.openLoginGate('login');
-                return false;
             }
             window.dismissHeroGate(true);
-            window.location.href = href;
+            if (typeof showToast === 'function') {
+                showToast('Chào mừng bạn đến với Cung điện Tri thức Loci Edu!', 'success', 2500);
+            }
             return true;
         };
 
@@ -21735,29 +21754,39 @@
         };
 
         // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP & KIỂM TRA MỞ KHÓA TIẾN TRÌNH
-        window.enterSpatialRoom = function(href, spaceName, lessonId) {
+        window.enterSpatialRoom = function(href, spaceName, lessonId, isTourMode) {
+            // 1. Tự động cấp quyền Khách nếu chưa đăng nhập (không chặn cửa, không ép popup)
             if (!window.isUserLoggedIn()) {
-                if (typeof showToast === 'function') {
-                    showToast(`Bạn cần Đăng nhập / Đăng ký tài khoản Loci để vào "${spaceName || 'Không gian 3D'}"!`, 'warning', 3500);
-                } else {
-                    alert(`Bạn cần Đăng nhập / Đăng ký tài khoản Loci để vào "${spaceName || 'Không gian 3D'}"!`);
-                }
-                window.openLoginGate('login');
+                try {
+                    var guestUser = {
+                        uid: 'guest_' + Date.now().toString(36),
+                        displayName: 'Học sinh Khách (Trải nghiệm)',
+                        username: 'khach',
+                        role: 'guest',
+                        isGuest: true
+                    };
+                    localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
+                    localStorage.setItem('loci_auth_session', 'active');
+                    window._isUserExplicitlyLoggedIn = true;
+                } catch(_) {}
+            }
+
+            // 2. Chế độ Tham quan 3D (dành cho Khách & Giám khảo xem trước mô hình không tính điểm)
+            if (isTourMode) {
+                window.location.href = href + (href.includes('?') ? '&' : '?') + 'mode=tour&preview=guest';
                 return;
             }
 
             const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
                 ? window.LociAccountManager.getUser() 
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            const canBypass = user && (user.isSuperAdmin || user.canBypassLocks || user.role === 'admin' || user.role === 'superadmin' || user.username === 'quantri' || user.username === 'admin');
+            const canBypass = user && (user.isSuperAdmin || user.canBypassLocks || user.role === 'admin' || user.role === 'superadmin' || user.username === 'quantri' || user.username === 'admin' || user.isGuest);
 
+            // 3. Giữ kỷ luật sư phạm cho học sinh, nhưng cho phép Giám khảo/Khách vào tham quan
             if (!canBypass && lessonId && !window.isLessonUnlocked(lessonId)) {
-                const prevName = lessonId === 'bai_7' ? 'Bài 6 (Cách mạng tháng Tám)' : 'Bài 7 (Kháng chiến chống Pháp)';
-                const msg = `🔒 Bạn cần hoàn thiện các bài học trước để mở khóa.`;
-                if (typeof showToast === 'function') {
-                    showToast(msg, 'warning', 5000);
-                } else {
-                    alert(msg);
+                const confirmTour = confirm(`🔒 Bài học "${spaceName}" yêu cầu học tuần tự Bài 6 để tích lũy điểm Bảng Vàng.\n\nBạn có muốn vào THAM QUAN THỬ KHÔNG GIAN 3D (Chế độ Trải nghiệm Giám khảo) không?`);
+                if (confirmTour) {
+                    window.location.href = href + (href.includes('?') ? '&' : '?') + 'mode=tour&preview=guest';
                 }
                 return;
             }
@@ -21780,15 +21809,10 @@
         document.addEventListener('DOMContentLoaded', () => {
             // Kiểm tra nếu chuyển hướng từ không gian 3D do chưa đăng nhập
             const urlParams = new URLSearchParams(window.location.search);
+            // KHÔNG TỰ ĐỘNG BẬT POPUP ĐĂNG NHẬP GÂY PHIỀN NGƯỜI DÙNG KHI CHƯA CHỌN BÀI
             if (urlParams.get('need_login') === '1' || urlParams.get('auth_required') === '1') {
-                if (!window.isUserLoggedIn()) {
-                    window.showHeroGate();
-                    setTimeout(() => {
-                        if (typeof showToast === 'function') {
-                            showToast('Vui lòng Đăng nhập tài khoản Loci Edu để bước vào Không gian 3D!', 'warning', 4000);
-                        }
-                        window.openLoginGate('login');
-                    }, 400);
+                if (typeof showToast === 'function') {
+                    showToast('Đã vào chế độ Học sinh Khách · Bạn có thể tự do khám phá toàn bộ không gian!', 'info', 3000);
                 }
             }
     

@@ -8,7 +8,7 @@
             try {
                 var urlParams = new URLSearchParams(window.location.search);
                 var isEmbedded = (window.self !== window.top) || urlParams.get('embed') === '1';
-                var isAuth = isEmbedded || urlParams.get('preview') === 'guest' || urlParams.get('direct') === '1';
+                var isAuth = isEmbedded || urlParams.get('preview') === 'guest' || urlParams.get('direct') === '1' || urlParams.get('mode') === 'tour';
 
                 if (!isAuth) {
                     if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) isAuth = true;
@@ -21,17 +21,22 @@
                             if (p && (p.uid || p.displayName || p.username || p.email || p.role)) isAuth = true;
                         } catch(_) {}
                     }
-                    if (document.cookie && (document.cookie.includes('loci_auth_session=active') || document.cookie.includes('loci_active_user'))) {
-                        isAuth = true;
-                    }
                 }
 
-                // Tuyệt đối không thay thế window hoặc đẩy ra nếu đang nhúng trong iframe Portal
-                if (!isAuth && !isEmbedded) {
-                    try { sessionStorage.setItem('loci_redirect_after_login', window.location.href); } catch(_) {}
-                    var isInsideAppDir = window.location.pathname.indexOf('/app/') !== -1;
-                    var portalUrl = isInsideAppDir ? '../portal_v2.html?need_login=1' : 'portal_v2.html?need_login=1';
-                    window.location.replace(portalUrl);
+                // TỰ ĐỘNG CẤP PHIÊN KHÁCH TRẢI NGHIỆM - TUYỆT ĐỐI KHÔNG ĐÁ VĂNG / KICKOUT NGƯỜI DÙNG
+                if (!isAuth) {
+                    try {
+                        var guestUser = {
+                            uid: 'guest_' + Math.random().toString(36).substring(2, 9),
+                            displayName: 'Học sinh Khách (Trải nghiệm)',
+                            username: 'khach',
+                            role: 'guest',
+                            isGuest: true
+                        };
+                        localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
+                        localStorage.setItem('loci_auth_session', 'active');
+                    } catch(_) {}
+                    isAuth = true;
                 }
             } catch(err) {
                 console.warn('[Loci Auth Guard] Error:', err);
