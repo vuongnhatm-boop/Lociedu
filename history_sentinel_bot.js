@@ -210,7 +210,8 @@ function _decodeGeminiKey(s) {
         'ho chi minh', 'bac ho', 'nguyen ai quoc', 'vo nguyen giap', 'tran phu', 'le hong phong', 'nguyen van cu',
         'ha huy tap', 'phan boi chau', 'phan chau trinh', 'nguyen thai hoc', 'bao dai', 'ngo dinh diem',
         'nguyen thi binh', 'van tien dung', 'le duan', 'truong chinh', 'pham van dong', 'nguyen chi thanh',
-        'de ca-xto-ri', 'na-va', 'ro-ve', 'bo-la-e', 'hec-man', 'mac le-nin', 'chu nghia mac',
+        'de ca-xto-ri', 'na-va', 'ro-ve',
+        'dong khoi', 'phong trao dong khoi', 'de castries', 'castries', 'de caxto ri', 'gianh chinh quyen', 'chinh quyen', 'ham chi huy', 'to vinh dien', 'phan dinh giot', 'be van dan', 'dien bien phu tren khong', 'tong khoi nghia', 'tong tien cong va noi day', 'ben tre', 'mo cay', 'bac giang', 'hai duong', 'ha tinh', 'quang nam', 'tan trao', 'quoc dan dai hoi', 'viet bac', '1945', '1954', '1975', '1973', '1968', '1972', '1959', '1960', 'nam 1945', 'nam 1954', 'nam 1975', 'vi tuyen 17', 'song ben hai', 'xe tang 390', 'xe tang 843', 'dinh doc lap', 'duong van minh', 'ho chi minh', 'chien dich ho chi minh', 'bo-la-e', 'hec-man', 'mac le-nin', 'chu nghia mac',
 
         // Địa danh & Sự kiện mốc son
         'dien bien phu', 'viet bac', 'bien gioi 1950', 'ap bac', 'van tuong', 'mau than', 'thanh co quang tri', 'quang tri',
