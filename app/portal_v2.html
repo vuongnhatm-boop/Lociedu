@@ -12866,11 +12866,6 @@
             <button type="button" id="hero-start-btn" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()">
                 Bắt đầu học ngay
             </button>
-            <button type="button" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()" style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1.5px solid rgba(255,255,255,0.3); font-size: 15px; margin-top: 10px; padding: 12px 28px;">
-                🚀 Trải nghiệm nhanh (Khách & Giám khảo)
-            </button>
-                Start
-            </button>
         </div>
 
 
@@ -14363,6 +14358,20 @@
                         <span>Đăng nhập nhanh với Google</span>
                     </button>
 
+                    <!-- LỰA CHỌN: ĐĂNG NHẬP KHÁCH / GIÁM KHẢO (TRẢI NGHIỆM THAM QUAN) -->
+                    <div style="display: flex; align-items: center; margin: 12px 0 10px; color: #94a3b8; font-size: 12px; font-weight: 600;">
+                        <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
+                        <span style="padding: 0 8px;">hoặc đăng nhập tham quan</span>
+                        <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
+                    </div>
+
+                    <button id="btn-guest-trial-login" type="button" onclick="window.continueAsGuestTrial()"
+                        style="width: 100%; padding: 11px 14px; background: #f8fafc; border: 1.5px dashed #0284c7; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #0284c7; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;"
+                        onmouseover="this.style.background='#f0f9ff'; this.style.borderColor='#0369a1';"
+                        onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#0284c7';">
+                        <span>🚀 Đăng nhập Khách / Giám khảo (Trải nghiệm nhanh)</span>
+                    </button>
+
                     <div style="text-align: center; margin-top: 14px; font-size: 13px; color: #64748b;">
                         Chưa có tài khoản? <a href="javascript:void(0)" onclick="window.switchAuthTab('register')" style="color: #0284c7; font-weight: 700; text-decoration: none;">Đăng ký ngay ➔</a>
                     </div>
@@ -14444,6 +14453,20 @@
                         style="width: 100%; padding: 12px; background: #059669; color: #ffffff; border: none; border-radius: 10px; font-size: 14.5px; font-weight: 700; cursor: pointer; transition: background 0.2s; box-shadow: 0 4px 14px rgba(5,150,105,0.25);"
                         onmouseover="this.style.background='#047857'" onmouseout="this.style.background='#059669'">
                         Khởi tạo tài khoản Đồng Sử ➔
+                    </button>
+
+                    <!-- LỰA CHỌN: ĐĂNG NHẬP KHÁCH / GIÁM KHẢO (TRẢI NGHIỆM THAM QUAN) -->
+                    <div style="display: flex; align-items: center; margin: 12px 0 10px; color: #94a3b8; font-size: 12px; font-weight: 600;">
+                        <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
+                        <span style="padding: 0 8px;">hoặc trải nghiệm không cần tạo tài khoản</span>
+                        <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
+                    </div>
+
+                    <button id="btn-guest-trial-reg" type="button" onclick="window.continueAsGuestTrial()"
+                        style="width: 100%; padding: 11px 14px; background: #f8fafc; border: 1.5px dashed #0284c7; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #0284c7; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;"
+                        onmouseover="this.style.background='#f0f9ff'; this.style.borderColor='#0369a1';"
+                        onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#0284c7';">
+                        <span>🚀 Trải nghiệm với tư cách Khách / Giám khảo</span>
                     </button>
 
                     <div style="text-align: center; margin-top: 12px; font-size: 12.5px; color: #64748b;">
@@ -15440,6 +15463,33 @@
                 showToast('Đã đăng xuất tài khoản thành công.', 'info', 2500);
             }
             window._isLoggingOut = false;
+        };
+
+        window.continueAsGuestTrial = function () {
+            var guestUser = {
+                uid: 'guest_' + Date.now().toString(36),
+                displayName: 'Khách / Giám khảo (Trải nghiệm)',
+                username: 'khach',
+                role: 'guest',
+                isGuest: true
+            };
+            try {
+                localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
+                localStorage.setItem('loci_user_profile', JSON.stringify(guestUser));
+                localStorage.setItem('loci_auth_session', 'active');
+                if (typeof window.setCookie === 'function') {
+                    window.setCookie('loci_auth_session', 'active', 365);
+                }
+            } catch (_) {}
+            if (typeof window._handleLocalAuthSuccess === 'function') {
+                window._handleLocalAuthSuccess('khach', 'Khách / Giám khảo (Trải nghiệm)');
+            } else {
+                window.closeCloudAuthModal();
+                window.dismissHeroGate(true);
+            }
+            if (typeof showToast === 'function') {
+                showToast('🚀 Đang trải nghiệm với tư cách Khách / Giám khảo (Mở toàn bộ nội dung)!', 'success', 3000);
+            }
         };
 
         // Tự động khôi phục tài khoản local nếu phiên đăng nhập hợp lệ
