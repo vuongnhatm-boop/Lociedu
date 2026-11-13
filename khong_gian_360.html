@@ -2048,7 +2048,47 @@ function _decodeGeminiKey(s) {
             }
         }
   
-    </style>
+    
+        html.is-in-iframe .floating-loci-home-btn,
+        body.is-in-iframe .floating-loci-home-btn,
+        .is-in-iframe #floating-loci-home {
+            display: none !important;
+        }
+        @media (min-width: 761px) and (pointer: fine) {
+            #joystick {
+                display: none !important;
+            }
+        }
+        .panel-header-desktop {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 10px;
+            margin-bottom: 8px;
+            border-bottom: 1.5px solid rgba(0, 0, 0, 0.08);
+        }
+        .panel-close-btn {
+            background: rgba(239, 68, 68, 0.12);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 99px;
+            padding: 4px 12px;
+            font-size: 11.5px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .panel-close-btn:hover {
+            background: #ef4444;
+            color: #ffffff;
+        }
+        @media (max-width: 760px) {
+            .panel-header-desktop {
+                display: none;
+            }
+        }
+        
+</style>
 
         /* Ẩn triệt để các nút rườm rà của điện thoại khi ở trên máy tính */
         @media (min-width: 769px) {
@@ -2362,7 +2402,7 @@ function _decodeGeminiKey(s) {
             <button class="icon-btn" id="v-minimap" title="Bản đồ lối đi — chạm một điểm để được dẫn tuyến" style="display:none">🗺️</button>
         </div>
 
-        <aside class="panel" id="panel" aria-label="Bảng điều khiển mốc kiến thức">
+        <aside class="panel hide" id="panel" aria-label="Bảng điều khiển mốc kiến thức">
             <div class="panel-drag" id="panel-drag">
                 <span class="panel-grip" aria-hidden="true"></span>
                 <span class="panel-title">Mốc kiến thức</span>
@@ -2860,7 +2900,7 @@ function _decodeGeminiKey(s) {
         function render3DStation(a, pos, i) {
             if (!markers3DGroup) return;
             const dir = new THREE.Vector3(pos[0], pos[1], pos[2]).normalize();
-            const dist = 20; // Đặt tại cự ly 20m trong không gian 360
+            const dist = 10.5; // Cự ly vàng đưa mô hình lại gần, to rõ // Đặt tại cự ly 20m trong không gian 360
             const stationPos = dir.clone().multiplyScalar(dist);
 
             const stationGroup = new THREE.Group();
@@ -2869,7 +2909,7 @@ function _decodeGeminiKey(s) {
             stationGroup.userData = { anchorId: a.id, anchor: a };
 
             // 1. Bệ hologram (Pedestal)
-            const baseGeom = new THREE.CylinderGeometry(1.2, 1.4, 0.12, 32);
+            const baseGeom = new THREE.CylinderGeometry(2.0, 2.4, 0.16, 32);
             const baseMat = new THREE.MeshStandardMaterial({
                 color: 0x0f172a,
                 metalness: 0.85,
@@ -2883,7 +2923,7 @@ function _decodeGeminiKey(s) {
             stationGroup.add(baseMesh);
 
             // Vòng neon phát sáng (Glowing ring)
-            const ringGeom = new THREE.TorusGeometry(1.35, 0.045, 12, 32);
+            const ringGeom = new THREE.TorusGeometry(2.35, 0.06, 12, 32);
             const ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
             const ringMesh = new THREE.Mesh(ringGeom, ringMat);
             ringMesh.rotation.x = Math.PI / 2;
@@ -2896,7 +2936,7 @@ function _decodeGeminiKey(s) {
             stationGroup.add(spotLight);
 
             // Tinh thể placeholder đại diện mốc
-            const holoGeom = new THREE.OctahedronGeometry(0.38, 0);
+            const holoGeom = new THREE.OctahedronGeometry(0.7, 0);
             const holoMat = new THREE.MeshStandardMaterial({
                 color: 0x38bdf8,
                 metalness: 0.9,
@@ -2926,7 +2966,7 @@ function _decodeGeminiKey(s) {
                     const size = bbox.getSize(new THREE.Vector3());
                     const center = bbox.getCenter(new THREE.Vector3());
                     const maxDim = Math.max(size.x, size.y, size.z) || 1;
-                    const targetScale = (cfg.scale || 0.85) * (2.8 / maxDim);
+                    const targetScale = (cfg.scale || 1.1) * (4.8 / maxDim); // Phóng to 3.5 lần
 
                     model.scale.setScalar(targetScale);
                     model.position.x = -center.x * targetScale;
@@ -7183,7 +7223,11 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     $('info').classList.remove('on');
 
                     // Hiện Joystick nếu vào không gian
-                    $('joystick').style.display = 'block';
+                    if (/Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) || window.matchMedia('(pointer: coarse)').matches) {
+                        $('joystick').style.display = 'block';
+                    } else {
+                        $('joystick').style.display = 'none';
+                    }
 
                     // Nạp danh sách bài học từ dữ liệu
                     const sel = $('lesson');
@@ -8273,7 +8317,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                         markerEls[a.id] = {
                             el,
-                            vec: new THREE.Vector3(pos[0] * 480, (pos[1] + 0.05) * 480, pos[2] * 480)
+                            vec: new THREE.Vector3(pos[0] * 480, (pos[1] + 0.28) * 480, pos[2] * 480) // Nâng lên cao trên đầu mô hình
                         };
 
                         // Khởi tạo mô hình 3D thực tế cho mốc trong không gian 360
@@ -8561,15 +8605,29 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     camera.rotation.set(pitch, yaw, 0);
                     renderer.render(scene, camera);
 
-                    const w = $('pano').clientWidth, h = $('pano').clientHeight;
+                    if (!window._cachedPanoSize) {
+                        const pEl = $('pano');
+                        window._cachedPanoSize = {
+                            w: pEl ? pEl.clientWidth : window.innerWidth,
+                            h: pEl ? pEl.clientHeight : window.innerHeight
+                        };
+                        window.addEventListener('resize', () => {
+                            if (pEl) {
+                                window._cachedPanoSize.w = pEl.clientWidth;
+                                window._cachedPanoSize.h = pEl.clientHeight;
+                            }
+                        });
+                    }
+                    const w = window._cachedPanoSize.w, h = window._cachedPanoSize.h;
                     for (const { el, vec } of linkEls) {
                         if (navBusy) { el.style.display = 'none'; continue; }
                         vProj.copy(vec).sub(camera.position).project(camera);
                         const ok = vProj.z < 1;
                         el.style.display = ok ? 'flex' : 'none';
                         if (ok) {
-                            el.style.left = ((vProj.x + 1) * 0.5 * w) + 'px';
-                            el.style.top = ((1 - vProj.y) * 0.5 * h) + 'px';
+                            const x = Math.round((vProj.x + 1) * 0.5 * w);
+                            const y = Math.round((1 - vProj.y) * 0.5 * h);
+                            el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
                         }
                     }
                     for (const id in markerEls) {
@@ -8579,10 +8637,13 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         const isFront = vProj.z < 1;
                         el.style.display = isFront ? 'flex' : 'none';
                         if (isFront) {
-                            el.style.left = ((vProj.x + 1) * 0.5 * w) + 'px';
-                            el.style.top = ((1 - vProj.y) * 0.5 * h) + 'px';
+                            const x = Math.round((vProj.x + 1) * 0.5 * w);
+                            const y = Math.round((1 - vProj.y) * 0.5 * h);
+                            el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
                         }
-                        el.classList.toggle('sel', id === selId);
+                        if ((id === selId) !== el.classList.contains('sel')) {
+                            el.classList.toggle('sel', id === selId);
+                        }
                     }
                     if (miniOn && (miniTick++ % 3 === 0)) drawMinimap();
                 }

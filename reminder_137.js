@@ -353,17 +353,22 @@
         // In-App Toast
         showInAppToast(title, enrichedMessage, options.actionText || 'Ôn tập ngay', options.onAction || (() => {
             if (typeof window.switchPortalTab === 'function') {
+                window.switchPortalTab('review');
                 const targetSrc = `review.html?embed=1` + (options.lessonId ? `&lesson=${options.lessonId}` : '');
                 if (window.tabUrls) {
                     window.tabUrls.review = targetSrc;
                 }
                 const appFrame = document.getElementById('app-frame');
+                if (appFrame && options.lessonId) {
+                    appFrame.src = `review.html?embed=1&lesson=${options.lessonId}`;
                 if (appFrame && appFrame.src !== new URL(targetSrc, window.location.href).href) {
                     appFrame.src = targetSrc;
                 }
                 window.switchPortalTab('review');
             } else if (options.lessonId && typeof window.selectLessonTab === 'function') {
                 window.selectLessonTab(options.lessonId);
+            } else if (options.lessonId && window.location.pathname.includes('review.html')) {
+                window.location.search = `?lesson=${options.lessonId}`;
             } else if (window.location.pathname.includes('review.html')) {
                 if (options.lessonId && typeof window.filterLesson === 'function') {
                     window.filterLesson(options.lessonId);
