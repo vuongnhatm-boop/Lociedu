@@ -7,21 +7,7 @@
 
     <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
     <script id="desktop-scale-meta-controller">
-    (function enforceDesktopProportionOnMobile() {
-        try {
-            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
-            var screenW = window.screen.width;
-            var targetW = 1200; // Layout chuẩn máy tính (PC)
-            if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
-                var scale = (screenW / targetW).toFixed(4);
-                var mv = document.querySelector('meta[name="viewport"]');
-                if (mv) {
-                    mv.setAttribute('content', 'width=' + targetW + ', initial-scale=' + scale + ', maximum-scale=3.0, user-scalable=yes');
-                }
-            }
-        } catch (e) {}
-    })();
-    </script>
+</script>
 
     <title>Ôn tập Đa dạng · Loci.Edu</title>
     <meta name="description"

@@ -918,6 +918,21 @@ BẮT BUỘC phân tích cặn kẽ theo đúng cấu trúc 5 tầng nhận th�
 `;
     }
 
+    let liveStatePrompt = '';
+    try {
+      const liveState = JSON.parse(localStorage.getItem('loci_live_user_state') || 'null');
+      if (liveState) {
+        liveStatePrompt = `\n=== NGỮ CẢNH HOẠT ĐỘNG THỜI GIAN THỰC CỦA HỌC SINH (LIVE CONTEXT AWARENESS) ===\n` +
+          `• Màn hình học sinh đang mở: ${liveState.currentTabTitle || liveState.currentTab || 'Cung điện Ký ức Loci'}\n` +
+          `• Bài học đang chọn: ${liveState.currentLesson || 'Bài 6'}\n` +
+          (liveState.currentStation ? `• Mốc / Trạm 3D học sinh đang nhìn vào: ${liveState.currentStation}\n` : '') +
+          (liveState.activeLocusModel ? `• Mô hình 3D thực tế trước mắt học sinh: ${liveState.activeLocusModel}\n` : '') +
+          (liveState.currentStepText ? `• Nội dung kiến thức trên màn hình: "${liveState.currentStepText}"\n` : '') +
+          (liveState.userTyping ? `• Nội dung học sinh đang gõ gần nhất: "${liveState.userTyping}"\n` : '') +
+          `🚨 LƯU Ý ĐẶC BIỆT: Bạn ĐANG BIẾT RÕ người dùng đang mở màn hình gì, đang nhìn vào mốc/mô hình nào và đang gõ gì! Hãy phản hồi đúng ngữ cảnh thực tế đó để học sinh cảm nhận bạn luôn đồng hành bên cạnh!`;
+      }
+    } catch (_) {}
+
     return `
 ${trainingScope}
 
@@ -941,6 +956,8 @@ Bạn là "Loci" (phát âm tiếng Việt: "lo-xi") — Người bạn đồng 
    - Chỉ chèn tag [ACTION:TELEPORT:<id_mốc>] khi cần đưa học sinh tới vị trí cụ thể đó.
 
 ${depthDirective}
+
+${liveStatePrompt}
 
 === HỒ SƠ TIẾN TRÌNH & GHI NHỚ CỦA HỌC SINH HIỆN TẠI ===
 ${progressMemoryPrompt}

@@ -11,23 +11,7 @@
 function _decodeGeminiKey(s) {
   try { return atob(s.split('').reverse().join('')); } catch(e) { return ''; }
 }
-
-
-    (function enforceDesktopProportionOnMobile() {
-        try {
-            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
-            var screenW = window.screen.width;
-            var targetW = 1200; // Layout chuẩn máy tính (PC)
-            if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
-                var scale = (screenW / targetW).toFixed(4);
-                var mv = document.querySelector('meta[name="viewport"]');
-                if (mv) {
-                    mv.setAttribute('content', 'width=' + targetW + ', initial-scale=' + scale + ', maximum-scale=3.0, user-scalable=yes');
-                }
-            }
-        } catch (e) {}
-    })();
-    </script>
+</script>
 
     <title>Gia sư AI Loci — Đồng hành Lịch sử 12</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -310,13 +310,51 @@ function _decodeGeminiKey(s) {
                 }
             }
 
-            // BƯỚC 1: QUÉT TẬP LUẬT CÁC MÔN HỌC KHÁC & CHỦ ĐỀ NGOÀI LỀ MỞ RỘNG
+            // BƯỚC 1: KIỂM TRA TẬP TỪ KHÓA LỊCH SỬ & ÔN TẬP LOCI (HISTORICAL WHITELIST FIRST)
+            // Nếu câu hỏi có chứa bất kỳ từ khóa, sự kiện, nhân vật, niên biểu lịch sử hoặc phương pháp học Loci:
+            // CHO PHÉP 100% NGAY LẬP TỨC (Không bị chặn nhầm bởi luật môn học khác như bom nguyên tử, bài thơ, tính toán)
+            let hasHistoryIntent = false;
+            for (let j = 0; j < VALID_HISTORICAL_TERMS_NO_ACCENT.length; j++) {
+                const term = VALID_HISTORICAL_TERMS_NO_ACCENT[j];
+                if (noAccent.includes(term)) {
+                    hasHistoryIntent = true;
+                    break;
+                }
+            }
+
+            if (hasHistoryIntent) {
+                return {
+                    isAllowed: true,
+                    isCritical: false,
+                    category: 'Lịch sử & Loci',
+                    icon: '🏛️',
+                    reason: 'Câu hỏi có ý định học tập Lịch sử 12 hợp lệ'
+                };
+            }
+
+            // BƯỚC 2: QUÉT TẬP LUẬT CÁC MÔN HỌC KHÁC & CHỦ ĐỀ NGOÀI LỀ MỞ RỘNG
             for (let i = 0; i < OFF_TOPIC_RULES.length; i++) {
                 const rule = OFF_TOPIC_RULES[i];
                 if (rule.pattern.test(lower) || rule.pattern.test(noAccent)) {
+                    // Luôn gửi báo cáo về Telegram bot để ban quản trị / giáo viên xem xét
+                    this.sendTelegramAlert({
+                        type: context.type || 'Chat Trợ lý AI',
+                        user: context.user || 'Học sinh',
+                        category: rule.category,
+                        isCritical: false,
+                        query: clean,
+                        reason: rule.hint
+                    });
+
+                    // Gửi thông báo đến hộp thư thông báo người dùng
+                    this.pushToUserNotifications({
+                        title: `Ghi nhận câu hỏi: ${rule.category}`,
+                        message: `Hệ thống đã chuyển câu hỏi "${clean.slice(0, 60)}..." về hệ thống kiểm duyệt để xem xét và hỗ trợ giải đáp.`,
+                        icon: rule.icon || '📋'
+                    });
+
                     if (isChat) {
-                        // Trong Chat Gia sư AI: Trả lời sư phạm lịch sự trong luồng chat
-                        // TUYỆT ĐỐI KHÔNG HIỆN POP-UP CHẶN VÀ KHÔNG GỬI BÁO CÁO TELEGRAM!
+                        // Trong Chat Gia sư AI: Trả lời sư phạm lịch sự trong luồng chat kèm ghi chú minh bạch
                         return {
                             isAllowed: false,
                             isCritical: false,
@@ -324,11 +362,11 @@ function _decodeGeminiKey(s) {
                             category: rule.category,
                             icon: rule.icon,
                             reason: rule.hint,
-                            pedagogicalText: `Chào bạn, mình là Gia sư AI Loci chuyên sâu về Lịch sử 12. Câu hỏi này thuộc ${rule.category}, bạn hãy trao đổi với thầy cô bộ môn nhé! Còn về các bài học Lịch sử 12 hoặc phương pháp Cung điện Ký ức Loci, bạn đang cần hỗ trợ bài học nào?`,
+                            pedagogicalText: `*(Đây là các câu hỏi ngoài phạm vi của tôi, tôi vẫn sẽ trả lời nhưng bạn nên kiểm tra lại với nguồn thông tin chính xác)*\n\nChào bạn, mình là Gia sư AI Loci chuyên sâu về Lịch sử 12. Câu hỏi này thuộc ${rule.category}, bạn hãy trao đổi thêm với thầy cô bộ môn nhé! Còn về Lịch sử 12 (Bài 6, 7, 8), bạn đang cần hỗ trợ bài học nào?`,
                             suggestions: this.getRandomSuggestions(3)
                         };
                     } else {
-                        // Với Diễn đàn / Bài viết: Chặn bài đăng ngoài lề, không spam Telegram
+                        // Với Diễn đàn / Bài viết: Chặn bài đăng ngoài lề
                         const blockedResult = {
                             isAllowed: false,
                             isCritical: false,
@@ -343,7 +381,7 @@ function _decodeGeminiKey(s) {
                 }
             }
 
-            // BƯỚC 2: TRONG CHAT GIA SƯ AI: MỌI CÂU HỎI ĐÀM THOẠI, THẢO LUẬN, XIN LỜI KHUYÊN,
+            // BƯỚC 3: TRONG CHAT GIA SƯ AI: MỌI CÂU HỎI ĐÀM THOẠI, THẢO LUẬN, XIN LỜI KHUYÊN,
             // HỌC THUỘC, TÓM TẮT, KHEN NGỢI ĐỀU ĐƯỢC CHẤP NHẬN HỢP LỆ (isAllowed: true)
             if (isChat) {
                 return {
@@ -354,10 +392,6 @@ function _decodeGeminiKey(s) {
                     reason: 'Đàm thoại học tập Lịch sử 12 hợp lệ'
                 };
             }
-
-            // BƯỚC 3: DÀNH CHO BÀI ĐĂNG DIỄN ĐÀN & BÌNH LUẬN CỘNG ĐỒNG
-            let hasHistoryIntent = false;
-            for (let j = 0; j < VALID_HISTORICAL_TERMS_NO_ACCENT.length; j++) {
                 if (checkTermMatched(noAccent, VALID_HISTORICAL_TERMS_NO_ACCENT[j])) {
                     hasHistoryIntent = true;
                     break;
@@ -491,19 +525,38 @@ Trả về JSON đúng cấu trúc:
         },
 
         /**
-         * Gửi thông báo vi phạm về Telegram bot của Giám thị / Quản trị viên theo thời gian thực
-         * QUY TẮC BẢO VỆ: CHỈ GỬI KHI VI PHẠM AN TOÀN NGUY CẤP (THÔ TỤC, SPAM LINK, CỜ BẠC, JAILBREAK)
-         * TUYỆT ĐỐI KHÔNG GỬI TELEGRAM CHO NỘI DUNG NGOÀI LỀ BÌNH THƯỜNG HOẶC ĐÀM THOẠI HỌC TẬP!
+         * Thêm thông báo vào khay thông báo người dùng trên thanh topbar
+         */
+        pushToUserNotifications: function (notif = {}) {
+            try {
+                const uid = (typeof currentUser !== 'undefined' && currentUser && currentUser.uid) ? currentUser.uid : 'default';
+                const notifKey = 'loci_user_notifs_' + uid;
+                let list = [];
+                try { list = JSON.parse(localStorage.getItem(notifKey) || '[]'); } catch (_) {}
+                list.unshift({
+                    id: 'notif_' + Date.now(),
+                    title: notif.title || 'Thông báo hệ thống',
+                    message: notif.message || '',
+                    time: 'Vừa xong',
+                    icon: notif.icon || '🔔',
+                    unread: true
+                });
+                if (list.length > 30) list = list.slice(0, 30);
+                localStorage.setItem(notifKey, JSON.stringify(list));
+                if (typeof window.renderNotifsList === 'function') {
+                    window.renderNotifsList(list);
+                }
+            } catch (_) {}
+        },
+
+        /**
+         * Gửi thông báo vi phạm / yêu cầu xem xét về Telegram bot theo thời gian thực
          */
         sendTelegramAlert: function (details = {}) {
             if (!TELEGRAM_CONFIG.enabled || !TELEGRAM_CONFIG.botToken || !TELEGRAM_CONFIG.chatId) return;
 
             const category = String(details.category || '').toLowerCase();
             const isCritical = details.isCritical || ['thô tục', 'tục tĩu', 'spam', 'cờ bạc', 'jailbreak', 'phá rào'].some(k => category.includes(k));
-            if (!isCritical) {
-                // Không làm phiền Telegram giáo viên đối với các nội dung học tập bình thường hoặc câu hỏi môn khác
-                return;
-            }
 
             try {
                 const type = details.type || 'Chat Trợ lý AI';
@@ -512,16 +565,20 @@ Trả về JSON đúng cấu trúc:
                 const reason = details.reason || '';
                 const time = new Date().toLocaleString('vi-VN');
 
+                const alertHeader = isCritical
+                    ? `🚨 <b>[CẢNH BÁO VI PHẠM LOCI SENTINEL]</b>`
+                    : `📋 <b>[YÊU CẦU XEM XÉT KIỂM DUYỆT - NỘI DUNG NGOÀI LỀ]</b>`;
+
                 const messageHtml =
-                    `🚨 <b>[CẢNH BÁO VI PHẠM LOCI SENTINEL]</b>
+                    `${alertHeader}
 ━━━━━━━━━━━━━━━━━━━
 📌 <b>Kênh:</b> ${escapeHtml(type)}
 👤 <b>Người dùng:</b> ${escapeHtml(user)}
 ⚠️ <b>Phân loại:</b> ${escapeHtml(category)}
 ⏰ <b>Thời gian:</b> ${time}
-📝 <b>Nội dung vi phạm:</b>
+📝 <b>Nội dung cần xem xét:</b>
 <code>${escapeHtml(query)}</code>
-💡 <b>Lý do chặn:</b> ${escapeHtml(reason)}
+💡 <b>Lý do ghi nhận:</b> ${escapeHtml(reason)}
 ━━━━━━━━━━━━━━━━━━━
 <i>Bot Loci Sentinel 24/7 đang bảo vệ không gian học tập.</i>`;
 

@@ -11,23 +11,7 @@
 function _decodeGeminiKey(s) {
   try { return atob(s.split('').reverse().join('')); } catch(e) { return ''; }
 }
-
-
-    (function enforceDesktopProportionOnMobile() {
-        try {
-            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
-            var screenW = window.screen.width;
-            var targetW = 1200; // Layout chuẩn máy tính (PC)
-            if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
-                var scale = (screenW / targetW).toFixed(4);
-                var mv = document.querySelector('meta[name="viewport"]');
-                if (mv) {
-                    mv.setAttribute('content', 'width=' + targetW + ', initial-scale=' + scale + ', maximum-scale=3.0, user-scalable=yes');
-                }
-            }
-        } catch (e) {}
-    })();
-    </script>
+</script>
 
     <title>Gia sư AI Loci — Đồng hành Lịch sử 12</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -3184,7 +3168,7 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 scroll.scrollTop = scroll.scrollHeight;
             } else {
                 const { clean, acts } = parseActions(text);
-                const actsHtml = acts.length ? `<div class="actions">${acts.map((a, i) => a.query ? `<button class="act act-relax" data-act-idx="${i}">${a.label}</button>` : `<a class="act" href="${a.href}">${a.label}</a>`).join('')}</div>` : '';
+                const actsHtml = acts.length ? `<div class="actions">${acts.map((a, i) => a.query ? `<button class="act act-relax" data-act-idx="${i}">${a.label}</button>` : `<a class="act" href="${a.href}" data-act-idx="${i}" target="_top">${a.label}</a>`).join('')}</div>` : '';
                 
                 if (!isStream) {
                     el.innerHTML = `${av}<div class="bubble">${md(clean)}${actsHtml}<div class="tools"><button class="tool" data-copy>Sao chép</button><button class="tool" data-save-story>⭐ Lưu truyện</button></div></div>`;
@@ -3419,7 +3403,40 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
                 if (a.query) {
                     const btn = el.querySelector(`[data-act-idx="${i}"]`);
                     if (btn) btn.onclick = () => ask(a.query);
+                } else if (a.href) {
+                    const link = el.querySelector(`a[data-act-idx="${i}"]`);
+                    if (link) {
+                        link.onclick = (e) => {
+                            e.preventDefault();
+                            if (window.self !== window.top) {
+                                if (a.href.includes('portal_v2.html#') && window.top && typeof window.top.switchPortalTab === 'function') {
+                                    window.top.switchPortalTab(a.href.split('#')[1]);
+                                    return;
+                                }
+                                window.top.location.href = a.href;
+                            } else {
+                                window.location.href = a.href;
+                            }
+                        };
+                    }
                 }
+            });
+
+            // Ngăn chặn triệt để hiện tượng 'web lồng web' khi bấm vào bất kỳ link nào trong bong bóng AI
+            el.querySelectorAll('a').forEach(link => {
+                link.setAttribute('target', '_top');
+                link.onclick = (e) => {
+                    const href = link.getAttribute('href');
+                    if (!href || href.startsWith('javascript:') || href === '#') return;
+                    if (window.self !== window.top) {
+                        e.preventDefault();
+                        if (href.includes('portal_v2.html#') && window.top && typeof window.top.switchPortalTab === 'function') {
+                            window.top.switchPortalTab(href.split('#')[1]);
+                            return;
+                        }
+                        window.top.location.href = href;
+                    }
+                };
             });
             const storyBtn = el.querySelector('[data-save-story]');
             if (storyBtn) {
@@ -4144,6 +4161,21 @@ BẮT BUỘC phân tích cặn kẽ theo đúng cấu trúc 5 tầng nhận th�
                 const sentinel = (typeof LociHistorySentinel !== 'undefined') ? LociHistorySentinel : (window.LociHistorySentinel || null);
                 const sentinelInstruction = sentinel ? sentinel.getSystemGuardInstruction() : '';
 
+                let liveStatePrompt = '';
+                try {
+                    const liveState = JSON.parse(localStorage.getItem('loci_live_user_state') || 'null');
+                    if (liveState) {
+                        liveStatePrompt = `\n=== NGỮ CẢNH HOẠT ĐỘNG THỜI GIAN THỰC CỦA HỌC SINH (LIVE CONTEXT AWARENESS) ===\n` +
+                            `• Màn hình học sinh đang mở: ${liveState.currentTabTitle || liveState.currentTab || 'Cung điện Ký ức Loci'}\n` +
+                            `• Bài học đang chọn: ${liveState.currentLesson || 'Bài 6'}\n` +
+                            (liveState.currentStation ? `• Mốc / Trạm 3D học sinh đang nhìn vào: ${liveState.currentStation}\n` : '') +
+                            (liveState.activeLocusModel ? `• Mô hình 3D thực tế trước mắt học sinh: ${liveState.activeLocusModel}\n` : '') +
+                            (liveState.currentStepText ? `• Nội dung kiến thức trên màn hình: "${liveState.currentStepText}"\n` : '') +
+                            (liveState.userTyping ? `• Nội dung học sinh đang gõ gần nhất: "${liveState.userTyping}"\n` : '') +
+                            `🚨 LƯU Ý ĐẶC BIỆT: Bạn ĐANG BIẾT RÕ người dùng đang mở màn hình gì, đang nhìn vào mốc/mô hình nào và đang gõ gì! Hãy phản hồi đúng ngữ cảnh thực tế đó để học sinh cảm nhận bạn luôn đồng hành bên cạnh!`;
+                    }
+                } catch (_) {}
+
                 let spatialPromptPart = '';
                 if (visionCtx) {
                     spatialPromptPart = `\n\n=== GÓC NHÌN & KHÔNG GIAN 3D THỜI GIAN THỰC CỦA HỌC SINH ===\n` +
@@ -4163,6 +4195,8 @@ Xưng "mình", gọi học sinh là "bạn". Giọng văn ấm áp, truyền c�
 ${depthInstruction}
 
 ${docxKnowledge ? `=== TRI THỨC TRÍCH XUẤT TỪ SGK LỊCH SỬ 12 ===\n${docxKnowledge}\n` : ''}
+
+${liveStatePrompt}
 
 ${spatialPromptPart}
 

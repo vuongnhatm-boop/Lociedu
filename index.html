@@ -203,6 +203,40 @@
         // ==========================================
         // BỘ ĐIỀU KHIỂN AVATAR HỌC SINH TOÀN DIỆN & TẢI ẢNH TỪ THIẾT BỊ
         // ==========================================
+        
+        window.syncUserIdentityUI = function() {
+            try {
+                let user = null;
+                if (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') {
+                    user = window.LociAccountManager.getUser();
+                }
+                if (!user) {
+                    const raw = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
+                    if (raw) {
+                        try { user = JSON.parse(raw); } catch(_) {}
+                    }
+                }
+                const customAvatar = localStorage.getItem('loci_user_custom_avatar') || (user ? (user.avatarUrl || user.photoURL || user.avatar) : null);
+                const customName = localStorage.getItem('loci_user_custom_name') || (user ? (user.displayName || user.username) : null);
+
+                if (customName) {
+                    const userNameEl = document.getElementById('user-name');
+                    if (userNameEl) userNameEl.textContent = customName;
+                    const topbarUserLabel = document.querySelector('.topbar-user-name');
+                    if (topbarUserLabel) topbarUserLabel.textContent = customName;
+                    const modalUserName = document.getElementById('modal-user-name');
+                    if (modalUserName) modalUserName.textContent = customName;
+                }
+
+                if (typeof window.applyUserAvatar === 'function') {
+                    const initial = ((customName || 'U')[0] || 'U').toUpperCase();
+                    window.applyUserAvatar(customAvatar || '', initial);
+                }
+            } catch(e) {
+                console.warn('[Sync Identity]', e);
+            }
+        };
+
         window.applyUserAvatar = function (photoUrl, initial, bgColor) {
             try {
                 const custom = photoUrl || localStorage.getItem('loci_user_custom_avatar');
@@ -294,6 +328,7 @@
                     }
 
                     window.applyUserAvatar(croppedDataUrl);
+                    if (typeof window.syncUserIdentityUI === 'function') window.syncUserIdentityUI();
                     window.closeAvatarPickerModal();
 
                     // Âm thanh tinh tinh thông báo thành công
@@ -339,25 +374,13 @@
 
         
     const HISTORICAL_AVATARS_LIST = [
-        { id: 'av_hbt', name: 'Hai Bà Trưng', file: 'assets/images/avatars/04-hai-ba-trung.webp', tag: 'Anh Hùng' },
-        { id: 'av_vualy', name: 'Vua Lý Thái Tổ', file: 'assets/images/avatars/05-vua-ly.webp', tag: 'Hoàng Đế' },
-        { id: 'av_bachdang', name: 'Ngô Quyền Bạch Đằng', file: 'assets/images/avatars/06-bach-dang.webp', tag: 'Đại Thắng' },
-        { id: 'av_leloi', name: 'Lê Lợi Trả Gươm', file: 'assets/images/avatars/08-le-loi-ho-guom.webp', tag: 'Khởi Nghĩa' },
-        { id: 'av_batrieu', name: 'Bà Triệu Thị Trinh', file: 'assets/images/avatars/09-ba-trieu.webp', tag: 'Nữ Tướng' },
-        { id: 'av_thaydo', name: 'Thầy Đồ Văn Miếu', file: 'assets/images/avatars/10-thay-do-van-mieu.webp', tag: 'Nho Học' },
-        { id: 'av_andbg', name: 'An Dương Vương Cổ Loa', file: 'assets/images/avatars/11-an-duong-vuong.webp', tag: 'Cổ Loa Thành' },
-        { id: 'av_lehoi', name: 'Lễ Hội Dân Gian', file: 'assets/images/avatars/07-le-hoi-dan-gian.webp', tag: 'Truyền Thống' },
-        { id: 'av_tap1_1', name: 'Cử Nhân Lịch Sử', file: 'assets/images/avatars/01-tap-4-avatar-goc_1.webp', tag: 'Đồng Sử' },
-        { id: 'av_tap1_2', name: 'Chiến Sĩ Áo Chàm', file: 'assets/images/avatars/01-tap-4-avatar-goc_2.webp', tag: 'Việt Bắc' },
-        { id: 'av_tap1_3', name: 'Sĩ Tử Kinh Kỳ', file: 'assets/images/avatars/01-tap-4-avatar-goc_3.webp', tag: 'Khoa Cử' },
-        { id: 'av_tap1_4', name: 'Trạng Nguyên Trẻ', file: 'assets/images/avatars/01-tap-4-avatar-goc_4.webp', tag: 'Đỗ Đầu' },
-        { id: 'av_cute1_1', name: 'Trạng Chibi Thông Thái', file: 'assets/images/avatars/02-tap-4-avatar-cute_1.webp', tag: 'Chibi' },
-        { id: 'av_cute1_2', name: 'Tướng Quân Chibi', file: 'assets/images/avatars/02-tap-4-avatar-cute_2.webp', tag: 'Chibi' },
-        { id: 'av_cute1_3', name: 'Học Trò Chibi Đọc Sách', file: 'assets/images/avatars/02-tap-4-avatar-cute_3.webp', tag: 'Chibi' },
-        { id: 'av_cute1_4', name: 'Nữ Tướng Chibi', file: 'assets/images/avatars/02-tap-4-avatar-cute_4.webp', tag: 'Chibi' },
-        { id: 'av_cute2_1', name: 'Sĩ Tử Áo Xanh Chibi', file: 'assets/images/avatars/03-tap-4-avatar-cute-khong-ten_1.webp', tag: 'Chibi' },
-        { id: 'av_cute2_2', name: 'Cử Nhân Chibi Cầm Hoa', file: 'assets/images/avatars/03-tap-4-avatar-cute-khong-ten_2.webp', tag: 'Chibi' },
-        { id: 'av_cute2_3', name: 'Học Giả Chibi Áo Tím', file: 'assets/images/avatars/03-tap-4-avatar-cute-khong-ten_3.webp', tag: 'Chibi' }
+        { id: 'av_cotco', name: 'Cột Cờ & Khối Đại Đoàn Kết', file: 'assets/images/avatars/avatar_cotco_nhandan.jpg', tag: 'Dân Tộc' },
+        { id: 'av_bacho', name: 'Hòa Bình - Độc Lập (Bác Hồ)', file: 'assets/images/avatars/avatar_bac_ho_hoabinh.jpg', tag: 'Lịch Sử' },
+        { id: 'av_vndoclap', name: 'Việt Nam Độc Lập - Tự Do', file: 'assets/images/avatars/avatar_vietnam_doclap.jpg', tag: 'Tổ Quốc' },
+        { id: 'av_chibi', name: 'Ngôi Sao Tri Thức Loci', file: 'assets/images/avatars/avatar_chibi_redstar.jpg', tag: 'Tuổi Trẻ' },
+        { id: 'av_toilavn', name: 'Tôi Là Người Việt Nam', file: 'assets/images/avatars/avatar_toilavietnam.jpg', tag: 'Tự Hào' },
+        { id: 'av_vietnamstar', name: 'Biểu Tượng Sao Vàng', file: 'assets/images/avatars/avatar_vietnam_star.jpg', tag: 'Ý Chí' },
+        { id: 'av_doclap', name: 'Bước Chân Độc Lập', file: 'assets/images/avatars/avatar_doclap_buochan.jpg', tag: 'Kháng Chiến' }
     ];
 
     const PRESET_AVATAR_SVGS = [
@@ -448,6 +471,7 @@
                 }
                 if (typeof window.applyUserAvatar === 'function') {
                     window.applyUserAvatar(filePath);
+                if (typeof window.syncUserIdentityUI === 'function') window.syncUserIdentityUI();
                 }
                 window.closeAvatarPickerModal();
                 if (typeof window.showToast === 'function') {
@@ -546,7 +570,7 @@
     </script>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=1280, initial-scale=0.35, maximum-scale=3.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>LOCI EDU - Cung Điện Tri Thức</title>
     <link rel="icon" type="image/png" href="assets/images/logo_loci_edu.png">
     <link
@@ -12977,7 +13001,7 @@
             <div class="user-profile topbar-user-profile" id="user-profile-btn" onclick="window.openCloudAuthModal()"
                 style="cursor: pointer; display: inline-flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #dbeafe; border-radius: 99px; padding: 6px 14px 6px 7px; box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06); transition: all 0.2s;"
                 title="Tài khoản Đồng Sử - Nhấn để Đăng nhập / Đăng ký">
-                <div class="avatar-frame-wrap" id="user-avatar-wrap"
+                <div class="avatar-frame-wrap" id="user-avatar-wrap" onclick="window.openAvatarPickerModal ? window.openAvatarPickerModal() : window.openCloudAuthModal()" title="Bấm để đổi ảnh đại diện"
                     style="width: 38px; height: 38px; min-width: 38px; min-height: 38px; border-radius: 50%; background: #eff6ff center/cover no-repeat; border: 1.5px solid #bfdbfe; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: none !important;">
                     <div class="avatar" id="user-avatar"
                         style="width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #0284c7; background-size: cover; background-position: center; background-repeat: no-repeat; box-shadow: none !important; border: none !important;">
@@ -17395,6 +17419,21 @@
             // Lưu tab đang chọn vào sessionStorage để khi F5 vẫn giữ đúng tab
             try {
                 sessionStorage.setItem('loci_active_portal_tab', tabName);
+                const tabTitles = {
+                    overview: 'Trang chủ - Tổng quan tiến độ & Lộ trình 1-3-7',
+                    spaces: 'Phòng 360° tự chụp',
+                    ai: 'Gia sư AI Loci',
+                    review: 'Thẻ ôn tập Loci (Spaced Repetition)',
+                    exam: 'Đề ôn tập THPT Quốc gia',
+                    pet: 'Linh thú Tri thức',
+                    connect: 'Nhóm học tập & BXH Cộng đồng'
+                };
+                localStorage.setItem('loci_live_user_state', JSON.stringify({
+                    currentTab: tabName,
+                    currentTabTitle: tabTitles[tabName] || tabName,
+                    currentLesson: localStorage.getItem('loci_last_lesson') || 'bai_6',
+                    timestamp: Date.now()
+                }));
             } catch (_) {}
 
             if (tabName === 'overview') {
@@ -17640,10 +17679,6 @@
             }
             if (lessonId) {
                 tabUrls.review = 'review.html?embed=1&lesson=' + encodeURIComponent(lessonId);
-                const appFrame = document.getElementById('app-frame');
-                if (appFrame) {
-                    appFrame.src = tabUrls.review;
-                }
             }
             window.switchPortalTab('review');
         };
@@ -17814,7 +17849,7 @@
                 "streak": 24,
                 "quiz": 98,
                 "avatar": "T",
-                "photo": "assets/images/avatars/student_7.jpg",
+                "photo": "assets/images/avatars/avatar_toilavietnam.jpg",
                 "bg": "#0284c7",
                 "mark": "Quán Quân Top 1",
                 "markType": "gold",
@@ -17830,7 +17865,7 @@
                 "streak": 22,
                 "quiz": 97,
                 "avatar": "L",
-                "photo": "assets/images/avatars/student_3.jpg",
+                "photo": "assets/images/avatars/avatar_cotco_nhandan.jpg",
                 "bg": "#ec4899",
                 "mark": "Á Quân Top 2",
                 "markType": "silver",
@@ -17846,7 +17881,7 @@
                 "streak": 21,
                 "quiz": 96,
                 "avatar": "T",
-                "photo": "assets/images/avatars/student_11.jpg",
+                "photo": "assets/images/avatars/avatar_bac_ho_hoabinh.jpg",
                 "bg": "#f59e0b",
                 "mark": "Quý Quân Top 3",
                 "markType": "bronze",
@@ -17862,7 +17897,7 @@
                 "streak": 20,
                 "quiz": 95,
                 "avatar": "D",
-                "photo": "assets/images/avatars/student_4.jpg",
+                "photo": "assets/images/avatars/avatar_bac_ho_hoabinh.jpg",
                 "bg": "#6366f1",
                 "mark": "Linh Thú Bậc 5",
                 "markType": "blue",
@@ -17878,7 +17913,7 @@
                 "streak": 19,
                 "quiz": 94,
                 "avatar": "D",
-                "photo": "assets/images/avatars/student_10.jpg",
+                "photo": "assets/images/avatars/avatar_cotco_nhandan.jpg",
                 "bg": "#10b981",
                 "mark": "Học Thần Loci",
                 "markType": "green",
@@ -17894,7 +17929,7 @@
                 "streak": 18,
                 "quiz": 93,
                 "avatar": "C",
-                "photo": "assets/images/avatars/student_1.jpg",
+                "photo": "assets/images/avatars/avatar_vietnam_star.jpg",
                 "bg": "#d97706",
                 "mark": "Chuyên Cần Loci",
                 "markType": "gold",
@@ -17910,7 +17945,7 @@
                 "streak": 17,
                 "quiz": 92,
                 "avatar": "M",
-                "photo": "assets/images/avatars/student_16.jpg",
+                "photo": "assets/images/avatars/avatar_doclap_buochan.jpg",
                 "bg": "#059669",
                 "mark": "Kỷ Lục Gia 3D",
                 "markType": "silver",
@@ -17926,7 +17961,7 @@
                 "streak": 16,
                 "quiz": 92,
                 "avatar": "P",
-                "photo": "assets/images/avatars/student_4.jpg",
+                "photo": "assets/images/avatars/avatar_bac_ho_hoabinh.jpg",
                 "bg": "#e11d48",
                 "mark": "Thần Nhớ SM-2",
                 "markType": "bronze",
@@ -17942,7 +17977,7 @@
                 "streak": 15,
                 "quiz": 91,
                 "avatar": "C",
-                "photo": "assets/images/avatars/student_1.jpg",
+                "photo": "assets/images/avatars/avatar_vietnam_star.jpg",
                 "bg": "#2563eb",
                 "mark": "Chiến Binh Loci",
                 "markType": "blue",
@@ -17958,7 +17993,7 @@
                 "streak": 14,
                 "quiz": 90,
                 "avatar": "A",
-                "photo": "assets/images/avatars/student_14.jpg",
+                "photo": "assets/images/avatars/avatar_toilavietnam.jpg",
                 "bg": "#16a34a",
                 "mark": "Vô Địch Cúp Loci",
                 "markType": "green",
@@ -17974,7 +18009,7 @@
                 "streak": 14,
                 "quiz": 90,
                 "avatar": "L",
-                "photo": "assets/images/avatars/student_15.jpg",
+                "photo": "assets/images/avatars/avatar_vietnam_star.jpg",
                 "bg": "#ca8a04",
                 "mark": "Đồng Sử Tiên Phong",
                 "markType": "gold",
@@ -17990,7 +18025,7 @@
                 "streak": 13,
                 "quiz": 89,
                 "avatar": "D",
-                "photo": "assets/images/avatars/student_2.jpg",
+                "photo": "assets/images/avatars/avatar_doclap_buochan.jpg",
                 "bg": "#9333ea",
                 "mark": "Bậc Thầy Không Gian",
                 "markType": "silver",
@@ -18022,7 +18057,7 @@
                 "streak": 12,
                 "quiz": 88,
                 "avatar": "A",
-                "photo": "assets/images/avatars/student_15.jpg",
+                "photo": "assets/images/avatars/avatar_vietnam_star.jpg",
                 "bg": "#ea580c",
                 "mark": "Nhà Leo Núi Loci",
                 "markType": "bronze",
@@ -18038,7 +18073,7 @@
                 "streak": 11,
                 "quiz": 87,
                 "avatar": "T",
-                "photo": "assets/images/avatars/student_6.jpg",
+                "photo": "assets/images/avatars/avatar_chibi_redstar.jpg",
                 "bg": "#15803d",
                 "mark": "Ong Vàng Chăm Chỉ",
                 "markType": "green",
@@ -18054,7 +18089,7 @@
                 "streak": 11,
                 "quiz": 87,
                 "avatar": "D",
-                "photo": "assets/images/avatars/student_11.jpg",
+                "photo": "assets/images/avatars/avatar_bac_ho_hoabinh.jpg",
                 "bg": "#b45309",
                 "mark": "Tinh Anh Lịch Sử",
                 "markType": "gold",
@@ -18070,7 +18105,7 @@
                 "streak": 10,
                 "quiz": 86,
                 "avatar": "T",
-                "photo": "assets/images/avatars/student_10.jpg",
+                "photo": "assets/images/avatars/avatar_cotco_nhandan.jpg",
                 "bg": "#4f46e5",
                 "mark": "Tiên Phong Khám Phá",
                 "markType": "silver",
@@ -18086,7 +18121,7 @@
                 "streak": 10,
                 "quiz": 86,
                 "avatar": "C",
-                "photo": "assets/images/avatars/student_16.jpg",
+                "photo": "assets/images/avatars/avatar_doclap_buochan.jpg",
                 "bg": "#0891b2",
                 "mark": "Đồng Sử Xuất Sắc",
                 "markType": "blue",
@@ -18102,7 +18137,7 @@
                 "streak": 9,
                 "quiz": 85,
                 "avatar": "T",
-                "photo": "assets/images/avatars/student_5.jpg",
+                "photo": "assets/images/avatars/avatar_vietnam_doclap.jpg",
                 "bg": "#c026d3",
                 "mark": "Kỷ Lục Ghi Nhớ",
                 "markType": "bronze",
@@ -18118,7 +18153,7 @@
                 "streak": 9,
                 "quiz": 85,
                 "avatar": "K",
-                "photo": "assets/images/avatars/student_14.jpg",
+                "photo": "assets/images/avatars/avatar_toilavietnam.jpg",
                 "bg": "#15803d",
                 "mark": "Chiến Binh Bền Bỉ",
                 "markType": "green",
@@ -22181,6 +22216,7 @@
     
             // Tự động giải phóng Hero Gate ngay lập tức nếu đã đăng nhập từ trước (qua Cookie hoặc LocalStorage)
             if (window.isUserLoggedIn()) {
+                if (typeof window.syncUserIdentityUI === 'function') window.syncUserIdentityUI();
                 window.dismissHeroGate(true);
                 if (window.LociAccountManager && typeof window.LociAccountManager.loadSession === 'function') {
                     const u = window.LociAccountManager.loadSession();

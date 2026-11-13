@@ -14953,18 +14953,187 @@
         }
         @media (max-width: 900px) {
           #bdt-stage-wrap {
-            left: 4%; width: 92%; top: auto; bottom: 25px; transform: none;
-            flex-direction: column-reverse; gap: 12px;
+            left: 4% !important;
+            width: 92% !important;
+            top: auto !important;
+            bottom: calc(70px + env(safe-area-inset-bottom, 0px)) !important;
+            transform: none !important;
+            flex-direction: column-reverse !important;
+            gap: 8px !important;
+            max-height: calc(100vh - 145px) !important;
+            overflow-y: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            z-index: 9200 !important;
           }
-          .bdt-title-pill { position: relative; bottom: auto; left: auto; width: 100%; max-width: 100%; order: 4; }
-          .bdt-step-pill { width: 100%; max-width: 100%; order: 3; }
-          .bdt-kw-box { position: relative; top: auto; left: auto; width: 100%; max-width: 100%; order: 2; }
-          .bdt-pure-photo-wrap { width: 100%; height: 180px; order: 1; }
+          .bdt-title-pill { position: relative; bottom: auto; left: auto; width: 100%; max-width: 100%; order: 4; font-size: 13px !important; }
+          .bdt-step-pill { width: 100%; max-width: 100%; order: 3; font-size: 13px !important; line-height: 1.5 !important; padding: 12px 14px !important; }
+          .bdt-kw-box { position: relative; top: auto; left: auto; width: 100%; max-width: 100%; order: 2; font-size: 12px !important; padding: 8px 12px !important; }
+          .bdt-pure-photo-wrap { width: 100% !important; height: 140px !important; max-height: 140px !important; order: 1 !important; }
           #bdt-action-bar {
-            left: 50%; transform: translateX(-50%); width: 94%; max-width: 440px;
-            top: auto; bottom: 15px; justify-content: space-between; padding: 6px 10px;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 94% !important;
+            max-width: 440px !important;
+            top: auto !important;
+            bottom: calc(12px + env(safe-area-inset-bottom, 0px)) !important;
+            justify-content: space-between !important;
+            padding: 6px 10px !important;
+            z-index: 9350 !important;
           }
           .bdt-close-pill { top: -38px; right: 0; }
+
+          #progress-container {
+            max-width: calc(100vw - 20px) !important;
+            overflow-x: auto !important;
+            -webkit-overflow-scrolling: touch !important;
+            white-space: nowrap !important;
+            padding: 6px 12px !important;
+            bottom: calc(10px + env(safe-area-inset-bottom, 0px)) !important;
+            gap: 6px !important;
+            scrollbar-width: none !important;
+          }
+          #progress-container::-webkit-scrollbar {
+            display: none !important;
+          }
+          #progress-container > span {
+            font-size: 11px !important;
+          }
+          #progress-container #mastery-bar {
+            width: 50px !important;
+          }
+          #progress-container #mastery-percent {
+            font-size: 11px !important;
+            min-width: 38px !important;
+          }
+          #progress-container button {
+            padding: 5px 10px !important;
+            font-size: 11px !important;
+          }
+          #ai-orb-trigger {
+            bottom: calc(65px + env(safe-area-inset-bottom, 0px)) !important;
+            right: 12px !important;
+            padding: 7px 14px !important;
+            font-size: 12px !important;
+          }
+          .loci-model-preview-box {
+            top: 55px !important;
+            left: 10px !important;
+            width: 165px !important;
+            z-index: 9260 !important;
+          }
+        }
+
+        /* 3. KHUNG MINH HỌA MÔ HÌNH 3D CỦA MỐC ĐANG CHỈ (MATCH KHUNG ĐEN ẢNH CUỐI) */
+        .loci-model-preview-box {
+          position: absolute;
+          top: 14%;
+          left: 25%;
+          width: 228px;
+          background: rgba(15, 23, 42, 0.90) !important;
+          backdrop-filter: blur(20px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
+          border: 1.5px solid rgba(56, 189, 248, 0.5) !important;
+          border-radius: 18px !important;
+          box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45), 0 0 24px rgba(56, 189, 248, 0.2) !important;
+          z-index: 9250;
+          display: none;
+          flex-direction: column;
+          overflow: hidden;
+          pointer-events: auto;
+          user-select: none;
+          animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        @media (max-width: 900px) {
+          .loci-model-preview-box {
+            top: 60px;
+            left: 12px;
+            width: 175px;
+          }
+        }
+        .loci-mp-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 8px 12px;
+          background: rgba(255, 255, 255, 0.08);
+          border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .loci-mp-title {
+          font-size: 11.5px;
+          font-weight: 800;
+          color: #38bdf8;
+          display: flex;
+          align-items: center;
+          gap: 6px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .loci-mp-dot {
+          width: 7px;
+          height: 7px;
+          border-radius: 50%;
+          background: #38bdf8;
+          box-shadow: 0 0 8px #38bdf8;
+        }
+        .loci-mp-close {
+          background: none;
+          border: none;
+          color: #94a3b8;
+          font-size: 13px;
+          cursor: pointer;
+          padding: 2px 6px;
+          border-radius: 6px;
+          transition: all 0.2s;
+        }
+        .loci-mp-close:hover {
+          background: rgba(239, 68, 68, 0.25);
+          color: #ef4444;
+        }
+        .loci-mp-body {
+          position: relative;
+          width: 100%;
+          height: 128px;
+          background: radial-gradient(circle at 50% 50%, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.95));
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .loci-mp-footer {
+          display: flex;
+          gap: 5px;
+          padding: 6px 8px;
+          background: rgba(15, 23, 42, 0.95);
+          border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .loci-mp-btn {
+          flex: 1;
+          padding: 5px 8px;
+          font-size: 10.5px;
+          font-weight: 700;
+          border-radius: 8px;
+          cursor: pointer;
+          border: 1px solid transparent;
+          transition: all 0.2s;
+          white-space: nowrap;
+        }
+        .loci-mp-btn.hide-this {
+          background: rgba(255, 255, 255, 0.09);
+          border-color: rgba(255, 255, 255, 0.18);
+          color: #cbd5e1;
+        }
+        .loci-mp-btn.hide-this:hover {
+          background: rgba(255, 255, 255, 0.18);
+          color: #ffffff;
+        }
+        .loci-mp-btn.hide-all {
+          background: rgba(239, 68, 68, 0.18);
+          border-color: rgba(239, 68, 68, 0.4);
+          color: #fca5a5;
+        }
+        .loci-mp-btn.hide-all:hover {
+          background: rgba(239, 68, 68, 0.35);
+          color: #ffffff;
         }
       `;
       document.head.appendChild(css);
@@ -15029,6 +15198,24 @@
 
           <!-- Nút Đóng nhỏ gọn -->
           <button id="bdt-close-btn" class="bdt-close-pill" title="Đóng (Esc)">✕</button>
+        </div>
+
+        <!-- 3. KHUNG MINH HỌA MÔ HÌNH 3D CỦA MỐC ĐANG CHỈ (MATCH KHUNG ĐEN ẢNH CUỐI) -->
+        <div id="loci-anchor-model-preview-box" class="loci-model-preview-box">
+          <div class="loci-mp-header">
+            <span class="loci-mp-title">
+              <span class="loci-mp-dot"></span>
+              <span id="loci-mp-title-text">Mô hình Mốc 3D</span>
+            </span>
+            <button type="button" id="loci-mp-close-btn" class="loci-mp-close" title="Ẩn mốc này">✕</button>
+          </div>
+          <div class="loci-mp-body">
+            <canvas id="loci-mini-model-canvas" width="228" height="128" style="width:100%; height:128px; display:block;"></canvas>
+          </div>
+          <div class="loci-mp-footer">
+            <button type="button" id="loci-mp-btn-hide-this" class="loci-mp-btn hide-this" title="Chỉ ẩn hộp mô hình cho mốc này">Ẩn mốc này</button>
+            <button type="button" id="loci-mp-btn-hide-all" class="loci-mp-btn hide-all" title="Ẩn hộp mô hình cho tất cả các mốc sau">Ẩn tất cả sau</button>
+          </div>
         </div>
 
         <!-- THANH ĐIỀU HƯỚNG VÀ HÀNH ĐỘNG DƯỚI ĐÁY -->
@@ -15104,6 +15291,12 @@
         ['focus', 'input'].forEach(evt => {
           kwInputEl.addEventListener(evt, () => {
             window.hideBrownStepContent();
+            try {
+              const cur = JSON.parse(localStorage.getItem('loci_live_user_state') || '{}');
+              cur.userTyping = kwInputEl.value;
+              cur.timestamp = Date.now();
+              localStorage.setItem('loci_live_user_state', JSON.stringify(cur));
+            } catch (_) {}
           });
         });
       }
@@ -15215,7 +15408,178 @@
           window.MindmapEngine.openLightbox(urlMatch[1], `Tư liệu Trạm ${currentActiveLocus ? currentActiveLocus.order || 1 : 1}`);
         }
       });
+
+      // Sự kiện cho khung 3D mini preview mốc
+      const mpBox = document.getElementById('loci-anchor-model-preview-box');
+      if (mpBox) {
+        ['pointerdown', 'pointerup', 'click', 'wheel', 'mousedown'].forEach(ev => {
+          mpBox.addEventListener(ev, e => e.stopPropagation());
+        });
+      }
+      const mpCloseBtn = document.getElementById('loci-mp-close-btn');
+      if (mpCloseBtn) mpCloseBtn.onclick = (e) => { e.stopPropagation(); window.hideThisAnchorModelPreview(); };
+      const mpHideThisBtn = document.getElementById('loci-mp-btn-hide-this');
+      if (mpHideThisBtn) mpHideThisBtn.onclick = (e) => { e.stopPropagation(); window.hideThisAnchorModelPreview(); };
+      const mpHideAllBtn = document.getElementById('loci-mp-btn-hide-all');
+      if (mpHideAllBtn) mpHideAllBtn.onclick = (e) => { e.stopPropagation(); window.hideAllAnchorModelPreviews(); };
     })();
+
+    /* ============ BỘ ĐIỀU KHIỂN MÔ HÌNH 3D XOAY NHẸ CHO KHUNG MINH HỌA MỐC (IMAGE 9) ============ */
+    let lociMiniRenderer = null;
+    let lociMiniScene = null;
+    let lociMiniCamera = null;
+    let lociMiniAnimFrame = null;
+    let lociMiniRotatingGroup = null;
+
+    function updateAnchorModelPreview(locus) {
+      const box = document.getElementById('loci-anchor-model-preview-box');
+      if (!box) return;
+
+      const hideAll = localStorage.getItem('loci_hide_anchor_model_preview') === 'true';
+      if (hideAll) {
+        box.style.display = 'none';
+        if (lociMiniAnimFrame) { cancelAnimationFrame(lociMiniAnimFrame); lociMiniAnimFrame = null; }
+        return;
+      }
+
+      box.style.display = 'flex';
+      const titleText = document.getElementById('loci-mp-title-text');
+      if (titleText && locus) {
+        const stationName = (locus.name || ('Trạm ' + (locus.order || 1))).replace(/^\d+\.\s*/, '');
+        titleText.textContent = `Mô hình: ${stationName}`;
+      }
+
+      const canvas = document.getElementById('loci-mini-model-canvas');
+      if (!canvas) return;
+
+      if (!lociMiniRenderer) {
+        try {
+          lociMiniRenderer = new THREE.WebGLRenderer({
+            canvas: canvas,
+            alpha: true,
+            antialias: true,
+            powerPreference: 'high-performance'
+          });
+          lociMiniRenderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+          lociMiniRenderer.setSize(canvas.clientWidth || 228, canvas.clientHeight || 128);
+          lociMiniRenderer.outputColorSpace = THREE.SRGBColorSpace;
+
+          lociMiniScene = new THREE.Scene();
+          lociMiniCamera = new THREE.PerspectiveCamera(45, (canvas.clientWidth || 228) / (canvas.clientHeight || 128), 0.1, 50);
+          lociMiniCamera.position.set(0, 1.2, 3.2);
+
+          const ambLight = new THREE.AmbientLight(0xffffff, 2.2);
+          lociMiniScene.add(ambLight);
+          const dirLight = new THREE.DirectionalLight(0xfff7ed, 2.8);
+          dirLight.position.set(2, 4, 3);
+          lociMiniScene.add(dirLight);
+          const dirLightBack = new THREE.DirectionalLight(0x38bdf8, 1.5);
+          dirLightBack.position.set(-2, -1, -2);
+          lociMiniScene.add(dirLightBack);
+        } catch (e) {
+          console.warn('[LociMiniModel] Không thể tạo WebGLRenderer:', e);
+          return;
+        }
+      }
+
+      if (lociMiniRotatingGroup && lociMiniScene) {
+        lociMiniScene.remove(lociMiniRotatingGroup);
+        lociMiniRotatingGroup = null;
+      }
+
+      lociMiniRotatingGroup = new THREE.Group();
+
+      let foundModel = null;
+      if (window.marker3DObjects && Array.isArray(window.marker3DObjects)) {
+        const marker = window.marker3DObjects.find(m => m.userData && (m.userData.id === locus.id || m.userData.order === locus.order));
+        if (marker) {
+          foundModel = (marker.userData && marker.userData.modelsGroup) || marker.userData.stationArtefact || marker;
+        }
+      }
+
+      if (foundModel) {
+        try {
+          const clone = foundModel.clone(true);
+          clone.traverse(ch => {
+            if (ch.isLight || (ch.material && !ch.material.visible)) {
+              ch.visible = false;
+            }
+          });
+          const bBox = new THREE.Box3().setFromObject(clone);
+          const center = new THREE.Vector3();
+          const size = new THREE.Vector3();
+          bBox.getCenter(center);
+          bBox.getSize(size);
+          clone.position.sub(center);
+          const maxDim = Math.max(size.x, size.y, size.z, 0.1);
+          const scaleFactor = 1.8 / maxDim;
+          clone.scale.multiplyScalar(scaleFactor);
+          lociMiniRotatingGroup.add(clone);
+        } catch (_) {
+          foundModel = null;
+        }
+      }
+
+      if (!foundModel || lociMiniRotatingGroup.children.length === 0) {
+        const pedestalGeo = new THREE.CylinderGeometry(0.7, 0.85, 0.35, 24);
+        const pedestalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 });
+        const pedestalMesh = new THREE.Mesh(pedestalGeo, pedestalMat);
+
+        const starGeo = new THREE.OctahedronGeometry(0.5, 0);
+        const starMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.6, roughness: 0.3, emissive: 0xb45309, emissiveIntensity: 0.3 });
+        const starMesh = new THREE.Mesh(starGeo, starMat);
+        starMesh.position.y = 0.55;
+
+        lociMiniRotatingGroup.add(pedestalMesh);
+        lociMiniRotatingGroup.add(starMesh);
+      }
+
+      lociMiniScene.add(lociMiniRotatingGroup);
+      lociMiniCamera.lookAt(0, 0, 0);
+
+      if (lociMiniAnimFrame) cancelAnimationFrame(lociMiniAnimFrame);
+      function animateMiniModel() {
+        if (!box || box.style.display === 'none') return;
+        if (lociMiniRotatingGroup) {
+          lociMiniRotatingGroup.rotation.y += 0.008;
+        }
+        if (lociMiniRenderer && lociMiniScene && lociMiniCamera) {
+          lociMiniRenderer.render(lociMiniScene, lociMiniCamera);
+        }
+        lociMiniAnimFrame = requestAnimationFrame(animateMiniModel);
+      }
+      lociMiniAnimFrame = requestAnimationFrame(animateMiniModel);
+    }
+    window.updateAnchorModelPreview = updateAnchorModelPreview;
+
+    window.hideThisAnchorModelPreview = function () {
+      const box = document.getElementById('loci-anchor-model-preview-box');
+      if (box) box.style.display = 'none';
+      if (lociMiniAnimFrame) { cancelAnimationFrame(lociMiniAnimFrame); lociMiniAnimFrame = null; }
+    };
+
+    window.hideAllAnchorModelPreviews = function () {
+      try {
+        localStorage.setItem('loci_hide_anchor_model_preview', 'true');
+      } catch (_) {}
+      window.hideThisAnchorModelPreview();
+      if (typeof showToast === 'function') {
+        showToast('Đã tắt hiển thị mô hình góc nhìn nhỏ cho tất cả các mốc sau. Bấm [M] hoặc click để mở lại.', 'info', 3000);
+      }
+    };
+
+    window.toggleAnchorModelPreview = function () {
+      const box = document.getElementById('loci-anchor-model-preview-box');
+      if (!box) return;
+      const isHidden = (box.style.display === 'none' || !box.style.display);
+      if (isHidden) {
+        try { localStorage.removeItem('loci_hide_anchor_model_preview'); } catch (_) {}
+        if (window.currentActiveLocus) updateAnchorModelPreview(window.currentActiveLocus);
+        else if (window.lociList && window.lociList[0]) updateAnchorModelPreview(window.lociList[0]);
+      } else {
+        window.hideThisAnchorModelPreview();
+      }
+    };
 
 
 
@@ -16679,6 +17043,24 @@
         renderBrownStep(0);
       }
       container.classList.add('open');
+      if (typeof updateAnchorModelPreview === 'function') {
+        updateAnchorModelPreview(locus);
+      }
+      try {
+        const curLesson = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY) ? EFFECTIVE_LESSON_KEY : 'bai_6';
+        const stName = (locus.name || ('Trạm ' + (locus.order || 1))).replace(/^\d+\.\s*/, '');
+        const ptText = (bdtCurrentPoints && bdtCurrentPoints[0]) ? bdtCurrentPoints[0] : '';
+        localStorage.setItem('loci_live_user_state', JSON.stringify({
+          currentTab: '3d_space',
+          currentTabTitle: `Không gian 3D - ${curLesson === 'bai_7' ? 'Bài 7' : (curLesson === 'bai_8' ? 'Bài 8' : 'Bài 6')}`,
+          currentLesson: curLesson,
+          currentStation: `Trạm ${locus.order || 1}: ${stName}`,
+          activeLocusModel: stName,
+          currentStepText: ptText,
+          userTyping: '',
+          timestamp: Date.now()
+        }));
+      } catch (_) {}
       updateBrownSpatialLines();
     }
 
@@ -16758,6 +17140,9 @@
       isBrownDualTabsOpen = false;
       window.isBrownDualTabsOpen = false;
       if (bdtCameraFlyAnim) { cancelAnimationFrame(bdtCameraFlyAnim); bdtCameraFlyAnim = null; }
+      if (typeof window.hideThisAnchorModelPreview === 'function') {
+        window.hideThisAnchorModelPreview();
+      }
 
       // Phục hồi lại góc nhìn thông thường
       camera.clearViewOffset();
@@ -25421,6 +25806,12 @@ Hỏi: ...
       if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) return;
       if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
+        if (typeof isBrownDualTabsOpen !== 'undefined' && isBrownDualTabsOpen) {
+          if (typeof window.toggleAnchorModelPreview === 'function') {
+            window.toggleAnchorModelPreview();
+            return;
+          }
+        }
         if (vmqActive) {
           closeVisualModelQuiz();
         } else {

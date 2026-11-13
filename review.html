@@ -7,21 +7,7 @@
 
     <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
     <script id="desktop-scale-meta-controller">
-    (function enforceDesktopProportionOnMobile() {
-        try {
-            if (window.top !== window.self || window.location.search.includes('embed=1')) return;
-            var screenW = window.screen.width;
-            var targetW = 1200; // Layout chuẩn máy tính (PC)
-            if (screenW < targetW && !window.location.search.includes('fluid_mobile=1')) {
-                var scale = (screenW / targetW).toFixed(4);
-                var mv = document.querySelector('meta[name="viewport"]');
-                if (mv) {
-                    mv.setAttribute('content', 'width=' + targetW + ', initial-scale=' + scale + ', maximum-scale=3.0, user-scalable=yes');
-                }
-            }
-        } catch (e) {}
-    })();
-    </script>
+</script>
 
     <title>Ôn tập Đa dạng · Loci.Edu</title>
     <meta name="description"
@@ -84,26 +70,14 @@
         body::before {
             content: '';
             position: fixed;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
+            inset: 0;
+            width: 100vw;
+            height: 100vh;
             background:
-                radial-gradient(circle at 50% 50%, rgba(2, 132, 199, 0.08), transparent 60%),
-                radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.08), transparent 50%),
-                radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.08), transparent 50%);
-            animation: meshFlow 20s ease-in-out infinite alternate;
+                radial-gradient(circle at 15% 15%, rgba(2, 132, 199, 0.05), transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.05), transparent 45%);
+            pointer-events: none;
             z-index: -1;
-        }
-
-        @keyframes meshFlow {
-            0% {
-                transform: rotate(0deg) scale(1);
-            }
-
-            100% {
-                transform: rotate(15deg) scale(1.1);
-            }
         }
 
         h1,
@@ -2947,14 +2921,14 @@
             }
             initLessons();
 
-            // Nếu dữ liệu anchors được nạp bất đồng bộ sau đó, tự động cập nhật
+            // Nếu dữ liệu anchors được nạp bất đồng bộ sau đó, chỉ cập nhật lại nếu trước đó dùng dữ liệu dự phòng
             window.addEventListener('load', function () {
                 if (window.LOCI_ANCHORS && window.LociFlashcardFormats) {
                     const freshLessons = ALLOWED_LESSONS.map(k => (window.LOCI_ANCHORS || {})[k])
                         .filter(l => l && l.anchors)
                         .map(l => ({ lesson: l, qs: questionsOf(l) }))
                         .filter(x => x.qs.length);
-                    if (freshLessons.length > 0 && freshLessons[0].qs.length > 10) {
+                    if (freshLessons.length > 0 && freshLessons[0].qs.length > 10 && (!rawLessons.length || rawLessons[0].qs[0]?.id?.includes('fb_'))) {
                         rawLessons = freshLessons;
                         home();
                     }
