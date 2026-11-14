@@ -7,7 +7,7 @@
 
     <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
     <script id="desktop-scale-meta-controller">
-</script>
+    </script>
 
     <title>Ôn tập Đa dạng · Loci.Edu</title>
     <meta name="description"
@@ -82,8 +82,8 @@
                 radial-gradient(circle at 80% 20%, rgba(16, 185, 129, 0.08), transparent 50%),
                 radial-gradient(circle at 20% 80%, rgba(56, 189, 248, 0.08), transparent 50%);
             animation: meshFlow 20s ease-in-out infinite alternate;
-                radial-gradient(circle at 15% 15%, rgba(2, 132, 199, 0.05), transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.05), transparent 45%);
+            radial-gradient(circle at 15% 15%, rgba(2, 132, 199, 0.05), transparent 45%),
+            radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.05), transparent 45%);
             pointer-events: none;
             z-index: -1;
         }
@@ -1667,6 +1667,7 @@
         }
 
         @media (max-width: 520px) {
+
             .format-subgrid,
             body.is-embedded .format-subgrid,
             html.is-embedded .format-subgrid {
@@ -1674,7 +1675,7 @@
             }
         }
 
-                .format-subcard.model3d-subcard {
+        .format-subcard.model3d-subcard {
             border-color: #bae6fd;
             background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
             box-shadow: 0 2px 10px rgba(2, 132, 199, 0.08);
@@ -2588,7 +2589,7 @@
             color: #94a3b8;
         }
 
-        .cycle-137-title > span {
+        .cycle-137-title>span {
             display: none;
         }
 
@@ -2727,10 +2728,13 @@
                 margin-bottom: 4px;
             }
         }
+
         /* =========================================================
            APPLE iOS 18 LIQUID GLASS & TRANSLUCENT GLASSMORPHISM
            ========================================================= */
-        body, html.is-embedded, body.is-embedded {
+        body,
+        html.is-embedded,
+        body.is-embedded {
             font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
             background: #f8fafc !important;
             color: #0f172a;
@@ -2744,7 +2748,11 @@
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02) !important;
         }
 
-        .card-scene, .card-container, .card, .formats-panel, body.is-embedded .formats-panel {
+        .card-scene,
+        .card-container,
+        .card,
+        .formats-panel,
+        body.is-embedded .formats-panel {
             background: rgba(255, 255, 255, 0.78) !important;
             backdrop-filter: blur(28px) saturate(190%) contrast(102%) !important;
             -webkit-backdrop-filter: blur(28px) saturate(190%) contrast(102%) !important;
@@ -2753,7 +2761,8 @@
             box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.06), inset 0 1.5px 1.5px rgba(255, 255, 255, 0.95) !important;
         }
 
-        .card-front, .card-back {
+        .card-front,
+        .card-back {
             background: rgba(255, 255, 255, 0.85) !important;
             backdrop-filter: blur(24px) !important;
             -webkit-backdrop-filter: blur(24px) !important;
@@ -2762,18 +2771,21 @@
             box-shadow: 0 12px 30px rgba(0, 0, 0, 0.03), inset 0 1px 1px rgba(255, 255, 255, 0.95) !important;
         }
 
-        .rating-btn, .btn-rate {
+        .rating-btn,
+        .btn-rate {
             border-radius: 18px !important;
             backdrop-filter: blur(16px) !important;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04), inset 0 1px 1px rgba(255, 255, 255, 0.8) !important;
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
         }
 
-        .rating-btn:hover, .btn-rate:hover {
+        .rating-btn:hover,
+        .btn-rate:hover {
             transform: translateY(-2px) scale(1.02) !important;
         }
 
-        .trio-tabs-nav, .segmented-control {
+        .trio-tabs-nav,
+        .segmented-control {
             background: rgba(255, 255, 255, 0.55) !important;
             backdrop-filter: blur(16px) !important;
             -webkit-backdrop-filter: blur(16px) !important;
@@ -2792,7 +2804,8 @@
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06) !important;
         }
 
-        .stat-card, .results-stats-card {
+        .stat-card,
+        .results-stats-card {
             background: rgba(255, 255, 255, 0.72) !important;
             backdrop-filter: blur(20px) !important;
             border: 1px solid rgba(255, 255, 255, 0.75) !important;
@@ -2801,17 +2814,24 @@
         }
 
         /* Dark mode */
-        body.dark-mode, html.dark-mode, body.dark-mode.is-embedded {
+        body.dark-mode,
+        html.dark-mode,
+        body.dark-mode.is-embedded {
             background: linear-gradient(135deg, #0b1120 0%, #0f172a 45%, #1e1b4b 85%, #022c22 100%) !important;
             color: #f8fafc !important;
         }
-        body.dark-mode .card-scene, body.dark-mode .card, body.dark-mode .formats-panel {
+
+        body.dark-mode .card-scene,
+        body.dark-mode .card,
+        body.dark-mode .formats-panel {
             background: rgba(22, 30, 46, 0.82) !important;
             border-color: rgba(255, 255, 255, 0.14) !important;
             color: #f8fafc !important;
             box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.18) !important;
         }
-        body.dark-mode .card-front, body.dark-mode .card-back {
+
+        body.dark-mode .card-front,
+        body.dark-mode .card-back {
             background: rgba(30, 41, 59, 0.82) !important;
             border-color: rgba(255, 255, 255, 0.14) !important;
             color: #f8fafc !important;
@@ -2821,17 +2841,31 @@
 
 <body>
     <header>
-        <a class="brand" href="javascript:void(0)" onclick="window.goBackToPortal()" style="display:flex; align-items:center; gap:9px;">
-            <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU Logo" style="width:28px; height:28px; border-radius:7px; object-fit:contain; box-shadow:0 2px 8px rgba(2,132,199,0.25);">
+        <a class="brand" href="javascript:void(0)" onclick="window.goBackToPortal()"
+            style="display:flex; align-items:center; gap:9px;">
+            <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU Logo"
+                style="width:28px; height:28px; border-radius:7px; object-fit:contain; box-shadow:0 2px 8px rgba(2,132,199,0.25);">
             LOCI EDU
         </a>
         <div style="display:flex; align-items:center; gap:10px;">
-            <a class="back" href="de_thi.html" style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border-color: #0284c7; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);" title="Phòng thi thử Lịch sử tốt nghiệp THPT Quốc Gia (28 câu · 50 phút)">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <a class="back" href="de_thi.html"
+                style="background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; border-color: #0284c7; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);"
+                title="Phòng thi thử Lịch sử tốt nghiệp THPT Quốc Gia (28 câu · 50 phút)">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                    <polyline points="14 2 14 8 20 8" />
+                    <line x1="16" y1="13" x2="8" y2="13" />
+                    <line x1="16" y1="17" x2="8" y2="17" />
+                </svg>
                 Phòng thi THPT
             </a>
             <a class="back" href="javascript:void(0)" onclick="window.goBackToPortal()">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="19" y1="12" x2="5" y2="12" />
+                    <polyline points="12 19 5 12 12 5" />
+                </svg>
                 Về tổng quan
             </a>
         </div>
@@ -2850,7 +2884,7 @@
     <script src="app/olympia_loci_engine.js" onerror="this.onerror=null;this.src='olympia_loci_engine.js'"></script>
     <script src="app/loci_account_manager.js" onerror="this.onerror=null;this.src='loci_account_manager.js'"></script>
     <script>
-                window.goBackToPortal = function () {
+        window.goBackToPortal = function () {
             if (window.top && window.top !== window.self) {
                 try {
                     if (typeof window.top.switchPortalTab === 'function') {
@@ -2861,7 +2895,7 @@
                         window.parent.switchPortalTab('overview');
                         return false;
                     }
-                } catch (_) {}
+                } catch (_) { }
             }
             window.location.href = 'portal_v2.html';
             return false;
@@ -2947,12 +2981,12 @@
                         .filter(l => l && l.anchors)
                         .map(l => ({ lesson: l, qs: questionsOf(l) }))
                         .filter(x => x.qs.length);
-                    if (freshLessons.length > 0 && freshLessons[0].qs.length > 10 && (!rawLessons.length || rawLessons[0].qs[0]?.id?.includes('fb_'))) {
-                        rawLessons = freshLessons;
-                        home();
+                        if (freshLessons.length > 0 && freshLessons[0].qs.length > 10 && (!rawLessons.length || rawLessons[0].qs[0]?.id?.includes('fb_'))) {
+                            rawLessons = freshLessons;
+                            home();
+                        }
                     }
-                }
-            });
+                });
 
             const urlParams = new URLSearchParams(location.search);
             let activeLessonFilter = (urlParams.get('lesson') && ALLOWED_LESSONS.includes(urlParams.get('lesson')))
@@ -2994,7 +3028,7 @@
                             role: 'guest',
                             isGuest: true
                         }));
-                    } catch (_) {}
+                    } catch (_) { }
                 }
                 if (false && !isUserAuthenticated()) {
                     root.innerHTML = `
@@ -3446,7 +3480,7 @@
                     btn.onclick = (e) => {
                         e.stopPropagation();
                         const action = btn.dataset.action;
-                                                if (action === 'olympia') {
+                        if (action === 'olympia') {
                             if (window.OlympiaLociEngine && window.OlympiaLociEngine.open) {
                                 window.OlympiaLociEngine.open();
                             } else if (window.parent && window.parent.OlympiaLociEngine && window.parent.OlympiaLociEngine.open) {

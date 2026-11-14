@@ -1827,9 +1827,14 @@
         // Mở Modal
         modal.classList.add('open');
 
-        // Thông báo Gia sư
-        if (window.LociMentor && typeof window.LociMentor.say === 'function') {
-            window.LociMentor.say(`Đang quan sát mô hình 3D: "${m.title}". Bạn có thể dùng chuột hoặc chạm để xoay 360°.`);
+        // Thông báo Gia sư AI
+        if (window.LociMentor) {
+            if (typeof window.LociMentor.track === 'function') {
+                window.LociMentor.track('model_inspect', { id: m.id, title: m.title });
+            }
+            if (typeof window.LociMentor.say === 'function') {
+                window.LociMentor.say(`✨ Đang cùng bạn quan sát mô hình: <b>${m.title}</b>. Bấm vào mình để nghe phân tích lịch sử và mẹo ghi nhớ nhé!`, { mood: 'hint' });
+            }
         }
     }
 
@@ -2110,3 +2115,4 @@
         start();
     }
 })();
+

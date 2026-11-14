@@ -15424,14 +15424,138 @@
       if (mpHideAllBtn) mpHideAllBtn.onclick = (e) => { e.stopPropagation(); window.hideAllAnchorModelPreviews(); };
     })();
 
-    /* ============ BỘ ĐIỀU KHIỂN MÔ HÌNH 3D XOAY NHẸ CHO KHUNG MINH HỌA MỐC (IMAGE 9) ============ */
+    /* ============ BỘ ĐIỀU KHIỂN MÔ HÌNH 3D XOAY NHẸ CHO KHUNG MINH HỌA MỐC (TỪNG NỘI DUNG ĐƠN LẺ) ============ */
     let lociMiniRenderer = null;
     let lociMiniScene = null;
     let lociMiniCamera = null;
     let lociMiniAnimFrame = null;
     let lociMiniRotatingGroup = null;
+    const miniSingleModelCache = {};
+    let lociMiniCurrentLoadId = 0;
 
-    function updateAnchorModelPreview(locus) {
+    const BAI6_POINT_MODELS = {
+      1: [
+        { title: 'Bom nguyên tử Little Boy & Fat Man', url: 'assets/models/tram1/little_boy_atomic_bomb.glb' },
+        { title: 'Xe tăng T-34 Hồng quân Liên Xô', url: 'assets/models/tram1/t34_tank.glb' },
+        { title: 'Quân phát xít Nhật đầu hàng', url: 'assets/models/tram1/japan_soldier.glb' }
+      ],
+      2: [
+        { title: 'Cao trào Kháng Nhật cứu nước', url: 'assets/models/tram2/phong_trao_khang_nhat_opt.glb' },
+        { title: 'Ủy ban Khởi nghĩa & Quân lệnh số 1', url: 'assets/models/tram2/uy_ban_quan_lenh_1_opt.glb' },
+        { title: 'Lán Nà Nưa lịch sử', url: 'assets/models/tram2/lan_na_nua_opt.glb' }
+      ],
+      3: [
+        { title: 'Chủ tịch Hồ Chí Minh tại Tân Trào', url: 'assets/models/tram3/bac_ho.glb' },
+        { title: 'Đại biểu Đại hội Quốc dân Tân Trào', url: 'assets/models/tram3/nguoi_dan.glb' },
+        { title: 'Đình Tân Trào & Ủy ban Dân tộc Giải phóng', url: 'assets/models/tram3/uy_ban.glb' }
+      ],
+      4: [
+        { title: 'Cây đa Tân Trào lịch sử', url: 'assets/models/tram4/cay_da.glb' },
+        { title: 'Đội VN Tuyên truyền Giải phóng quân', url: 'assets/models/tram4/nguoi_dan_khoi_nghia.glb' },
+        { title: 'Khởi nghĩa giải phóng Thái Nguyên', url: 'assets/models/tram4/dung_day_khoi_nghia.glb' }
+      ],
+      5: [
+        { title: 'Mít tinh Quảng trường Nhà hát Lớn', url: 'assets/models/tram5/mit_tinh_nha_hat_lon.glb' },
+        { title: 'Chiếm các cơ quan đầu não Hà Nội', url: 'assets/models/tram5/mit_tinh_nha_hat_lon.glb' },
+        { title: 'Khởi nghĩa Hà Nội thắng lợi trọn vẹn', url: 'assets/models/tram5/thang_loi_toan_quoc.glb' }
+      ],
+      6: [
+        { title: 'Giành chính quyền Cố đô Huế (23/8)', url: 'assets/models/tram6/co_do_hue.glb' },
+        { title: 'Giành chính quyền tại Sài Gòn (25/8)', url: 'assets/models/tram6/gianh_khoi_nghia_cuoi_cung.glb' },
+        { title: 'Toàn quốc giành chính quyền thắng lợi', url: 'assets/models/tram6/gianh_khoi_nghia_cuoi_cung.glb' }
+      ],
+      7: [
+        { title: 'Vua Bảo Đại thoái vị trước Ngọ Môn', url: 'assets/models/tram7/vua_bao_dai_thoai_vi.glb' },
+        { title: 'Chế độ phong kiến sụp đổ', url: 'assets/models/tram7/vua_bao_dai_thoai_vi.glb' },
+        { title: 'Lá cờ đỏ sao vàng trên Kỳ Đài Huế', url: 'assets/models/tram7/vua_bao_dai_thoai_vi.glb' }
+      ],
+      8: [
+        { title: 'Chủ tịch Hồ Chí Minh đọc Tuyên ngôn', url: 'assets/models/tram8/bac_ho_tuyen_ngon.glb' },
+        { title: 'Nước Việt Nam Dân chủ Cộng hòa ra đời', url: 'assets/models/tram8/bac_ho_tuyen_ngon.glb' },
+        { title: 'Quảng trường Ba Đình rực rỡ cờ hoa', url: 'assets/models/tram8/bac_ho_tuyen_ngon.glb' }
+      ],
+      9: [
+        { title: 'Đập tan xiềng xích thực dân phong kiến', url: 'assets/models/tram9/lien_xo_chien_thang.glb' },
+        { title: 'Kỷ nguyên Độc lập - Tự do của Dân tộc', url: 'assets/models/tram9/giai_phong_sau_1000_nam.glb' },
+        { title: 'Sự lãnh đạo tài tình của Đảng & Bác Hồ', url: 'assets/models/tram9/lanh_dao_cua_dang.glb' }
+      ]
+    };
+
+    const BAI7_POINT_MODELS = {
+      1: [
+        { title: 'Ba thứ giặc sau Cách mạng', url: 'assets/models/bai7/tram1/3ooong.glb' },
+        { title: 'Nhân dân đứng lên làm chủ', url: 'assets/models/bai7/tram1/nhan_dan_lam_chu.glb' },
+        { title: 'Giải quyết khó khăn kinh tế', url: 'assets/models/bai7/tram1/kinh_te_lac_hau.glb' }
+      ],
+      2: [
+        { title: 'Mít tinh Sài Gòn kháng chiến', url: 'assets/models/bai7/tram2/mit_tinh_saigon_phap_danh.glb' },
+        { title: 'Nhân dân Nam Bộ kiên cường chiến đấu', url: 'assets/models/bai7/tram2/nhan_dan_nambo_chien_dau.glb' },
+        { title: 'Cả nước chi viện cho miền Nam', url: 'assets/models/bai7/tram2/chi_vien_cho_mien_nam.glb' }
+      ],
+      3: [
+        { title: 'Ký Hiệp định Sơ bộ 6/3', url: 'assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb' },
+        { title: 'Lời kêu gọi Toàn quốc kháng chiến', url: 'assets/models/bai7/tram3/bac_ho_keu_goi_toan_quoc_khang_chien.glb' }
+      ],
+      4: [
+        { title: 'Chiến sĩ Quyết tử Hà Nội', url: 'assets/models/bai7/tram4/chien_si_chien_dau.glb' },
+        { title: 'Giam chân quân Pháp ở đô thị', url: 'assets/models/bai7/tram4/giam_chan_quan_phap.glb' },
+        { title: 'Trung đoàn Thủ đô vượt sông Hồng', url: 'assets/models/bai7/tram4/vuot_song_hong.glb' }
+      ],
+      5: [
+        { title: 'Chiến dịch Việt Bắc Thu - Đông 1947', url: 'assets/models/bai7/tram5/tap_luyen_chien_dich_vbtd.glb' },
+        { title: 'Bẻ gãy gọng kìm giặc Pháp', url: 'assets/models/bai7/tram5/tap_luyen_viet_bac_thu_dong.glb' }
+      ],
+      6: [
+        { title: 'Bác Hồ chỉ đạo Chiến dịch Biên giới 1950', url: 'assets/models/bai7/tram6/bac_ho_chi_dao_bien_gioi.glb' }
+      ],
+      7: [
+        { title: 'Đại hội Đảng toàn quốc lần II', url: 'assets/models/bai7/tram7/dai_hoi_2_chiem_hoa.glb' },
+        { title: 'Đoàn xe đạp thồ tiếp tế chiến dịch', url: 'assets/models/bai7/tram7/xe_dap_tho.glb' }
+      ],
+      8: [
+        { title: 'Tập đoàn cứ điểm Điện Biên Phủ', url: 'assets/models/bai7/tram8/tuong_do_cat.glb' },
+        { title: 'Đại tướng Võ Nguyên Giáp chỉ huy', url: 'assets/models/bai7/tram8/dai_tuong_vo_nguyen_giap_chi_huy.glb' },
+        { title: 'Chiến thắng Điện Biên Phủ "Lừng lẫy năm châu"', url: 'assets/models/bai7/tram8/chien_thang_dien_bien_phu.glb' }
+      ],
+      9: [
+        { title: 'Kéo pháo vào trận địa Điện Biên Phủ', url: 'assets/models/bai7/tram9/keo_phao_dien_bien_phu.glb' },
+        { title: 'Tướng Đờ Cát đầu hàng tại hầm', url: 'assets/models/bai7/tram9/do_cat_bi_bat.glb' },
+        { title: 'Ký kết Hiệp định Giơ-ne-vơ 1954', url: 'assets/models/bai7/tram9/gie_ne_ve.glb' }
+      ]
+    };
+
+    function resolveMiniAssetUrl(relUrl) {
+      if (!relUrl) return '';
+      const pName = (typeof window !== 'undefined' && window.location) ? window.location.pathname : '';
+      const isInApp = pName.includes('/app/');
+      if (relUrl.startsWith('assets/')) {
+        return isInApp ? '../' + relUrl : './' + relUrl;
+      }
+      return relUrl;
+    }
+
+    function fitCloneToMiniPreview(clone) {
+      if (!clone) return null;
+      clone.traverse(ch => {
+        if (ch.isLight) ch.visible = false;
+        if (ch.isMesh) {
+          ch.castShadow = false;
+          ch.receiveShadow = false;
+        }
+      });
+      const bBox = new THREE.Box3().setFromObject(clone);
+      const center = new THREE.Vector3();
+      const size = new THREE.Vector3();
+      bBox.getCenter(center);
+      bBox.getSize(size);
+      clone.position.sub(center);
+      const maxDim = Math.max(size.x, size.y, size.z, 0.05);
+      const scaleFactor = 1.85 / maxDim;
+      clone.scale.multiplyScalar(scaleFactor);
+      return clone;
+    }
+
+    function updateAnchorModelPreview(locus, stepIdx) {
       const box = document.getElementById('loci-anchor-model-preview-box');
       if (!box) return;
 
@@ -15443,10 +15567,23 @@
       }
 
       box.style.display = 'flex';
+      const curLocus = locus || window.currentActiveLocus || (window.lociList && window.lociList[0]);
+      const curOrder = curLocus ? (curLocus.order || 1) : 1;
+      const sIdx = (typeof stepIdx === 'number' && !isNaN(stepIdx)) ? stepIdx : (window.bdtCurrentStep || 0);
+
+      const curLesson = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY) ? EFFECTIVE_LESSON_KEY : 'bai_6';
+      const pointMap = curLesson === 'bai_7' ? BAI7_POINT_MODELS : BAI6_POINT_MODELS;
+      const stationPointList = pointMap[curOrder] || [];
+      const pointMeta = stationPointList[sIdx] || stationPointList[0] || null;
+
       const titleText = document.getElementById('loci-mp-title-text');
-      if (titleText && locus) {
-        const stationName = (locus.name || ('Trạm ' + (locus.order || 1))).replace(/^\d+\.\s*/, '');
-        titleText.textContent = `Mô hình: ${stationName}`;
+      if (titleText) {
+        if (pointMeta && pointMeta.title) {
+          titleText.textContent = `Mô hình: ${pointMeta.title}`;
+        } else {
+          const stName = (curLocus && (curLocus.name || ('Trạm ' + curOrder))).replace(/^\d+\.\s*/, '');
+          titleText.textContent = `Mô hình: ${stName}`;
+        }
       }
 
       const canvas = document.getElementById('loci-mini-model-canvas');
@@ -15466,14 +15603,14 @@
 
           lociMiniScene = new THREE.Scene();
           lociMiniCamera = new THREE.PerspectiveCamera(45, (canvas.clientWidth || 228) / (canvas.clientHeight || 128), 0.1, 50);
-          lociMiniCamera.position.set(0, 1.2, 3.2);
+          lociMiniCamera.position.set(0, 1.1, 3.2);
 
-          const ambLight = new THREE.AmbientLight(0xffffff, 2.2);
+          const ambLight = new THREE.AmbientLight(0xffffff, 2.4);
           lociMiniScene.add(ambLight);
           const dirLight = new THREE.DirectionalLight(0xfff7ed, 2.8);
           dirLight.position.set(2, 4, 3);
           lociMiniScene.add(dirLight);
-          const dirLightBack = new THREE.DirectionalLight(0x38bdf8, 1.5);
+          const dirLightBack = new THREE.DirectionalLight(0x38bdf8, 1.6);
           dirLightBack.position.set(-2, -1, -2);
           lociMiniScene.add(dirLightBack);
         } catch (e) {
@@ -15488,54 +15625,86 @@
       }
 
       lociMiniRotatingGroup = new THREE.Group();
-
-      let foundModel = null;
-      if (window.marker3DObjects && Array.isArray(window.marker3DObjects)) {
-        const marker = window.marker3DObjects.find(m => m.userData && (m.userData.id === locus.id || m.userData.order === locus.order));
-        if (marker) {
-          foundModel = (marker.userData && marker.userData.modelsGroup) || marker.userData.stationArtefact || marker;
-        }
-      }
-
-      if (foundModel) {
-        try {
-          const clone = foundModel.clone(true);
-          clone.traverse(ch => {
-            if (ch.isLight || (ch.material && !ch.material.visible)) {
-              ch.visible = false;
-            }
-          });
-          const bBox = new THREE.Box3().setFromObject(clone);
-          const center = new THREE.Vector3();
-          const size = new THREE.Vector3();
-          bBox.getCenter(center);
-          bBox.getSize(size);
-          clone.position.sub(center);
-          const maxDim = Math.max(size.x, size.y, size.z, 0.1);
-          const scaleFactor = 1.8 / maxDim;
-          clone.scale.multiplyScalar(scaleFactor);
-          lociMiniRotatingGroup.add(clone);
-        } catch (_) {
-          foundModel = null;
-        }
-      }
-
-      if (!foundModel || lociMiniRotatingGroup.children.length === 0) {
-        const pedestalGeo = new THREE.CylinderGeometry(0.7, 0.85, 0.35, 24);
-        const pedestalMat = new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.8, roughness: 0.2 });
-        const pedestalMesh = new THREE.Mesh(pedestalGeo, pedestalMat);
-
-        const starGeo = new THREE.OctahedronGeometry(0.5, 0);
-        const starMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.6, roughness: 0.3, emissive: 0xb45309, emissiveIntensity: 0.3 });
-        const starMesh = new THREE.Mesh(starGeo, starMat);
-        starMesh.position.y = 0.55;
-
-        lociMiniRotatingGroup.add(pedestalMesh);
-        lociMiniRotatingGroup.add(starMesh);
-      }
-
       lociMiniScene.add(lociMiniRotatingGroup);
       lociMiniCamera.lookAt(0, 0, 0);
+
+      const thisLoadId = ++lociMiniCurrentLoadId;
+      const targetUrl = pointMeta ? pointMeta.url : null;
+
+      function renderSingleObject(obj) {
+        if (!lociMiniRotatingGroup || thisLoadId !== lociMiniCurrentLoadId) return;
+        while (lociMiniRotatingGroup.children.length > 0) {
+          lociMiniRotatingGroup.remove(lociMiniRotatingGroup.children[0]);
+        }
+        const fitted = fitCloneToMiniPreview(obj);
+        if (fitted) lociMiniRotatingGroup.add(fitted);
+      }
+
+      // 1. Kiểm tra cache mô hình đơn lẻ
+      if (targetUrl && miniSingleModelCache[targetUrl]) {
+        renderSingleObject(miniSingleModelCache[targetUrl].clone(true));
+      } else if (targetUrl && typeof gltfLoader !== 'undefined') {
+        // Tạm thời hiển thị fastFallback (mesh con tương ứng) trong lúc load
+        let fastFallback = null;
+        if (window.marker3DObjects && Array.isArray(window.marker3DObjects)) {
+          const marker = window.marker3DObjects.find(m => m.userData && (m.userData.id === curLocus?.id || m.userData.order === curOrder));
+          const mGroup = marker?.userData?.modelsGroup;
+          if (mGroup && mGroup.children && mGroup.children.length > 0) {
+            // Chỉ lấy duy nhất 1 model con khớp với sIdx, TUYỆT ĐỐI không clone cả cụm!
+            const childIdx = Math.min(sIdx, mGroup.children.length - 1);
+            const singleChild = mGroup.children[childIdx];
+            if (singleChild && (singleChild.isMesh || singleChild.isGroup)) {
+              fastFallback = singleChild.clone(true);
+            }
+          }
+        }
+        if (fastFallback) {
+          renderSingleObject(fastFallback);
+        } else {
+          // Placeholder khối tinh thể neon xoay nhẹ nhàng
+          const starGeo = new THREE.OctahedronGeometry(0.65, 0);
+          const starMat = new THREE.MeshStandardMaterial({ color: 0x38bdf8, metalness: 0.6, roughness: 0.3, emissive: 0x0284c7, emissiveIntensity: 0.4 });
+          const starMesh = new THREE.Mesh(starGeo, starMat);
+          lociMiniRotatingGroup.add(starMesh);
+        }
+
+        // Tải GLB đơn lẻ của đúng ý này
+        const p1 = resolveMiniAssetUrl(targetUrl);
+        gltfLoader.load(encodeURI(p1), (gltf) => {
+          miniSingleModelCache[targetUrl] = gltf.scene;
+          if (thisLoadId === lociMiniCurrentLoadId) {
+            renderSingleObject(gltf.scene.clone(true));
+          }
+        }, undefined, () => {
+          const p2 = p1.startsWith('../') ? p1.substring(3) : ('../' + p1.replace(/^\.\//, ''));
+          gltfLoader.load(encodeURI(p2), (gltf2) => {
+            miniSingleModelCache[targetUrl] = gltf2.scene;
+            if (thisLoadId === lociMiniCurrentLoadId) {
+              renderSingleObject(gltf2.scene.clone(true));
+            }
+          }, undefined, () => {
+            // Giữ fallback
+          });
+        });
+      } else {
+        // Nếu không có targetUrl, tìm 1 mesh con đơn lẻ
+        let fallbackChild = null;
+        if (window.marker3DObjects && Array.isArray(window.marker3DObjects)) {
+          const marker = window.marker3DObjects.find(m => m.userData && (m.userData.id === curLocus?.id || m.userData.order === curOrder));
+          const mGroup = marker?.userData?.modelsGroup;
+          if (mGroup && mGroup.children && mGroup.children.length > 0) {
+            const childIdx = Math.min(sIdx, mGroup.children.length - 1);
+            fallbackChild = mGroup.children[childIdx].clone(true);
+          }
+        }
+        if (fallbackChild) {
+          renderSingleObject(fallbackChild);
+        } else {
+          const starGeo = new THREE.OctahedronGeometry(0.65, 0);
+          const starMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.6, roughness: 0.3, emissive: 0xb45309, emissiveIntensity: 0.3 });
+          lociMiniRotatingGroup.add(new THREE.Mesh(starGeo, starMat));
+        }
+      }
 
       if (lociMiniAnimFrame) cancelAnimationFrame(lociMiniAnimFrame);
       function animateMiniModel() {
@@ -15574,8 +15743,8 @@
       const isHidden = (box.style.display === 'none' || !box.style.display);
       if (isHidden) {
         try { localStorage.removeItem('loci_hide_anchor_model_preview'); } catch (_) {}
-        if (window.currentActiveLocus) updateAnchorModelPreview(window.currentActiveLocus);
-        else if (window.lociList && window.lociList[0]) updateAnchorModelPreview(window.lociList[0]);
+        if (window.currentActiveLocus) updateAnchorModelPreview(window.currentActiveLocus, window.bdtCurrentStep || 0);
+        else if (window.lociList && window.lociList[0]) updateAnchorModelPreview(window.lociList[0], 0);
       } else {
         window.hideThisAnchorModelPreview();
       }
@@ -16358,6 +16527,16 @@
         }
       } catch (dirErr) {
         console.warn('[Bai7SpatialDirector] Lỗi onStepChange:', dirErr);
+      }
+
+      // CẬP NHẬT MÔ HÌNH ĐƠN LẺ XOAY XOAY CHO RIÊNG NỘI DUNG NÀY (TRÁNH HIỆN CẢ CỤM)
+      try {
+        const curLoc = window.currentActiveLocus || currentActiveLocus;
+        if (typeof updateAnchorModelPreview === 'function' && curLoc) {
+          updateAnchorModelPreview(curLoc, bdtCurrentStep);
+        }
+      } catch (mpErr) {
+        console.warn('[LociMiniModel] Lỗi cập nhật preview:', mpErr);
       }
 
       const pText = bdtCurrentPoints[bdtCurrentStep];

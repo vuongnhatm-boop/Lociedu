@@ -1,15 +1,12 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Kế hoạch Phân chia Mốc Loci — Bài 8: Cuộc Kháng Chiến Chống Mỹ, Cứu Nước (1954 – 1975)</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap"
-    rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #090d16;
@@ -26,19 +23,14 @@
       --gold: #fbbf24;
     }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
       background-color: var(--bg);
       color: var(--text);
       line-height: 1.6;
       padding: 30px 20px 80px;
-      background-image:
+      background-image: 
         radial-gradient(circle at 15% 15%, rgba(2, 132, 199, 0.1) 0%, transparent 40%),
         radial-gradient(circle at 85% 85%, rgba(16, 185, 129, 0.1) 0%, transparent 40%);
       background-attachment: fixed;
@@ -55,22 +47,17 @@
       border-radius: 24px;
       padding: 36px 40px;
       margin-bottom: 32px;
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
+      box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
       backdrop-filter: blur(16px);
       position: relative;
       overflow: hidden;
     }
-
     .header::before {
       content: '';
       position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 4px;
+      top: 0; left: 0; right: 0; height: 4px;
       background: linear-gradient(90deg, #0284c7, #38bdf8, #f59e0b, #dc2626, #10b981);
     }
-
     .badge {
       display: inline-flex;
       align-items: center;
@@ -86,7 +73,6 @@
       letter-spacing: 0.5px;
       margin-bottom: 14px;
     }
-
     .header h1 {
       font-size: 32px;
       font-weight: 800;
@@ -96,22 +82,19 @@
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
-
     .header p {
       color: var(--text-muted);
       font-size: 16px;
       max-width: 900px;
     }
-
     .meta-bar {
       display: flex;
       flex-wrap: wrap;
       gap: 20px;
       margin-top: 24px;
       padding-top: 20px;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(255,255,255,0.06);
     }
-
     .meta-item {
       display: flex;
       align-items: center;
@@ -119,7 +102,6 @@
       font-size: 14px;
       color: #cbd5e1;
     }
-
     .meta-item strong {
       color: #fff;
     }
@@ -132,16 +114,14 @@
       gap: 12px;
       margin-bottom: 24px;
     }
-
     .nav-tabs {
       display: flex;
       gap: 8px;
       flex-wrap: wrap;
     }
-
     .nav-btn {
       padding: 8px 16px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(255,255,255,0.05);
       border: 1px solid var(--card-border);
       color: var(--text-muted);
       border-radius: 10px;
@@ -150,19 +130,15 @@
       font-weight: 600;
       transition: all 0.2s;
     }
-
-    .nav-btn:hover,
-    .nav-btn.active {
+    .nav-btn:hover, .nav-btn.active {
       background: rgba(2, 132, 199, 0.2);
       color: #38bdf8;
       border-color: rgba(56, 189, 248, 0.4);
     }
-
     .btn-group {
       display: flex;
       gap: 10px;
     }
-
     .action-btn {
       padding: 8px 18px;
       border: none;
@@ -175,12 +151,10 @@
       gap: 6px;
       text-decoration: none;
     }
-
     .btn-vr {
       background: linear-gradient(135deg, #0284c7, #06b6d4);
       color: #fff;
     }
-
     .print-btn {
       background: var(--accent-grad);
       color: #fff;
@@ -193,7 +167,6 @@
       padding: 24px 28px;
       margin-bottom: 36px;
     }
-
     .journey-title {
       font-size: 18px;
       font-weight: 700;
@@ -203,16 +176,14 @@
       gap: 10px;
       color: #38bdf8;
     }
-
     .timeline-steps {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(115px, 1fr));
       gap: 10px;
     }
-
     .t-step {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 12px;
       padding: 12px 10px;
       text-align: center;
@@ -221,32 +192,27 @@
       text-decoration: none;
       color: inherit;
     }
-
     .t-step:hover {
       transform: translateY(-3px);
       border-color: var(--accent);
       background: rgba(2, 132, 199, 0.12);
     }
-
     .t-num {
       font-size: 11px;
       font-weight: 800;
       color: #38bdf8;
       margin-bottom: 4px;
     }
-
     .t-icon {
       font-size: 24px;
       margin: 4px 0;
     }
-
     .t-name {
       font-size: 12px;
       font-weight: 700;
       color: #e2e8f0;
       line-height: 1.3;
     }
-
     .t-date {
       font-size: 11px;
       color: var(--amber);
@@ -265,30 +231,27 @@
       border: 1px solid var(--card-border);
       border-radius: 20px;
       overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
       transition: border-color 0.2s;
     }
-
     .station-card:hover {
       border-color: rgba(56, 189, 248, 0.35);
     }
 
     .station-top {
       padding: 24px 30px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 14px;
     }
-
     .station-title-box {
       display: flex;
       align-items: center;
       gap: 16px;
     }
-
     .station-icon {
       width: 54px;
       height: 54px;
@@ -297,17 +260,15 @@
       align-items: center;
       justify-content: center;
       font-size: 26px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.1);
       flex-shrink: 0;
     }
-
     .station-name {
       font-size: 21px;
       font-weight: 800;
       color: #fff;
     }
-
     .station-loc {
       font-size: 13.5px;
       color: #94a3b8;
@@ -316,7 +277,6 @@
       gap: 6px;
       margin-top: 2px;
     }
-
     .station-badge-date {
       font-family: 'JetBrains Mono', monospace;
       font-size: 13.5px;
@@ -334,7 +294,6 @@
       grid-template-columns: 1.35fr 1fr;
       gap: 28px;
     }
-
     @media (max-width: 950px) {
       .station-body {
         grid-template-columns: 1fr;
@@ -352,17 +311,15 @@
       gap: 8px;
       color: #e2e8f0;
     }
-
     .summary-text {
       font-size: 15px;
       color: #cbd5e1;
-      background: rgba(255, 255, 255, 0.02);
+      background: rgba(255,255,255,0.02);
       padding: 12px 16px;
       border-radius: 10px;
       border-left: 3px solid var(--accent);
       margin-bottom: 18px;
     }
-
     .kp-list {
       list-style: none;
       display: flex;
@@ -370,14 +327,12 @@
       gap: 10px;
       margin-bottom: 20px;
     }
-
     .kp-list li {
       position: relative;
       padding-left: 20px;
       font-size: 14.5px;
       color: #e2e8f0;
     }
-
     .kp-list li::before {
       content: '▸';
       position: absolute;
@@ -393,7 +348,6 @@
       padding: 20px;
       margin-bottom: 20px;
     }
-
     .loci-box-title {
       font-size: 14px;
       font-weight: 800;
@@ -403,13 +357,11 @@
       gap: 8px;
       margin-bottom: 10px;
     }
-
     .loci-desc {
       font-size: 14px;
       color: #f1f5f9;
       line-height: 1.55;
     }
-
     .mantra-tag {
       margin-top: 14px;
       padding: 10px 14px;
@@ -426,31 +378,27 @@
 
     .quiz-section {
       grid-column: 1 / -1;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      border-top: 1px solid rgba(255,255,255,0.06);
       padding-top: 20px;
       margin-top: 4px;
     }
-
     .quiz-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 14px;
     }
-
     .quiz-item {
-      background: rgba(0, 0, 0, 0.25);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(0,0,0,0.25);
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 10px;
       padding: 14px 16px;
     }
-
     .quiz-q {
       font-size: 13.5px;
       font-weight: 700;
       color: #e2e8f0;
       margin-bottom: 8px;
     }
-
     .quiz-a {
       font-size: 13px;
       color: #38bdf8;
@@ -460,7 +408,6 @@
       display: inline-block;
       margin-bottom: 4px;
     }
-
     .quiz-exp {
       font-size: 12px;
       color: #94a3b8;
@@ -472,9 +419,8 @@
       border-radius: 20px;
       padding: 32px 36px;
       margin-top: 40px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
-
     .synthesis-title {
       font-size: 22px;
       font-weight: 800;
@@ -483,29 +429,23 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
       padding-bottom: 12px;
     }
-
     .synthesis-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
-
     @media (max-width: 800px) {
-      .synthesis-grid {
-        grid-template-columns: 1fr;
-      }
+      .synthesis-grid { grid-template-columns: 1fr; }
     }
-
     .syn-card {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
       border-radius: 14px;
       padding: 20px;
     }
-
     .syn-card h3 {
       font-size: 16px;
       font-weight: 700;
@@ -515,14 +455,12 @@
       align-items: center;
       gap: 8px;
     }
-
     .syn-card ul {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
-
     .syn-card li {
       position: relative;
       padding-left: 18px;
@@ -530,7 +468,6 @@
       color: #cbd5e1;
       line-height: 1.5;
     }
-
     .syn-card li::before {
       content: '✔';
       position: absolute;
@@ -547,56 +484,25 @@
     }
 
     @media print {
-      body {
-        background: #fff;
-        color: #000;
-        padding: 0;
-      }
-
-      .header,
-      .station-card,
-      .journey-map,
-      .synthesis-section {
-        background: #fff !important;
-        color: #000 !important;
-        border: 1px solid #ccc !important;
-        box-shadow: none !important;
-      }
-
-      .action-bar,
-      .print-btn,
-      .btn-vr {
-        display: none !important;
-      }
-
-      .station-name,
-      .header h1,
-      .synthesis-title {
-        color: #000 !important;
-        -webkit-text-fill-color: initial !important;
-      }
-
-      .station-body {
-        grid-template-columns: 1fr;
-      }
+      body { background: #fff; color: #000; padding: 0; }
+      .header, .station-card, .journey-map, .synthesis-section { background: #fff !important; color: #000 !important; border: 1px solid #ccc !important; box-shadow: none !important; }
+      .action-bar, .print-btn, .btn-vr { display: none !important; }
+      .station-name, .header h1, .synthesis-title { color: #000 !important; -webkit-text-fill-color: initial !important; }
+      .station-body { grid-template-columns: 1fr; }
     }
   </style>
 </head>
-
 <body>
 
   <div class="container">
     <header class="header">
       <div class="badge">🧠 Cung điện Ký ức Loci VR — Lịch sử 12 (GDPT 2018)</div>
       <h1>Kế Hoạch Phân Chia Kiến Thức Bài 8: Cuộc Kháng Chiến Chống Mỹ, Cứu Nước (1954 – 1975)</h1>
-      <p>Hệ thống hóa toàn bộ kiến thức theo phương pháp Loci VR trong phòng Triển lãm Nâu — Chia nhỏ thành 9 trạm ký ức
-        tuyến tính với bệ sa bàn đá hoa cương Obsidian, bia đá khắc vàng, mẹo hình dung không gian, củng cố Active
-        Recall và <strong>100% nội dung trích xuất từ tài liệu chủ đề 3 có ảnh.docx</strong>.</p>
-
+      <p>Hệ thống hóa toàn bộ kiến thức theo phương pháp Loci VR trong phòng Triển lãm Nâu — Chia nhỏ thành 9 trạm ký ức tuyến tính với bệ sa bàn đá hoa cương Obsidian, bia đá khắc vàng, mẹo hình dung không gian, củng cố Active Recall và <strong>100% nội dung trích xuất từ tài liệu chủ đề 3 có ảnh.docx</strong>.</p>
+      
       <div class="meta-bar">
         <div class="meta-item"><span>📚</span> <strong>Chủ đề:</strong> Chủ đề 3 SGK Lịch sử 12</div>
-        <div class="meta-item"><span>🏛️</span> <strong>Không gian 3D:</strong> Sảnh Triển lãm Nâu (9 Bục trưng bày)
-        </div>
+        <div class="meta-item"><span>🏛️</span> <strong>Không gian 3D:</strong> Sảnh Triển lãm Nâu (9 Bục trưng bày)</div>
         <div class="meta-item"><span>⚡</span> <strong>Mốc thời gian:</strong> 1954 – 1975 (21 năm đánh Mỹ)</div>
         <div class="meta-item"><span>🎯</span> <strong>Chuẩn định dạng:</strong> Flashcard + Quiz + Loci Mnemonic</div>
         <div class="meta-item"><span>🚀</span> <strong>Trạng thái:</strong> Sẵn sàng 60 FPS trên PC & Mobile</div>
@@ -606,12 +512,9 @@
     <div class="action-bar">
       <div class="nav-tabs">
         <button class="nav-btn active" onclick="filterStations('all', this)">Tất cả 9 trạm</button>
-        <button class="nav-btn" onclick="filterStations('boicanh', this)">Giai đoạn 1: Bối cảnh, Đồng khởi & Đánh Chiến
-          tranh đặc biệt (Trạm 1-3)</button>
-        <button class="nav-btn" onclick="filterStations('dienbien1', this)">Giai đoạn 2: Bẻ gãy Chiến tranh cục bộ & Mậu
-          Thân (Trạm 4-6)</button>
-        <button class="nav-btn" onclick="filterStations('dienbien2', this)">Giai đoạn 3: Điện Biên Phủ trên không & Đại
-          thắng mùa Xuân (Trạm 7-9)</button>
+        <button class="nav-btn" onclick="filterStations('boicanh', this)">Giai đoạn 1: Bối cảnh, Đồng khởi & Đánh Chiến tranh đặc biệt (Trạm 1-3)</button>
+        <button class="nav-btn" onclick="filterStations('dienbien1', this)">Giai đoạn 2: Bẻ gãy Chiến tranh cục bộ & Mậu Thân (Trạm 4-6)</button>
+        <button class="nav-btn" onclick="filterStations('dienbien2', this)">Giai đoạn 3: Điện Biên Phủ trên không & Đại thắng mùa Xuân (Trạm 7-9)</button>
       </div>
       <div class="btn-group">
         <a href="index.html?gallery=brown&lesson=bai_8" class="action-btn btn-vr">
@@ -629,894 +532,619 @@
         <span>🗺️</span> Hành trình Tuyến tính 9 Trạm Ký ức Loci Bài 8 trong Triển lãm Nâu
       </div>
       <div class="timeline-steps">
-        <a href="#tram-1" class="t-step">
-          <div class="t-num">TRẠM 1</div>
-          <div class="t-icon">⚖️</div>
-          <div class="t-name">Chia cắt 2 miền</div>
-          <div class="t-date">Sau 1954</div>
-        </a>
-        <a href="#tram-2" class="t-step">
-          <div class="t-num">TRẠM 2</div>
-          <div class="t-icon">🔥</div>
-          <div class="t-name">Đồng khởi Bến Tre</div>
-          <div class="t-date">1959 – 1960</div>
-        </a>
-        <a href="#tram-3" class="t-step">
-          <div class="t-num">TRẠM 3</div>
-          <div class="t-icon">🛡️</div>
-          <div class="t-name">Chiến tranh đặc biệt</div>
-          <div class="t-date">1961 – 1965</div>
-        </a>
-        <a href="#tram-4" class="t-step">
-          <div class="t-num">TRẠM 4</div>
-          <div class="t-icon">⚔️</div>
-          <div class="t-name">Chiến tranh cục bộ</div>
-          <div class="t-date">1965 – 1968</div>
-        </a>
-        <a href="#tram-5" class="t-step">
-          <div class="t-num">TRẠM 5</div>
-          <div class="t-icon">💥</div>
-          <div class="t-name">Xuân Mậu Thân</div>
-          <div class="t-date">1968</div>
-        </a>
-        <a href="#tram-6" class="t-step">
-          <div class="t-num">TRẠM 6</div>
-          <div class="t-icon">🗺️</div>
-          <div class="t-name">Việt Nam hóa CT</div>
-          <div class="t-date">1969 – 1972</div>
-        </a>
-        <a href="#tram-7" class="t-step">
-          <div class="t-num">TRẠM 7</div>
-          <div class="t-icon">✈️</div>
-          <div class="t-name">ĐBP trên không & Pa-ri</div>
-          <div class="t-date">1972 – 1973</div>
-        </a>
-        <a href="#tram-8" class="t-step">
-          <div class="t-num">TRẠM 8</div>
-          <div class="t-icon">🧭</div>
-          <div class="t-name">Đường 14 Phước Long</div>
-          <div class="t-date">Trinh sát CL</div>
-        </a>
-        <a href="#tram-9" class="t-step">
-          <div class="t-num">TRẠM 9</div>
-          <div class="t-icon">🏆</div>
-          <div class="t-name">Đại thắng mùa Xuân</div>
-          <div class="t-date">30/4/1975</div>
-        </a>
+        <a href="#tram-1" class="t-step"><div class="t-num">TRẠM 1</div><div class="t-icon">⚖️</div><div class="t-name">Chia cắt 2 miền</div><div class="t-date">Sau 1954</div></a>
+        <a href="#tram-2" class="t-step"><div class="t-num">TRẠM 2</div><div class="t-icon">🔥</div><div class="t-name">Đồng khởi Bến Tre</div><div class="t-date">1959 – 1960</div></a>
+        <a href="#tram-3" class="t-step"><div class="t-num">TRẠM 3</div><div class="t-icon">🛡️</div><div class="t-name">Chiến tranh đặc biệt</div><div class="t-date">1961 – 1965</div></a>
+        <a href="#tram-4" class="t-step"><div class="t-num">TRẠM 4</div><div class="t-icon">⚔️</div><div class="t-name">Chiến tranh cục bộ</div><div class="t-date">1965 – 1968</div></a>
+        <a href="#tram-5" class="t-step"><div class="t-num">TRẠM 5</div><div class="t-icon">💥</div><div class="t-name">Xuân Mậu Thân</div><div class="t-date">1968</div></a>
+        <a href="#tram-6" class="t-step"><div class="t-num">TRẠM 6</div><div class="t-icon">🗺️</div><div class="t-name">Việt Nam hóa CT</div><div class="t-date">1969 – 1972</div></a>
+        <a href="#tram-7" class="t-step"><div class="t-num">TRẠM 7</div><div class="t-icon">✈️</div><div class="t-name">ĐBP trên không & Pa-ri</div><div class="t-date">1972 – 1973</div></a>
+        <a href="#tram-8" class="t-step"><div class="t-num">TRẠM 8</div><div class="t-icon">🧭</div><div class="t-name">Đường 14 Phước Long</div><div class="t-date">Trinh sát CL</div></a>
+        <a href="#tram-9" class="t-step"><div class="t-num">TRẠM 9</div><div class="t-icon">🏆</div><div class="t-name">Đại thắng mùa Xuân</div><div class="t-date">30/4/1975</div></a>
       </div>
     </section>
 
     <!-- STATIONS LIST -->
     <main class="station-list">
 
-      <!-- TRẠM 1 -->
-      <article class="station-card" id="tram-1" data-stage="boicanh">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">⚖️</div>
-            <div>
-              <div class="station-name">Trạm 1: Bối cảnh sau 1954 & Đất nước tạm thời chia cắt hai miền</div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-6.0, 0.08, -3.2] (Vách Tây Bắc)</b>
-              </div>
-            </div>
+    <!-- TRẠM 1 -->
+    <article class="station-card" id="tram-1" data-stage="boicanh">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">⚖️</div>
+          <div>
+            <div class="station-name">Trạm 1: Bối cảnh sau 1954 & Đất nước tạm thời chia cắt hai miền</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-6.0, 0.08, -3.2] (Vách Tây Bắc)</b></div>
           </div>
-          <div class="station-badge-date">📅 1954 – 1960</div>
+        </div>
+        <div class="station-badge-date">📅 1954 – 1960</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Sau Hiệp định Giơ-ne-vơ 1954, Mỹ hất cẳng Pháp, dựng lên chính quyền tay sai Ngô Đình Diệm nhằm chia cắt lâu dài nước ta. Đất nước tạm thời bị chia cắt làm hai miền với hai nhiệm vụ chiến lược khác nhau.</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Âm mưu của Mỹ: Thay chân Pháp, dựng chính quyền Ngô Đình Diệm ở miền Nam, biến miền Nam thành thuộc địa kiểu mới và căn cứ quân sự ở Đông Nam Á.</li>
+            <li>Đặc điểm đất nước tạm thời bị chia cắt: Miền Bắc hoàn toàn giải phóng, tiến lên xây dựng CNXH; miền Nam tiếp tục cách mạng dân tộc dân chủ nhân dân, đấu tranh thống nhất đất nước.</li>
+            <li>Tình hình miền Bắc (1954 – 1960): Hoàn thành cải cách ruộng đất, khôi phục kinh tế, hàn gắn vết thương chiến tranh và bước đầu phát triển kinh tế - xã hội.</li>
+            <li>Tình hình miền Nam (1954 – 1958): Nhân dân đấu tranh hòa bình chống Mỹ - Diệm, đòi thi hành Hiệp định Giơ-ne-vơ, giữ gìn và phát triển lực lượng cách mạng.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>⚖️ Đất nước tạm thời chia cắt hai miền sau 1954</h3><p>Sau Hiệp định Giơ-ne-vơ 1954, đế quốc Mỹ nhảy vào thay chân Pháp, dựng lên chính quyền bù nhìn Ngô Đình Diệm hòng biến miền Nam thành thuộc địa kiểu mới và căn cứ quân sự, ngăn chặn làn sóng cách mạng ở Đông Nam Á.</p><p>Đất nước ta đứng trước tình thế đặc biệt: <strong>miền Bắc hoàn toàn giải phóng</strong> bước vào thời kỳ quá độ lên chủ nghĩa xã hội, vừa là hậu phương lớn vừa là căn cứ địa cách mạng cả nước; <strong>miền Nam nằm dưới ách kìm kẹp tàn bạo của Mỹ - Diệm</strong>, nhân dân phải kiên cường đấu tranh chính trị đòi hòa bình, đòi thi hành Hiệp định Giơ-ne-vơ để giữ gìn ngọn lửa cách mạng.</p>
+          </div>
         </div>
 
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Sau Hiệp định Giơ-ne-vơ 1954, Mỹ hất cẳng Pháp, dựng lên chính quyền tay sai Ngô
-              Đình Diệm nhằm chia cắt lâu dài nước ta. Đất nước tạm thời bị chia cắt làm hai miền với hai nhiệm vụ chiến
-              lược khác nhau.</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Bối cảnh quốc tế: Hệ thống XHCN ngày càng mở rộng, sự đối đầu Chiến tranh lạnh, Đế quốc Mỹ đẩy mạnh thực hiện chiến lược toàn cầu nhằm làm bá chủ thế giới.</li>
-              <li>Âm mưu của Mỹ: Thay chân Pháp, dựng chính quyền Ngô Đình Diệm ở miền Nam, biến miền Nam thành thuộc địa kiểu mới và căn cứ quân sự ở Đông Nam Á, ngăn chặn chủ nghĩa cộng sản và phong trào giải phóng dân tộc.</li>
-              <li>Tình hình hai miền: Miền Bắc hoàn toàn giải phóng tiến lên CNXH; 1954 – 1957 hoàn thành cải cách ruộng đất, khôi phục kinh tế, hàn gắn vết thương chiến tranh; 1958 – 1960: Cải tạo quan hệ sản xuất, bước đầu phát triển kinh tế – xã hội. Miền Nam tiếp tục cách mạng dân tộc dân chủ nhân dân.</li>
-              <li>Đặc điểm đất nước tạm thời bị chia cắt: Miền Bắc hoàn toàn giải phóng, tiến lên xây dựng CNXH; miền
-                Nam tiếp tục cách mạng dân tộc dân chủ nhân dân, đấu tranh thống nhất đất nước.</li>
-              <li>Tình hình miền Bắc (1954 – 1960): Hoàn thành cải cách ruộng đất, khôi phục kinh tế, hàn gắn vết thương
-                chiến tranh và bước đầu phát triển kinh tế - xã hội.</li>
-              <li>Tình hình miền Nam (1954 – 1958): Nhân dân đấu tranh hòa bình chống Mỹ - Diệm, đòi thi hành Hiệp định
-                Giơ-ne-vơ, giữ gìn và phát triển lực lượng cách mạng.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>⚖️ Đất nước tạm thời chia cắt hai miền sau 1954</h3>
-              <p>Sau Hiệp định Giơ-ne-vơ 1954, đế quốc Mỹ nhảy vào thay chân Pháp, dựng lên chính quyền bù nhìn Ngô Đình
-                Diệm hòng biến miền Nam thành thuộc địa kiểu mới và căn cứ quân sự, ngăn chặn làn sóng cách mạng ở Đông
-                Nam Á.</p>
-              <p>Đất nước ta đứng trước tình thế đặc biệt: <strong>miền Bắc hoàn toàn giải phóng</strong> bước vào thời
-                kỳ quá độ lên chủ nghĩa xã hội, vừa là hậu phương lớn vừa là căn cứ địa cách mạng cả nước; <strong>miền
-                  Nam nằm dưới ách kìm kẹp tàn bạo của Mỹ - Diệm</strong>, nhân dân phải kiên cường đấu tranh chính trị
-                đòi hòa bình, đòi thi hành Hiệp định Giơ-ne-vơ để giữ gìn ngọn lửa cách mạng.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng đứng tại cầu Hiền Lương bắc qua sông Bến Hải (vĩ tuyến
-                17); bờ Bắc rợp cờ đỏ sao vàng xây dựng XHCN, bờ Nam rào thép gai Mỹ - Diệm kìm kẹp đồng bào!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Âm mưu cơ bản của đế quốc Mỹ khi can thiệp vào miền Nam Việt Nam sau năm 1954 là
-                  gì?</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Giúp Pháp khôi phục
-                  lại quyền thống trị ở Đông Dương<br>B. Chia cắt lâu dài Việt Nam, biến miền Nam thành thuộc địa kiểu
-                  mới và căn cứ quân sự<br>C. Thực hiện giải giáp quân Nhật ở phía nam vĩ tuyến 17<br>D. Hỗ trợ kinh tế
-                  cho chính quyền bù nhìn phát triển tự chủ</div>
-                <div class="quiz-a">✅ Đáp án: B. Chia cắt lâu dài Việt Nam, biến miền Nam thành thuộc địa kiểu mới và
-                  căn cứ quân sự</div>
-                <div class="quiz-exp">💡 Giải thích: Mỹ hất cẳng Pháp, lập nên chính quyền Sài Gòn hòng biến miền Nam
-                  Việt Nam thành thuộc địa kiểu mới và căn cứ quân sự chống CNXH.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Nhiệm vụ chiến lược của cách mạng hai miền Nam - Bắc sau
-                  năm 1954 là gì?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Miền Bắc tiến hành cách
-                  mạng XHCN (làm hậu phương lớn); Miền Nam tiếp tục cách mạng dân tộc dân chủ nhân dân (tiền tuyến lớn
-                  chống Mỹ - Diệm).</div>
-                <div class="quiz-exp">Gợi ý: Hai miền hai nhiệm vụ chiến lược</div>
-              </div>
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng đứng tại cầu Hiền Lương bắc qua sông Bến Hải (vĩ tuyến 17); bờ Bắc rợp cờ đỏ sao vàng xây dựng XHCN, bờ Nam rào thép gai Mỹ - Diệm kìm kẹp đồng bào!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
             </div>
           </div>
         </div>
-      </article>
 
 
-      <!-- TRẠM 2 -->
-      <article class="station-card" id="tram-2" data-stage="boicanh">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">🔥</div>
-            <div>
-              <div class="station-name">Trạm 2: Nghị quyết 15 & Phong trào 'Đồng khởi' Bến Tre (1959 – 1960)</div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-8.2, 0.08, -0.8] (Vách Tây)</b>
-              </div>
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Âm mưu cơ bản của đế quốc Mỹ khi can thiệp vào miền Nam Việt Nam sau năm 1954 là gì?</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Giúp Pháp khôi phục lại quyền thống trị ở Đông Dương<br>B. Chia cắt lâu dài Việt Nam, biến miền Nam thành thuộc địa kiểu mới và căn cứ quân sự<br>C. Thực hiện giải giáp quân Nhật ở phía nam vĩ tuyến 17<br>D. Hỗ trợ kinh tế cho chính quyền bù nhìn phát triển tự chủ</div>
+              <div class="quiz-a">✅ Đáp án: B. Chia cắt lâu dài Việt Nam, biến miền Nam thành thuộc địa kiểu mới và căn cứ quân sự</div>
+              <div class="quiz-exp">💡 Giải thích: Mỹ hất cẳng Pháp, lập nên chính quyền Sài Gòn hòng biến miền Nam Việt Nam thành thuộc địa kiểu mới và căn cứ quân sự chống CNXH.</div>
             </div>
-          </div>
-          <div class="station-badge-date">📅 1959 – 1960</div>
-        </div>
-
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Tháng 1/1959, Hội nghị 15 của Đảng khẳng định con đường bạo lực cách mạng. Phong
-              trào Đồng khởi bùng nổ, tiêu biểu ở Bến Tre (1/1960), chuyển cách mạng miền Nam từ giữ gìn lực lượng sang
-              thế tiến công.</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Nghị quyết 15 (1/1959): Xác định ngoài con đường sử dụng bạo lực cách mạng, nhân dân miền Nam không
-                còn con đường nào khác.</li>
-              <li>Khởi đầu: Bùng nổ từ Vĩnh Thạnh (Gia Lai), Bác Ái (Khánh Hòa) tháng 2/1959, Trà Bồng (Quảng Ngãi)
-                tháng 8/1959.</li>
-              <li>Đỉnh cao Đồng khởi Bến Tre (tháng 1/1960): Đội quân tóc dài và nhân dân nổi dậy đồng loạt phá ấp kìm
-                kẹp, tịch thu ruộng đất chia cho dân cày.</li>
-              <li>Ý nghĩa: Giáng đòn nặng nề vào chủ nghĩa thực dân mới của Mỹ, làm lung lay chính quyền Ngô Đình Diệm;
-                chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công.</li>
-              <li>Ngày 20 – 12 – 1960: Thành lập Mặt trận Dân tộc Giải phóng miền Nam Việt Nam.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>🔥 Bão lửa Đồng khởi (1959 – 1960)</h3>
-              <p>Trước luật 10/59 khét tiếng 'đặt cộng sản ra ngoài vòng pháp luật' và máy chém lưu động của Ngô Đình
-                Diệm, tháng 1/1959, Ban Chấp hành Trung ương Đảng họp Hội nghị lần thứ 15 khẳng định con đường giải
-                phóng miền Nam là khởi nghĩa vũ trang giành chính quyền.</p>
-              <p>Ngày <strong>17/1/1960</strong>, cuộc Đồng khởi nổ ra tại Định Thủy (Mỏ Cày, Bến Tre) rồi nhanh chóng
-                lan khắp Nam Bộ và Nam Trung Bộ. Nhân dân kết hợp vũ trang và chính trị, tiêu diệt ác ôn, giải tán tề
-                xã. Thắng lợi vang dội này dẫn tới sự ra đời của <strong>Mặt trận Dân tộc Giải phóng miền Nam Việt Nam
-                  (20 – 12 – 1960)</strong>.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng ngọn đuốc dừa Bến Tre rực sáng đêm 17/1/1960; Đội quân
-                tóc dài gõ mõ tre vang trời lật đổ chính quyền Ngô Đình Diệm!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Hội nghị Trung ương Đảng nào đã mở đường cho phong trào Đồng khởi (1959 – 1960)
-                  bùng nổ?</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Hội nghị Trung ương
-                  12 (tháng 3/1957)<br>B. Hội nghị Trung ương 15 (tháng 1/1959)<br>C. Đại hội đại biểu toàn quốc lần thứ
-                  III (tháng 9/1960)<br>D. Hội nghị Trung ương 21 (tháng 7/1973)</div>
-                <div class="quiz-a">✅ Đáp án: B. Hội nghị Trung ương 15 (tháng 1/1959)</div>
-                <div class="quiz-exp">💡 Giải thích: Tháng 1/1959, Hội nghị Trung ương 15 của Đảng đã chỉ rõ con đường
-                  sử dụng bạo lực cách mạng, khởi xướng phong trào Đồng khởi.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Bước ngoặt quan trọng nhất của phong trào Đồng khởi (1959 –
-                  1960) là gì?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chuyển cách mạng miền Nam
-                  từ thế giữ gìn lực lượng sang thế tiến công, dẫn tới thành lập Mặt trận Dân tộc Giải phóng miền Nam
-                  (20 – 12 – 1960).</div>
-                <div class="quiz-exp">Gợi ý: Chuyển từ giữ gìn lực lượng sang tiến công</div>
-              </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Nhiệm vụ chiến lược của cách mạng hai miền Nam - Bắc sau năm 1954 là gì?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Miền Bắc tiến hành cách mạng XHCN (làm hậu phương lớn); Miền Nam tiếp tục cách mạng dân tộc dân chủ nhân dân (tiền tuyến lớn chống Mỹ - Diệm).</div>
+              <div class="quiz-exp">Gợi ý: Hai miền hai nhiệm vụ chiến lược</div>
             </div>
           </div>
         </div>
-      </article>
+      </div>
+    </article>
 
 
-      <!-- TRẠM 3 -->
-      <article class="station-card" id="tram-3" data-stage="boicanh">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">🛡️</div>
-            <div>
-              <div class="station-name">Trạm 3: Đại hội III của Đảng & Đánh bại 'Chiến tranh đặc biệt' (1961 – 1965)
-              </div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-7.8, 0.08, 2.2] (Vách Tây Nam)</b>
-              </div>
-            </div>
+    <!-- TRẠM 2 -->
+    <article class="station-card" id="tram-2" data-stage="boicanh">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">🔥</div>
+          <div>
+            <div class="station-name">Trạm 2: Nghị quyết 15 & Phong trào 'Đồng khởi' Bến Tre (1959 – 1960)</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-8.2, 0.08, -0.8] (Vách Tây)</b></div>
           </div>
-          <div class="station-badge-date">📅 1961 – 1965</div>
+        </div>
+        <div class="station-badge-date">📅 1959 – 1960</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Tháng 1/1959, Hội nghị 15 của Đảng khẳng định con đường bạo lực cách mạng. Phong trào Đồng khởi bùng nổ, tiêu biểu ở Bến Tre (1/1960), chuyển cách mạng miền Nam từ giữ gìn lực lượng sang thế tiến công.</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Nghị quyết 15 (1/1959): Xác định ngoài con đường sử dụng bạo lực cách mạng, nhân dân miền Nam không còn con đường nào khác.</li>
+            <li>Khởi đầu: Bùng nổ từ Vĩnh Thạnh (Gia Lai), Bác Ái (Khánh Hòa) tháng 2/1959, Trà Bồng (Quảng Ngãi) tháng 8/1959.</li>
+            <li>Đỉnh cao Đồng khởi Bến Tre (tháng 1/1960): Đội quân tóc dài và nhân dân nổi dậy đồng loạt phá ấp kìm kẹp, tịch thu ruộng đất chia cho dân cày.</li>
+            <li>Ý nghĩa: Giáng đòn nặng nề vào chủ nghĩa thực dân mới của Mỹ, làm lung lay chính quyền Ngô Đình Diệm; chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công.</li>
+            <li>Ngày 20/12/1960: Thành lập Mặt trận Dân tộc Giải phóng miền Nam Việt Nam.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>🔥 Bão lửa Đồng khởi (1959 – 1960)</h3><p>Trước luật 10/59 khét tiếng 'đặt cộng sản ra ngoài vòng pháp luật' và máy chém lưu động của Ngô Đình Diệm, tháng 1/1959, Ban Chấp hành Trung ương Đảng họp Hội nghị lần thứ 15 khẳng định con đường giải phóng miền Nam là khởi nghĩa vũ trang giành chính quyền.</p><p>Ngày <strong>17/1/1960</strong>, cuộc Đồng khởi nổ ra tại Định Thủy (Mỏ Cày, Bến Tre) rồi nhanh chóng lan khắp Nam Bộ và Nam Trung Bộ. Nhân dân kết hợp vũ trang và chính trị, tiêu diệt ác ôn, giải tán tề xã. Thắng lợi vang dội này dẫn tới sự ra đời của <strong>Mặt trận Dân tộc Giải phóng miền Nam Việt Nam (20/12/1960)</strong>.</p>
+          </div>
         </div>
 
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Đại hội III (9/1960) xác định đường lối chiến lược. Quân dân ta đập tan chiến lược
-              Chiến tranh đặc biệt của Mỹ với chiến thắng Ấp Bắc (1/1963) và các chiến dịch Bình Giã, Ba Gia, Đồng Xoài
-              (1964 – 1965).</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Đại hội III của Đảng (9/1960 tại Hà Nội): Xác định miền Bắc xây dựng CNXH (vai trò quyết định nhất),
-                miền Nam kháng chiến chống Mỹ (vai trò quyết định trực tiếp). kế hoạch Nhà nước 5 năm lần thứ nhất (1961 – 1965) với trọng tâm là xây dựng chủ nghĩa xã hội.</li>
-              <li>Bản chất Chiến tranh đặc biệt (1961 – 1965): Thực dân kiểu mới, dùng quân đội Sài Gòn chỉ huy bởi cố
-                vấn Mỹ, âm mưu 'dùng người Việt đánh người Việt'.</li>
-              <li>Thủ đoạn của Mỹ: Kế hoạch Xta-lây – Tay-lo bình định trong 18 tháng; quốc sách lập 'ấp chiến lược'
-                (xương sống); chiến thuật mới 'trực thăng vận, thiết xa vận'.</li>
-              <li>Thắng lợi then chốt của ta: Chiến thắng Ấp Bắc (1/1963) chứng minh ta có thể đánh bại chiến thuật tân
-                tiến của Mỹ; phong trào phá ấp chiến lược; các chiến thắng Bình Giã, An Lão, Ba Gia, Đồng Xoài (1964 –
-                1965) làm phá sản hoàn toàn chiến lược.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>🛡️ Đánh bại chiến lược Chiến tranh đặc biệt (1961 – 1965)</h3>
-              <p>Thất bại sau Đồng khởi, Mỹ chuyển sang chiến lược <strong>Chiến tranh đặc biệt</strong> với công thức:
-                <em>quân đội Sài Gòn + vũ khí, cố vấn Mỹ</em>. Trọng tâm của Mỹ là dồn 10 triệu nông dân vào các ấp
-                chiến lược hòng 'tát nước bắt cá'.</p>
-              <p>Ngày <strong>2/1/1963</strong>, trận Ấp Bắc (Mỹ Tho) diễn ra, ta bắn rơi trực thăng, bắn cháy xe bọc
-                thép M113, bẻ gãy chiến thuật 'trực thăng vận, thiết xa vận'. Tiếp đó, các đòn tiến công liên tiếp tại
-                Bình Giã, Ba Gia, Đồng Xoài đã chôn vùi hoàn toàn chiến lược Chiến tranh đặc biệt của đế quốc Mỹ.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tượng trưng chiếc trực thăng và xe bọc thép M113 bị bắn hạ bốc
-                cháy tại Ấp Bắc; hàng rào ấp chiến lược bị người dân cuốc xới giật đổ!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Được coi là 'xương sống' và 'quốc sách' của đế quốc Mỹ trong chiến lược Chiến
-                  tranh đặc biệt là:</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Chiến thuật trực
-                  thăng vận và thiết xa vận<br>B. Dồn dân lập ấp chiến lược<br>C. Đưa quân viễn chinh Mỹ trực tiếp tham
-                  chiến<br>D. Sử dụng chất độc hóa học da cam phá hoại mùa màng</div>
-                <div class="quiz-a">✅ Đáp án: B. Dồn dân lập ấp chiến lược</div>
-                <div class="quiz-exp">💡 Giải thích: Dồn dân lập ấp chiến lược là xương sống và biện pháp chủ yếu của kế
-                  hoạch Xta-lây - Tay-lo trong Chiến tranh đặc biệt.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Chiến thắng quân sự nào mở ra khả năng đánh bại chiến thuật
-                  'trực thăng vận, thiết xa vận' của Mỹ?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chiến thắng Ấp Bắc (Mỹ
-                  Tho) vào tháng 1/1963.</div>
-                <div class="quiz-exp">Gợi ý: Ấp Bắc tháng 1/1963</div>
-              </div>
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng ngọn đuốc dừa Bến Tre rực sáng đêm 17/1/1960; Đội quân tóc dài gõ mõ tre vang trời lật đổ chính quyền Ngô Đình Diệm!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
             </div>
           </div>
         </div>
-      </article>
 
 
-      <!-- TRẠM 4 -->
-      <article class="station-card" id="tram-4" data-stage="dienbien1">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">⚔️</div>
-            <div>
-              <div class="station-name">Trạm 4: Đánh bại 'Chiến tranh cục bộ' — Vạn Tường & 2 Mùa khô (1965 – 1968)
-              </div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-3.8, 0.08, 3.8] (Vách Nam Tây)</b>
-              </div>
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Hội nghị Trung ương Đảng nào đã mở đường cho phong trào Đồng khởi (1959 – 1960) bùng nổ?</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Hội nghị Trung ương 12 (tháng 3/1957)<br>B. Hội nghị Trung ương 15 (tháng 1/1959)<br>C. Đại hội đại biểu toàn quốc lần thứ III (tháng 9/1960)<br>D. Hội nghị Trung ương 21 (tháng 7/1973)</div>
+              <div class="quiz-a">✅ Đáp án: B. Hội nghị Trung ương 15 (tháng 1/1959)</div>
+              <div class="quiz-exp">💡 Giải thích: Tháng 1/1959, Hội nghị Trung ương 15 của Đảng đã chỉ rõ con đường sử dụng bạo lực cách mạng, khởi xướng phong trào Đồng khởi.</div>
             </div>
-          </div>
-          <div class="station-badge-date">📅 1965 – 1968</div>
-        </div>
-
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Mỹ ồ ạt đổ quân viễn chinh Mỹ vào miền Nam tiến hành Chiến tranh cục bộ và ném bom
-              phá hoại miền Bắc. Quân dân ta lập nên chiến thắng Vạn Tường (18/8/1965) và bẻ gãy 2 cuộc phản công mùa
-              khô.</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Bản chất Chiến tranh cục bộ: Tiến hành bằng quân đội Mỹ, quân đồng minh (Hàn Quốc, Thái Lan, Úc...) và quân đội Sài Gòn; mở rộng ném bom phá hoại miền Bắc lần 1 (từ 2/1965).</li>
-              <li>Thủ đoạn của Mỹ: Mĩ mở cuộc hành quân “tìm diệt” vào căn cứ của ta ở Vạn Tường (Quảng Ngãi); kết hợp hai gọng kìm “tìm diệt” và “bình định”.</li>
-              <li>Chiến thắng Vạn Tường (18/8/1965 tại Quảng Ngãi): Chiến thắng quân sự đầu tiên đối đầu trực tiếp quân
-                viễn chinh Mỹ, chứng minh ta hoàn toàn có khả năng đánh thắng Mỹ về quân sự.</li>
-              <li>Đập tan cuộc phản công của quân Mỹ và đồng minh trong hai mùa khô 1965 – 1966 và 1966 – 1967: Mùa khô 1965 – 1966 (45 vạn quân) và mùa khô 1966 – 1967
-                (hơn 98 vạn quân gồm chiến dịch Gian-xơn Xi-ti).</li>
-              <li>Thế trận toàn dân đánh giặc: Phong trào 'Tìm Mỹ mà đánh, lùng ngụy mà diệt', 'Vành đai diệt Mỹ' mọc
-                lên khắp chiến trường.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>⚔️ Đương đầu và đánh bại Chiến tranh cục bộ (1965 – 1968)</h3>
-              <p>Sau khi chiến tranh đặc biệt phá sản, Mỹ điên cuồng ồ ạt đưa quân chiến đấu Mỹ vào Đà Nẵng, Chu Lai,
-                đồng thời dùng không quân leo thang bắn phá miền Bắc sau sự kiện Vịnh Bắc Bộ (8/1964).</p>
-              <p>Ngày <strong>18/8/1965</strong>, tại thôn Vạn Tường (Quảng Ngãi), 9.000 lính thủy đánh bộ Mỹ cùng hạm
-                đội tàu chiến, xe tăng mở cuộc hành quân 'Ánh sáng sao'. Trung đoàn 1 chủ lực ta cùng du kích đã kiên
-                cường đánh bại cuộc hành quân, diệt hơn 900 lính Mỹ. Tiếp đó, ta đập tan hoàn toàn 2 cuộc phản công mùa
-                khô 1965-1966 và 1966-1967.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng bờ biển Vạn Tường (18/8/1965), lá cờ 'Tìm Mỹ mà đánh,
-                lùng Ngụy mà diệt' cắm trên xác xe bọc thép của lính thủy đánh bộ Mỹ!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Lực lượng giữ vai trò nòng cốt trong chiến lược Chiến tranh cục bộ (1965 – 1968)
-                  của Mỹ là:</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Quân đội Sài
-                  Gòn<br>B. Quân viễn chinh Mỹ trực tiếp tham chiến<br>C. Đội ngũ cố vấn quân sự Mỹ<br>D. Quân đội tay
-                  sai của các nước Đông Nam Á</div>
-                <div class="quiz-a">✅ Đáp án: B. Quân viễn chinh Mỹ trực tiếp tham chiến</div>
-                <div class="quiz-exp">💡 Giải thích: Chiến lược Chiến tranh cục bộ được tiến hành với lực lượng chủ yếu
-                  và nòng cốt là quân viễn chinh Mỹ cùng vũ khí tối tân.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Chiến thắng nào được coi là 'Ấp Bắc đối với quân Mỹ', mở
-                  đầu cao trào 'Tìm Mỹ mà đánh'?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chiến thắng Vạn Tường
-                  (Quảng Ngãi) ngày 18/8/1965.</div>
-                <div class="quiz-exp">Gợi ý: Vạn Tường ngày 18/8/1965</div>
-              </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Bước ngoặt quan trọng nhất của phong trào Đồng khởi (1959 – 1960) là gì?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chuyển cách mạng miền Nam từ thế giữ gìn lực lượng sang thế tiến công, dẫn tới thành lập Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960).</div>
+              <div class="quiz-exp">Gợi ý: Chuyển từ giữ gìn lực lượng sang tiến công</div>
             </div>
           </div>
         </div>
-      </article>
+      </div>
+    </article>
 
 
-      <!-- TRẠM 5 -->
-      <article class="station-card" id="tram-5" data-stage="dienbien1">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">💥</div>
-            <div>
-              <div class="station-name">Trạm 5: Cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân (1968) — Bước ngoặt lịch sử
-              </div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[1.2, 0.08, 3.8] (Tâm điểm Vách
-                  Nam)</b></div>
-            </div>
+    <!-- TRẠM 3 -->
+    <article class="station-card" id="tram-3" data-stage="boicanh">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">🛡️</div>
+          <div>
+            <div class="station-name">Trạm 3: Đại hội III của Đảng & Đánh bại 'Chiến tranh đặc biệt' (1961 – 1965)</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-7.8, 0.08, 2.2] (Vách Tây Nam)</b></div>
           </div>
-          <div class="station-badge-date">📅 Tết Mậu Thân 1968</div>
+        </div>
+        <div class="station-badge-date">📅 1961 – 1965</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Đại hội III (9/1960) xác định đường lối chiến lược. Quân dân ta đập tan chiến lược Chiến tranh đặc biệt của Mỹ với chiến thắng Ấp Bắc (1/1963) và các chiến dịch Bình Giã, Ba Gia, Đồng Xoài (1964 – 1965).</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Đại hội III của Đảng (9/1960 tại Hà Nội): Xác định miền Bắc xây dựng CNXH (vai trò quyết định nhất), miền Nam kháng chiến chống Mỹ (vai trò quyết định trực tiếp). Kế hoạch 5 năm lần 1 (1961 – 1965).</li>
+            <li>Bản chất Chiến tranh đặc biệt (1961 – 1965): Thực dân kiểu mới, dùng quân đội Sài Gòn chỉ huy bởi cố vấn Mỹ, âm mưu 'dùng người Việt đánh người Việt'.</li>
+            <li>Thủ đoạn của Mỹ: Kế hoạch Xta-lây – Tay-lo bình định trong 18 tháng; quốc sách lập 'ấp chiến lược' (xương sống); chiến thuật mới 'trực thăng vận, thiết xa vận'.</li>
+            <li>Thắng lợi then chốt của ta: Chiến thắng Ấp Bắc (1/1963) chứng minh ta có thể đánh bại chiến thuật tân tiến của Mỹ; phong trào phá ấp chiến lược; các chiến thắng Bình Giã, An Lão, Ba Gia, Đồng Xoài (1964 – 1965) làm phá sản hoàn toàn chiến lược.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>🛡️ Đánh bại chiến lược Chiến tranh đặc biệt (1961 – 1965)</h3><p>Thất bại sau Đồng khởi, Mỹ chuyển sang chiến lược <strong>Chiến tranh đặc biệt</strong> với công thức: <em>quân đội Sài Gòn + vũ khí, cố vấn Mỹ</em>. Trọng tâm của Mỹ là dồn 10 triệu nông dân vào các ấp chiến lược hòng 'tát nước bắt cá'.</p><p>Ngày <strong>2/1/1963</strong>, trận Ấp Bắc (Mỹ Tho) diễn ra, ta bắn rơi trực thăng, bắn cháy xe bọc thép M113, bẻ gãy chiến thuật 'trực thăng vận, thiết xa vận'. Tiếp đó, các đòn tiến công liên tiếp tại Bình Giã, Ba Gia, Đồng Xoài đã chôn vùi hoàn toàn chiến lược Chiến tranh đặc biệt của đế quốc Mỹ.</p>
+          </div>
         </div>
 
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Đêm giao thừa Tết Mậu Thân 1968, quân ta đồng loạt tiến công vào các đô thị miền
-              Nam (Tòa Đại sứ Mỹ, Dinh Độc Lập...). Đòn sấm sét làm lung lay ý chí xâm lược của Mỹ, buộc Mỹ phải xuống
-              thang đàm phán.</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Bất ngờ chiến lược: Mở đòn tiến công đồng loạt vào các sào huyệt trung tâm đầu não của địch ở 37 thị
-                xã, 4 thành phố lớn (Sài Gòn, Huế, Đà Nẵng...) ngay trong đêm Tết Mậu Thân.</li>
-              <li>Mục tiêu trọng yếu tại Sài Gòn: Tòa Đại sứ Mỹ, Dinh Độc Lập, Đài phát thanh Sài Gòn, Bộ Tổng tham mưu
-                ngụy.</li>
-              <li>Ý nghĩa bước ngoặt lịch sử: Làm lung lay tận gốc ý chí xâm lược của đế quốc Mỹ; buộc Mỹ phải tuyên bố
-                'phi Mỹ hóa' chiến tranh (thừa nhận thất bại Chiến tranh cục bộ).</li>
-              <li>Kết quả đàm phán: Mỹ buộc phải ngừng ném bom không điều kiện miền Bắc và chấp nhận ngồi vào bàn đàm
-                phán tại Pa-ri.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>💥 Bước ngoặt lịch sử Xuân Mậu Thân (1968)</h3>
-              <p>Đêm 30 rạng ngày <strong>31/1/1968</strong> (đúng đêm giao thừa Tết Mậu Thân), tiếng súng tổng tiến
-                công bất thần rền vang trên toàn miền Nam. Các chiến sĩ biệt động Sài Gòn cảm tử đánh thẳng vào trung
-                tâm Tòa Đại sứ Mỹ, giữ chân địch suốt 6 giờ liền.</p>
-              <p>Hình ảnh lính Mỹ hoảng loạn trên màn ảnh truyền hình quốc tế đã gây chấn động toàn nước Mỹ. Cuộc tổng
-                tiến công đã giáng đòn quyết định vào ý chí xâm lược của giới cầm quyền Oa-sinh-tơn, buộc Tổng thống
-                Giôn-xơn tuyên bố không tái tranh cử và chấp nhận đàm phán Pa-ri.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng chiếc đồng hồ điểm đúng giao thừa Tết Mậu Thân 1968,
-                các chiến sĩ biệt động lao thẳng vào Tòa Đại sứ Mỹ tại Sài Gòn khiến cả nước Mỹ bàng hoàng!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Địa bàn trọng tâm của cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân 1968 là ở đâu?
-                </div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Vùng rừng núi chiến
-                  khu Tây Nguyên<br>B. Các đô thị miền Nam, đặc biệt là Sài Gòn, Huế, Đà Nẵng<br>C. Các dải ấp chiến
-                  lược vùng đồng bằng ven biển<br>D. Tuyến đồn bốt biên giới Tây Nam</div>
-                <div class="quiz-a">✅ Đáp án: B. Các đô thị miền Nam, đặc biệt là Sài Gòn, Huế, Đà Nẵng</div>
-                <div class="quiz-exp">💡 Giải thích: Khác với các chiến dịch trước đánh ở nông thôn, rừng núi, Mậu Thân
-                  1968 đánh thẳng vào các đô thị lớn và trung tâm đầu não của địch.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Ý nghĩa quan trọng nhất của cuộc Tổng tiến công và nổi dậy
-                  Xuân Mậu Thân 1968 là gì?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Làm lung lay ý chí xâm
-                  lược của Mỹ, buộc Mỹ tuyên bố 'phi Mỹ hóa' chiến tranh và chấp nhận ngồi vào bàn đàm phán tại Pa-ri.
-                </div>
-                <div class="quiz-exp">Gợi ý: Bước ngoặt buộc Mỹ phi Mỹ hóa và đàm phán Pa-ri</div>
-              </div>
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tượng trưng chiếc trực thăng và xe bọc thép M113 bị bắn hạ bốc cháy tại Ấp Bắc; hàng rào ấp chiến lược bị người dân cuốc xới giật đổ!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
             </div>
           </div>
         </div>
-      </article>
 
 
-      <!-- TRẠM 6 -->
-      <article class="station-card" id="tram-6" data-stage="dienbien1">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">🗺️</div>
-            <div>
-              <div class="station-name">Trạm 6: Đánh bại 'Việt Nam hoá chiến tranh' (Việt Nam hóa chiến tranh) & Tiến công chiến lược 1972</div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[6.5, 0.08, 3.6] (Vách Nam Đông)</b>
-              </div>
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Được coi là 'xương sống' và 'quốc sách' của đế quốc Mỹ trong chiến lược Chiến tranh đặc biệt là:</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Chiến thuật trực thăng vận và thiết xa vận<br>B. Dồn dân lập ấp chiến lược<br>C. Đưa quân viễn chinh Mỹ trực tiếp tham chiến<br>D. Sử dụng chất độc hóa học da cam phá hoại mùa màng</div>
+              <div class="quiz-a">✅ Đáp án: B. Dồn dân lập ấp chiến lược</div>
+              <div class="quiz-exp">💡 Giải thích: Dồn dân lập ấp chiến lược là xương sống và biện pháp chủ yếu của kế hoạch Xta-lây - Tay-lo trong Chiến tranh đặc biệt.</div>
             </div>
-          </div>
-          <div class="station-badge-date">📅 1969 – 1972</div>
-        </div>
-
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Mỹ chuyển sang Việt Nam hóa chiến tranh rút dần lính Mỹ nhưng tăng viện trợ và mở
-              rộng chiến tranh sang Lào, Campuchia. Ta thành lập Chính phủ CMLT (1969) và mở đòn tiến công chiến lược
-              1972 chọc thủng 3 phòng tuyến.</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Bản chất Việt Nam hóa chiến tranh (1969 – 1973): Quân đội Sài Gòn là chủ yếu + hỏa lực, không quân Mỹ
-                + cố vấn Mỹ; âm mưu 'dùng người Việt đánh người Việt, dùng người Đông Dương đánh người Đông Dương'.</li>
-              <li>Thủ đoạn ngoại giao hiểm độc: Mỹ dùng thủ đoạn ngoại giao Hoà hoãn, thoả hiệp với Liên Xô và Trung Quốc (1972) nhằm gây khó khăn cho cuộc kháng chiến của nhân dân ta hòng cô lập và cắt đứt
-                viện trợ cho cách mạng Việt Nam.</li>
-              <li>Mặt trận chính trị - ngoại giao: Thành lập Chính phủ Cách mạng lâm thời Cộng hoà miền Nam Việt Nam (6 /6 /1969). Tháng 4/1970, Hội nghị cấp cao ba nước Việt Nam – Lào – Cam-pu-chia được tổ chức, biểu thị quyết tâm chống Mỹ.</li>
-              <li>Tiến công chiến lược 1972: Từ 3/1972, quân ta chọc thủng 3 phòng tuyến kiên cố nhất của địch: Quảng
-                Trị, Tây Nguyên, Đông Nam Bộ; buộc Mĩ tuyên bố “Mĩ hoá trở lại” chiến tranh xâm lược, tức thừa nhận sự thất bại của chiến lược Việt Nam hoá chiến tranh.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>🗺️ Đánh bại chiến lược Việt Nam hóa chiến tranh (1969 – 1973)</h3>
-              <p>Dưới học thuyết Ních-xơn, Mỹ rút dần quân chiến đấu về nước để giảm thương vong lính Mỹ, tăng cường
-                trang bị hiện đại cho quân ngụy và mở rộng xâm lược sang Campuchia và Lào.</p>
-              <p>Ngày <strong>6 /6 /1969</strong>, Chính phủ Cách mạng lâm thời Cộng hòa miền Nam Việt Nam được thành lập,
-                được 23 nước công nhận. Tháng 3/1972, ta bất ngờ mở cuộc Tiến công chiến lược 1972 đập tan tuyến phòng
-                ngự thép của ngụy tại Quảng Trị, Tây Nguyên và Đông Nam Bộ, giải phóng hoàn toàn tỉnh Quảng Trị.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tấm bản đồ chiến dịch 1972 với 3 mũi tên đỏ chọc thủng 3 phòng
-                tuyến Quảng Trị - Tây Nguyên - Đông Nam Bộ, xé toang học thuyết Ních-xơn!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Thắng lợi nào của quân dân ta buộc đế quốc Mỹ phải tuyên bố '“Mĩ hoá trở lại”' chiến
-                  tranh xâm lược?</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Chiến dịch Đường 9
-                  - Khe Sanh 1968<br>B. Thắng lợi của cuộc Tiến công chiến lược năm 1972<br>C. Chiến thắng Đường 14 -
-                  Phước Long 1975<br>D. Cuộc tiến công đánh bại cuộc hành quân Lam Sơn 719</div>
-                <div class="quiz-a">✅ Đáp án: B. Thắng lợi của cuộc Tiến công chiến lược năm 1972</div>
-                <div class="quiz-exp">💡 Giải thích: Cuộc tiến công chiến lược năm 1972 chọc thủng 3 phòng tuyến của
-                  địch buộc Mỹ phải thừa nhận sự phá sản của Việt Nam hóa chiến tranh.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Chính phủ hợp pháp đại diện cho nhân dân miền Nam Việt Nam
-                  thành lập ngày 6 /6 /1969 có tên là gì?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chính phủ Cách mạng lâm
-                  thời Cộng hòa miền Nam Việt Nam.</div>
-                <div class="quiz-exp">Gợi ý: Chính phủ CMLT Cộng hòa miền Nam Việt Nam</div>
-              </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Chiến thắng quân sự nào mở ra khả năng đánh bại chiến thuật 'trực thăng vận, thiết xa vận' của Mỹ?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chiến thắng Ấp Bắc (Mỹ Tho) vào tháng 1/1963.</div>
+              <div class="quiz-exp">Gợi ý: Ấp Bắc tháng 1/1963</div>
             </div>
           </div>
         </div>
-      </article>
+      </div>
+    </article>
 
 
-      <!-- TRẠM 7 -->
-      <article class="station-card" id="tram-7" data-stage="dienbien2">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">✈️</div>
-            <div>
-              <div class="station-name">Trạm 7: Trận 'Điện Biên Phủ trên không' (12/1972) & Hiệp định Pari (Pa-ri) (1973)</div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[9.2, 0.08, 1.2] (Vách Đông)</b>
-              </div>
-            </div>
+    <!-- TRẠM 4 -->
+    <article class="station-card" id="tram-4" data-stage="dienbien1">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">⚔️</div>
+          <div>
+            <div class="station-name">Trạm 4: Đánh bại 'Chiến tranh cục bộ' — Vạn Tường & 2 Mùa khô (1965 – 1968)</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[-3.8, 0.08, 3.8] (Vách Nam Tây)</b></div>
           </div>
-          <div class="station-badge-date">📅 18–29/12/1972 & 27/1/1973</div>
+        </div>
+        <div class="station-badge-date">📅 1965 – 1968</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Mỹ ồ ạt đổ quân viễn chinh Mỹ vào miền Nam tiến hành Chiến tranh cục bộ và ném bom phá hoại miền Bắc. Quân dân ta lập nên chiến thắng Vạn Tường (18/8/1965) và bẻ gãy 2 cuộc phản công mùa khô.</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Bản chất Chiến tranh cục bộ: Tiến hành bằng quân đội Mỹ, quân đồng minh (Hàn Quốc, Thái Lan, Úc...) và quân đội Sài Gòn; mở rộng ném bom phá hoại miền Bắc lần 1 (từ 2/1965).</li>
+            <li>Chiến thắng Vạn Tường (18/8/1965 tại Quảng Ngãi): Chiến thắng quân sự đầu tiên đối đầu trực tiếp quân viễn chinh Mỹ, chứng minh ta hoàn toàn có khả năng đánh thắng Mỹ về quân sự.</li>
+            <li>Đập tan 2 cuộc phản công chiến lược mùa khô: Mùa khô 1965 – 1966 (45 vạn quân) và mùa khô 1966 – 1967 (hơn 98 vạn quân gồm chiến dịch Gian-xơn Xi-ti).</li>
+            <li>Thế trận toàn dân đánh giặc: Phong trào 'Tìm Mỹ mà đánh, lùng ngụy mà diệt', 'Vành đai diệt Mỹ' mọc lên khắp chiến trường.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>⚔️ Đương đầu và đánh bại Chiến tranh cục bộ (1965 – 1968)</h3><p>Sau khi chiến tranh đặc biệt phá sản, Mỹ điên cuồng ồ ạt đưa quân chiến đấu Mỹ vào Đà Nẵng, Chu Lai, đồng thời dùng không quân leo thang bắn phá miền Bắc sau sự kiện Vịnh Bắc Bộ (8/1964).</p><p>Ngày <strong>18/8/1965</strong>, tại thôn Vạn Tường (Quảng Ngãi), 9.000 lính thủy đánh bộ Mỹ cùng hạm đội tàu chiến, xe tăng mở cuộc hành quân 'Ánh sáng sao'. Trung đoàn 1 chủ lực ta cùng du kích đã kiên cường đánh bại cuộc hành quân, diệt hơn 900 lính Mỹ. Tiếp đó, ta đập tan hoàn toàn 2 cuộc phản công mùa khô 1965-1966 và 1966-1967.</p>
+          </div>
         </div>
 
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Mỹ mở cuộc tập kích B-52 hủy diệt Hà Nội, Hải Phòng (18 – 29/12/1972). Quân dân
-              miền Bắc bắn rơi 81 máy bay (34 pháo đài bay B-52), lập nên kỳ tích 'Điện Biên Phủ trên không', buộc Mỹ ký
-              Hiệp định Pari (Pa-ri) (27/1/1973).</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Âm mưu tập kích B-52: Từ 18 – 29/12/1972, Mỹ tiến hành tập kích chiến lược bằng máy bay B52 vào Hà
-                Nội, Hải Phòng,… nhằm giành thắng lợi quân sự quyết định, buộc Việt Nam phải kí Hiệp định có lợi cho Mỹ.
-              </li>
-              <li>12 ngày đêm khói lửa (18 – 29/12/1972): Lưới lửa phòng không nhân dân Hà Nội, Hải Phòng bắn rơi 81 máy
-                bay hiện đại, trong đó có 34 siêu pháo đài bay B-52 và 5 máy bay F-111.</li>
-              <li>Hiệp định Pari (Pa-ri) ký kết (27/1/1973): Mỹ cam kết tôn trọng độc lập, chủ quyền, thống nhất và toàn vẹn
-                lãnh thổ của Việt Nam; rút hết quân viễn chinh và quân đồng minh về nước.</li>
-              <li>Ý nghĩa chiến lược: Hoàn thành mục tiêu lịch sử 'Đánh cho Mỹ cút', tạo so sánh lực lượng hoàn toàn có
-                lợi cho cách mạng miền Nam.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>✈️ Khúc tráng ca Điện Biên Phủ trên không & Thắng lợi Pa-ri 1973</h3>
-              <p>Từ ngày 18 đến 29/12/1972, Mỹ huy động hàng trăm lượt pháo đài bay B-52 trút hàng vạn tấn bom xuống thủ
-                đô Hà Nội (phố Khâm Thiên, bệnh viện Bạch Mai...). Với ý chí kiên cường, quân và dân Hà Nội đã biến bầu
-                trời Thăng Long thành mồ chôn B-52.</p>
-              <p>Thất bại ê chề buộc Tổng thống Ních-xơn phải hạ lệnh ngừng ném bom và quay lại bàn đàm phán. Ngày
-                <strong>27/1/1973</strong>, <strong>Hiệp định Pari (Pa-ri) về chấm dứt chiến tranh, lập lại hòa bình ở Việt
-                  Nam</strong> chính thức được ký kết. Quân viễn chinh Mỹ phải cuốn cờ rút hết về nước.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng xác pháo đài bay B-52 Mỹ rơi rực lửa xuống hồ Hữu Tiệp
-                (Hà Nội); bên cạnh là bàn ký Hiệp định Pari (Pa-ri) với lá cờ Việt Nam bay cao!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Thời gian diễn ra trận tập kích không kích B-52 của đế quốc Mỹ vào Hà Nội, Hải
-                  Phòng là:</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Từ ngày 10 đến ngày
-                  22 tháng 12 năm 1972<br>B. Từ ngày 18 đến ngày 29 tháng 12 năm 1972<br>C. Từ ngày 20 đến ngày 31 tháng
-                  12 năm 1972<br>D. Từ ngày 15 đến ngày 27 tháng 1 năm 1973</div>
-                <div class="quiz-a">✅ Đáp án: B. Từ ngày 18 đến ngày 29 tháng 12 năm 1972</div>
-                <div class="quiz-exp">💡 Giải thích: Trận Điện Biên Phủ trên không kéo dài suốt 12 ngày đêm từ ngày 18
-                  đến ngày 29 tháng 12 năm 1972.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Ý nghĩa then chốt nhất của Hiệp định Pari (Pa-ri) 1973 đối với
-                  cuộc kháng chiến chống Mỹ là gì?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Buộc Mỹ rút hết quân viễn
-                  chinh về nước, hoàn thành bước 1 'Đánh cho Mỹ cút', tạo thời cơ quyết định để 'Đánh cho Ngụy nhào'.
-                </div>
-                <div class="quiz-exp">Gợi ý: Đánh cho Mỹ cút, tạo đà Đánh cho Ngụy nhào</div>
-              </div>
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng bờ biển Vạn Tường (18/8/1965), lá cờ 'Tìm Mỹ mà đánh, lùng Ngụy mà diệt' cắm trên xác xe bọc thép của lính thủy đánh bộ Mỹ!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
             </div>
           </div>
         </div>
-      </article>
 
 
-      <!-- TRẠM 8 -->
-      <article class="station-card" id="tram-8" data-stage="dienbien2">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">🧭</div>
-            <div>
-              <div class="station-name">Trạm 8: Nghị quyết 21 & Đòn trinh sát chiến lược Đường 14 – Phước Long (1974 –
-                1975)</div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[8.5, 0.08, -2.8] (Vách Đông Bắc)</b>
-              </div>
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Lực lượng giữ vai trò nòng cốt trong chiến lược Chiến tranh cục bộ (1965 – 1968) của Mỹ là:</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Quân đội Sài Gòn<br>B. Quân viễn chinh Mỹ trực tiếp tham chiến<br>C. Đội ngũ cố vấn quân sự Mỹ<br>D. Quân đội tay sai của các nước Đông Nam Á</div>
+              <div class="quiz-a">✅ Đáp án: B. Quân viễn chinh Mỹ trực tiếp tham chiến</div>
+              <div class="quiz-exp">💡 Giải thích: Chiến lược Chiến tranh cục bộ được tiến hành với lực lượng chủ yếu và nòng cốt là quân viễn chinh Mỹ cùng vũ khí tối tân.</div>
             </div>
-          </div>
-          <div class="station-badge-date">📅 7/1973 & 6/1/1975</div>
-        </div>
-
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Hội nghị 21 (7/1973) chủ trương bạo lực cách mạng. Chiến thắng Đường 14 – Phước
-              Long (6/1/1975) là đòn trinh sát chiến lược chứng minh quân ngụy bất lực và Mỹ khó có khả năng can thiệp
-              trở lại.</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Bối cảnh: Dù ký Hiệp định Pari (Pa-ri), Mỹ vẫn để lại 2 vạn cố vấn, tiếp tục viện trợ cho quân đội Sài Gòn mở
-                các cuộc hành quân 'tràn ngập lãnh thổ'.</li>
-              <li>Hội nghị Ban Chấp hành Trung ương Đảng lần thứ 21 (tháng 7/1973) (7/1973): Khẳng định con đường cách mạng miền Nam là bạo lực cách mạng, nắm
-                vững chiến lược tiến công.</li>
-              <li>Chiến thắng Đường 14 – Phước Long (6/1/1975): Giải phóng hoàn toàn thị xã và toàn tỉnh Phước Long
-                (tỉnh đầu tiên ở miền Nam được hoàn toàn giải phóng).</li>
-              <li>Ý nghĩa 'trận trinh sát chiến lược': Khẳng định sức mạnh vượt trội của quân ta; sự suy yếu bất lực của
-                quân đội Sài Gòn; và phản ứng của Mỹ chỉ dừng lại ở đe dọa từ xa, khả năng can thiệp quân sự trở lại là
-                rất hạn chế.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>🧭 Đòn trinh sát chiến lược Đường 14 – Phước Long (1975)</h3>
-              <p>Sau Hiệp định Pari (Pa-ri), chính quyền Nguyễn Văn Thiệu điên cuồng vi phạm hiệp định, xua quân lấn chiếm vùng
-                giải phóng. Tháng 7/1973, Hội nghị Trung ương 21 của Đảng hạ quyết tâm tiếp tục giương cao ngọn cờ bạo
-                lực cách mạng.</p>
-              <p>Đầu năm 1975, ta mở chiến dịch Đường 14 – Phước Long. Ngày <strong>6/1/1975</strong>, thị xã Phước Long
-                hoàn toàn giải phóng. Chiến thắng này có ý nghĩa như một <strong>'đòn trinh sát chiến lược'</strong>
-                thăm dò phản ứng của Mỹ và thử lửa quân ngụy, củng cố quyết tâm sắt đá của Bộ Chính trị mở cuộc Tổng
-                tiến công mùa Xuân 1975.</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Tấm bia mốc số 14 cắm trên đỉnh núi Bà Rá (Phước Long) giải phóng;
-                chiếc ống nhòm trinh sát nhìn về Sài Gòn báo tin quân ngụy đang hoang mang tan rã!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Tỉnh đầu tiên ở miền Nam được hoàn toàn giải phóng trong cuộc kháng chiến chống Mỹ
-                  là:</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Tỉnh Quảng
-                  Trị<br>B. Tỉnh Phước Long<br>C. Tỉnh Buôn Ma Thuột<br>D. Tỉnh Thừa Thiên Huế</div>
-                <div class="quiz-a">✅ Đáp án: B. Tỉnh Phước Long</div>
-                <div class="quiz-exp">💡 Giải thích: Chiến dịch Đường 14 - Phước Long (kết thúc 6/1/1975) đã giải phóng
-                  thị xã và toàn bộ tỉnh Phước Long.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Vì sao chiến thắng Đường 14 – Phước Long (6/1/1975) được
-                  coi là 'đòn trinh sát chiến lược'?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Vì nó chứng minh sức mạnh
-                  của quân ta, sự bất lực suy yếu của quân đội Sài Gòn và phản ứng hạn chế của Mỹ (Mỹ không dám can
-                  thiệp trở lại bằng quân sự).</div>
-                <div class="quiz-exp">Gợi ý: Thử lửa quân ngụy và thăm dò khả năng can thiệp của Mỹ</div>
-              </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Chiến thắng nào được coi là 'Ấp Bắc đối với quân Mỹ', mở đầu cao trào 'Tìm Mỹ mà đánh'?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chiến thắng Vạn Tường (Quảng Ngãi) ngày 18/8/1965.</div>
+              <div class="quiz-exp">Gợi ý: Vạn Tường ngày 18/8/1965</div>
             </div>
           </div>
         </div>
-      </article>
+      </div>
+    </article>
 
 
-      <!-- TRẠM 9 -->
-      <article class="station-card" id="tram-9" data-stage="dienbien2">
-        <div class="station-top">
-          <div class="station-title-box">
-            <div class="station-icon">🏆</div>
-            <div>
-              <div class="station-name">Trạm 9: Tổng tiến công Xuân 1975 & Đại thắng mùa Xuân 30/4/1975 toàn thắng</div>
-              <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[2.5, 0.08, -3.4] (Vách Bắc)</b>
-              </div>
-            </div>
+    <!-- TRẠM 5 -->
+    <article class="station-card" id="tram-5" data-stage="dienbien1">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">💥</div>
+          <div>
+            <div class="station-name">Trạm 5: Cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân (1968) — Bước ngoặt lịch sử</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[1.2, 0.08, 3.8] (Tâm điểm Vách Nam)</b></div>
           </div>
-          <div class="station-badge-date">📅 4/3 – 30/4/1975</div>
+        </div>
+        <div class="station-badge-date">📅 Tết Mậu Thân 1968</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Đêm giao thừa Tết Mậu Thân 1968, quân ta đồng loạt tiến công vào các đô thị miền Nam (Tòa Đại sứ Mỹ, Dinh Độc Lập...). Đòn sấm sét làm lung lay ý chí xâm lược của Mỹ, buộc Mỹ phải xuống thang đàm phán.</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Bất ngờ chiến lược: Mở đòn tiến công đồng loạt vào các sào huyệt trung tâm đầu não của địch ở 37 thị xã, 4 thành phố lớn (Sài Gòn, Huế, Đà Nẵng...) ngay trong đêm Tết Mậu Thân.</li>
+            <li>Mục tiêu trọng yếu tại Sài Gòn: Tòa Đại sứ Mỹ, Dinh Độc Lập, Đài phát thanh Sài Gòn, Bộ Tổng tham mưu ngụy.</li>
+            <li>Ý nghĩa bước ngoặt lịch sử: Làm lung lay tận gốc ý chí xâm lược của đế quốc Mỹ; buộc Mỹ phải tuyên bố 'phi Mỹ hóa' chiến tranh (thừa nhận thất bại Chiến tranh cục bộ).</li>
+            <li>Kết quả đàm phán: Mỹ buộc phải ngừng ném bom không điều kiện miền Bắc và chấp nhận ngồi vào bàn đàm phán tại Pa-ri.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>💥 Bước ngoặt lịch sử Xuân Mậu Thân (1968)</h3><p>Đêm 30 rạng ngày <strong>31/1/1968</strong> (đúng đêm giao thừa Tết Mậu Thân), tiếng súng tổng tiến công bất thần rền vang trên toàn miền Nam. Các chiến sĩ biệt động Sài Gòn cảm tử đánh thẳng vào trung tâm Tòa Đại sứ Mỹ, giữ chân địch suốt 6 giờ liền.</p><p>Hình ảnh lính Mỹ hoảng loạn trên màn ảnh truyền hình quốc tế đã gây chấn động toàn nước Mỹ. Cuộc tổng tiến công đã giáng đòn quyết định vào ý chí xâm lược của giới cầm quyền Oa-sinh-tơn, buộc Tổng thống Giôn-xơn tuyên bố không tái tranh cử và chấp nhận đàm phán Pa-ri.</p>
+          </div>
         </div>
 
-        <div class="station-body">
-          <div>
-            <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
-            <div class="summary-text">Tổng tiến công và nổi dậy Xuân 1975 qua 3 chiến dịch: Tây Nguyên, Huế – Đà Nẵng và
-              Chiến dịch Hồ Chí Minh lịch sử. Đúng 11h30 ngày 30/4/1975, cờ cách mạng tung bay trên nóc Dinh Độc Lập,
-              non sông thu về một mối.</div>
-
-            <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
-            <ul class="kp-list">
-              <li>Chiến dịch Tây Nguyên (4/3 – 24/3/1975): Đòn hiểm mở màn với trận then chốt Buôn Ma Thuột (10/3), giải
-                phóng toàn bộ Tây Nguyên, chuyển cuộc chiến từ tiến công chiến lược sang tổng tiến công chiến lược.</li>
-              <li>Chiến dịch Huế – Đà Nẵng (21/3 – 29/3/1975): Đập tan căn cứ quân sự liên hợp mạnh nhất miền Trung,
-                giải phóng cố đô Huế (26/3) và Đà Nẵng (29/3).</li>
-              <li>Chiến dịch Hồ Chí Minh lịch sử (26/4 – 30/4/1975): Năm cánh quân thần tốc tiến về giải phóng Sài Gòn –
-                Gia Định.</li>
-              <li>Thời khắc lịch sử 11 giờ 30 phút ngày 30 – 4: Lá cờ cách mạng tung bay trên nóc Dinh Độc Lập, báo hiệu
-                sự toàn thắng của Chiến dịch Hồ Chí Minh lịch sử.</li>
-              <li>Ý nghĩa toàn thắng: Thắng lợi của cuộc kháng chiến chống Mỹ, cứu nước đã kết thúc 21 năm chiến đấu chống đế quốc Mỹ xâm lược, 30 năm chiến tranh cách mạng; chấm dứt hoàn toàn ách thống trị của chủ nghĩa đế quốc trên đất nước Việt Nam; hoàn thành cách mạng dân tộc dân chủ nhân dân, mở ra kỷ nguyên cả nước hoà bình, độc lập, thống nhất đi lên CNXH.</li>
-            </ul>
-
-            <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
-            <div
-              style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
-              <h3>🏆 Đại thắng mùa Xuân 1975 — Khúc ca toàn thắng</h3>
-              <p>Thực hiện kế hoạch giải phóng miền Nam trong 2 năm 1975-1976 (nhưng sẵn sàng giải phóng ngay trong năm
-                1975 nếu thời cơ đến), quân ta mở đòn sấm sét điểm huyệt tại Buôn Ma Thuột ngày 10/3/1975. Quân ngụy
-                hoảng loạn tháo chạy.</p>
-              <p>Với tinh thần <em>'Thần tốc, thần tốc hơn nữa; táo bạo, táo bạo hơn nữa'</em>, Chiến dịch Hồ Chí Minh
-                bắt đầu từ 26/4. Đúng <strong>11 giờ 30 phút ngày 30/4/1975</strong>, lá cờ nửa đỏ nửa xanh ngôi sao
-                vàng phấp phới trên nóc Dinh Độc Lập. Chiến dịch Hồ Chí Minh toàn thắng, non sông nối liền một dải!</p>
-            </div>
-          </div>
-
-          <div>
-            <div class="loci-box">
-              <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
-              <div class="loci-desc">💡 Mẹo nhớ Loci: Đúng 11 giờ 30 phút ngày 30 – 4, lá cờ cách mạng tung bay trên nóc
-                Dinh Độc Lập, báo hiệu Chiến dịch Hồ Chí Minh lịch sử toàn thắng!</div>
-              <div class="mantra-tag">
-                <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ
-                  cuộn thư</span>
-              </div>
-            </div>
-          </div>
-
-
-          <div class="quiz-section">
-            <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc
-              nghiệm & Thẻ nhớ)</div>
-            <div class="quiz-grid">
-
-              <div class="quiz-item">
-                <div class="quiz-q">❓ Thời điểm lá cờ cách mạng chính thức tung bay trên nóc Dinh Độc Lập báo hiệu sự
-                  toàn thắng của Chiến dịch Hồ Chí Minh là:</div>
-                <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. 9 giờ 30 phút ngày
-                  30 tháng 4 năm 1975<br>B. 10 giờ 45 phút ngày 30 tháng 4 năm 1975<br>C. 11 giờ 30 phút ngày 30 tháng 4
-                  năm 1975<br>D. 17 giờ 30 phút ngày 30 tháng 4 năm 1975</div>
-                <div class="quiz-a">✅ Đáp án: C. 11 giờ 30 phút ngày 30 tháng 4 năm 1975</div>
-                <div class="quiz-exp">💡 Giải thích: Đúng 11 giờ 30 phút ngày 30/4/1975, lá cờ giải phóng tung bay trên
-                  nóc Dinh Độc Lập, đánh dấu cuộc kháng chiến chống Mỹ toàn thắng.</div>
-              </div>
-              <div class="quiz-item" style="border-left:3px solid #f59e0b;">
-                <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Ba chiến dịch lớn tạo nên Đại thắng mùa Xuân 1975 theo thứ
-                  tự thời gian là gì?</div>
-                <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 1. Chiến dịch Tây Nguyên
-                  (4-24/3) -> 2. Chiến dịch Huế - Đà Nẵng (21-29/3) -> 3. Chiến dịch Hồ Chí Minh (26-30/4/1975).</div>
-                <div class="quiz-exp">Gợi ý: Tây Nguyên -> Huế Đà Nẵng -> Chiến dịch Hồ Chí Minh</div>
-              </div>
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng chiếc đồng hồ điểm đúng giao thừa Tết Mậu Thân 1968, các chiến sĩ biệt động lao thẳng vào Tòa Đại sứ Mỹ tại Sài Gòn khiến cả nước Mỹ bàng hoàng!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
             </div>
           </div>
         </div>
-      </article>
+
+
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Địa bàn trọng tâm của cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân 1968 là ở đâu?</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Vùng rừng núi chiến khu Tây Nguyên<br>B. Các đô thị miền Nam, đặc biệt là Sài Gòn, Huế, Đà Nẵng<br>C. Các dải ấp chiến lược vùng đồng bằng ven biển<br>D. Tuyến đồn bốt biên giới Tây Nam</div>
+              <div class="quiz-a">✅ Đáp án: B. Các đô thị miền Nam, đặc biệt là Sài Gòn, Huế, Đà Nẵng</div>
+              <div class="quiz-exp">💡 Giải thích: Khác với các chiến dịch trước đánh ở nông thôn, rừng núi, Mậu Thân 1968 đánh thẳng vào các đô thị lớn và trung tâm đầu não của địch.</div>
+            </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Ý nghĩa quan trọng nhất của cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân 1968 là gì?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Làm lung lay ý chí xâm lược của Mỹ, buộc Mỹ tuyên bố 'phi Mỹ hóa' chiến tranh và chấp nhận ngồi vào bàn đàm phán tại Pa-ri.</div>
+              <div class="quiz-exp">Gợi ý: Bước ngoặt buộc Mỹ phi Mỹ hóa và đàm phán Pa-ri</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- TRẠM 6 -->
+    <article class="station-card" id="tram-6" data-stage="dienbien1">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">🗺️</div>
+          <div>
+            <div class="station-name">Trạm 6: Đánh bại 'Việt Nam hóa chiến tranh' & Tiến công chiến lược 1972</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[6.5, 0.08, 3.6] (Vách Nam Đông)</b></div>
+          </div>
+        </div>
+        <div class="station-badge-date">📅 1969 – 1972</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Mỹ chuyển sang Việt Nam hóa chiến tranh rút dần lính Mỹ nhưng tăng viện trợ và mở rộng chiến tranh sang Lào, Campuchia. Ta thành lập Chính phủ CMLT (1969) và mở đòn tiến công chiến lược 1972 chọc thủng 3 phòng tuyến.</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Bản chất Việt Nam hóa chiến tranh (1969 – 1973): Quân đội Sài Gòn là chủ yếu + hỏa lực, không quân Mỹ + cố vấn Mỹ; âm mưu 'dùng người Việt đánh người Việt, dùng người Đông Dương đánh người Đông Dương'.</li>
+            <li>Thủ đoạn ngoại giao hiểm độc: Mỹ thỏa hiệp với Liên Xô và Trung Quốc (1972) hòng cô lập và cắt đứt viện trợ cho cách mạng Việt Nam.</li>
+            <li>Mặt trận chính trị - ngoại giao: Thành lập Chính phủ Cách mạng lâm thời Cộng hòa miền Nam Việt Nam (6/6/1969); Hội nghị cấp cao 3 nước Đông Dương (4/1970).</li>
+            <li>Tiến công chiến lược 1972: Từ 3/1972, quân ta chọc thủng 3 phòng tuyến kiên cố nhất của địch: Quảng Trị, Tây Nguyên, Đông Nam Bộ; buộc Mỹ thừa nhận thất bại của Việt Nam hóa chiến tranh.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>🗺️ Đánh bại chiến lược Việt Nam hóa chiến tranh (1969 – 1973)</h3><p>Dưới học thuyết Ních-xơn, Mỹ rút dần quân chiến đấu về nước để giảm thương vong lính Mỹ, tăng cường trang bị hiện đại cho quân ngụy và mở rộng xâm lược sang Campuchia và Lào.</p><p>Ngày <strong>6/6/1969</strong>, Chính phủ Cách mạng lâm thời Cộng hòa miền Nam Việt Nam được thành lập, được 23 nước công nhận. Tháng 3/1972, ta bất ngờ mở cuộc Tiến công chiến lược 1972 đập tan tuyến phòng ngự thép của ngụy tại Quảng Trị, Tây Nguyên và Đông Nam Bộ, giải phóng hoàn toàn tỉnh Quảng Trị.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tấm bản đồ chiến dịch 1972 với 3 mũi tên đỏ chọc thủng 3 phòng tuyến Quảng Trị - Tây Nguyên - Đông Nam Bộ, xé toang học thuyết Ních-xơn!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Thắng lợi nào của quân dân ta buộc đế quốc Mỹ phải tuyên bố 'Mỹ hóa trở lại' chiến tranh xâm lược?</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Chiến dịch Đường 9 - Khe Sanh 1968<br>B. Thắng lợi của cuộc Tiến công chiến lược năm 1972<br>C. Chiến thắng Đường 14 - Phước Long 1975<br>D. Cuộc tiến công đánh bại cuộc hành quân Lam Sơn 719</div>
+              <div class="quiz-a">✅ Đáp án: B. Thắng lợi của cuộc Tiến công chiến lược năm 1972</div>
+              <div class="quiz-exp">💡 Giải thích: Cuộc tiến công chiến lược năm 1972 chọc thủng 3 phòng tuyến của địch buộc Mỹ phải thừa nhận sự phá sản của Việt Nam hóa chiến tranh.</div>
+            </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Chính phủ hợp pháp đại diện cho nhân dân miền Nam Việt Nam thành lập ngày 6/6/1969 có tên là gì?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Chính phủ Cách mạng lâm thời Cộng hòa miền Nam Việt Nam.</div>
+              <div class="quiz-exp">Gợi ý: Chính phủ CMLT Cộng hòa miền Nam Việt Nam</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- TRẠM 7 -->
+    <article class="station-card" id="tram-7" data-stage="dienbien2">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">✈️</div>
+          <div>
+            <div class="station-name">Trạm 7: Trận 'Điện Biên Phủ trên không' (12/1972) & Hiệp định Pa-ri (1973)</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[9.2, 0.08, 1.2] (Vách Đông)</b></div>
+          </div>
+        </div>
+        <div class="station-badge-date">📅 18–29/12/1972 & 27/1/1973</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Mỹ mở cuộc tập kích B-52 hủy diệt Hà Nội, Hải Phòng (18 – 29/12/1972). Quân dân miền Bắc bắn rơi 81 máy bay (34 pháo đài bay B-52), lập nên kỳ tích 'Điện Biên Phủ trên không', buộc Mỹ ký Hiệp định Pa-ri (27/1/1973).</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Âm mưu tập kích B-52: Từ 18 – 29/12/1972, Mỹ tiến hành tập kích chiến lược bằng máy bay B52 vào Hà Nội, Hải Phòng,… nhằm giành thắng lợi quân sự quyết định, buộc Việt Nam phải kí Hiệp định có lợi cho Mỹ.</li>
+            <li>12 ngày đêm khói lửa (18 – 29/12/1972): Lưới lửa phòng không nhân dân Hà Nội, Hải Phòng bắn rơi 81 máy bay hiện đại, trong đó có 34 siêu pháo đài bay B-52 và 5 máy bay F-111.</li>
+            <li>Hiệp định Pa-ri ký kết (27/1/1973): Mỹ cam kết tôn trọng độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam; rút hết quân viễn chinh và quân đồng minh về nước.</li>
+            <li>Ý nghĩa chiến lược: Hoàn thành mục tiêu lịch sử 'Đánh cho Mỹ cút', tạo so sánh lực lượng hoàn toàn có lợi cho cách mạng miền Nam.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>✈️ Khúc tráng ca Điện Biên Phủ trên không & Thắng lợi Pa-ri 1973</h3><p>Từ ngày 18 đến 29/12/1972, Mỹ huy động hàng trăm lượt pháo đài bay B-52 trút hàng vạn tấn bom xuống thủ đô Hà Nội (phố Khâm Thiên, bệnh viện Bạch Mai...). Với ý chí kiên cường, quân và dân Hà Nội đã biến bầu trời Thăng Long thành mồ chôn B-52.</p><p>Thất bại ê chề buộc Tổng thống Ních-xơn phải hạ lệnh ngừng ném bom và quay lại bàn đàm phán. Ngày <strong>27/1/1973</strong>, <strong>Hiệp định Pa-ri về chấm dứt chiến tranh, lập lại hòa bình ở Việt Nam</strong> chính thức được ký kết. Quân viễn chinh Mỹ phải cuốn cờ rút hết về nước.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tưởng tượng xác pháo đài bay B-52 Mỹ rơi rực lửa xuống hồ Hữu Tiệp (Hà Nội); bên cạnh là bàn ký Hiệp định Pa-ri với lá cờ Việt Nam bay cao!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Thời gian diễn ra trận tập kích không kích B-52 của đế quốc Mỹ vào Hà Nội, Hải Phòng là:</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Từ ngày 10 đến ngày 22 tháng 12 năm 1972<br>B. Từ ngày 18 đến ngày 29 tháng 12 năm 1972<br>C. Từ ngày 20 đến ngày 31 tháng 12 năm 1972<br>D. Từ ngày 15 đến ngày 27 tháng 1 năm 1973</div>
+              <div class="quiz-a">✅ Đáp án: B. Từ ngày 18 đến ngày 29 tháng 12 năm 1972</div>
+              <div class="quiz-exp">💡 Giải thích: Trận Điện Biên Phủ trên không kéo dài suốt 12 ngày đêm từ ngày 18 đến ngày 29 tháng 12 năm 1972.</div>
+            </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Ý nghĩa then chốt nhất của Hiệp định Pa-ri 1973 đối với cuộc kháng chiến chống Mỹ là gì?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Buộc Mỹ rút hết quân viễn chinh về nước, hoàn thành bước 1 'Đánh cho Mỹ cút', tạo thời cơ quyết định để 'Đánh cho Ngụy nhào'.</div>
+              <div class="quiz-exp">Gợi ý: Đánh cho Mỹ cút, tạo đà Đánh cho Ngụy nhào</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- TRẠM 8 -->
+    <article class="station-card" id="tram-8" data-stage="dienbien2">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">🧭</div>
+          <div>
+            <div class="station-name">Trạm 8: Nghị quyết 21 & Đòn trinh sát chiến lược Đường 14 – Phước Long (1974 – 1975)</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[8.5, 0.08, -2.8] (Vách Đông Bắc)</b></div>
+          </div>
+        </div>
+        <div class="station-badge-date">📅 7/1973 & 6/1/1975</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Hội nghị 21 (7/1973) chủ trương bạo lực cách mạng. Chiến thắng Đường 14 – Phước Long (6/1/1975) là đòn trinh sát chiến lược chứng minh quân ngụy bất lực và Mỹ khó có khả năng can thiệp trở lại.</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Bối cảnh: Dù ký Hiệp định Pa-ri, Mỹ vẫn để lại 2 vạn cố vấn, tiếp tục viện trợ cho quân đội Sài Gòn mở các cuộc hành quân 'tràn ngập lãnh thổ'.</li>
+            <li>Nghị quyết Trung ương 21 (7/1973): Khẳng định con đường cách mạng miền Nam là bạo lực cách mạng, nắm vững chiến lược tiến công.</li>
+            <li>Chiến thắng Đường 14 – Phước Long (6/1/1975): Giải phóng hoàn toàn thị xã và toàn tỉnh Phước Long (tỉnh đầu tiên ở miền Nam được hoàn toàn giải phóng).</li>
+            <li>Ý nghĩa 'trận trinh sát chiến lược': Khẳng định sức mạnh vượt trội của quân ta; sự suy yếu bất lực của quân đội Sài Gòn; và phản ứng của Mỹ chỉ dừng lại ở đe dọa từ xa, khả năng can thiệp quân sự trở lại là rất hạn chế.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>🧭 Đòn trinh sát chiến lược Đường 14 – Phước Long (1975)</h3><p>Sau Hiệp định Pa-ri, chính quyền Nguyễn Văn Thiệu điên cuồng vi phạm hiệp định, xua quân lấn chiếm vùng giải phóng. Tháng 7/1973, Hội nghị Trung ương 21 của Đảng hạ quyết tâm tiếp tục giương cao ngọn cờ bạo lực cách mạng.</p><p>Đầu năm 1975, ta mở chiến dịch Đường 14 – Phước Long. Ngày <strong>6/1/1975</strong>, thị xã Phước Long hoàn toàn giải phóng. Chiến thắng này có ý nghĩa như một <strong>'đòn trinh sát chiến lược'</strong> thăm dò phản ứng của Mỹ và thử lửa quân ngụy, củng cố quyết tâm sắt đá của Bộ Chính trị mở cuộc Tổng tiến công mùa Xuân 1975.</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Tấm bia mốc số 14 cắm trên đỉnh núi Bà Rá (Phước Long) giải phóng; chiếc ống nhòm trinh sát nhìn về Sài Gòn báo tin quân ngụy đang hoang mang tan rã!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Tỉnh đầu tiên ở miền Nam được hoàn toàn giải phóng trong cuộc kháng chiến chống Mỹ là:</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. Tỉnh Quảng Trị<br>B. Tỉnh Phước Long<br>C. Tỉnh Buôn Ma Thuột<br>D. Tỉnh Thừa Thiên Huế</div>
+              <div class="quiz-a">✅ Đáp án: B. Tỉnh Phước Long</div>
+              <div class="quiz-exp">💡 Giải thích: Chiến dịch Đường 14 - Phước Long (kết thúc 6/1/1975) đã giải phóng thị xã và toàn bộ tỉnh Phước Long.</div>
+            </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Vì sao chiến thắng Đường 14 – Phước Long (6/1/1975) được coi là 'đòn trinh sát chiến lược'?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 Vì nó chứng minh sức mạnh của quân ta, sự bất lực suy yếu của quân đội Sài Gòn và phản ứng hạn chế của Mỹ (Mỹ không dám can thiệp trở lại bằng quân sự).</div>
+              <div class="quiz-exp">Gợi ý: Thử lửa quân ngụy và thăm dò khả năng can thiệp của Mỹ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- TRẠM 9 -->
+    <article class="station-card" id="tram-9" data-stage="dienbien2">
+      <div class="station-top">
+        <div class="station-title-box">
+          <div class="station-icon">🏆</div>
+          <div>
+            <div class="station-name">Trạm 9: Tổng tiến công Xuân 1975 & Đại thắng mùa Xuân 30/4/1975 toàn thắng</div>
+            <div class="station-loc"><span>📍</span> Vị trí 3D Triển lãm Nâu: <b>[2.5, 0.08, -3.4] (Vách Bắc)</b></div>
+          </div>
+        </div>
+        <div class="station-badge-date">📅 4/3 – 30/4/1975</div>
+      </div>
+
+      <div class="station-body">
+        <div>
+          <div class="sec-block-title"><span>📖</span> Tóm tắt Cốt lõi & Luận điểm Lịch sử</div>
+          <div class="summary-text">Tổng tiến công và nổi dậy Xuân 1975 qua 3 chiến dịch: Tây Nguyên, Huế – Đà Nẵng và Chiến dịch Hồ Chí Minh lịch sử. Đúng 11h30 ngày 30/4/1975, cờ cách mạng tung bay trên nóc Dinh Độc Lập, non sông thu về một mối.</div>
+
+          <div class="sec-block-title"><span>🎯</span> Các Ý then chốt SGK 12</div>
+          <ul class="kp-list">
+            <li>Chiến dịch Tây Nguyên (4/3 – 24/3/1975): Đòn hiểm mở màn với trận then chốt Buôn Ma Thuột (10/3), giải phóng toàn bộ Tây Nguyên, chuyển cuộc chiến từ tiến công chiến lược sang tổng tiến công chiến lược.</li>
+            <li>Chiến dịch Huế – Đà Nẵng (21/3 – 29/3/1975): Đập tan căn cứ quân sự liên hợp mạnh nhất miền Trung, giải phóng cố đô Huế (26/3) và Đà Nẵng (29/3).</li>
+            <li>Chiến dịch Hồ Chí Minh lịch sử (26/4 – 30/4/1975): Năm cánh quân thần tốc tiến về giải phóng Sài Gòn – Gia Định.</li>
+            <li>Thời khắc lịch sử 11 giờ 30 phút ngày 30 – 4: Lá cờ cách mạng tung bay trên nóc Dinh Độc Lập, báo hiệu sự toàn thắng của Chiến dịch Hồ Chí Minh lịch sử.</li>
+            <li>Ý nghĩa toàn thắng: Kết thúc 21 năm kháng chiến chống Mỹ, 30 năm chiến tranh cách mạng giải phóng dân tộc; mở ra kỷ nguyên hòa bình, độc lập, thống nhất đi lên CNXH.</li>
+          </ul>
+
+          <div class="sec-block-title"><span>📜</span> Diễn biến chi tiết (Tài liệu gốc DOCX)</div>
+          <div style="font-size:14px; color:#cbd5e1; line-height:1.6; background:rgba(0,0,0,0.25); padding:16px; border-radius:12px; border:1px solid rgba(255,255,255,0.06);">
+            <h3>🏆 Đại thắng mùa Xuân 1975 — Khúc ca toàn thắng</h3><p>Thực hiện kế hoạch giải phóng miền Nam trong 2 năm 1975-1976 (nhưng sẵn sàng giải phóng ngay trong năm 1975 nếu thời cơ đến), quân ta mở đòn sấm sét điểm huyệt tại Buôn Ma Thuột ngày 10/3/1975. Quân ngụy hoảng loạn tháo chạy.</p><p>Với tinh thần <em>'Thần tốc, thần tốc hơn nữa; táo bạo, táo bạo hơn nữa'</em>, Chiến dịch Hồ Chí Minh bắt đầu từ 26/4. Đúng <strong>11 giờ 30 phút ngày 30/4/1975</strong>, lá cờ nửa đỏ nửa xanh ngôi sao vàng phấp phới trên nóc Dinh Độc Lập. Chiến dịch Hồ Chí Minh toàn thắng, non sông nối liền một dải!</p>
+          </div>
+        </div>
+
+        <div>
+          <div class="loci-box">
+            <div class="loci-box-title"><span>💡</span> Cơ chế Ghi nhớ Loci VR (Mnemonic)</div>
+            <div class="loci-desc">💡 Mẹo nhớ Loci: Đúng 11 giờ 30 phút ngày 30 – 4, lá cờ cách mạng tung bay trên nóc Dinh Độc Lập, báo hiệu Chiến dịch Hồ Chí Minh lịch sử toàn thắng!</div>
+            <div class="mantra-tag">
+              <span>⚡</span> <span>Vật thể 3D: Bệ đá sa bàn Obsidian, Bia vàng trang trọng, Cột cờ Giải phóng & Bệ cuộn thư</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="quiz-section">
+          <div class="sec-block-title" style="color:#38bdf8;"><span>🧠</span> Bộ công cụ củng cố Active Recall (Trắc nghiệm & Thẻ nhớ)</div>
+          <div class="quiz-grid">
+            
+            <div class="quiz-item">
+              <div class="quiz-q">❓ Thời điểm lá cờ cách mạng chính thức tung bay trên nóc Dinh Độc Lập báo hiệu sự toàn thắng của Chiến dịch Hồ Chí Minh là:</div>
+              <div style="font-size:12.5px; color:#cbd5e1; margin-bottom:8px; line-height:1.4;">A. 9 giờ 30 phút ngày 30 tháng 4 năm 1975<br>B. 10 giờ 45 phút ngày 30 tháng 4 năm 1975<br>C. 11 giờ 30 phút ngày 30 tháng 4 năm 1975<br>D. 17 giờ 30 phút ngày 30 tháng 4 năm 1975</div>
+              <div class="quiz-a">✅ Đáp án: C. 11 giờ 30 phút ngày 30 tháng 4 năm 1975</div>
+              <div class="quiz-exp">💡 Giải thích: Đúng 11 giờ 30 phút ngày 30/4/1975, lá cờ giải phóng tung bay trên nóc Dinh Độc Lập, đánh dấu cuộc kháng chiến chống Mỹ toàn thắng.</div>
+            </div>
+            <div class="quiz-item" style="border-left:3px solid #f59e0b;">
+              <div class="quiz-q">🗂️ Thẻ nhớ (Flashcard): Ba chiến dịch lớn tạo nên Đại thắng mùa Xuân 1975 theo thứ tự thời gian là gì?</div>
+              <div class="quiz-a" style="color:#fde047; background:rgba(245,158,11,0.1);">🔑 1. Chiến dịch Tây Nguyên (4-24/3) -> 2. Chiến dịch Huế - Đà Nẵng (21-29/3) -> 3. Chiến dịch Hồ Chí Minh (26-30/4/1975).</div>
+              <div class="quiz-exp">Gợi ý: Tây Nguyên -> Huế Đà Nẵng -> Chiến dịch Hồ Chí Minh</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
     </main>
 
     <!-- HISTORICAL SYNTHESIS -->
     <section class="synthesis-section">
       <div class="synthesis-title">
-        <span>🏆</span> Tổng kết Lịch sử: Nguyên nhân thắng lợi & Ý nghĩa lịch sử cuộc kháng chiến chống Mỹ (1954 –
-        1975)
+        <span>🏆</span> Tổng kết Lịch sử: Nguyên nhân thắng lợi & Ý nghĩa lịch sử cuộc kháng chiến chống Mỹ (1954 – 1975)
       </div>
       <div class="synthesis-grid">
         <div class="syn-card">
           <h3><span>🌟</span> Nguyên nhân Thắng lợi</h3>
           <ul>
-            <li><strong>Sự lãnh đạo sáng suốt của Đảng & Bác Hồ:</strong> Với đường lối chính trị, quân sự độc lập, tự
-              chủ, đúng đắn, sáng tạo; kết hợp khởi nghĩa vũ trang với chiến tranh cách mạng, tiến công và nổi dậy.</li>
-            <li><strong>Nhân dân anh hùng, đoàn kết một lòng:</strong> Toàn dân tộc giàu lòng yêu nước, lao động cần cù,
-              chiến đấu dũng cảm; tiền tuyến gọi, hậu phương đáp lời.</li>
-            <li><strong>Hậu phương miền Bắc XHCN lớn mạnh:</strong> Không ngừng lớn mạnh, đáp ứng kịp thời sức người,
-              sức của cho chiến trường miền Nam.</li>
-            <li><strong>Đoàn kết quốc tế bền chặt:</strong> Phối hợp chiến đấu keo sơn của nhân dân 3 nước Việt - Miên -
-              Lào; sự giúp đỡ to lớn của Liên Xô, Trung Quốc, các nước XHCN và phong trào phản chiến Mỹ.</li>
+            <li><strong>Sự lãnh đạo sáng suốt của Đảng & Bác Hồ:</strong> Với đường lối chính trị, quân sự độc lập, tự chủ, đúng đắn, sáng tạo; kết hợp khởi nghĩa vũ trang với chiến tranh cách mạng, tiến công và nổi dậy.</li>
+            <li><strong>Nhân dân anh hùng, đoàn kết một lòng:</strong> Toàn dân tộc giàu lòng yêu nước, lao động cần cù, chiến đấu dũng cảm; tiền tuyến gọi, hậu phương đáp lời.</li>
+            <li><strong>Hậu phương miền Bắc XHCN lớn mạnh:</strong> Không ngừng lớn mạnh, đáp ứng kịp thời sức người, sức của cho chiến trường miền Nam.</li>
+            <li><strong>Đoàn kết quốc tế bền chặt:</strong> Phối hợp chiến đấu keo sơn của nhân dân 3 nước Việt - Miên - Lào; sự giúp đỡ to lớn của Liên Xô, Trung Quốc, các nước XHCN và phong trào phản chiến Mỹ.</li>
           </ul>
         </div>
         <div class="syn-card">
           <h3><span>🌍</span> Ý nghĩa Lịch sử Vĩ đại</h3>
           <ul>
-            <li><strong>Đối với Việt Nam:</strong> Kết thúc 21 năm chiến đấu chống Mỹ, 30 năm chiến tranh giải phóng dân
-              tộc; chấm dứt hoàn toàn ách thống trị của chủ nghĩa đế quốc; non sông thu về một mối, cả nước độc lập
-              thống nhất đi lên CNXH.</li>
-            <li><strong>Đối với Thế giới:</strong> Làm sụp đổ chủ nghĩa thực dân mới của đế quốc Mỹ; cổ vũ mạnh mẽ phong
-              trào giải phóng dân tộc, phong trào vì hòa bình, dân chủ và tiến bộ xã hội của nhân loại.</li>
+            <li><strong>Đối với Việt Nam:</strong> Kết thúc 21 năm chiến đấu chống Mỹ, 30 năm chiến tranh giải phóng dân tộc; chấm dứt hoàn toàn ách thống trị của chủ nghĩa đế quốc; non sông thu về một mối, cả nước độc lập thống nhất đi lên CNXH.</li>
+            <li><strong>Đối với Thế giới:</strong> Làm sụp đổ chủ nghĩa thực dân mới của đế quốc Mỹ; cổ vũ mạnh mẽ phong trào giải phóng dân tộc, phong trào vì hòa bình, dân chủ và tiến bộ xã hội của nhân loại.</li>
           </ul>
         </div>
       </div>
@@ -1541,5 +1169,4 @@
     }
   </script>
 </body>
-
 </html>

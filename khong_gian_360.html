@@ -2898,8 +2898,12 @@ function _decodeGeminiKey(s) {
         }
 
         function render3DStation(a, pos, i) {
-            if (!markers3DGroup) return;
-            const dir = new THREE.Vector3(pos[0], pos[1], pos[2]).normalize();
+            if (!markers3DGroup || !pos) return;
+            const px = Array.isArray(pos) ? pos[0] : (typeof pos.x === 'number' ? pos.x : 0);
+            const py = Array.isArray(pos) ? pos[1] : (typeof pos.y === 'number' ? pos.y : 0);
+            const pz = Array.isArray(pos) ? pos[2] : (typeof pos.z === 'number' ? pos.z : -1);
+            if (isNaN(px) || isNaN(py) || isNaN(pz)) return;
+            const dir = new THREE.Vector3(px, py, pz).normalize();
             const dist = 10.5; // Cự ly vàng đưa mô hình lại gần, to rõ // Đặt tại cự ly 20m trong không gian 360
             const stationPos = dir.clone().multiplyScalar(dist);
 
@@ -7247,6 +7251,33 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     sel.value = dbAnchors[space.lesson] ? space.lesson : sel.options[0].value;
                     space.lesson = sel.value;
 
+                    // TỰ ĐỘNG BỐ TRÍ ĐỦ 9 MỐC BÀI HỌC VÀ XOAY VỀ TRẠM 1 NẾU PHÒNG CHƯA CÓ HOẶC BỊ THIẾU
+                    const curAnchors = anchorsOfLesson();
+                    space.markers = space.markers || {};
+                    const markerKeys = Object.keys(space.markers);
+                    const hasInvalidMarkers = markerKeys.some(k => {
+                        const m = space.markers[k];
+                        return !m || isNaN(Array.isArray(m) ? m[0] : (m.x !== undefined ? m.x : NaN));
+                    });
+                    if (markerKeys.length < curAnchors.length || hasInvalidMarkers) {
+                        const N = curAnchors.length;
+                        curAnchors.forEach((a, i) => {
+                            const cur = space.markers[a.id];
+                            const isCurBad = !cur || isNaN(Array.isArray(cur) ? cur[0] : (cur.x !== undefined ? cur.x : NaN));
+                            if (isCurBad) {
+                                const theta = (i / N) * Math.PI * 2 - 0.10;
+                                const phi = -0.05 + 0.04 * (i % 2 === 0 ? 0.7 : -0.7);
+                                const x = parseFloat((Math.sin(theta) * Math.cos(phi)).toFixed(4));
+                                const y = parseFloat(Math.sin(phi).toFixed(4));
+                                const z = parseFloat((-Math.cos(theta) * Math.cos(phi)).toFixed(4));
+                                space.markers[a.id] = [x, y, z];
+                            }
+                        });
+                        persistCurrentSpace();
+                        targetYaw = 0;
+                        targetPitch = 0;
+                    }
+
                     renderAnchorsList();
                     renderMarkersOnPano();
                     renderNodeBar(); setLinkMode(null);
@@ -8305,8 +8336,13 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     clear3DStationMarkers();
 
                     anchorsOfLesson().forEach((a, i) => {
-                        const pos = space.markers && space.markers[a.id];
-                        if (!pos) return;
+                        const rawPos = space.markers && space.markers[a.id];
+                        if (!rawPos) return;
+                        const px = Array.isArray(rawPos) ? rawPos[0] : (typeof rawPos.x === 'number' ? rawPos.x : 0);
+                        const py = Array.isArray(rawPos) ? rawPos[1] : (typeof rawPos.y === 'number' ? rawPos.y : 0);
+                        const pz = Array.isArray(rawPos) ? rawPos[2] : (typeof rawPos.z === 'number' ? rawPos.z : -1);
+                        if (isNaN(px) || isNaN(py) || isNaN(pz)) return;
+                        const pos = [px, py, pz];
 
                         const locNote = getAnchorLocationNote(space.lesson, a.id, a.order || (i + 1));
                         const cleanTitle = (a.title || '').replace(/^Trạm\s*\d+\s*:\s*/i, '');
@@ -8325,7 +8361,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                         markerEls[a.id] = {
                             el,
-                            vec: new THREE.Vector3(pos[0] * 480, (pos[1] + 0.28) * 480, pos[2] * 480) // Nâng lên cao trên đầu mô hình
+                            vec: new THREE.Vector3(px * 480, (py + 0.28) * 480, pz * 480) // Nâng lên cao trên đầu mô hình
                         };
 
                         // Khởi tạo mô hình 3D thực tế cho mốc trong không gian 360
@@ -8334,10 +8370,14 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 }
 
                 function focusOnMarker(id) {
-                    const pos = space.markers && space.markers[id];
-                    if (!pos) return;
-                    targetYaw = Math.atan2(-pos[0], -pos[2]);
-                    targetPitch = Math.asin(pos[1]);
+                    const rawPos = space.markers && space.markers[id];
+                    if (!rawPos) return;
+                    const px = Array.isArray(rawPos) ? rawPos[0] : (typeof rawPos.x === 'number' ? rawPos.x : 0);
+                    const py = Array.isArray(rawPos) ? rawPos[1] : (typeof rawPos.y === 'number' ? rawPos.y : 0);
+                    const pz = Array.isArray(rawPos) ? rawPos[2] : (typeof rawPos.z === 'number' ? rawPos.z : -1);
+                    if (isNaN(px) || isNaN(pz)) return;
+                    targetYaw = Math.atan2(-px, -pz);
+                    targetPitch = Math.asin(Math.max(-0.95, Math.min(0.95, py)));
                     showLocusDetail(findAnchorById(id));
                 }
 
@@ -8647,7 +8687,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         if (isFront) {
                             const x = Math.round((vProj.x + 1) * 0.5 * w);
                             const y = Math.round((1 - vProj.y) * 0.5 * h);
-                            el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+                            el.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
                         }
                         if ((id === selId) !== el.classList.contains('sel')) {
                             el.classList.toggle('sel', id === selId);
@@ -8670,17 +8710,19 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         const N = list.length;
                         space.markers = space.markers || {};
                         list.forEach((a, i) => {
-                            const theta = -Math.PI + ((i + 0.5) / N) * Math.PI * 2;
-                            const phi = -0.06;
-                            const x = Math.sin(theta) * Math.cos(phi);
-                            const y = Math.sin(phi);
-                            const z = -Math.cos(theta) * Math.cos(phi);
-                            space.markers[a.id] = [parseFloat(x.toFixed(4)), parseFloat(y.toFixed(4)), parseFloat(z.toFixed(4))];
+                            const theta = (i / N) * Math.PI * 2 - 0.10;
+                            const phi = -0.05 + 0.04 * (i % 2 === 0 ? 0.7 : -0.7);
+                            const x = parseFloat((Math.sin(theta) * Math.cos(phi)).toFixed(4));
+                            const y = parseFloat(Math.sin(phi).toFixed(4));
+                            const z = parseFloat((-Math.cos(theta) * Math.cos(phi)).toFixed(4));
+                            space.markers[a.id] = [x, y, z];
                         });
                         persistCurrentSpace();
                         renderMarkersOnPano();
                         renderAnchorsList();
-                        toast(`✓ Đã tự động bố trí ${N} mốc tuần tự quanh phòng 360°!`);
+                        targetYaw = 0;
+                        targetPitch = 0;
+                        toast(`✓ Đã tự động bố trí đủ 9 mốc Bài 6 quanh phòng & xoay về Trạm 1!`);
                     };
                 }
   
