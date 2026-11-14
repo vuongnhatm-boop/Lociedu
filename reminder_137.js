@@ -3,7 +3,7 @@
     'use strict';
 
     const isEmbedded = (typeof window !== 'undefined' && window.self !== window.top);
-    
+
     // Tự động dọn dẹp các toast cũ nếu có
     if (typeof document !== 'undefined') {
         const oldToasts = document.getElementById('loci-toast-container');
@@ -31,7 +31,7 @@
     function saveCycleData(data) {
         try {
             localStorage.setItem(STORAGE_KEY_137, JSON.stringify(data));
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // 2. Quản lý cài đặt nhắc hẹn
@@ -56,7 +56,7 @@
     function saveSettings(settings) {
         try {
             localStorage.setItem(STORAGE_KEY_SETTINGS, JSON.stringify(settings));
-        } catch (e) {}
+        } catch (e) { }
     }
 
     // 3. Ghi nhận khi học xong 1 bài (cập nhật chu kỳ)
@@ -162,7 +162,7 @@
     }
 
     // 5. Phát âm thanh chuông melodic thanh thoát (Web Audio API)
-        // Global Audio Context Unlocker for Mobile Autoplay Policy (iOS Safari & Android Chrome)
+    // Global Audio Context Unlocker for Mobile Autoplay Policy (iOS Safari & Android Chrome)
     (function setupAudioAutoplayResilience() {
         function unlockAudio() {
             try {
@@ -172,10 +172,10 @@
                         window.LociSharedAudioCtx = new AudioCtx();
                     }
                     if (window.LociSharedAudioCtx.state === 'suspended') {
-                        window.LociSharedAudioCtx.resume().catch(function() {});
+                        window.LociSharedAudioCtx.resume().catch(function () { });
                     }
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
         window.addEventListener('touchstart', unlockAudio, { passive: true, once: true });
         window.addEventListener('click', unlockAudio, { passive: true, once: true });
@@ -188,10 +188,10 @@
             if (!AudioCtx) return;
             const ctx = window.LociSharedAudioCtx || new AudioCtx();
             if (ctx.state === 'suspended') {
-                ctx.resume().catch(function() {});
+                ctx.resume().catch(function () { });
             }
             window.LociSharedAudioCtx = ctx;
-            
+
             // Hợp âm Đô trưởng (C5 - E5 - G5) nhẹ nhàng, dễ chịu
             const notes = [523.25, 659.25, 783.99];
             notes.forEach((freq, idx) => {
@@ -199,14 +199,14 @@
                 const gain = ctx.createGain();
                 osc.type = 'sine';
                 osc.frequency.setValueAtTime(freq, ctx.currentTime + idx * 0.12);
-                
+
                 gain.gain.setValueAtTime(0, ctx.currentTime + idx * 0.12);
                 gain.gain.linearRampToValueAtTime(0.2, ctx.currentTime + idx * 0.12 + 0.04);
                 gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + idx * 0.12 + 0.45);
-                
+
                 osc.connect(gain);
                 gain.connect(ctx.destination);
-                
+
                 osc.start(ctx.currentTime + idx * 0.12);
                 osc.stop(ctx.currentTime + idx * 0.12 + 0.5);
             });
@@ -347,7 +347,7 @@
                     body: message.replace(/<[^>]*>/g, '') + (cues ? ` (Neo Loci: ${cues})` : ''),
                     icon: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%230284c7" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>'
                 });
-            } catch (e) {}
+            } catch (e) { }
         }
 
         // In-App Toast
@@ -359,24 +359,22 @@
                     window.tabUrls.review = targetSrc;
                 }
                 const appFrame = document.getElementById('app-frame');
-                if (appFrame && options.lessonId) {
-                    appFrame.src = `review.html?embed=1&lesson=${options.lessonId}`;
-                if (appFrame && appFrame.src !== new URL(targetSrc, window.location.href).href) {
-                    appFrame.src = targetSrc;
+                    if (appFrame && appFrame.src !== new URL(targetSrc, window.location.href).href) {
+                        appFrame.src = targetSrc;
+                    }
+                    window.switchPortalTab('review');
+                } else if (options.lessonId && typeof window.selectLessonTab === 'function') {
+                    window.selectLessonTab(options.lessonId);
+                } else if (options.lessonId && window.location.pathname.includes('review.html')) {
+                    window.location.search = `?lesson=${options.lessonId}`;
+                } else if (window.location.pathname.includes('review.html')) {
+                    if (options.lessonId && typeof window.filterLesson === 'function') {
+                        window.filterLesson(options.lessonId);
+                    }
+                } else {
+                    window.location.href = 'review.html' + (options.lessonId ? `?lesson=${options.lessonId}` : '');
                 }
-                window.switchPortalTab('review');
-            } else if (options.lessonId && typeof window.selectLessonTab === 'function') {
-                window.selectLessonTab(options.lessonId);
-            } else if (options.lessonId && window.location.pathname.includes('review.html')) {
-                window.location.search = `?lesson=${options.lessonId}`;
-            } else if (window.location.pathname.includes('review.html')) {
-                if (options.lessonId && typeof window.filterLesson === 'function') {
-                    window.filterLesson(options.lessonId);
-                }
-            } else {
-                window.location.href = 'review.html' + (options.lessonId ? `?lesson=${options.lessonId}` : '');
-            }
-        }));
+            }));
     }
 
     // 8. Trình quét kiểm tra hẹn giờ nền (Chỉ chạy ở trang cha, không chạy trong iframe)
@@ -389,10 +387,10 @@
             const hasAuthSession = localStorage.getItem('loci_auth_session') === 'active';
             if (!isAuth || !hasAuthSession) return;
 
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
+                ? window.LociAccountManager.getUser()
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            
+
             if (!user || user.isGuest || user.username === 'Khách') return;
 
             // KIỂM TRA TIẾN ĐỘ THỰC TẾ: NẾU CHƯA HỌC BÀI NÀO -> CHẶN 100% POPUP
@@ -404,7 +402,7 @@
                 try {
                     const prog = JSON.parse(localStorage.getItem('loci_study_progression') || '{}');
                     hasStudied = Object.values(prog).some(p => (p.stationsVisited && p.stationsVisited.length > 0) || p.flashcardsReviewed || (p.quizScore && p.quizScore > 0));
-                } catch (_) {}
+                } catch (_) { }
             }
             if (!hasStudied) {
                 return; // Người học chưa bắt đầu học bài nào -> TUYỆT ĐỐI KHÔNG HIỆN POPUP
@@ -713,14 +711,14 @@
                             </div>
                             <div style="display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px;">
                                 ${lessons.map(l => {
-                                    const st = getLessonCycleStatus(l.id);
-                                    const cleanOverall = (st.overallText || '').replace(/[⚡🎉📈📋🔔⏰]/g, '').trim();
-                                    return `
+            const st = getLessonCycleStatus(l.id);
+            const cleanOverall = (st.overallText || '').replace(/[⚡🎉📈📋🔔⏰]/g, '').trim();
+            return `
                                     <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; background: rgba(255,255,255,0.7); padding: 7px 10px; border-radius: 10px; border: 1px solid rgba(0,0,0,0.06);">
                                         <span style="font-weight: 700; color: inherit;">${l.title}</span>
                                         <span style="font-weight: 700; padding: 2px 8px; border-radius: 6px; font-size: 11px; background: ${st.isAnyDue ? 'rgba(239, 68, 68, 0.1)' : 'rgba(16, 185, 129, 0.1)'}; color: ${st.isAnyDue ? '#dc2626' : '#059669'}; border: 1px solid ${st.isAnyDue ? 'rgba(239, 68, 68, 0.25)' : 'rgba(16, 185, 129, 0.25)'};">${cleanOverall}</span>
                                     </div>`;
-                                }).join('')}
+        }).join('')}
                             </div>
                             <div style="background: rgba(2, 132, 199, 0.06); border: 1px solid rgba(2, 132, 199, 0.16); border-radius: 12px; padding: 10px 12px; font-size: 11.5px; color: #0369a1; line-height: 1.5; margin-top: auto;">
                                 <b>Thuật toán Ebbinghaus:</b> Ôn lại sau <b>24h</b>, <b>3 ngày</b> và <b>7 ngày</b> giúp khắc phục 80% độ dốc lãng quên tự nhiên, neo giữ kiến thức Lịch sử vào trí nhớ dài hạn.
@@ -753,7 +751,7 @@
             if (window.Notification && Notification.permission !== 'granted') {
                 try {
                     await Notification.requestPermission();
-                } catch (e) {}
+                } catch (e) { }
             }
             playChime();
             triggerWebReminder(
@@ -773,11 +771,11 @@
             if (enabled && window.Notification && Notification.permission !== 'granted') {
                 try {
                     await Notification.requestPermission();
-                } catch (e) {}
+                } catch (e) { }
             }
 
             saveSettings({ enabled, time, notify137, sound });
-            
+
             // Cập nhật text trên pill header (nếu có)
             const pillTime = document.getElementById('header-reminder-time');
             if (pillTime) pillTime.textContent = enabled ? time : 'Đang tắt';

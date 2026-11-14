@@ -2089,6 +2089,53 @@ function _decodeGeminiKey(s) {
         }
         
 </style>
+
+        /* Ẩn triệt để các nút rườm rà của điện thoại khi ở trên máy tính */
+        @media (min-width: 769px) {
+            #v-gyro,
+            #v-ar,
+            #v-model-ar,
+            #v-ar-tap,
+            #dt-btn-touchmode,
+            #v-sharpen,
+            #v-api-key,
+            #v-share,
+            #v-addnode,
+            #v-minimap,
+            #joystick {
+                display: none !important;
+            }
+            .desktop-loci-tools {
+                display: flex !important;
+                align-items: center;
+                gap: 6px;
+                background: rgba(15, 23, 42, 0.65);
+                backdrop-filter: blur(8px);
+                padding: 4px 8px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.15);
+            }
+            .dt-tool-btn {
+                background: rgba(255, 255, 255, 0.1);
+                color: #ffffff;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                border-radius: 8px;
+                padding: 6px 12px;
+                font-size: 12.5px;
+                font-weight: 600;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                transition: all 0.2s;
+            }
+            .dt-tool-btn:hover {
+                background: rgba(255, 255, 255, 0.22);
+                border-color: #38bdf8;
+                transform: translateY(-1px);
+            }
+        }
+
 </head>
 
 <body>
@@ -2311,23 +2358,27 @@ function _decodeGeminiKey(s) {
             <input id="v-name" aria-label="Tên không gian" placeholder="Đặt tên không gian…">
 
             <div class="desktop-loci-tools" id="desktop-loci-tools">
-                <button class="dt-tool-btn" id="dt-btn-place" onclick="window.triggerDesktopPlaceMarker()" title="Đặt mốc vị trí mới vào không gian 360">
-                     <span>Đặt mốc</span>
+                <!-- 6 CHỨC NĂNG CỐT LÕI DUY NHẤT TRÊN MÁY TÍNH -->
+                <button class="dt-tool-btn" id="dt-btn-viewphoto" onclick="window.triggerViewPhoto()" title="Xem ảnh 360 toàn cảnh">
+                    🖼️ <span>Xem ảnh 360</span>
                 </button>
-                <button class="dt-tool-btn" id="dt-btn-move" onclick="window.triggerDesktopMoveMarker()" title="Bật/Tắt chế độ kéo di chuyển mốc trong phòng">
-                    🔄 <span>Di chuyển mốc</span>
+                <button class="dt-tool-btn" id="dt-btn-addmarker" onclick="window.togglePresetLessonPanel()" title="Thêm mốc từ bài học có sẵn (Bài 6, 7, 8)">
+                    ➕ <span>Thêm mốc từ bài</span>
                 </button>
-                <button class="dt-tool-btn" id="dt-btn-zoomin" onclick="window.triggerDesktopZoomMarker(1.15)" title="Phóng to mốc hoặc mô hình 3D đã chọn">
+                <button class="dt-tool-btn" id="dt-btn-zoomin" onclick="window.triggerDesktopZoomMarker(1.15)" title="Phóng to không gian / mốc">
                     🔍+ <span>Phóng to</span>
                 </button>
-                <button class="dt-tool-btn" id="dt-btn-zoomout" onclick="window.triggerDesktopZoomMarker(0.85)" title="Thu nhỏ mốc hoặc mô hình 3D đã chọn">
+                <button class="dt-tool-btn" id="dt-btn-zoomout" onclick="window.triggerDesktopZoomMarker(0.85)" title="Thu nhỏ không gian / mốc">
                     🔍- <span>Thu nhỏ</span>
                 </button>
-                <button class="dt-tool-btn" id="dt-btn-name" onclick="window.triggerDesktopNameMarker()" title="Đặt tên mốc & sự kiện gắn liền để gõ ôn tập sau này">
-                    📝 <span>Tên mốc & Ôn tập</span>
+                <button class="dt-tool-btn" id="dt-btn-lock" onclick="window.toggleLockMarkers()" title="Khóa / Mở khóa mốc (chống kéo lệch)">
+                    🔒 <span id="lock-marker-txt">Khóa mốc</span>
                 </button>
-                <button class="dt-tool-btn" id="dt-btn-touchmode" onclick="window.toggleTouchMode()" title="Chuyển chế độ chạm: Xoay 3D hoặc Cuộn trang">
-                    👆 <span id="touch-mode-txt">Chạm: Xoay 3D</span>
+                <button class="dt-tool-btn" id="dt-btn-notes" onclick="window.triggerDesktopNotes()" title="Xem & ghi chú mốc kiến thức">
+                    📝 <span>Ghi chú</span>
+                </button>
+                <button class="dt-tool-btn" id="dt-btn-learn3d" onclick="window.triggerLearn3DMode()" title="Học tuần tự như không gian 3D" style="background: linear-gradient(135deg, #0284c7, #059669); color: #fff; font-weight: 700; border: none; box-shadow: 0 2px 8px rgba(2,132,199,0.3);">
+                    🚶 <span>Học như 3D</span>
                 </button>
             </div>
   
@@ -7163,6 +7214,14 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         if (roomMaterial) {
                             roomMaterial.uniforms.tEquirect.value = t;
                         }
+                    }, undefined, (err) => {
+                        console.warn('Không tải được ảnh 360 từ URL từ xa, sử dụng ảnh mẫu dự phòng:', err);
+                        new THREE.TextureLoader().load('assets/images/bai6_chuan/b6_t3_dinh_tan_trao.png', fb => {
+                            if (texture) texture.dispose();
+                            texture = fb;
+                            sphere.material.map = fb;
+                            sphere.material.needsUpdate = true;
+                        });
                     });
 
                     yaw = 0; pitch = 0; fovV = 70;
@@ -10854,6 +10913,79 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             if (btn) btn.classList.toggle('active', window._isMoveMarkerMode);
             if (typeof toast === 'function') {
                 toast(window._isMoveMarkerMode ? '🔄 Chế độ di chuyển mốc: BẬT. Bấm vào mốc và bấm vị trí mới trong phòng!' : 'Đã tắt chế độ di chuyển mốc.');
+            }
+        };
+
+        
+        // ====================================================================
+        // 6 TÍNH NĂNG CỐT LÕI DUY NHẤT TRÊN MÁY TÍNH (THEO YÊU CẦU NGƯỜI DÙNG)
+        // ====================================================================
+        window.triggerViewPhoto = function() {
+            if (window.viewer && typeof window.viewer.setPitch === 'function') {
+                window.viewer.setPitch(0);
+                window.viewer.setYaw(0);
+                window.viewer.setFov(75);
+            }
+            if (typeof toast === 'function') toast('🖼️ Đang xem ảnh 360 toàn cảnh. Kéo chuột để xoay đa chiều.');
+        };
+
+        window.togglePresetLessonPanel = function() {
+            const panel = document.getElementById('panel');
+            if (!panel) return;
+            panel.classList.toggle('open');
+            if (panel.classList.contains('open')) {
+                const lessonSelect = document.getElementById('lesson');
+                if (lessonSelect) lessonSelect.focus();
+                if (typeof toast === 'function') toast('➕ Đã mở bảng chọn mốc từ bài học có sẵn.');
+            }
+        };
+
+        window._isMarkersLocked = false;
+        window.toggleLockMarkers = function() {
+            window._isMarkersLocked = !window._isMarkersLocked;
+            const txt = document.getElementById('lock-marker-txt');
+            const btn = document.getElementById('dt-btn-lock');
+            if (window._isMarkersLocked) {
+                window._isMoveMarkerMode = false;
+                if (txt) txt.textContent = 'Đã khóa';
+                if (btn) {
+                    btn.style.background = 'rgba(239, 68, 68, 0.25)';
+                    btn.style.borderColor = '#ef4444';
+                    btn.style.color = '#fca5a5';
+                }
+                if (typeof toast === 'function') toast('🔒 Đã khóa mốc: Cố định vị trí, không thể kéo lệch!');
+            } else {
+                if (txt) txt.textContent = 'Khóa mốc';
+                if (btn) {
+                    btn.style.background = '';
+                    btn.style.borderColor = '';
+                    btn.style.color = '';
+                }
+                if (typeof toast === 'function') toast('🔓 Đã mở khóa mốc: Có thể di chuyển và căn chỉnh vị trí.');
+            }
+        };
+
+        window.triggerDesktopNotes = function() {
+            if (window._currentSelectedMarkerId) {
+                if (typeof window.openMarkerDetails === 'function') {
+                    window.openMarkerDetails(window._currentSelectedMarkerId);
+                    return;
+                }
+            }
+            const panel = document.getElementById('panel');
+            if (panel) {
+                panel.classList.add('open');
+                if (typeof toast === 'function') toast('📝 Bấm vào một mốc trong phòng để mở ghi chú chi tiết.');
+            }
+        };
+
+        window.triggerLearn3DMode = function() {
+            // Khởi động chế độ học tuần tự như 3D
+            const btnWalk = document.getElementById('v-walk-mode');
+            if (btnWalk) {
+                btnWalk.click();
+            } else if (typeof toast === 'function') {
+                toast('🚶 Đang bắt đầu chế độ học khám phá tuần tự như Cung điện 3D!');
             }
         };
 

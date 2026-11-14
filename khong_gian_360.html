@@ -7214,6 +7214,14 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                         if (roomMaterial) {
                             roomMaterial.uniforms.tEquirect.value = t;
                         }
+                    }, undefined, (err) => {
+                        console.warn('Không tải được ảnh 360 từ URL từ xa, sử dụng ảnh mẫu dự phòng:', err);
+                        new THREE.TextureLoader().load('assets/images/bai6_chuan/b6_t3_dinh_tan_trao.png', fb => {
+                            if (texture) texture.dispose();
+                            texture = fb;
+                            sphere.material.map = fb;
+                            sphere.material.needsUpdate = true;
+                        });
                     });
 
                     yaw = 0; pitch = 0; fovV = 70;

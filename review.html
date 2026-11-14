@@ -2947,7 +2947,6 @@
                         .filter(l => l && l.anchors)
                         .map(l => ({ lesson: l, qs: questionsOf(l) }))
                         .filter(x => x.qs.length);
-                    if (freshLessons.length > 0 && freshLessons[0].qs.length > 10) {
                     if (freshLessons.length > 0 && freshLessons[0].qs.length > 10 && (!rawLessons.length || rawLessons[0].qs[0]?.id?.includes('fb_'))) {
                         rawLessons = freshLessons;
                         home();

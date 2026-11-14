@@ -392,6 +392,9 @@ function _decodeGeminiKey(s) {
                     reason: 'Đàm thoại học tập Lịch sử 12 hợp lệ'
                 };
             }
+
+            hasHistoryIntent = false;
+            for (let j = 0; j < VALID_HISTORICAL_TERMS_NO_ACCENT.length; j++) {
                 if (checkTermMatched(noAccent, VALID_HISTORICAL_TERMS_NO_ACCENT[j])) {
                     hasHistoryIntent = true;
                     break;
