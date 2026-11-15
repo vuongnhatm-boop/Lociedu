@@ -135,7 +135,8 @@
 
   <!-- Preload 3D Exhibition Room for ultra-fast loading -->
   <link rel="preload" href="./trien_lam_nau.glb" as="fetch" crossorigin="anonymous">
-  <link rel="preload" href="./backrooms_vr.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="./big_square_commercial_building_opt.glb" as="fetch" crossorigin="anonymous">
+  <link rel="preload" href="./abandoned_city_street_opt.glb" as="fetch" crossorigin="anonymous">
 
   <title>Cung Điện Ký Ức - Lịch Sử 12 | 3D Loft Living Room</title>
   <link rel="icon"
@@ -5898,9 +5899,11 @@
     )) || galleryParam.includes('brown') || galleryParam.includes('nâu') || galleryParam.includes('triển lãm')
       || urlParams.get('lesson') === 'bai_6' || urlParams.get('lesson') === 'bai_7' || urlParams.get('lesson') === 'bai_8';
 
-    // Không gian 3D riêng biệt cho Bài 7: backrooms_vr.glb
-    if (urlParams.get('lesson') === 'bai_7' && !customModelUrl) {
-      customModelUrl = 'backrooms_vr.glb';
+    // Không gian 3D riêng biệt chuẩn cho Bài 7 (Commercial Building) và Bài 8 (Abandoned City Street)
+    if (urlParams.get('lesson') === 'bai_7' || (customModelUrl && (customModelUrl.includes('building') || customModelUrl.includes('commercial') || customModelUrl.includes('backrooms')))) {
+      customModelUrl = 'big_square_commercial_building_opt.glb';
+    } else if (urlParams.get('lesson') === 'bai_8' || (customModelUrl && (customModelUrl.includes('city') || customModelUrl.includes('abandoned')))) {
+      customModelUrl = 'abandoned_city_street_opt.glb';
     } else if (isBrownGallery && !customModelUrl) {
       customModelUrl = 'trien_lam_nau.glb';
     }
@@ -13079,12 +13082,19 @@
     /* --- MODEL LOADING --- */
     // gltfLoader đã được khởi tạo toàn cục kèm DracoLoader ở đầu file
 
-    // Xây dựng danh sách ưu tiên nạp mô hình: Bài 7 nạp backrooms_vr.glb, Bài 6 & 8 nạp trien_lam_nau.glb
+    // Xây dựng danh sách ưu tiên nạp mô hình: Bài 7 nạp big_square_commercial_building_opt.glb, Bài 8 nạp abandoned_city_street_opt.glb, Bài 6 nạp trien_lam_nau.glb
     let MODEL_PATHS = [];
 
-    if (EFFECTIVE_LESSON_KEY === 'bai_7' || (customModelUrl && customModelUrl.includes('backrooms'))) {
+    if (EFFECTIVE_LESSON_KEY === 'bai_7' || (customModelUrl && (customModelUrl.includes('building') || customModelUrl.includes('commercial') || customModelUrl.includes('backrooms')))) {
+      MODEL_PATHS.push('./big_square_commercial_building_opt.glb');
+      MODEL_PATHS.push('../big_square_commercial_building_opt.glb');
+      MODEL_PATHS.push('./app/big_square_commercial_building_opt.glb');
       MODEL_PATHS.push('./backrooms_vr.glb');
-      MODEL_PATHS.push('../backrooms_vr.glb');
+      if (customModelUrl && !customModelUrl.includes('backrooms')) MODEL_PATHS.unshift(customModelUrl);
+    } else if (EFFECTIVE_LESSON_KEY === 'bai_8' || (customModelUrl && (customModelUrl.includes('city') || customModelUrl.includes('abandoned')))) {
+      MODEL_PATHS.push('./abandoned_city_street_opt.glb');
+      MODEL_PATHS.push('../abandoned_city_street_opt.glb');
+      MODEL_PATHS.push('./app/abandoned_city_street_opt.glb');
       if (customModelUrl) MODEL_PATHS.unshift(customModelUrl);
     } else if (customModelUrl) {
       if (isBrownGallery) {

@@ -15582,7 +15582,7 @@
         const grid = document.getElementById('space-grid');
         grid.innerHTML = SPACES.map(s => {
             let modelPath = s.file;
-            if (modelPath && !modelPath.startsWith('Không gian chuẩn') && !modelPath.startsWith('model không gian 3d') && !modelPath.endsWith('trien_lam_nau.glb')) {
+            if (modelPath && !modelPath.startsWith('Không gian chuẩn') && !modelPath.startsWith('model không gian 3d') && !modelPath.endsWith('trien_lam_nau.glb') && !modelPath.includes('commercial_building') && !modelPath.includes('abandoned_city') && !modelPath.includes('backrooms')) {
                 modelPath = BASE + modelPath;
             }
             let href = modelPath ? 'app/index.html?model=' + encodeURIComponent(modelPath) + '&name=' + encodeURIComponent(s.name) : 'app/index.html?name=' + encodeURIComponent(s.name);
