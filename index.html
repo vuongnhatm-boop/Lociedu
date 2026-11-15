@@ -15567,14 +15567,14 @@
             {
                 name: 'Không gian Bài 7 (Kháng chiến chống Pháp)',
                 note: '9 mốc Kháng chiến chống thực dân Pháp (1945 – 1954) · Chiến dịch Điện Biên Phủ',
-                file: 'big_square_commercial_building_opt.glb',
+                file: 'big_square_commercial_building_opt.glb?v=7.3',
                 img: 'assets/images/bai7/tram5.jpg',
                 lesson: 'bai_7'
             },
             {
                 name: 'Không gian Bài 8 (Kháng chiến chống Mỹ)',
                 note: '9 mốc Kháng chiến chống Mỹ cứu nước (1954 – 1975) · Chiến dịch Hồ Chí Minh',
-                file: 'abandoned_city_street_opt.glb',
+                file: 'abandoned_city_street_opt.glb?v=8.3',
                 img: 'assets/images/bai8/b8_img15.jpg',
                 lesson: 'bai_8'
             }
@@ -21262,7 +21262,7 @@
     <script src="loci_anchors_data.js"></script>
     <script src="flashcard_formats.js"></script>
     <script src="review_engine.js"></script>
-    <script src="surprise_recall.js?v=4.0" onerror="this.onerror=null;this.src='app/surprise_recall.js?v=4.0'"></script>
+    <script src="surprise_recall.js?v=7.3" onerror="this.onerror=null;this.src='app/surprise_recall.js?v=7.3'"></script>
 
     <!-- HỆ THỐNG ĐẾM THỜI GIAN HỌC THỜI GIAN THỰC & ĐỒNG BỘ TÍCH LŨY -->
     <script>
@@ -22324,14 +22324,14 @@
                 if (!user) return false;
                 const completedLessons = user.completedLessons || [];
                 const b6Stations = (user.completedStations && user.completedStations.bai_6) ? user.completedStations.bai_6.length : 0;
-                return completedLessons.includes('bai_6') || b6Stations >= 5 || (user.stats && user.stats.answered >= 5);
+                return completedLessons.includes('bai_6') || b6Stations >= 7;
             }
 
             if (lessonId === 'bai_8') {
                 if (!user) return false;
                 const completedLessons = user.completedLessons || [];
                 const b7Stations = (user.completedStations && user.completedStations.bai_7) ? user.completedStations.bai_7.length : 0;
-                return completedLessons.includes('bai_7') || b7Stations >= 5;
+                return completedLessons.includes('bai_7') || b7Stations >= 7;
             }
 
             return true;

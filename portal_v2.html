@@ -7,7 +7,7 @@
         if (window.top !== window.self) {
             document.documentElement.classList.add('is-in-iframe');
         }
-        window.getCookie = function(name) {
+        window.getCookie = function (name) {
             try {
                 const cname = name + "=";
                 const decodedCookie = decodeURIComponent(document.cookie);
@@ -17,11 +17,11 @@
                     while (c.charAt(0) === ' ') c = c.substring(1);
                     if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
                 }
-            } catch (_) {}
+            } catch (_) { }
             return "";
         };
 
-        window.isUserLoggedIn = function() {
+        window.isUserLoggedIn = function () {
             try {
                 if (window._isUserExplicitlyLoggedIn) return true;
                 if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
@@ -36,7 +36,7 @@
                         try {
                             const p = JSON.parse(localUserStr);
                             if (p && (p.uid || p.username || p.displayName || p.email || p.role)) return true;
-                        } catch(_) {}
+                        } catch (_) { }
                     }
                     if (sessionActive) return true;
                 }
@@ -47,7 +47,7 @@
                     try {
                         const accs = JSON.parse(accountsStr);
                         if (accs && Object.keys(accs).length > 0) return true;
-                    } catch(_) {}
+                    } catch (_) { }
                 }
 
                 // Kiểm tra Cookie lưu trữ 365 ngày
@@ -59,12 +59,12 @@
                 if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
                     return true;
                 }
-            } catch (_) {}
+            } catch (_) { }
             return false;
         };
 
         // LẮNG NGHE POSTMESSAGE TỪ TẤT CẢ CÁC TRANG CON / IFRAME TRÁNH NÚT BỊ TREO
-        window.addEventListener('message', function(e) {
+        window.addEventListener('message', function (e) {
             if (!e.data || typeof e.data !== 'object') return;
             const data = e.data;
             if (data.type === 'LOCI_SWITCH_TAB' && data.tab) {
@@ -203,8 +203,8 @@
         // ==========================================
         // BỘ ĐIỀU KHIỂN AVATAR HỌC SINH TOÀN DIỆN & TẢI ẢNH TỪ THIẾT BỊ
         // ==========================================
-        
-        window.syncUserIdentityUI = function() {
+
+        window.syncUserIdentityUI = function () {
             try {
                 let user = null;
                 if (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') {
@@ -213,7 +213,7 @@
                 if (!user) {
                     const raw = localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || localStorage.getItem('loci_current_user');
                     if (raw) {
-                        try { user = JSON.parse(raw); } catch(_) {}
+                        try { user = JSON.parse(raw); } catch (_) { }
                     }
                 }
                 const customAvatar = localStorage.getItem('loci_user_custom_avatar') || (user ? (user.avatarUrl || user.photoURL || user.avatar) : null);
@@ -232,7 +232,7 @@
                     const initial = ((customName || 'U')[0] || 'U').toUpperCase();
                     window.applyUserAvatar(customAvatar || '', initial);
                 }
-            } catch(e) {
+            } catch (e) {
                 console.warn('[Sync Identity]', e);
             }
         };
@@ -372,18 +372,18 @@
             alert('Đã đặt lại ảnh đại diện mặc định!');
         };
 
-        
-    const HISTORICAL_AVATARS_LIST = [
-        { id: 'av_cotco', name: 'Cột Cờ & Khối Đại Đoàn Kết', file: 'assets/images/avatars/avatar_cotco_nhandan.jpg', tag: 'Dân Tộc' },
-        { id: 'av_bacho', name: 'Hòa Bình - Độc Lập (Bác Hồ)', file: 'assets/images/avatars/avatar_bac_ho_hoabinh.jpg', tag: 'Lịch Sử' },
-        { id: 'av_vndoclap', name: 'Việt Nam Độc Lập - Tự Do', file: 'assets/images/avatars/avatar_vietnam_doclap.jpg', tag: 'Tổ Quốc' },
-        { id: 'av_chibi', name: 'Ngôi Sao Tri Thức Loci', file: 'assets/images/avatars/avatar_chibi_redstar.jpg', tag: 'Tuổi Trẻ' },
-        { id: 'av_toilavn', name: 'Tôi Là Người Việt Nam', file: 'assets/images/avatars/avatar_toilavietnam.jpg', tag: 'Tự Hào' },
-        { id: 'av_vietnamstar', name: 'Biểu Tượng Sao Vàng', file: 'assets/images/avatars/avatar_vietnam_star.jpg', tag: 'Ý Chí' },
-        { id: 'av_doclap', name: 'Bước Chân Độc Lập', file: 'assets/images/avatars/avatar_doclap_buochan.jpg', tag: 'Kháng Chiến' }
-    ];
 
-    const PRESET_AVATAR_SVGS = [
+        const HISTORICAL_AVATARS_LIST = [
+            { id: 'av_cotco', name: 'Cột Cờ & Khối Đại Đoàn Kết', file: 'assets/images/avatars/avatar_cotco_nhandan.jpg', tag: 'Dân Tộc' },
+            { id: 'av_bacho', name: 'Hòa Bình - Độc Lập (Bác Hồ)', file: 'assets/images/avatars/avatar_bac_ho_hoabinh.jpg', tag: 'Lịch Sử' },
+            { id: 'av_vndoclap', name: 'Việt Nam Độc Lập - Tự Do', file: 'assets/images/avatars/avatar_vietnam_doclap.jpg', tag: 'Tổ Quốc' },
+            { id: 'av_chibi', name: 'Ngôi Sao Tri Thức Loci', file: 'assets/images/avatars/avatar_chibi_redstar.jpg', tag: 'Tuổi Trẻ' },
+            { id: 'av_toilavn', name: 'Tôi Là Người Việt Nam', file: 'assets/images/avatars/avatar_toilavietnam.jpg', tag: 'Tự Hào' },
+            { id: 'av_vietnamstar', name: 'Biểu Tượng Sao Vàng', file: 'assets/images/avatars/avatar_vietnam_star.jpg', tag: 'Ý Chí' },
+            { id: 'av_doclap', name: 'Bước Chân Độc Lập', file: 'assets/images/avatars/avatar_doclap_buochan.jpg', tag: 'Kháng Chiến' }
+        ];
+
+        const PRESET_AVATAR_SVGS = [
             {
                 id: 'laurel',
                 name: 'Vòng Nguyệt Quế',
@@ -455,7 +455,7 @@
             `).join('');
         };
 
-        window.selectHistoricalAvatar = function(filePath) {
+        window.selectHistoricalAvatar = function (filePath) {
             try {
                 localStorage.setItem('loci_user_custom_avatar', filePath);
                 const activeUid = (window.LociFirebase && window.LociFirebase.currentUser) ? window.LociFirebase.currentUser.uid : localStorage.getItem('loci_active_student_uid');
@@ -471,7 +471,7 @@
                 }
                 if (typeof window.applyUserAvatar === 'function') {
                     window.applyUserAvatar(filePath);
-                if (typeof window.syncUserIdentityUI === 'function') window.syncUserIdentityUI();
+                    if (typeof window.syncUserIdentityUI === 'function') window.syncUserIdentityUI();
                 }
                 window.closeAvatarPickerModal();
                 if (typeof window.showToast === 'function') {
@@ -493,7 +493,7 @@
                 if (lastUser && emailInp && !emailInp.value) {
                     emailInp.value = lastUser;
                 }
-            } catch (_) {}
+            } catch (_) { }
 
             const user = (window.LociFirebase && window.LociFirebase.currentUser) || window._lociLocalUser;
             const guestPanel = document.getElementById('auth-panel-guest');
@@ -11939,7 +11939,7 @@
                 0 20px 50px 0 rgba(0, 0, 0, 0.45),
                 inset 0 1px 1px 0 rgba(255, 255, 255, 0.22) !important;
         }
-    
+
         /* ==================== BANNER ĐẾM NGƯỢC NGÀY VƯỢT VŨ MÔN - CHUẨN ẢNH 1 ==================== */
         .vu-mon-banner-clean {
             background: linear-gradient(90deg, #f0fdf4 0%, #ecfdf5 45%, #e6fbf3 75%, #dcfce7 100%);
@@ -12126,7 +12126,7 @@
             color: #94a3b8;
         }
 
-    
+
         /* ==================== EDTECH MODERN DESIGN SYSTEM (COGNITIVE & GAMIFIED) ==================== */
         /* 1. KHÁM PHÁ CUNG ĐIỆN 3D - BÀI HỌC */
         .space-grid {
@@ -12209,7 +12209,7 @@
             color: #ffffff;
             font-size: 11.5px;
             font-weight: 700;
-            text-shadow: 0 2px 6px rgba(0,0,0,0.8);
+            text-shadow: 0 2px 6px rgba(0, 0, 0, 0.8);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -12486,16 +12486,25 @@
             border-color: #334155 !important;
         }
 
-    
+
         /* ANIMATION CHO LINH THÚ TRI THỨC 3D */
         @keyframes mascotFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-7px) rotate(1deg); }
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-7px) rotate(1deg);
+            }
         }
+
         .mascot-img-wrap:hover #active-mascot-img {
             transform: scale(1.06) translateY(-4px) !important;
-            filter: drop-shadow(0 16px 30px rgba(109,40,217,0.32)) !important;
+            filter: drop-shadow(0 16px 30px rgba(109, 40, 217, 0.32)) !important;
         }
+
         .pet-choice-card {
             background: #ffffff;
             border: 2px solid #e2e8f0;
@@ -12506,18 +12515,20 @@
             transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
             position: relative;
         }
+
         .pet-choice-card:hover {
             border-color: #6366f1;
             transform: translateY(-3px);
             box-shadow: 0 12px 24px -4px rgba(99, 102, 241, 0.16);
         }
+
         .pet-choice-card.active {
             border-color: #6366f1;
             background: #f5f3ff;
             box-shadow: 0 8px 20px -2px rgba(99, 102, 241, 0.22);
         }
-    
-        
+
+
         /* Ẩn hoàn toàn nội dung Portal & bài tập khi chưa đăng nhập */
         body.gate-active .portal-topbar,
         body.gate-active .portal-main-layout,
@@ -12545,6 +12556,7 @@
             transition: opacity 0.45s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.45s, transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
             overflow: hidden;
         }
+
         #hero-landing-gate.gate-hidden {
             opacity: 0;
             visibility: hidden;
@@ -12560,6 +12572,7 @@
             overflow: hidden;
             z-index: 1;
         }
+
         .hero-sparkle {
             position: absolute;
             color: rgba(148, 163, 184, 0.45);
@@ -12567,13 +12580,49 @@
             user-select: none;
             animation: heroStarPulse 3.5s ease-in-out infinite alternate;
         }
-        .hero-sparkle.sp-1 { bottom: 18%; right: 10%; font-size: 34px; color: rgba(148, 163, 184, 0.65); animation-delay: 0s; }
-        .hero-sparkle.sp-2 { top: 26%; left: 14%; font-size: 19px; color: rgba(56, 189, 248, 0.45); animation-delay: 1.2s; }
-        .hero-sparkle.sp-3 { bottom: 28%; left: 20%; font-size: 22px; color: rgba(253, 224, 71, 0.4); animation-delay: 0.8s; }
-        .hero-sparkle.sp-4 { top: 34%; right: 22%; font-size: 16px; color: rgba(148, 163, 184, 0.35); animation-delay: 1.9s; }
+
+        .hero-sparkle.sp-1 {
+            bottom: 18%;
+            right: 10%;
+            font-size: 34px;
+            color: rgba(148, 163, 184, 0.65);
+            animation-delay: 0s;
+        }
+
+        .hero-sparkle.sp-2 {
+            top: 26%;
+            left: 14%;
+            font-size: 19px;
+            color: rgba(56, 189, 248, 0.45);
+            animation-delay: 1.2s;
+        }
+
+        .hero-sparkle.sp-3 {
+            bottom: 28%;
+            left: 20%;
+            font-size: 22px;
+            color: rgba(253, 224, 71, 0.4);
+            animation-delay: 0.8s;
+        }
+
+        .hero-sparkle.sp-4 {
+            top: 34%;
+            right: 22%;
+            font-size: 16px;
+            color: rgba(148, 163, 184, 0.35);
+            animation-delay: 1.9s;
+        }
+
         @keyframes heroStarPulse {
-            0% { opacity: 0.25; transform: scale(0.8) rotate(0deg); }
-            100% { opacity: 1; transform: scale(1.2) rotate(18deg); }
+            0% {
+                opacity: 0.25;
+                transform: scale(0.8) rotate(0deg);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1.2) rotate(18deg);
+            }
         }
 
         /* Header Navbar Hero Gate */
@@ -12585,6 +12634,7 @@
             justify-content: space-between;
             width: 100%;
         }
+
         .hero-gate-logo {
             display: flex;
             align-items: center;
@@ -12596,11 +12646,13 @@
             cursor: pointer;
             text-decoration: none;
         }
+
         .hero-gate-center-pills {
             display: flex;
             align-items: center;
             gap: 12px;
         }
+
         .hero-gate-pill-btn {
             background: rgba(255, 255, 255, 0.08);
             border: 1px solid rgba(255, 255, 255, 0.16);
@@ -12617,16 +12669,19 @@
             -webkit-backdrop-filter: blur(12px);
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .hero-gate-pill-btn:hover {
             background: rgba(255, 255, 255, 0.16);
             border-color: rgba(255, 255, 255, 0.35);
             transform: translateY(-1px);
         }
+
         .hero-gate-right-actions {
             display: flex;
             align-items: center;
             gap: 22px;
         }
+
         .hero-gate-login-link {
             background: transparent;
             border: none;
@@ -12637,9 +12692,11 @@
             transition: color 0.2s;
             padding: 6px 10px;
         }
+
         .hero-gate-login-link:hover {
             color: #38bdf8;
         }
+
         .hero-gate-register-btn {
             background: transparent;
             border: 1.5px solid #fde047;
@@ -12655,6 +12712,7 @@
             box-shadow: 0 0 16px rgba(253, 224, 71, 0.22);
             transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .hero-gate-register-btn:hover {
             background: rgba(253, 224, 71, 0.14);
             box-shadow: 0 0 24px rgba(253, 224, 71, 0.45);
@@ -12673,6 +12731,7 @@
             margin: auto 0;
             padding: 20px 0;
         }
+
         .hero-gate-headline {
             font-size: clamp(32px, 5.2vw, 54px);
             font-weight: 800;
@@ -12683,6 +12742,7 @@
             max-width: 950px;
             line-height: 1.25;
         }
+
         .hero-gate-start-btn {
             background: linear-gradient(135deg, #0284c7 0%, #38bdf8 100%);
             border: none;
@@ -12696,6 +12756,7 @@
             transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
             letter-spacing: 0.4px;
         }
+
         .hero-gate-start-btn:hover {
             transform: translateY(-2px) scale(1.05);
             box-shadow: 0 0 45px rgba(56, 189, 248, 0.95), 0 6px 24px rgba(2, 132, 199, 0.75);
@@ -12721,6 +12782,7 @@
             align-items: center;
             gap: 6px;
         }
+
         .hero-gate-return-pill:hover {
             color: #fff;
             border-color: #38bdf8;
@@ -12731,20 +12793,22 @@
             #hero-landing-gate {
                 padding: 18px 20px 40px 20px;
             }
+
             .hero-gate-center-pills {
                 display: none;
             }
+
             .hero-gate-headline {
                 font-size: 32px;
                 margin-bottom: 26px;
             }
+
             .hero-gate-start-btn {
                 padding: 11px 38px;
                 font-size: 16px;
             }
         }
-    
-</style>
+    </style>
     <script src="custom_popup_system.js"></script>
     <style>
         /* --- CHUẨN ĐỒNG BỘ GIAO DIỆN HỌC SINH (MATCH 3 HÌNH ẢNH USER GỬI) --- */
@@ -12817,7 +12881,8 @@
         }
     </style>
     <script src="app/loci_account_manager.js"></script>
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit"
+        async defer></script>
     <style>
         /* Responsive mascot dashboard matching user screenshot */
         .mascot-dash-grid {
@@ -12858,24 +12923,30 @@
         <!-- Header Navbar Hero Gate (Khớp ảnh 100%) -->
         <header class="hero-gate-nav">
             <div class="hero-gate-left">
-                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleGateNavClick('home')" style="display: flex; align-items: center; text-decoration: none; font-weight: 800; font-size: 19px; color: #ffffff; letter-spacing: 0.5px;">
-                    <img class="hero-gate-logo-icon" src="assets/images/logo_loci_edu.png" alt="LOCI EDU" style="width: 38px; height: 38px; border-radius: 10px; object-fit: contain; margin-right: 10px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); border: 1.5px solid rgba(255,255,255,0.2);">
+                <a class="hero-gate-logo" href="javascript:void(0)" onclick="window.handleGateNavClick('home')"
+                    style="display: flex; align-items: center; text-decoration: none; font-weight: 800; font-size: 19px; color: #ffffff; letter-spacing: 0.5px;">
+                    <img class="hero-gate-logo-icon" src="assets/images/logo_loci_edu.png" alt="LOCI EDU"
+                        style="width: 38px; height: 38px; border-radius: 10px; object-fit: contain; margin-right: 10px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.4); border: 1.5px solid rgba(255,255,255,0.2);">
                     <span>LOCI EDU</span>
                 </a>
             </div>
 
             <div class="hero-gate-center-pills">
-                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('home')" title="Yêu cầu đăng nhập">
+                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('home')"
+                    title="Yêu cầu đăng nhập">
                     <span>Trang chủ</span> <span>▾</span>
                 </button>
-                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('community')" title="Yêu cầu đăng nhập">
+                <button type="button" class="hero-gate-pill-btn" onclick="window.handleGateNavClick('community')"
+                    title="Yêu cầu đăng nhập">
                     <span>Cộng đồng</span> <span>▾</span>
                 </button>
             </div>
 
             <div class="hero-gate-right-actions">
-                <button type="button" class="hero-gate-register-btn" onclick="window.openLoginGate('auth')" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; font-size: 14.5px; font-weight: 700; border-radius: 99px;">
-                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <button type="button" class="hero-gate-register-btn" onclick="window.openLoginGate('auth')"
+                    style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 22px; font-size: 14.5px; font-weight: 700; border-radius: 99px;">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
                         <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                         <circle cx="12" cy="7" r="4"></circle>
                     </svg>
@@ -12887,18 +12958,20 @@
         <!-- Trung tâm Hero Gate: Tiêu đề & Nút Start -->
         <div class="hero-gate-main-body">
             <h1 class="hero-gate-headline">Mỗi kiến thức – Một dấu ấn ký ức</h1>
-            <button type="button" id="hero-start-btn" class="hero-gate-start-btn" onclick="window.handleHeroStartClick()">
+            <button type="button" id="hero-start-btn" class="hero-gate-start-btn"
+                onclick="window.handleHeroStartClick()">
                 Bắt đầu học ngay
             </button>
         </div>
 
 
     </div>
-    
+
 
     <div id="file-protocol-warning"
         style="display:none; background: linear-gradient(90deg, #f59e0b, #ef4444); color: white; padding: 12px 20px; font-weight: 600; font-size: 13.5px; text-align: center; position: sticky; top: 0; z-index: 99999; box-shadow: 0 4px 12px rgba(0,0,0,0.15);">
-        [Lưu ý] Bạn đang mở trực tiếp từ tệp (<code>file:///</code>). Trình duyệt sẽ chặn tải mô hình 3D & Đồng bộ Tài khoản
+        [Lưu ý] Bạn đang mở trực tiếp từ tệp (<code>file:///</code>). Trình duyệt sẽ chặn tải mô hình 3D & Đồng bộ Tài
+        khoản
         do chính sách bảo mật CORS.
         <a href="http://localhost:8080/portal_v2.html" target="_blank"
             style="color: #fff; text-decoration: underline; font-weight: 800; margin-left: 8px; background: rgba(0,0,0,0.2); padding: 4px 12px; border-radius: 99px;">➔
@@ -12931,28 +13004,36 @@
                         <span class="chevron-icon">▾</span>
                     </button>
                     <div class="topbar-dropdown-menu" id="dropdown-menu-home">
-                        <button class="topbar-dropdown-item nav-item active" data-tab="overview" onclick="window.switchPortalTab('overview')">
+                        <button class="topbar-dropdown-item nav-item active" data-tab="overview"
+                            onclick="window.switchPortalTab('overview')">
                             <span>Tổng quan</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="spaces" onclick="window.switchPortalTab('spaces')">
+                        <button class="topbar-dropdown-item nav-item" data-tab="spaces"
+                            onclick="window.switchPortalTab('spaces')">
                             <span>Phòng 360° tự chụp</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="ai" onclick="window.switchPortalTab('ai')">
+                        <button class="topbar-dropdown-item nav-item" data-tab="ai"
+                            onclick="window.switchPortalTab('ai')">
                             <span>Gia sư AI</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="review" onclick="window.switchPortalTab('review')">
+                        <button class="topbar-dropdown-item nav-item" data-tab="review"
+                            onclick="window.switchPortalTab('review')">
                             <span>Thẻ ôn tập</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="exam" onclick="window.switchPortalTab('exam')">
+                        <button class="topbar-dropdown-item nav-item" data-tab="exam"
+                            onclick="window.switchPortalTab('exam')">
                             <span>Đề ôn tập</span>
                         </button>
-                        <button class="topbar-dropdown-item nav-item" data-tab="pet" onclick="window.switchPortalTab('pet')">
+                        <button class="topbar-dropdown-item nav-item" data-tab="pet"
+                            onclick="window.switchPortalTab('pet')">
                             <span>Linh Thú Tri Thức</span>
                         </button>
-                        <button class="topbar-dropdown-item" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'">
+                        <button class="topbar-dropdown-item"
+                            onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'">
                             <span>Cúp Loci (4 Thí Sinh)</span>
                         </button>
-                        <button class="topbar-dropdown-item" onclick="window.ArenaDuelEngine && window.ArenaDuelEngine.open()">
+                        <button class="topbar-dropdown-item"
+                            onclick="window.ArenaDuelEngine && window.ArenaDuelEngine.open()">
                             <span>Đường Đua Tri Thức (1v1)</span>
                         </button>
                     </div>
@@ -12966,7 +13047,8 @@
                         <span class="chevron-icon">▾</span>
                     </button>
                     <div class="topbar-dropdown-menu" id="dropdown-menu-community">
-                        <button class="topbar-dropdown-item nav-item" data-tab="connect" onclick="window.switchPortalTab('connect')">
+                        <button class="topbar-dropdown-item nav-item" data-tab="connect"
+                            onclick="window.switchPortalTab('connect')">
                             <span>Kết Nối &amp; Vinh Danh</span>
                         </button>
                         <button class="topbar-dropdown-item" onclick="window.openFeedbackModal()">
@@ -13001,7 +13083,9 @@
             <div class="user-profile topbar-user-profile" id="user-profile-btn" onclick="window.openCloudAuthModal()"
                 style="cursor: pointer; display: inline-flex; align-items: center; gap: 10px; background: #ffffff; border: 1px solid #dbeafe; border-radius: 99px; padding: 6px 14px 6px 7px; box-shadow: 0 2px 10px rgba(2, 132, 199, 0.06); transition: all 0.2s;"
                 title="Tài khoản Đồng Sử - Nhấn để Đăng nhập / Đăng ký">
-                <div class="avatar-frame-wrap" id="user-avatar-wrap" onclick="window.openAvatarPickerModal ? window.openAvatarPickerModal() : window.openCloudAuthModal()" title="Bấm để đổi ảnh đại diện"
+                <div class="avatar-frame-wrap" id="user-avatar-wrap"
+                    onclick="window.openAvatarPickerModal ? window.openAvatarPickerModal() : window.openCloudAuthModal()"
+                    title="Bấm để đổi ảnh đại diện"
                     style="width: 38px; height: 38px; min-width: 38px; min-height: 38px; border-radius: 50%; background: #eff6ff center/cover no-repeat; border: 1.5px solid #bfdbfe; display: flex; align-items: center; justify-content: center; overflow: hidden; flex-shrink: 0; box-shadow: none !important;">
                     <div class="avatar" id="user-avatar"
                         style="width: 100%; height: 100%; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #0284c7; background-size: cover; background-position: center; background-repeat: no-repeat; box-shadow: none !important; border: none !important;">
@@ -13043,7 +13127,8 @@
             <div id="vu-mon-countdown-banner" class="vu-mon-banner-clean">
                 <div class="vu-mon-left">
                     <div class="vu-mon-icon-circle">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <rect x="3" y="4" width="18" height="18" rx="4" ry="4"></rect>
                             <line x1="16" y1="2" x2="16" y2="6"></line>
                             <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -13089,34 +13174,47 @@
                 <div class="vu-mon-khuevancac-art" aria-hidden="true">
                     <svg width="220" height="92" viewBox="0 0 220 92" fill="none">
                         <!-- Cây trúc / lá cành phương đông thanh nhã -->
-                        <path d="M15 85 C35 70, 45 40, 42 15 C45 32, 60 55, 75 75" stroke="#10b981" stroke-width="1.6" stroke-linecap="round" opacity="0.32" />
-                        <path d="M35 50 C22 42, 10 38, 2 40" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" opacity="0.4" />
-                        <path d="M42 35 C52 26, 68 22, 80 25" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" opacity="0.4" />
-                        <path d="M40 65 C55 58, 70 56, 85 60" stroke="#10b981" stroke-width="1.8" stroke-linecap="round" opacity="0.4" />
+                        <path d="M15 85 C35 70, 45 40, 42 15 C45 32, 60 55, 75 75" stroke="#10b981" stroke-width="1.6"
+                            stroke-linecap="round" opacity="0.32" />
+                        <path d="M35 50 C22 42, 10 38, 2 40" stroke="#10b981" stroke-width="1.8" stroke-linecap="round"
+                            opacity="0.4" />
+                        <path d="M42 35 C52 26, 68 22, 80 25" stroke="#10b981" stroke-width="1.8" stroke-linecap="round"
+                            opacity="0.4" />
+                        <path d="M40 65 C55 58, 70 56, 85 60" stroke="#10b981" stroke-width="1.8" stroke-linecap="round"
+                            opacity="0.4" />
 
                         <!-- Tượng hình Khuê Văn Các Văn Miếu -->
                         <!-- Mái trên cong đầu đao -->
                         <path d="M115 14 Q145 6 175 14 L170 19 Q145 13 120 19 Z" fill="#059669" opacity="0.38" />
-                        <path d="M110 14 Q116 12 118 17 M180 14 Q174 12 172 17" stroke="#059669" stroke-width="1.8" stroke-linecap="round" opacity="0.45" />
+                        <path d="M110 14 Q116 12 118 17 M180 14 Q174 12 172 17" stroke="#059669" stroke-width="1.8"
+                            stroke-linecap="round" opacity="0.45" />
 
                         <!-- Tầng gác gỗ trên với cửa sổ tròn Sao Khuê tỏa sáng -->
-                        <rect x="126" y="21" width="38" height="25" rx="3" fill="#ecfdf5" stroke="#059669" stroke-width="1.8" opacity="0.55" />
+                        <rect x="126" y="21" width="38" height="25" rx="3" fill="#ecfdf5" stroke="#059669"
+                            stroke-width="1.8" opacity="0.55" />
                         <!-- Cửa sổ tròn Khuê Văn Các -->
-                        <circle cx="145" cy="33.5" r="9" stroke="#059669" stroke-width="2" fill="#ffffff" opacity="0.75" />
+                        <circle cx="145" cy="33.5" r="9" stroke="#059669" stroke-width="2" fill="#ffffff"
+                            opacity="0.75" />
                         <!-- Nan hoa gỗ tỏa tia từ tâm -->
                         <line x1="145" y1="24.5" x2="145" y2="42.5" stroke="#059669" stroke-width="1.5" opacity="0.7" />
                         <line x1="136" y1="33.5" x2="154" y2="33.5" stroke="#059669" stroke-width="1.5" opacity="0.7" />
-                        <line x1="138.6" y1="27.1" x2="151.4" y2="39.9" stroke="#059669" stroke-width="1.4" opacity="0.6" />
-                        <line x1="138.6" y1="39.9" x2="151.4" y2="27.1" stroke="#059669" stroke-width="1.4" opacity="0.6" />
+                        <line x1="138.6" y1="27.1" x2="151.4" y2="39.9" stroke="#059669" stroke-width="1.4"
+                            opacity="0.6" />
+                        <line x1="138.6" y1="39.9" x2="151.4" y2="27.1" stroke="#059669" stroke-width="1.4"
+                            opacity="0.6" />
 
                         <!-- Mái hiên tầng 1 chìa ra mềm mại -->
                         <path d="M104 48 Q145 42 186 48 L181 53 Q145 47 109 53 Z" fill="#059669" opacity="0.45" />
 
                         <!-- 4 Cột trụ gạch đá tầng dưới vững chãi -->
-                        <line x1="120" y1="53" x2="118" y2="86" stroke="#059669" stroke-width="3" stroke-linecap="round" opacity="0.45" />
-                        <line x1="133" y1="53" x2="132" y2="86" stroke="#059669" stroke-width="2.5" stroke-linecap="round" opacity="0.4" />
-                        <line x1="157" y1="53" x2="158" y2="86" stroke="#059669" stroke-width="2.5" stroke-linecap="round" opacity="0.4" />
-                        <line x1="170" y1="53" x2="172" y2="86" stroke="#059669" stroke-width="3" stroke-linecap="round" opacity="0.45" />
+                        <line x1="120" y1="53" x2="118" y2="86" stroke="#059669" stroke-width="3" stroke-linecap="round"
+                            opacity="0.45" />
+                        <line x1="133" y1="53" x2="132" y2="86" stroke="#059669" stroke-width="2.5"
+                            stroke-linecap="round" opacity="0.4" />
+                        <line x1="157" y1="53" x2="158" y2="86" stroke="#059669" stroke-width="2.5"
+                            stroke-linecap="round" opacity="0.4" />
+                        <line x1="170" y1="53" x2="172" y2="86" stroke="#059669" stroke-width="3" stroke-linecap="round"
+                            opacity="0.45" />
 
                         <!-- Bậc thềm đá hoa cương nâng nền -->
                         <rect x="100" y="86" width="90" height="5" rx="2" fill="#059669" opacity="0.35" />
@@ -13359,21 +13457,36 @@
                 </div>
             </section>
 
-            
+
             <!-- BANNER NỔI BẬT: CÚP LOCI & ĐẤU TRƯỜNG 4 NGƯỜI -->
-            <section style="margin-top: 24px; margin-bottom: 24px; background: linear-gradient(135deg, #fefce8 0%, #ffffff 50%, #fffbeb 100%); border: 2px solid #facc15; border-radius: 20px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(234, 179, 8, 0.12); display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
+            <section
+                style="margin-top: 24px; margin-bottom: 24px; background: linear-gradient(135deg, #fefce8 0%, #ffffff 50%, #fffbeb 100%); border: 2px solid #facc15; border-radius: 20px; padding: 20px 24px; box-shadow: 0 4px 20px rgba(234, 179, 8, 0.12); display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 260px;">
-                    <div style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.4);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg></div>
+                    <div
+                        style="width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; display: grid; place-items: center; font-size: 24px; flex-shrink: 0; box-shadow: 0 4px 14px rgba(234, 179, 8, 0.4);">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path>
+                            <path d="M4 22h16"></path>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path>
+                        </svg></div>
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 11px; font-weight: 800; color: #854d0e; background: #fef08a; padding: 2px 8px; border-radius: 99px; text-transform: uppercase;">4 Thí Sinh · Cup Loci</span>
+                            <span
+                                style="font-size: 11px; font-weight: 800; color: #854d0e; background: #fef08a; padding: 2px 8px; border-radius: 99px; text-transform: uppercase;">4
+                                Thí Sinh · Cup Loci</span>
                             <span style="font-size: 16px; font-weight: 800; color: #713f12;">Cúp Loci</span>
                         </div>
-                        <p style="font-size: 13px; color: #854d0e; margin: 4px 0 0 0; line-height: 1.45;">Tranh tài 4 thí sinh 4 vòng kịch tính: Làm nóng ➔ Giải mã ô chữ ➔ Siêu tư duy ➔ Lấy cúp.</p>
+                        <p style="font-size: 13px; color: #854d0e; margin: 4px 0 0 0; line-height: 1.45;">Tranh tài 4
+                            thí sinh 4 vòng kịch tính: Làm nóng ➔ Giải mã ô chữ ➔ Siêu tư duy ➔ Lấy cúp.</p>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-                    <button type="button" onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'"
+                    <button type="button"
+                        onclick="window.OlympiaLociEngine ? window.OlympiaLociEngine.open() : window.location.href='game_duong_len_dinh_loci.html'"
                         style="background: linear-gradient(135deg, #eab308, #ca8a04); color: #ffffff; border: none; border-radius: 12px; padding: 10px 22px; font-size: 14px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(202, 138, 4, 0.35);">
                         <span>Vào Thi Đấu Cúp Loci ➔</span>
                     </button>
@@ -13387,32 +13500,48 @@
             <!-- ========================================================================= -->
             <!-- PHƯƠNG PHÁP CUNG ĐIỆN KÝ ỨC (METHOD OF LOCI) - TÍCH HỢP TRỰC TIẾP VÀO TỔNG QUAN -->
             <!-- ========================================================================= -->
-                        <section id="overview-loci-section" class="overview-loci-compact-strip"
+            <section id="overview-loci-section" class="overview-loci-compact-strip"
                 style="margin-top: 36px; margin-bottom: 24px; padding: 18px 24px; background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 50%, #eff6ff 100%); border: 1.5px solid #bae6fd; border-radius: 20px; box-shadow: 0 4px 20px rgba(2, 132, 199, 0.06); display: flex; align-items: center; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
                 <div style="display: flex; align-items: center; gap: 14px; flex: 1; min-width: 260px;">
-                    <div style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; display: grid; place-items: center; font-size: 22px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">🏛️</div>
+                    <div
+                        style="width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #0284c7, #0369a1); color: #ffffff; display: grid; place-items: center; font-size: 22px; flex-shrink: 0; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);">
+                        🏛️</div>
                     <div>
                         <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 11px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;">Method of Loci</span>
-                            <span style="font-size: 15px; font-weight: 800; color: #0f172a;">Phương Pháp Cung Điện Ký Ức</span>
+                            <span
+                                style="font-size: 11px; font-weight: 800; color: #0284c7; background: #e0f2fe; padding: 2px 8px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px;">Method
+                                of Loci</span>
+                            <span style="font-size: 15px; font-weight: 800; color: #0f172a;">Phương Pháp Cung Điện Ký
+                                Ức</span>
                         </div>
-                        <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0; line-height: 1.45;">Chuyển hóa dữ kiện Lịch sử thành tọa độ đồ vật không gian 3D sống động theo cơ chế định vị tự nhiên của não bộ.</p>
+                        <p style="font-size: 13px; color: #64748b; margin: 4px 0 0 0; line-height: 1.45;">Chuyển hóa dữ
+                            kiện Lịch sử thành tọa độ đồ vật không gian 3D sống động theo cơ chế định vị tự nhiên của
+                            não bộ.</p>
                     </div>
                 </div>
-                <div class="overview-loci-strip-actions" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                    <a href="trinh_chieu_loci.html" target="_blank" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 13px; font-weight: 700; color: #0f172a; text-decoration: none; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
+                <div class="overview-loci-strip-actions"
+                    style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                    <a href="trinh_chieu_loci.html" target="_blank"
+                        style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 12px; font-size: 13px; font-weight: 700; color: #0f172a; text-decoration: none; transition: all 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04);">
                         <span>Trình Chiếu Slide Loci ↗</span>
                     </a>
                     <!-- BIỂU TƯỢNG CON AI - NHẤP VÀO TRÒ CHUYỆN NGAY -->
-                    <button type="button" onclick="window.switchPortalTab('ai')" title="Trò chuyện ngay với Gia Sư AI Loci"
+                    <button type="button" onclick="window.switchPortalTab('ai')"
+                        title="Trò chuyện ngay với Gia Sư AI Loci"
                         style="display: flex; align-items: center; gap: 10px; padding: 6px 16px 6px 8px; background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1.5px solid #93c5fd; border-radius: 99px; cursor: pointer; transition: all 0.25s; box-shadow: 0 4px 14px rgba(37, 99, 235, 0.15);">
-                        <div style="position: relative; width: 38px; height: 38px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: visible;">
-                            <img src="assets/images/loci_avatar.jpg" alt="Gia sư AI Robot" style="width: 34px; height: 34px; object-fit: cover; border-radius: 50%; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
-                            <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
+                        <div
+                            style="position: relative; width: 38px; height: 38px; border-radius: 50%; background: #ffffff; display: grid; place-items: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: visible;">
+                            <img src="assets/images/loci_avatar.jpg" alt="Gia sư AI Robot"
+                                style="width: 34px; height: 34px; object-fit: cover; border-radius: 50%; animation: mascotFloat 3s infinite ease-in-out;"
+                                onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
+                            <span
+                                style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
                         </div>
                         <div style="text-align: left;">
-                            <div style="font-size: 13.5px; font-weight: 800; color: #1e40af; line-height: 1.2;">Gia Sư AI Loci</div>
-                            <div style="font-size: 11.5px; font-weight: 700; color: #0284c7; line-height: 1.2;">Trò chuyện ngay 💬</div>
+                            <div style="font-size: 13.5px; font-weight: 800; color: #1e40af; line-height: 1.2;">Gia Sư
+                                AI Loci</div>
+                            <div style="font-size: 11.5px; font-weight: 700; color: #0284c7; line-height: 1.2;">Trò
+                                chuyện ngay 💬</div>
                         </div>
                     </button>
                 </div>
@@ -13424,17 +13553,25 @@
         <div id="view-pet" class="portal-view">
             <div class="pet-view-container" style="max-width: 1200px; margin: 0 auto; padding: 8px 0 48px 0;">
                 <!-- Header tab linh thú -->
-                <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
+                <div
+                    style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; flex-wrap: wrap; gap: 16px;">
                     <div>
-                        <div style="display: inline-flex; align-items: center; gap: 8px; background: #ede9fe; color: #7c3aed; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; margin-bottom: 8px;">
+                        <div
+                            style="display: inline-flex; align-items: center; gap: 8px; background: #ede9fe; color: #7c3aed; font-size: 11.5px; font-weight: 800; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; margin-bottom: 8px;">
                             <span>✨ Đồng Hành Học Tập</span>
                         </div>
                         <h2 style="font-size: 26px; font-weight: 800; color: #0f172a; margin: 0;">Linh Thú Tri Thức</h2>
-                        <p style="font-size: 14px; color: #64748b; margin: 4px 0 0 0;">Nuôi dưỡng Linh thú bằng cách tích lũy XP qua các mốc học Lịch sử và ôn tập Spaced Repetition.</p>
+                        <p style="font-size: 14px; color: #64748b; margin: 4px 0 0 0;">Nuôi dưỡng Linh thú bằng cách
+                            tích lũy XP qua các mốc học Lịch sử và ôn tập Spaced Repetition.</p>
                     </div>
                     <button type="button" onclick="window.openPetSelectionModal && window.openPetSelectionModal()"
                         style="background: linear-gradient(135deg, #6366f1, #4f46e5); color: #ffffff; border: none; border-radius: 12px; padding: 10px 18px; font-size: 13.5px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <path
+                                d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                            </path>
+                        </svg>
                         Chọn Linh Thú Khác
                     </button>
                 </div>
@@ -13447,11 +13584,15 @@
                         <!-- Cột Trái: Cú Tím Cử Nhân + Đại Hội Thần Tốc + Chips + Nút Tiếp tục học -->
                         <div class="mascot-left-col" style="display: flex; gap: 24px; align-items: center;">
                             <!-- Linh thú Tri Thức 3D (Đồng hành học tập) -->
-                            <div style="flex-shrink: 0; width: 145px; height: 165px; display: grid; place-items: center; position: relative;" class="mascot-img-wrap">
-                                <img id="active-mascot-img" src="assets/images/pets/owl_scholar.png" alt="Linh thú Tri thức"
+                            <div style="flex-shrink: 0; width: 145px; height: 165px; display: grid; place-items: center; position: relative;"
+                                class="mascot-img-wrap">
+                                <img id="active-mascot-img" src="assets/images/pets/owl_scholar.png"
+                                    alt="Linh thú Tri thức"
                                     style="width: 140px; height: 160px; object-fit: contain; filter: drop-shadow(0 12px 24px rgba(109,40,217,0.22)); animation: mascotFloat 3.5s ease-in-out infinite; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);"
-                                    onclick="window.openPetSelectionModal && window.openPetSelectionModal()" title="Nhấp để đổi Linh thú Tri thức đồng hành">
-                                <button type="button" onclick="window.openPetSelectionModal && window.openPetSelectionModal()" 
+                                    onclick="window.openPetSelectionModal && window.openPetSelectionModal()"
+                                    title="Nhấp để đổi Linh thú Tri thức đồng hành">
+                                <button type="button"
+                                    onclick="window.openPetSelectionModal && window.openPetSelectionModal()"
                                     style="position: absolute; bottom: 2px; right: 2px; background: linear-gradient(135deg, #6366f1, #4f46e5); color: #fff; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 99px; border: 1.5px solid #fff; box-shadow: 0 4px 10px rgba(79,70,229,0.35); cursor: pointer; display: flex; align-items: center; gap: 3px; z-index: 2;">
                                     <span>Đổi</span> <span style="font-size: 9px;">▾</span>
                                 </button>
@@ -13460,15 +13601,25 @@
                             <!-- Nội dung văn bản -->
                             <div style="flex: 1;">
                                 <div style="display:flex; align-items:center; gap:8px;">
-                                    <span id="active-mascot-level-badge" style="display: inline-block; background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 11.5px; padding: 3px 10px; border-radius: 99px; border: 1px solid #bae6fd;">Cấp 2</span>
-                                    <span id="active-mascot-element-badge" style="display: inline-block; background: #f3e8ff; color: #7c3aed; font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 99px; border: 1px solid #e9d5ff;">TUỆ HỆ</span>
+                                    <span id="active-mascot-level-badge"
+                                        style="display: inline-block; background: #e0f2fe; color: #0284c7; font-weight: 800; font-size: 11.5px; padding: 3px 10px; border-radius: 99px; border: 1px solid #bae6fd;">Cấp
+                                        2</span>
+                                    <span id="active-mascot-element-badge"
+                                        style="display: inline-block; background: #f3e8ff; color: #7c3aed; font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 99px; border: 1px solid #e9d5ff;">TUỆ
+                                        HỆ</span>
                                 </div>
-                                <h3 id="active-mascot-name" style="font-size: 21px; font-weight: 800; color: #0f172a; margin: 8px 0 6px 0; letter-spacing: -0.01em;">Cú Tím Cử Nhân · Đại Hội Thần Tốc</h3>
+                                <h3 id="active-mascot-name"
+                                    style="font-size: 21px; font-weight: 800; color: #0f172a; margin: 8px 0 6px 0; letter-spacing: -0.01em;">
+                                    Cú Tím Cử Nhân · Đại Hội Thần Tốc</h3>
 
-                                <p id="active-mascot-desc" style="font-size: 13.5px; color: #64748b; margin: 0 0 14px 0; line-height: 1.45;">Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 20% phản xạ truy xuất sự kiện.</p>
+                                <p id="active-mascot-desc"
+                                    style="font-size: 13.5px; color: #64748b; margin: 0 0 14px 0; line-height: 1.45;">
+                                    Đồng hành ghi nhớ 9 mốc Lịch sử, bảo hộ Cung điện Ký ức Loci và tăng 20% phản xạ
+                                    truy xuất sự kiện.</p>
 
                                 <!-- 3 Chips / Thẻ tính năng -->
-                                <div class="mascot-chips-row" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
+                                <div class="mascot-chips-row"
+                                    style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 18px;">
                                     <span
                                         style="display: inline-flex; align-items: center; gap: 5px; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 99px; padding: 4px 10px; font-size: 11.5px; font-weight: 600; color: #475569;">
                                         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#2563eb"
@@ -13550,7 +13701,8 @@
                                 </div>
                                 <div style="display: flex; justify-content: space-between; align-items: center;">
                                     <span style="color: #64748b;">Thời gian học tuần này</span>
-                                    <strong id="dash-study-time" style="color: #0f172a; font-weight: 700;">2 giờ 30 phút</strong>
+                                    <strong id="dash-study-time" style="color: #0f172a; font-weight: 700;">2 giờ 30
+                                        phút</strong>
                                 </div>
                             </div>
 
@@ -13568,8 +13720,7 @@
                                     </svg>
                                     Xem kế hoạch
                                 </button>
-                                <button type="button"
-                                    onclick="window.scrollToLociSection('loci-pet-evolution-card')"
+                                <button type="button" onclick="window.scrollToLociSection('loci-pet-evolution-card')"
                                     style="background: #ffffff; border: 1px solid #cbd5e1; border-radius: 10px; padding: 9px 12px; font-size: 13px; font-weight: 700; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: background 0.15s;">
                                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#10b981"
                                         stroke-width="2.2">
@@ -13585,22 +13736,28 @@
                 </div>
 
                 <!-- BẢNG 7 CẤP ĐỘ TIẾN HÓA LINH THÚ TRI THỨC -->
-                <div id="loci-pet-evolution-card" style="margin-top: 24px; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 22px; padding: 26px 28px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);">
-                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                <div id="loci-pet-evolution-card"
+                    style="margin-top: 24px; background: #ffffff; border: 1.5px solid #e2e8f0; border-radius: 22px; padding: 26px 28px; box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.04);">
+                    <div
+                        style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
                         <div>
                             <div style="display: flex; align-items: center; gap: 10px;">
                                 <span style="font-size: 22px;">👑</span>
-                                <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0;">7 Giai Đoạn Tiến Hóa Linh Thú Tri Thức</h3>
+                                <h3 style="font-size: 19px; font-weight: 800; color: #0f172a; margin: 0;">7 Giai Đoạn
+                                    Tiến Hóa Linh Thú Tri Thức</h3>
                             </div>
-                            <p style="font-size: 13.5px; color: #64748b; margin: 4px 0 0 0;">Linh thú trưởng thành qua từng cấp độ học tập, tăng cường năng lượng bảo hộ cung điện ký ức.</p>
+                            <p style="font-size: 13.5px; color: #64748b; margin: 4px 0 0 0;">Linh thú trưởng thành qua
+                                từng cấp độ học tập, tăng cường năng lượng bảo hộ cung điện ký ức.</p>
                         </div>
-                        <div id="pet-evolution-summary-badge" style="background: #eff6ff; color: #0284c7; border: 1px solid #bae6fd; padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 800;">
+                        <div id="pet-evolution-summary-badge"
+                            style="background: #eff6ff; color: #0284c7; border: 1px solid #bae6fd; padding: 6px 14px; border-radius: 99px; font-size: 12px; font-weight: 800;">
                             Đang ở Cấp 1 / 7
                         </div>
                     </div>
 
                     <!-- Grid 7 ô tiến hóa -->
-                    <div id="loci-pet-tiers-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 12px;">
+                    <div id="loci-pet-tiers-grid"
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(135px, 1fr)); gap: 12px;">
                         <!-- Rendered by JS -->
                     </div>
                 </div>
@@ -14295,7 +14452,8 @@
                 </div>
 
                 <!-- 2 MỤC TAB: ĐĂNG NHẬP VÀ ĐĂNG KÝ -->
-                <div id="auth-tab-bar" style="display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
+                <div id="auth-tab-bar"
+                    style="display: flex; background: #f1f5f9; padding: 4px; border-radius: 12px; margin-bottom: 16px; border: 1px solid #e2e8f0;">
                     <button type="button" id="tab-btn-login" onclick="window.switchAuthTab('login')"
                         style="flex: 1; padding: 9px; border: none; border-radius: 9px; font-size: 13.5px; font-weight: 700; cursor: pointer; transition: all 0.2s; background: #ffffff; color: #0f172a; box-shadow: 0 2px 6px rgba(0,0,0,0.06);">
                         Đăng Nhập
@@ -14317,15 +14475,19 @@
                 <div id="auth-subview-login">
                     <div class="auth-form-group" style="margin-bottom: 12px;">
                         <label for="login-email"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email hoặc Tên đăng nhập (Username)</label>
+                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Email
+                            hoặc Tên đăng nhập (Username)</label>
                         <div style="position: relative; display: flex; align-items: center;">
-                            <span style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span
+                                style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                     <circle cx="12" cy="7" r="4"></circle>
                                 </svg>
                             </span>
-                            <input type="text" id="login-email" placeholder="Ví dụ: quangminh hoặc email" autocomplete="username"
+                            <input type="text" id="login-email" placeholder="Ví dụ: quangminh hoặc email"
+                                autocomplete="username"
                                 style="width: 100%; padding: 11px 14px 11px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff; box-sizing: border-box;"
                                 onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
                                 onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"
@@ -14335,15 +14497,19 @@
 
                     <div class="auth-form-group" style="margin-bottom: 16px;">
                         <label for="login-password"
-                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật khẩu</label>
+                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 6px;">Mật
+                            khẩu</label>
                         <div style="position: relative; display: flex; align-items: center;">
-                            <span style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
-                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span
+                                style="position: absolute; left: 14px; color: #94a3b8; display: grid; place-items: center;">
+                                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
                                 </svg>
                             </span>
-                            <input type="password" id="login-password" placeholder="Nhập mật khẩu của bạn" autocomplete="current-password"
+                            <input type="password" id="login-password" placeholder="Nhập mật khẩu của bạn"
+                                autocomplete="current-password"
                                 style="width: 100%; padding: 11px 42px 11px 40px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; transition: all 0.2s; background: #fff; box-sizing: border-box;"
                                 onfocus="this.style.borderColor='#0284c7'; this.style.boxShadow='0 0 0 3px rgba(2,132,199,0.1)';"
                                 onblur="this.style.borderColor='#cbd5e1'; this.style.boxShadow='none';"
@@ -14351,7 +14517,8 @@
                             <button type="button" onclick="window.togglePasswordVisibility('login-password', this)"
                                 style="position: absolute; right: 12px; background: none; border: none; cursor: pointer; color: #94a3b8; padding: 4px; display: grid; place-items: center;"
                                 title="Hiện / Ẩn mật khẩu">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                     <circle cx="12" cy="12" r="3"></circle>
                                 </svg>
@@ -14365,7 +14532,8 @@
                         Đăng nhập ngay ➔
                     </button>
 
-                    <div style="text-align: center; margin: 14px 0 12px; color: #94a3b8; font-size: 13px; font-weight: 600;">
+                    <div
+                        style="text-align: center; margin: 14px 0 12px; color: #94a3b8; font-size: 13px; font-weight: 600;">
                         hoặc</div>
 
                     <!-- NÚT ĐĂNG NHẬP VỚI GOOGLE -->
@@ -14374,16 +14542,21 @@
                         onmouseover="this.style.borderColor='#94a3b8'; this.style.background='#f8fafc';"
                         onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='#ffffff';">
                         <svg width="18" height="18" viewBox="0 0 24 24">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                         </svg>
                         <span>Đăng nhập nhanh với Google</span>
                     </button>
 
                     <!-- LỰA CHỌN: ĐĂNG NHẬP KHÁCH / GIÁM KHẢO (TRẢI NGHIỆM THAM QUAN) -->
-                    <div style="display: flex; align-items: center; margin: 12px 0 10px; color: #94a3b8; font-size: 12px; font-weight: 600;">
+                    <div
+                        style="display: flex; align-items: center; margin: 12px 0 10px; color: #94a3b8; font-size: 12px; font-weight: 600;">
                         <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
                         <span style="padding: 0 8px;">hoặc đăng nhập tham quan</span>
                         <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
@@ -14393,12 +14566,14 @@
                         style="width: 100%; padding: 11px 14px; background: #f8fafc; border: 1.5px dashed #0284c7; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #0284c7; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; transition: all 0.2s;"
                         onmouseover="this.style.background='#f0f9ff'; this.style.borderColor='#0369a1';"
                         onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#0284c7';">
-                        <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU" style="width: 20px; height: 20px; object-fit: contain; border-radius: 5px; box-shadow: 0 1px 4px rgba(2,132,199,0.25);">
+                        <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU"
+                            style="width: 20px; height: 20px; object-fit: contain; border-radius: 5px; box-shadow: 0 1px 4px rgba(2,132,199,0.25);">
                         <span>Đăng nhập Khách / Giám khảo (Trải nghiệm nhanh)</span>
                     </button>
 
                     <div style="text-align: center; margin-top: 14px; font-size: 13px; color: #64748b;">
-                        Chưa có tài khoản? <a href="javascript:void(0)" onclick="window.switchAuthTab('register')" style="color: #0284c7; font-weight: 700; text-decoration: none;">Đăng ký ngay ➔</a>
+                        Chưa có tài khoản? <a href="javascript:void(0)" onclick="window.switchAuthTab('register')"
+                            style="color: #0284c7; font-weight: 700; text-decoration: none;">Đăng ký ngay ➔</a>
                     </div>
                 </div>
 
@@ -14412,15 +14587,20 @@
                         onmouseover="this.style.borderColor='#94a3b8'; this.style.background='#f8fafc';"
                         onmouseout="this.style.borderColor='#cbd5e1'; this.style.background='#ffffff';">
                         <svg width="17" height="17" viewBox="0 0 24 24">
-                            <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                            <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                            <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                            <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                            <path fill="#4285F4"
+                                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                            <path fill="#34A853"
+                                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                            <path fill="#FBBC05"
+                                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                            <path fill="#EA4335"
+                                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                         </svg>
                         <span>Đăng ký nhanh 1 chạm bằng Google</span>
                     </button>
 
-                    <div style="display: flex; align-items: center; margin: 12px 0; color: #94a3b8; font-size: 12px; font-weight: 600;">
+                    <div
+                        style="display: flex; align-items: center; margin: 12px 0; color: #94a3b8; font-size: 12px; font-weight: 600;">
                         <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
                         <span style="padding: 0 8px;">hoặc đăng ký bằng Tên tài khoản</span>
                         <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
@@ -14430,7 +14610,8 @@
                     <div class="auth-form-group" style="margin-bottom: 10px;">
                         <label for="reg-username"
                             style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">
-                            1. Tên tài khoản (User) <span style="font-weight: normal; color: #64748b;">(viết liền, không dấu)</span>
+                            1. Tên tài khoản (User) <span style="font-weight: normal; color: #64748b;">(viết liền, không
+                                dấu)</span>
                         </label>
                         <input type="text" id="reg-username" placeholder="Ví dụ: quangminh_2k9" autocomplete="username"
                             style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
@@ -14444,7 +14625,8 @@
                                 style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">
                                 2. Mật khẩu
                             </label>
-                            <input type="password" id="reg-password" placeholder="Tối thiểu 6 ký tự" autocomplete="new-password"
+                            <input type="password" id="reg-password" placeholder="Tối thiểu 6 ký tự"
+                                autocomplete="new-password"
                                 style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
                                 onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#cbd5e1'">
                         </div>
@@ -14453,7 +14635,8 @@
                                 style="display: block; font-size: 12.5px; font-weight: 700; color: #334155; margin-bottom: 4px;">
                                 Xác nhận lại
                             </label>
-                            <input type="password" id="reg-repassword" placeholder="Nhập lại mật khẩu" autocomplete="new-password"
+                            <input type="password" id="reg-repassword" placeholder="Nhập lại mật khẩu"
+                                autocomplete="new-password"
                                 style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
                                 onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#cbd5e1'"
                                 onkeydown="if(event.key==='Enter') window.submitRegisterOnly()">
@@ -14469,8 +14652,10 @@
                         <input type="text" id="reg-displayname" placeholder="Ví dụ: Nguyễn Minh Khang"
                             style="width: 100%; padding: 10px 12px; border: 1px solid #cbd5e1; border-radius: 9px; font-size: 13.5px; outline: none; box-sizing: border-box;"
                             onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#cbd5e1'">
-                        <div style="font-size: 11.5px; color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; padding: 7px 10px; border-radius: 8px; margin-top: 6px; line-height: 1.45;">
-                            💡 <strong>Quy định học thuật:</strong> Lần đầu tiên bạn được tự do đặt tên hiển thị. Sau lần này, mỗi lần đổi tên tiếp theo phải cách nhau ít nhất <strong>14 ngày</strong>.
+                        <div
+                            style="font-size: 11.5px; color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; padding: 7px 10px; border-radius: 8px; margin-top: 6px; line-height: 1.45;">
+                            💡 <strong>Quy định học thuật:</strong> Lần đầu tiên bạn được tự do đặt tên hiển thị. Sau
+                            lần này, mỗi lần đổi tên tiếp theo phải cách nhau ít nhất <strong>14 ngày</strong>.
                         </div>
                     </div>
 
@@ -14481,7 +14666,8 @@
                     </button>
 
                     <!-- LỰA CHỌN: ĐĂNG NHẬP KHÁCH / GIÁM KHẢO (TRẢI NGHIỆM THAM QUAN) -->
-                    <div style="display: flex; align-items: center; margin: 12px 0 10px; color: #94a3b8; font-size: 12px; font-weight: 600;">
+                    <div
+                        style="display: flex; align-items: center; margin: 12px 0 10px; color: #94a3b8; font-size: 12px; font-weight: 600;">
                         <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
                         <span style="padding: 0 8px;">hoặc trải nghiệm không cần tạo tài khoản</span>
                         <span style="flex: 1; height: 1px; background: #e2e8f0;"></span>
@@ -14491,12 +14677,14 @@
                         style="width: 100%; padding: 11px 14px; background: #f8fafc; border: 1.5px dashed #0284c7; border-radius: 10px; font-size: 13.5px; font-weight: 700; color: #0284c7; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 9px; transition: all 0.2s;"
                         onmouseover="this.style.background='#f0f9ff'; this.style.borderColor='#0369a1';"
                         onmouseout="this.style.background='#f8fafc'; this.style.borderColor='#0284c7';">
-                        <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU" style="width: 20px; height: 20px; object-fit: contain; border-radius: 5px; box-shadow: 0 1px 4px rgba(2,132,199,0.25);">
+                        <img src="assets/images/logo_loci_edu.png" alt="LOCI EDU"
+                            style="width: 20px; height: 20px; object-fit: contain; border-radius: 5px; box-shadow: 0 1px 4px rgba(2,132,199,0.25);">
                         <span>Trải nghiệm với tư cách Khách / Giám khảo</span>
                     </button>
 
                     <div style="text-align: center; margin-top: 12px; font-size: 12.5px; color: #64748b;">
-                        Đã có tài khoản? <a href="javascript:void(0)" onclick="window.switchAuthTab('login')" style="color: #0284c7; font-weight: 700; text-decoration: none;">Đăng nhập tại đây ➔</a>
+                        Đã có tài khoản? <a href="javascript:void(0)" onclick="window.switchAuthTab('login')"
+                            style="color: #0284c7; font-weight: 700; text-decoration: none;">Đăng nhập tại đây ➔</a>
                     </div>
                 </div>
 
@@ -14504,43 +14692,56 @@
                 <!-- SUBVIEW 3: MÀN HÌNH YÊU CẦU LƯU TRỮ / LIÊN KẾT GOOGLE SAU ĐĂNG KÝ -->
                 <!-- ================================================================= -->
                 <div id="auth-subview-post-register" style="display: none; text-align: center;">
-                    <div style="width: 54px; height: 54px; border-radius: 50%; background: #ecfdf5; color: #059669; display: grid; place-items: center; margin: 0 auto 12px; border: 2px solid #a7f3d0;">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <div
+                        style="width: 54px; height: 54px; border-radius: 50%; background: #ecfdf5; color: #059669; display: grid; place-items: center; margin: 0 auto 12px; border: 2px solid #a7f3d0;">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
                             <polyline points="9 12 11 14 15 10"></polyline>
                         </svg>
                     </div>
 
-                    <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px;">Kích Hoạt Căn Cước Thành Công!</h4>
+                    <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px;">Kích Hoạt Căn Cước
+                        Thành Công!</h4>
                     <p style="font-size: 13px; color: #64748b; margin: 0 0 14px;">
-                        Chào mừng <strong id="post-reg-student-name" style="color: #0284c7;">Đồng Sử</strong> đã gia nhập Cung Điện Tri Thức Loci!
+                        Chào mừng <strong id="post-reg-student-name" style="color: #0284c7;">Đồng Sử</strong> đã gia
+                        nhập Cung Điện Tri Thức Loci!
                     </p>
 
-                    <div style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 14px; text-align: left; margin-bottom: 16px;">
-                        <div style="font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
+                    <div
+                        style="background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 14px; padding: 14px; text-align: left; margin-bottom: 16px;">
+                        <div
+                            style="font-size: 12px; font-weight: 700; color: #0f172a; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
                             <span style="color: #d97706;">⚡</span> <span>Bảo vệ tiến trình học của bạn:</span>
                         </div>
                         <div style="font-size: 12px; color: #64748b; line-height: 1.5; margin-bottom: 12px;">
-                            Dữ liệu bài tập, trạm Loci và điểm số hiện được lưu trên trình duyệt này. Bạn có thể chọn lưu trữ hoặc liên kết Google để tránh mất khi đổi máy:
+                            Dữ liệu bài tập, trạm Loci và điểm số hiện được lưu trên trình duyệt này. Bạn có thể chọn
+                            lưu trữ hoặc liên kết Google để tránh mất khi đổi máy:
                         </div>
 
                         <div style="display: flex; flex-direction: column; gap: 8px;">
-                            <button type="button" id="btn-post-link-google" onclick="window.linkGoogleToCurrentAccount()"
+                            <button type="button" id="btn-post-link-google"
+                                onclick="window.linkGoogleToCurrentAccount()"
                                 style="width: 100%; padding: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 9px; font-size: 13px; font-weight: 700; color: #0f172a; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;"
                                 onmouseover="this.style.background='#f8fafc'; this.style.borderColor='#94a3b8'"
                                 onmouseout="this.style.background='#ffffff'; this.style.borderColor='#cbd5e1'">
                                 <svg width="16" height="16" viewBox="0 0 24 24">
-                                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
-                                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
-                                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
-                                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
+                                    <path fill="#4285F4"
+                                        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
+                                    <path fill="#34A853"
+                                        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
+                                    <path fill="#FBBC05"
+                                        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
+                                    <path fill="#EA4335"
+                                        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z" />
                                 </svg>
                                 <span>🔗 Liên kết Google (Tự động đồng bộ Cloud)</span>
                             </button>
 
                             <button type="button" onclick="window.downloadPassportBackup()"
                                 style="width: 100%; padding: 10px; background: #ffffff; border: 1.5px solid #cbd5e1; border-radius: 9px; font-size: 13px; font-weight: 600; color: #334155; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s;"
-                                onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='#ffffff'">
+                                onmouseover="this.style.background='#f1f5f9'"
+                                onmouseout="this.style.background='#ffffff'">
                                 <span>📥 Tải mã sao lưu hồ sơ về máy (.json)</span>
                             </button>
                         </div>
@@ -14558,27 +14759,34 @@
                 <!-- ================================================================= -->
                 <div id="auth-subview-google-first-time" style="display: none;">
                     <div style="text-align: center; margin-bottom: 16px;">
-                        <div style="width: 52px; height: 52px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: grid; place-items: center; margin: 0 auto 10px;">
-                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <div
+                            style="width: 52px; height: 52px; border-radius: 50%; background: #e0f2fe; color: #0284c7; display: grid; place-items: center; margin: 0 auto 10px;">
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.2">
                                 <path d="M12 20h9"></path>
                                 <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
                             </svg>
                         </div>
-                        <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px;">Xác Nhận Tên Hiển Thị Loci</h4>
+                        <h4 style="font-size: 18px; font-weight: 800; color: #0f172a; margin: 0 0 4px;">Xác Nhận Tên
+                            Hiển Thị Loci</h4>
                         <p style="font-size: 13px; color: #64748b; line-height: 1.45; margin: 0;">
-                            Tài khoản Google đã kết nối. Hãy xác nhận tên sẽ xuất hiện trên Bảng Vàng và Cung điện của bạn:
+                            Tài khoản Google đã kết nối. Hãy xác nhận tên sẽ xuất hiện trên Bảng Vàng và Cung điện của
+                            bạn:
                         </p>
                     </div>
 
                     <div class="auth-form-group" style="margin-bottom: 14px;">
-                        <label for="google-first-displayname" style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px;">
+                        <label for="google-first-displayname"
+                            style="display: block; font-size: 13px; font-weight: 700; color: #334155; margin-bottom: 5px;">
                             Họ và tên / Biệt danh học thuật
                         </label>
                         <input type="text" id="google-first-displayname" placeholder="Ví dụ: Nguyễn Như Anh"
                             style="width: 100%; padding: 11px 14px; border: 1.5px solid #0284c7; border-radius: 10px; font-size: 14px; font-weight: 600; outline: none; box-sizing: border-box;"
                             onkeydown="if(event.key==='Enter') window.finishGoogleFirstTimeOnboarding()">
-                        <div style="font-size: 11.5px; color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; padding: 7px 10px; border-radius: 8px; margin-top: 6px; line-height: 1.45;">
-                            💡 <strong>Quy định học thuật:</strong> Lần đầu tiên bạn được tự do đặt tên hiển thị. Sau lần này, mỗi lần đổi tên tiếp theo phải cách nhau ít nhất <strong>14 ngày</strong>.
+                        <div
+                            style="font-size: 11.5px; color: #0369a1; background: #f0f9ff; border: 1px solid #bae6fd; padding: 7px 10px; border-radius: 8px; margin-top: 6px; line-height: 1.45;">
+                            💡 <strong>Quy định học thuật:</strong> Lần đầu tiên bạn được tự do đặt tên hiển thị. Sau
+                            lần này, mỗi lần đổi tên tiếp theo phải cách nhau ít nhất <strong>14 ngày</strong>.
                         </div>
                     </div>
 
@@ -14802,7 +15010,7 @@
                 localStorage.setItem('loci_user_profile', JSON.stringify(localUser));
                 localStorage.setItem('loci_active_student_uid', localUser.uid);
                 localStorage.setItem('loci_last_login_user', localUser.username || cleanUname);
-            } catch (_) {}
+            } catch (_) { }
 
             // 1. ẨN HERO GATE (GIỮ NGUYÊN DOM ĐỂ KHI ĐĂNG XUẤT CÓ THỂ HIỂN THỊ LẠI)
             document.body.classList.remove('gate-active');
@@ -14844,7 +15052,7 @@
                     window.location.href = pendingRoom;
                     return;
                 }
-            } catch (_) {}
+            } catch (_) { }
 
             const curHash = (location.hash || '').replace('#', '').trim();
             const validTabs = ['overview', 'pet', 'spaces', 'ai', 'review', 'exam', 'connect'];
@@ -14883,7 +15091,7 @@
                 if (window.LociAccountManager && typeof window.LociAccountManager.logout === 'function') {
                     window.LociAccountManager.logout();
                 }
-            } catch (_) {}
+            } catch (_) { }
 
             window._isUserExplicitlyLoggedIn = false;
             window._lociLocalUser = null;
@@ -14901,10 +15109,10 @@
                 'loci_user_custom_avatar'
             ];
             keysToPurge.forEach(k => {
-                try { localStorage.removeItem(k); } catch (_) {}
+                try { localStorage.removeItem(k); } catch (_) { }
             });
-            try { sessionStorage.removeItem('loci_auth_session'); } catch (_) {}
-            try { sessionStorage.removeItem('loci_redirect_after_login'); } catch (_) {}
+            try { sessionStorage.removeItem('loci_auth_session'); } catch (_) { }
+            try { sessionStorage.removeItem('loci_redirect_after_login'); } catch (_) { }
 
             const userNameEl = document.getElementById('user-name');
             const userRoleEl = document.getElementById('user-role');
@@ -14922,15 +15130,15 @@
             if (userPanel) userPanel.style.display = 'none';
             if (settingsPanel) settingsPanel.style.display = 'none';
 
-            if (typeof window.applyUserAvatar === 'function') { try { window.applyUserAvatar('', 'U'); } catch (_) {} }
-            if (typeof window.updateAllAvatarFrames === 'function') { try { window.updateAllAvatarFrames('tier1_bronze'); } catch (_) {} }
-            if (typeof window.renderTierProgression === 'function') { try { window.renderTierProgression(null); } catch (_) {} }
-            if (typeof window.renderBadgesGrid === 'function') { try { window.renderBadgesGrid(null); } catch (_) {} }
-            if (typeof window.renderFrameSelector === 'function') { try { window.renderFrameSelector(null); } catch (_) {} }
+            if (typeof window.applyUserAvatar === 'function') { try { window.applyUserAvatar('', 'U'); } catch (_) { } }
+            if (typeof window.updateAllAvatarFrames === 'function') { try { window.updateAllAvatarFrames('tier1_bronze'); } catch (_) { } }
+            if (typeof window.renderTierProgression === 'function') { try { window.renderTierProgression(null); } catch (_) { } }
+            if (typeof window.renderBadgesGrid === 'function') { try { window.renderBadgesGrid(null); } catch (_) { } }
+            if (typeof window.renderFrameSelector === 'function') { try { window.renderFrameSelector(null); } catch (_) { } }
 
             // Khóa lại Hero Gate
             if (typeof window.showHeroGate === 'function') {
-                try { window.showHeroGate(); } catch (_) {}
+                try { window.showHeroGate(); } catch (_) { }
             }
             window._isLoggingOut = false;
         };
@@ -15031,17 +15239,17 @@
             }
         };
 
-        
+
         /* ========================================================
            CLOUDFLARE TURNSTILE CHÍNH HÃNG (REAL CLOUDFLARE ENGINE)
            ======================================================== */
         window.turnstileToken = null;
-        window.onloadTurnstileCallback = function() {
+        window.onloadTurnstileCallback = function () {
             console.log('[Cloudflare Turnstile] Thư viện chính hãng đã nạp xong.');
             window.renderTurnstileIfReady();
         };
 
-        window.renderTurnstileIfReady = function() {
+        window.renderTurnstileIfReady = function () {
             const slot = document.getElementById('cf-turnstile-slot');
             if (!slot) return;
 
@@ -15060,7 +15268,7 @@
                             window.turnstile.render(slot, {
                                 sitekey: '1x00000000000000000000AA',
                                 theme: 'light',
-                                callback: function(token) {
+                                callback: function (token) {
                                     window.turnstileToken = token;
                                     console.log('[Cloudflare Turnstile] Xác thực thành công token:', token);
                                     const alertEl = document.getElementById('auth-alert');
@@ -15081,11 +15289,11 @@
            NÚT DUY NHẤT: ĐĂNG NHẬP / ĐĂNG KÝ LÀM 1 (UNIFIED AUTH)
            Tự động: Nếu tài khoản đã có -> đăng nhập; Nếu chưa có -> tạo mới
            ======================================================== */
-        
+
         // ====================================================================
         // CHUYỂN ĐỔI 2 MỤC: ĐĂNG NHẬP VÀ ĐĂNG KÝ (LOGO CHÍNH HÃNG)
         // ====================================================================
-        window.switchAuthTab = function(mode) {
+        window.switchAuthTab = function (mode) {
             window._showAuthAlert('');
             const loginTab = document.getElementById('auth-subview-login');
             const registerTab = document.getElementById('auth-subview-register');
@@ -15158,7 +15366,7 @@
         };
 
         // 1. XỬ LÝ MỤC ĐĂNG NHẬP (BẮT BUỘC TÀI KHOẢN ĐÃ ĐĂNG KÝ)
-        window.submitLoginOnly = function() {
+        window.submitLoginOnly = function () {
             const emailInput = document.getElementById('login-email');
             const passInput = document.getElementById('login-password');
             const btn = document.getElementById('btn-submit-login-tab');
@@ -15195,7 +15403,7 @@
                         petTier: 5,
                         lociCups: 99
                     };
-                    try { localStorage.setItem('loci_accounts', JSON.stringify(accounts)); } catch(_) {}
+                    try { localStorage.setItem('loci_accounts', JSON.stringify(accounts)); } catch (_) { }
                 }
 
                 // NGUYÊN TẮC: BẮT BUỘC TÀI KHOẢN PHẢI TỒN TẠI MỚI CHO ĐĂNG NHẬP
@@ -15218,7 +15426,7 @@
 
                 // Chạy đồng bộ Firebase ngầm (không chờ đợi để tránh treo giao diện)
                 if (window.LociFirebase && typeof window.LociFirebase.loginUser === 'function') {
-                    window.LociFirebase.loginUser(identifier, pass).catch(() => {});
+                    window.LociFirebase.loginUser(identifier, pass).catch(() => { });
                 }
 
                 // ĐĂNG NHẬP & PHÁ CỔNG HERO GATE VÀO TRONG WEB NGAY TỨC THÌ
@@ -15231,7 +15439,7 @@
         };
 
         // 2. XỬ LÝ MỤC ĐĂNG KÝ (BẰNG TÊN USER HOẶC GOOGLE)
-        window.submitRegisterOnly = function() {
+        window.submitRegisterOnly = function () {
             const uInput = document.getElementById('reg-username');
             const dInput = document.getElementById('reg-displayname');
             const pInput = document.getElementById('reg-password');
@@ -15252,7 +15460,7 @@
 
             try {
                 const cleanName = username.replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
-                
+
                 // Khởi tạo qua LociAccountManager
                 let newProfile = null;
                 if (window.LociAccountManager && typeof window.LociAccountManager.register === 'function') {
@@ -15283,7 +15491,7 @@
 
                 // Đồng bộ Firebase ngầm
                 if (window.LociFirebase && typeof window.LociFirebase.registerUser === 'function') {
-                    window.LociFirebase.registerUser(cleanName, pass, displayName).catch(() => {});
+                    window.LociFirebase.registerUser(cleanName, pass, displayName).catch(() => { });
                 }
 
                 if (typeof window.playTingTing === 'function') window.playTingTing();
@@ -15298,7 +15506,7 @@
         };
 
         // 2b. HOÀN TẤT SAU ĐĂNG KÝ & VÀO CUNG ĐIỆN
-        window.finishPostRegisterOnboarding = function() {
+        window.finishPostRegisterOnboarding = function () {
             const u = window._pendingRegisteredUser || (window.LociAccountManager ? window.LociAccountManager.getUser() : null);
             if (u) {
                 window._handleLocalAuthSuccess(u.cleanName || u.username, u.displayName);
@@ -15308,7 +15516,7 @@
         };
 
         // 2c. LIÊN KẾT GOOGLE CHO TÀI KHOẢN VỪA TẠO
-        window.linkGoogleToCurrentAccount = async function() {
+        window.linkGoogleToCurrentAccount = async function () {
             if (!window.LociFirebase || typeof window.LociFirebase.loginWithGoogle !== 'function') {
                 return window._showAuthAlert('Dịch vụ Firebase Auth đang khởi tạo, vui lòng thử lại sau.');
             }
@@ -15340,7 +15548,7 @@
         };
 
         // 2d. TẢI FILE SAO LƯU CĂN CƯỚC (.JSON)
-        window.downloadPassportBackup = function() {
+        window.downloadPassportBackup = function () {
             try {
                 if (window.LociAccountManager && typeof window.LociAccountManager.downloadBackupFile === 'function') {
                     const fname = window.LociAccountManager.downloadBackupFile();
@@ -15422,7 +15630,7 @@
         };
 
         // 3b. XÁC NHẬN TÊN HIỂN THỊ LẦN ĐẦU KHI ĐĂNG NHẬP GOOGLE
-        window.finishGoogleFirstTimeOnboarding = function() {
+        window.finishGoogleFirstTimeOnboarding = function () {
             const input = document.getElementById('google-first-displayname');
             const customName = input ? input.value.trim() : '';
             const user = window._pendingGoogleUser;
@@ -15449,7 +15657,7 @@
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()
             };
-            try { localStorage.setItem('loci_accounts', JSON.stringify(accounts)); } catch(_) {}
+            try { localStorage.setItem('loci_accounts', JSON.stringify(accounts)); } catch (_) { }
 
             if (window.LociAccountManager && typeof window.LociAccountManager.register === 'function') {
                 window.LociAccountManager.register(cleanName, '', finalName);
@@ -15479,7 +15687,7 @@
                 if (window.LociFirebase && typeof window.LociFirebase.logout === 'function') {
                     await window.LociFirebase.logout();
                 }
-            } catch (_) {}
+            } catch (_) { }
             window._handleLocalLogout();
             window.closeCloudAuthModal();
             if (typeof window.showHeroGate === 'function') {
@@ -15506,7 +15714,7 @@
                 if (typeof window.setCookie === 'function') {
                     window.setCookie('loci_auth_session', 'active', 365);
                 }
-            } catch (_) {}
+            } catch (_) { }
             if (typeof window._handleLocalAuthSuccess === 'function') {
                 window._handleLocalAuthSuccess('khach', 'Khách / Giám khảo (Trải nghiệm)');
             } else {
@@ -15567,14 +15775,14 @@
             {
                 name: 'Không gian Bài 7 (Kháng chiến chống Pháp)',
                 note: '9 mốc Kháng chiến chống thực dân Pháp (1945 – 1954) · Chiến dịch Điện Biên Phủ',
-                file: 'big_square_commercial_building_opt.glb',
+                file: 'big_square_commercial_building_opt.glb?v=7.3',
                 img: 'assets/images/bai7/tram5.jpg',
                 lesson: 'bai_7'
             },
             {
                 name: 'Không gian Bài 8 (Kháng chiến chống Mỹ)',
                 note: '9 mốc Kháng chiến chống Mỹ cứu nước (1954 – 1975) · Chiến dịch Hồ Chí Minh',
-                file: 'abandoned_city_street_opt.glb',
+                file: 'abandoned_city_street_opt.glb?v=8.3',
                 img: 'assets/images/bai8/b8_img15.jpg',
                 lesson: 'bai_8'
             }
@@ -15582,7 +15790,7 @@
         const grid = document.getElementById('space-grid');
         grid.innerHTML = SPACES.map(s => {
             let modelPath = s.file;
-            if (modelPath && !modelPath.startsWith('Không gian chuẩn') && !modelPath.startsWith('model không gian 3d') && !modelPath.endsWith('trien_lam_nau.glb') && !modelPath.includes('commercial_building') && !modelPath.includes('abandoned_city') && !modelPath.includes('backrooms')) {
+            if (modelPath && !modelPath.startsWith('Không gian chuẩn') && !modelPath.startsWith('model không gian 3d') && !modelPath.endsWith('trien_lam_nau.glb')) {
                 modelPath = BASE + modelPath;
             }
             let href = modelPath ? 'app/index.html?model=' + encodeURIComponent(modelPath) + '&name=' + encodeURIComponent(s.name) : 'app/index.html?name=' + encodeURIComponent(s.name);
@@ -15596,7 +15804,7 @@
             else if (s.lesson === 'bai_7') badge = '5 MỐC 3D • ĐIỆN BIÊN PHỦ';
             else if (s.lesson === 'bai_8') badge = '9 MỐC 3D • VĨ TUYẾN 17';
 
-                        const isLockedLesson = (s.lesson === 'bai_7' || s.lesson === 'bai_8');
+            const isLockedLesson = (s.lesson === 'bai_7' || s.lesson === 'bai_8');
             const footerActionHtml = isLockedLesson ? `
                     <div class="space-footer-action" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
                         <span class="space-tour-btn" onclick="event.preventDefault(); event.stopPropagation(); window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}', true);" style="font-size:12px; font-weight:800; color:#0284c7; background:rgba(2,132,199,0.12); padding:5px 12px; border-radius:99px; border:1px solid #bae6fd; cursor:pointer;" title="Chế độ Giám khảo / Khách tham quan 3D">👁️ Tham quan 3D</span>
@@ -16766,7 +16974,7 @@
         }
 
         // --- HÀM TOÀN CỤC CHUYỂN TAB TRONG PANEL USER ---
-        window.switchUserPanelTab = function(targetPaneId, tabBtn) {
+        window.switchUserPanelTab = function (targetPaneId, tabBtn) {
             document.querySelectorAll('.user-panel-tab').forEach(b => {
                 b.classList.remove('active');
                 b.style.color = '#64748b';
@@ -17434,7 +17642,7 @@
                     currentLesson: localStorage.getItem('loci_last_lesson') || 'bai_6',
                     timestamp: Date.now()
                 }));
-            } catch (_) {}
+            } catch (_) { }
 
             if (tabName === 'overview') {
                 if (vOverview) {
@@ -17466,7 +17674,7 @@
             // CLEAN URL 100%: Tuyệt đối không để lại bất kỳ đuôi # nào (#overview, #pet, #ai, #spaces, #review, #exam, #connect) trên thanh địa chỉ
             try {
                 history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
-            } catch (_) {}
+            } catch (_) { }
         }
 
         window.switchPortalTab = switchPortalTab;
@@ -17588,7 +17796,7 @@
 
         // Khôi phục tab từ sessionStorage hoặc URL
         let savedTab = '';
-        try { savedTab = sessionStorage.getItem('loci_active_portal_tab') || ''; } catch (_) {}
+        try { savedTab = sessionStorage.getItem('loci_active_portal_tab') || ''; } catch (_) { }
         const initialHash = (location.hash || '').replace('#', '').trim() || savedTab;
         if (initialHash === 'pet') {
             switchPortalTab('pet');
@@ -17604,7 +17812,7 @@
             if (window.location.hash) {
                 history.replaceState(null, '', window.location.pathname + (window.location.search || ''));
             }
-        } catch (_) {}
+        } catch (_) { }
 
         // ==========================================
         // 5. THUẬT TOÁN SPACED REPETITION (1-3-7) & RENDER UI
@@ -17625,7 +17833,7 @@
                 // 3. Danh sách bài đã hoàn thành
                 const learned = JSON.parse(localStorage.getItem('loci_learned_lessons') || '[]');
                 if (learned.includes(lessonId)) return true;
-            } catch (_) {}
+            } catch (_) { }
             return false;
         }
 
@@ -17839,7 +18047,7 @@
         };
 
         const LEADERBOARD_STUDENTS = [
-        {
+            {
                 "id": "s1",
                 "username": "student_1",
                 "name": "Hoàng Huyền Trân",
@@ -17854,8 +18062,8 @@
                 "mark": "Quán Quân Toàn Khối",
                 "markType": "gold",
                 "iconKey": "crown"
-        },
-        {
+            },
+            {
                 "id": "s2",
                 "username": "student_2",
                 "name": "Lưu Phương Linh",
@@ -17870,8 +18078,8 @@
                 "mark": "Á Quân Xuất Sắc",
                 "markType": "silver",
                 "iconKey": "medal"
-        },
-        {
+            },
+            {
                 "id": "s3",
                 "username": "student_3",
                 "name": "Trần Đức Toàn",
@@ -17886,8 +18094,8 @@
                 "mark": "Hạng Ba Toàn Khối",
                 "markType": "bronze",
                 "iconKey": "trophy"
-        },
-        {
+            },
+            {
                 "id": "s4",
                 "username": "student_4",
                 "name": "Thào Thị Dung",
@@ -17902,8 +18110,8 @@
                 "mark": "Bậc Thầy Ghi Nhớ Loci",
                 "markType": "top",
                 "iconKey": "sparkles"
-        },
-        {
+            },
+            {
                 "id": "s5",
                 "username": "student_5",
                 "name": "Má Thị Dua",
@@ -17918,8 +18126,8 @@
                 "mark": "Bậc Thầy Ghi Nhớ Loci",
                 "markType": "top",
                 "iconKey": "star"
-        },
-        {
+            },
+            {
                 "id": "s6",
                 "username": "student_6",
                 "name": "Sùng Ngọc Duy",
@@ -17934,8 +18142,8 @@
                 "mark": "Chiến Tướng Đấu Trường",
                 "markType": "top",
                 "iconKey": "bolt"
-        },
-        {
+            },
+            {
                 "id": "s7",
                 "username": "student_7",
                 "name": "Chảo Thị Vân Anh",
@@ -17950,8 +18158,8 @@
                 "mark": "Đại Sứ Không Gian 3D",
                 "markType": "top",
                 "iconKey": "compass"
-        },
-        {
+            },
+            {
                 "id": "s8",
                 "username": "student_8",
                 "name": "Long Kiều Chinh",
@@ -17966,8 +18174,8 @@
                 "mark": "Kỷ Lục Gia Streak",
                 "markType": "top",
                 "iconKey": "fire"
-        },
-        {
+            },
+            {
                 "id": "s9",
                 "username": "student_9",
                 "name": "Lò Thị Chuyển",
@@ -17982,8 +18190,8 @@
                 "mark": "Chuyên Gia Flashcard",
                 "markType": "top",
                 "iconKey": "book"
-        },
-        {
+            },
+            {
                 "id": "s10",
                 "username": "student_10",
                 "name": "Hoàng Ngọc Ánh",
@@ -17998,8 +18206,8 @@
                 "mark": "Thủ Lĩnh Tri Thức 12C2",
                 "markType": "top",
                 "iconKey": "award"
-        },
-        {
+            },
+            {
                 "id": "s11",
                 "username": "student_11",
                 "name": "Nguyễn Khánh Chi",
@@ -18014,8 +18222,8 @@
                 "mark": "Tiên Phong Khám Phá",
                 "markType": "top",
                 "iconKey": "lightbulb"
-        },
-        {
+            },
+            {
                 "id": "s12",
                 "username": "student_12",
                 "name": "Chảo San Mẩy",
@@ -18030,8 +18238,8 @@
                 "mark": "Học Thần Spaced Repetition",
                 "markType": "top",
                 "iconKey": "repeat"
-        },
-        {
+            },
+            {
                 "id": "s13",
                 "username": "student_13",
                 "name": "Vàng Chí Anh",
@@ -18046,8 +18254,8 @@
                 "mark": "Dũng Sĩ Trắc Nghiệm",
                 "markType": "top",
                 "iconKey": "target"
-        },
-        {
+            },
+            {
                 "id": "s14",
                 "username": "student_14",
                 "name": "Đặng Thùy Dương",
@@ -18062,8 +18270,8 @@
                 "mark": "Cây Bút Sử Học 12C1",
                 "markType": "top",
                 "iconKey": "pen"
-        },
-        {
+            },
+            {
                 "id": "s15",
                 "username": "student_15",
                 "name": "Long Bảo Doanh",
@@ -18078,8 +18286,8 @@
                 "mark": "Chiến Binh Bền Bỉ",
                 "markType": "top",
                 "iconKey": "shield"
-        },
-        {
+            },
+            {
                 "id": "s16",
                 "username": "student_16",
                 "name": "Nông Thị Dung",
@@ -18094,8 +18302,8 @@
                 "mark": "Gương Mặt Tri Thức",
                 "markType": "top",
                 "iconKey": "star"
-        },
-        {
+            },
+            {
                 "id": "s17",
                 "username": "student_17",
                 "name": "Lý Ngọc Anh",
@@ -18110,8 +18318,8 @@
                 "mark": "Tay Bấm Siêu Tốc",
                 "markType": "top",
                 "iconKey": "zap"
-        },
-        {
+            },
+            {
                 "id": "s18",
                 "username": "student_18",
                 "name": "Giàng Thị Dùa",
@@ -18126,8 +18334,8 @@
                 "mark": "Bền Bỉ Vươn Lên",
                 "markType": "top",
                 "iconKey": "flame"
-        },
-        {
+            },
+            {
                 "id": "s19",
                 "username": "student_19",
                 "name": "Má A Cháng",
@@ -18142,8 +18350,8 @@
                 "mark": "Kỳ Thủ Đấu Trường",
                 "markType": "top",
                 "iconKey": "sword"
-        },
-        {
+            },
+            {
                 "id": "s20",
                 "username": "student_20",
                 "name": "Hàng Thị Chấn",
@@ -18158,8 +18366,8 @@
                 "mark": "Ngôi Sao Đang Lên",
                 "markType": "top",
                 "iconKey": "rising"
-        },
-        {
+            },
+            {
                 "id": "s21",
                 "username": "student_21",
                 "name": "Phàn Thị Kim Dung",
@@ -18174,8 +18382,8 @@
                 "mark": "Chăm Chỉ Mỗi Ngày",
                 "markType": "top",
                 "iconKey": "heart"
-        },
-        {
+            },
+            {
                 "id": "s22",
                 "username": "student_22",
                 "name": "Tẩn Văn Duy",
@@ -18190,8 +18398,8 @@
                 "mark": "Chiến Binh Tinh Nhuệ",
                 "markType": "top",
                 "iconKey": "check"
-        },
-        {
+            },
+            {
                 "id": "s23",
                 "username": "student_23",
                 "name": "Đặng Duy Khương",
@@ -18206,8 +18414,8 @@
                 "mark": "Nhà Khám Phá Loci",
                 "markType": "top",
                 "iconKey": "map"
-        },
-        {
+            },
+            {
                 "id": "s24",
                 "username": "student_24",
                 "name": "Sùng Thị Hoa",
@@ -18222,8 +18430,8 @@
                 "mark": "Ý Chí Kiên Cường",
                 "markType": "top",
                 "iconKey": "mountain"
-        },
-        {
+            },
+            {
                 "id": "s25",
                 "username": "student_25",
                 "name": "Long Minh Phương",
@@ -18238,8 +18446,8 @@
                 "mark": "Tư Duy Sắc Bén",
                 "markType": "top",
                 "iconKey": "brain"
-        },
-        {
+            },
+            {
                 "id": "s26",
                 "username": "student_26",
                 "name": "Nông Phượng Vĩ",
@@ -18254,8 +18462,8 @@
                 "mark": "Ngọn Lửa Tri Thức",
                 "markType": "top",
                 "iconKey": "sparkle"
-        },
-        {
+            },
+            {
                 "id": "s27",
                 "username": "student_27",
                 "name": "Vũ Hoàng Linh",
@@ -18270,8 +18478,8 @@
                 "mark": "Chiến Binh Tốc Độ",
                 "markType": "top",
                 "iconKey": "wind"
-        },
-        {
+            },
+            {
                 "id": "s28",
                 "username": "student_28",
                 "name": "Lý Cờ Mẩy",
@@ -18286,8 +18494,8 @@
                 "mark": "Quyết Tâm Về Đích",
                 "markType": "top",
                 "iconKey": "flag"
-        },
-        {
+            },
+            {
                 "id": "s29",
                 "username": "student_29",
                 "name": "Hạng Thị Mỷ",
@@ -18302,8 +18510,8 @@
                 "mark": "Vững Vàng Kiến Thức",
                 "markType": "top",
                 "iconKey": "anchor"
-        },
-        {
+            },
+            {
                 "id": "s30",
                 "username": "student_30",
                 "name": "Nông Thụy Nhiên",
@@ -18318,8 +18526,8 @@
                 "mark": "Đại Sứ Truyền Cảm Hứng",
                 "markType": "top",
                 "iconKey": "sun"
-        }
-];
+            }
+        ];
 
         function getCurrentUserEntry() {
             let streak = 0, weekMin = 0, answered = 0, accuracy = null;
@@ -19728,16 +19936,18 @@
         }
 
 
-        
+
         /* =========================================================
            ADVANCED MOBILE ERGONOMICS & RESPONSIVE POLISH (LOCI EDU)
            ========================================================= */
-        html, body {
+        html,
+        body {
             max-width: 100vw !important;
             overflow-x: hidden !important;
         }
 
         @media (max-width: 768px) {
+
             #view-overview,
             #view-pet {
                 padding: 12px 14px 80px 14px !important;
@@ -19936,7 +20146,7 @@
                 padding: 10px !important;
             }
 
-            #pet-selection-modal > div {
+            #pet-selection-modal>div {
                 padding: 20px 16px !important;
                 border-radius: 20px !important;
                 max-height: 94vh !important;
@@ -19953,6 +20163,7 @@
         }
 
         @media (max-width: 480px) {
+
             #view-overview,
             #view-pet {
                 padding: 8px 10px 80px 10px !important;
@@ -20612,8 +20823,8 @@
 
                     if (decision === null) {
                         // CHỈ HIỆN THÔNG BÁO KHI NGƯỜI DÙNG ĐÃ ĐĂNG NHẬP (KHÔNG HIỆN VỚI KHÁCH VÃNG LAI)
-                        const isAuth = (typeof window.isUserLoggedIn === 'function' && window.isUserLoggedIn()) || 
-                                       localStorage.getItem('loci_auth_session') === 'active';
+                        const isAuth = (typeof window.isUserLoggedIn === 'function' && window.isUserLoggedIn()) ||
+                            localStorage.getItem('loci_auth_session') === 'active';
                         if (!isAuth) return;
 
                         setTimeout(() => {
@@ -21262,7 +21473,7 @@
     <script src="loci_anchors_data.js"></script>
     <script src="flashcard_formats.js"></script>
     <script src="review_engine.js"></script>
-    <script src="surprise_recall.js?v=4.0" onerror="this.onerror=null;this.src='app/surprise_recall.js?v=4.0'"></script>
+    <script src="surprise_recall.js?v=7.3" onerror="this.onerror=null;this.src='app/surprise_recall.js?v=7.3'"></script>
 
     <!-- HỆ THỐNG ĐẾM THỜI GIAN HỌC THỜI GIAN THỰC & ĐỒNG BỘ TÍCH LŨY -->
     <script>
@@ -21633,41 +21844,55 @@
             alert('Đã tạo liên kết phòng học đôi! Bạn cùng học chỉ cần quét mã QR hoặc đăng nhập để tham gia nuôi chung Linh Thú.');
         };
 
-        window.switchPetSelectionModal = function () { window.openPetSelectionModal(); return;
-        /* legacy fallback */
+        window.switchPetSelectionModal = function () {
+            window.openPetSelectionModal(); return;
+            /* legacy fallback */
             alert('Hiện tại Linh Thú Athena đang trong quá trình đồng hành. Bạn có thể chọn Rồng Lửa Thăng Long hoặc Cáo Băng khi đạt Cấp 4!');
         };
     </script>
 
     <!-- MODAL CHỌN LINH THÚ TRI THỨC (PET SELECTION MODAL) -->
-    <div id="pet-selection-modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100050; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;" onclick="if(event.target===this) window.closePetSelectionModal()">
-        <div style="background: #ffffff; border-radius: 24px; max-width: 820px; width: 100%; max-height: 88vh; max-height: 88dvh; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35); border: 1.5px solid #e2e8f0; position: relative; overflow: hidden; animation: bdtZoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
-            
+    <div id="pet-selection-modal"
+        style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 100050; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;"
+        onclick="if(event.target===this) window.closePetSelectionModal()">
+        <div
+            style="background: #ffffff; border-radius: 24px; max-width: 820px; width: 100%; max-height: 88vh; max-height: 88dvh; display: flex; flex-direction: column; box-shadow: 0 25px 60px rgba(15, 23, 42, 0.35); border: 1.5px solid #e2e8f0; position: relative; overflow: hidden; animation: bdtZoomIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);">
+
             <!-- STICKY HEADER WITH CLOSE BUTTON -->
-            <div style="padding: 18px 24px 14px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: #ffffff;">
+            <div
+                style="padding: 18px 24px 14px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; background: #ffffff;">
                 <div>
-                    <span style="display: inline-block; font-size: 10.5px; font-weight: 800; color: #6366f1; background: #eef2ff; border: 1px solid #e0e7ff; padding: 2px 10px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
+                    <span
+                        style="display: inline-block; font-size: 10.5px; font-weight: 800; color: #6366f1; background: #eef2ff; border: 1px solid #e0e7ff; padding: 2px 10px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">
                         HỆ THỐNG LINH THÚ TRI THỨC LOCI
                     </span>
-                    <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0;">Chọn Linh Thú Tri Thức Đồng Hành</h3>
-                    <p style="font-size: 13px; color: #64748b; margin: 3px 0 0 0;">Mỗi linh thú mang một hệ nguyên tố đặc trưng, trợ lực ghi nhớ sâu trong Cung điện 3D</p>
+                    <h3 style="font-size: 20px; font-weight: 800; color: #0f172a; margin: 0;">Chọn Linh Thú Tri Thức
+                        Đồng Hành</h3>
+                    <p style="font-size: 13px; color: #64748b; margin: 3px 0 0 0;">Mỗi linh thú mang một hệ nguyên tố
+                        đặc trưng, trợ lực ghi nhớ sâu trong Cung điện 3D</p>
                 </div>
-                <button type="button" onclick="window.closePetSelectionModal()" style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; font-size: 16px; font-weight: 800; cursor: pointer; display: grid; place-items: center; transition: all 0.2s; flex-shrink: 0;" title="Đóng">✕</button>
+                <button type="button" onclick="window.closePetSelectionModal()"
+                    style="width: 36px; height: 36px; border-radius: 50%; border: 1px solid #e2e8f0; background: #f8fafc; color: #64748b; font-size: 16px; font-weight: 800; cursor: pointer; display: grid; place-items: center; transition: all 0.2s; flex-shrink: 0;"
+                    title="Đóng">✕</button>
             </div>
 
             <!-- SCROLLABLE GRID WITH 7 PETS -->
             <div style="padding: 20px 24px; overflow-y: auto; -webkit-overflow-scrolling: touch; flex: 1;">
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px;" id="pet-selection-grid">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px;"
+                    id="pet-selection-grid">
                     <!-- Rendered by JS -->
                 </div>
             </div>
 
             <!-- STICKY FOOTER -->
-            <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-shrink: 0; flex-wrap: wrap;">
+            <div
+                style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-shrink: 0; flex-wrap: wrap;">
                 <div style="font-size: 12.5px; color: #475569;">
-                    💡 <b>Mẹo:</b> Nhấp chọn Linh thú để kích hoạt ngay. Cấp độ cao hơn sẽ thức tỉnh khi bạn tích lũy đủ XP!
+                    💡 <b>Mẹo:</b> Nhấp chọn Linh thú để kích hoạt ngay. Cấp độ cao hơn sẽ thức tỉnh khi bạn tích lũy đủ
+                    XP!
                 </div>
-                <button type="button" onclick="window.closePetSelectionModal()" style="background: #0f172a; color: #fff; border: none; padding: 9px 22px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background 0.2s;">
+                <button type="button" onclick="window.closePetSelectionModal()"
+                    style="background: #0f172a; color: #fff; border: none; padding: 9px 22px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; white-space: nowrap; transition: background 0.2s;">
                     Đóng &amp; Hoàn tất
                 </button>
             </div>
@@ -21676,7 +21901,7 @@
 
     <!-- LOGIC ĐỔI LINH THÚ TRI THỨC 3D PIXAR & 7 GIAI ĐOẠN TIẾN HÓA -->
     <script>
-                const PET_COMPANIONS = {
+        const PET_COMPANIONS = {
             tiger: {
                 id: 'tiger',
                 name: 'Bạch Hổ Thần Tốc',
@@ -21819,7 +22044,7 @@
             }
         };
 
-        window.getPetTier = function(pet, xp) {
+        window.getPetTier = function (pet, xp) {
             if (!pet || !pet.tiers || pet.tiers.length === 0) return null;
             const curXp = parseInt(xp || 0, 10);
             let activeTier = pet.tiers[0];
@@ -21832,14 +22057,14 @@
             return activeTier;
         };
 
-        window.openPetSelectionModal = function() {
+        window.openPetSelectionModal = function () {
             const modal = document.getElementById('pet-selection-modal');
             const grid = document.getElementById('pet-selection-grid');
             if (!modal || !grid) return;
 
             const currentPetId = localStorage.getItem('loci_selected_pet') || 'tiger';
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
+                ? window.LociAccountManager.getUser()
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
             const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const currentPet = PET_COMPANIONS[currentPetId];
@@ -21872,7 +22097,7 @@
             modal.style.display = 'flex';
         };
 
-        window.closePetSelectionModal = function() {
+        window.closePetSelectionModal = function () {
             const modal = document.getElementById('pet-selection-modal');
             if (modal) {
                 modal.style.display = 'none';
@@ -21889,14 +22114,14 @@
             }
         };
 
-        window.previewPetTier = function(petId, tierLevel) {
+        window.previewPetTier = function (petId, tierLevel) {
             const pet = PET_COMPANIONS[petId];
             if (!pet || !pet.tiers) return;
             const tier = pet.tiers.find(t => t.level === tierLevel);
             if (!tier) return;
 
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
+                ? window.LociAccountManager.getUser()
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
             const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const isUnlocked = userXp >= tier.minXp;
@@ -21929,7 +22154,7 @@
             }
         };
 
-        window.renderPetEvolutionGrid = function(pet, curLevel, userXp) {
+        window.renderPetEvolutionGrid = function (pet, curLevel, userXp) {
             const grid = document.getElementById('loci-pet-tiers-grid');
             const summaryBadge = document.getElementById('pet-evolution-summary-badge');
             if (!grid || !pet || !pet.tiers) return;
@@ -21991,13 +22216,13 @@
             }).join('');
         };
 
-        window.selectCompanionPet = function(petId, isSilent) {
+        window.selectCompanionPet = function (petId, isSilent) {
             const pet = PET_COMPANIONS[petId] || PET_COMPANIONS['tiger'];
             if (!pet) return;
 
             const currentPetId = localStorage.getItem('loci_selected_pet') || 'tiger';
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
+                ? window.LociAccountManager.getUser()
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
             const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const currentPet = PET_COMPANIONS[currentPetId];
@@ -22021,11 +22246,11 @@
             if (window.LociPet && window.LociPet.petData) {
                 window.LociPet.petData.speciesId = pet.id;
                 window.LociPet.petData.name = pet.name;
-                try { localStorage.setItem('loci_companion_pet_data_v1', JSON.stringify(window.LociPet.petData)); } catch (_) {}
+                try { localStorage.setItem('loci_companion_pet_data_v1', JSON.stringify(window.LociPet.petData)); } catch (_) { }
             }
 
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
+                ? window.LociAccountManager.getUser()
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
             const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
@@ -22066,9 +22291,9 @@
                     } else {
                         const audio = new Audio('assets/audio/ting_ting.mp3');
                         audio.volume = 0.6;
-                        audio.play().catch(() => {});
+                        audio.play().catch(() => { });
                     }
-                } catch (_) {}
+                } catch (_) { }
 
                 if (typeof showToast === 'function') {
                     showToast(`Đã chọn linh thú đồng hành: ${pet.name} (${activeTier.name})!`, 'success', 2500);
@@ -22086,7 +22311,7 @@
     <!-- LOGIC HERO GATE & BẢO VỆ KHÔNG GIAN 3D (YÊU CẦU ĐĂNG NHẬP + CHỐNG BOT) -->
     <script>
         // Kiểm tra xem người dùng đã đăng nhập hay chưa (chuẩn xác tuyệt đối, không giả lập)
-        window.getCookie = function(name) {
+        window.getCookie = function (name) {
             try {
                 const cname = name + "=";
                 const decodedCookie = decodeURIComponent(document.cookie);
@@ -22096,11 +22321,11 @@
                     while (c.charAt(0) === ' ') c = c.substring(1);
                     if (c.indexOf(cname) === 0) return c.substring(cname.length, c.length);
                 }
-            } catch (_) {}
+            } catch (_) { }
             return "";
         };
 
-        window.isUserLoggedIn = function() {
+        window.isUserLoggedIn = function () {
             try {
                 if (window._isUserExplicitlyLoggedIn) return true;
                 if (window._lociLocalUser && (window._lociLocalUser.uid || window._lociLocalUser.username)) return true;
@@ -22115,7 +22340,7 @@
                         try {
                             const p = JSON.parse(localUserStr);
                             if (p && (p.uid || p.username || p.displayName || p.email || p.role)) return true;
-                        } catch(_) {}
+                        } catch (_) { }
                     }
                     if (sessionActive) return true;
                 }
@@ -22126,7 +22351,7 @@
                     try {
                         const accs = JSON.parse(accountsStr);
                         if (accs && Object.keys(accs).length > 0) return true;
-                    } catch(_) {}
+                    } catch (_) { }
                 }
 
                 // Kiểm tra Cookie lưu trữ 365 ngày
@@ -22138,12 +22363,12 @@
                 if (window.LociFirebase && window.LociFirebase.currentUser && window.LociFirebase.currentUser.uid) {
                     return true;
                 }
-            } catch (_) {}
+            } catch (_) { }
             return false;
         };
 
         // Mở cửa sổ Đăng nhập / Đăng ký từ Hero Gate
-        window.openLoginGate = function(mode) {
+        window.openLoginGate = function (mode) {
             window.openCloudAuthModal();
             const targetMode = (mode === 'register') ? 'register' : 'login';
             if (typeof window.switchAuthTab === 'function') {
@@ -22152,7 +22377,7 @@
         };
 
         // Bỏ ẩn Hero Gate để vào bảng điều khiển (CHỈ KHI ĐÃ ĐĂNG NHẬP THỰC TẾ)
-        window.dismissHeroGate = function(force) {
+        window.dismissHeroGate = function (force) {
             document.body.classList.remove('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
@@ -22169,7 +22394,7 @@
             return true;
         };
 
-        window.showHeroGate = function() {
+        window.showHeroGate = function () {
             document.body.classList.add('gate-active');
             const gate = document.getElementById('hero-landing-gate');
             if (gate) {
@@ -22186,7 +22411,7 @@
         };
 
         // Xử lý khi nhấn nút Trang chủ / Cộng đồng trên Hero Gate
-        window.handleGateNavClick = function(target) {
+        window.handleGateNavClick = function (target) {
             if (!window.isUserLoggedIn()) {
                 const targetName = (target === 'community') ? 'Cộng đồng' : 'Trang chủ';
                 if (typeof showToast === 'function') {
@@ -22207,7 +22432,7 @@
         };
 
         // Xử lý nút START trên Hero Gate (Chỉ cho phép khi đã đăng nhập)
-        window.handleHeroStartClick = function() {
+        window.handleHeroStartClick = function () {
             // TỰ ĐỘNG CẤP PHIÊN KHÁCH ĐỂ NGƯỜI DÙNG VÀO KHÁM PHÁ NGAY MÀ KHÔNG BỊ CHẶN POPUP
             if (!window.isUserLoggedIn()) {
                 try {
@@ -22221,7 +22446,7 @@
                     localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
                     localStorage.setItem('loci_auth_session', 'active');
                     window._isUserExplicitlyLoggedIn = true;
-                } catch (_) {}
+                } catch (_) { }
             }
             window.dismissHeroGate(true);
             if (typeof showToast === 'function') {
@@ -22233,7 +22458,7 @@
         // ====================================================================
         // QUẢN LÝ BIỆT DANH HỌC THUẬT & QUY ĐỊNH 14 NGÀY / LẦN ĐỔI
         // ====================================================================
-        window.openNicknameModal = function() {
+        window.openNicknameModal = function () {
             if (!window.isUserLoggedIn()) {
                 window.openLoginGate('login');
                 return;
@@ -22242,7 +22467,7 @@
             const input = document.getElementById('nickname-custom-input');
             const ruleText = document.getElementById('nickname-rule-indicator');
             const saveBtn = document.getElementById('btn-confirm-nickname-change');
-            
+
             const user = window.LociAccountManager ? window.LociAccountManager.getUser() : null;
             if (input && user) {
                 input.value = user.displayName || user.username || '';
@@ -22275,12 +22500,12 @@
             if (modal) modal.style.display = 'flex';
         };
 
-        window.closeNicknameModal = function() {
+        window.closeNicknameModal = function () {
             const modal = document.getElementById('nickname-modal-box');
             if (modal) modal.style.display = 'none';
         };
 
-        window.submitNicknameChangeAction = function() {
+        window.submitNicknameChangeAction = function () {
             const input = document.getElementById('nickname-custom-input');
             const val = input ? input.value.trim() : '';
             if (!val || val.length < 2) {
@@ -22309,11 +22534,11 @@
 
 
         // KIỂM TRA ĐIỀU KIỆN MỞ KHÓA BÀI HỌC (BÀI 6 MỞ ĐẦU -> BÀI 7 -> BÀI 8)
-        window.isLessonUnlocked = function(lessonId) {
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
+        window.isLessonUnlocked = function (lessonId) {
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
+                ? window.LociAccountManager.getUser()
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            
+
             if (user && (user.isAdmin || user.role === 'admin' || user.username === 'admin')) {
                 return true; // Ban giám khảo có quyền truy cập tất cả
             }
@@ -22324,21 +22549,21 @@
                 if (!user) return false;
                 const completedLessons = user.completedLessons || [];
                 const b6Stations = (user.completedStations && user.completedStations.bai_6) ? user.completedStations.bai_6.length : 0;
-                return completedLessons.includes('bai_6') || b6Stations >= 5 || (user.stats && user.stats.answered >= 5);
+                return completedLessons.includes('bai_6') || b6Stations >= 7;
             }
 
             if (lessonId === 'bai_8') {
                 if (!user) return false;
                 const completedLessons = user.completedLessons || [];
                 const b7Stations = (user.completedStations && user.completedStations.bai_7) ? user.completedStations.bai_7.length : 0;
-                return completedLessons.includes('bai_7') || b7Stations >= 5;
+                return completedLessons.includes('bai_7') || b7Stations >= 7;
             }
 
             return true;
         };
 
         // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP & KIỂM TRA MỞ KHÓA TIẾN TRÌNH
-        window.enterSpatialRoom = function(href, spaceName, lessonId, isTourMode) {
+        window.enterSpatialRoom = function (href, spaceName, lessonId, isTourMode) {
             // 1. Tự động cấp quyền Khách nếu chưa đăng nhập (không chặn cửa, không ép popup)
             if (!window.isUserLoggedIn()) {
                 try {
@@ -22352,7 +22577,7 @@
                     localStorage.setItem('loci_local_user', JSON.stringify(guestUser));
                     localStorage.setItem('loci_auth_session', 'active');
                     window._isUserExplicitlyLoggedIn = true;
-                } catch(_) {}
+                } catch (_) { }
             }
 
             // 2. Chế độ Tham quan 3D (dành cho Khách & Giám khảo xem trước mô hình không tính điểm)
@@ -22361,8 +22586,8 @@
                 return;
             }
 
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
+                ? window.LociAccountManager.getUser()
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
             const canBypass = user && (user.isSuperAdmin || user.canBypassLocks || user.role === 'admin' || user.role === 'superadmin' || user.username === 'quantri' || user.username === 'admin' || user.isGuest);
 
@@ -22380,7 +22605,7 @@
 
         // CLOUDFLARE TURNSTILE CHỐNG BOT
         let turnstileToken = null;
-        window.onTurnstileSuccess = function(token) {
+        window.onTurnstileSuccess = function (token) {
             turnstileToken = token;
             console.log('[Cloudflare Turnstile] Xác thực người thật thành công token:', token ? token.substring(0, 15) + '...' : 'OK');
             const alertEl = document.getElementById('auth-alert');
@@ -22399,7 +22624,7 @@
                     showToast('Đã vào chế độ Học sinh Khách · Bạn có thể tự do khám phá toàn bộ không gian!', 'info', 3000);
                 }
             }
-    
+
             // Tự động giải phóng Hero Gate ngay lập tức nếu đã đăng nhập từ trước (qua Cookie hoặc LocalStorage)
             if (window.isUserLoggedIn()) {
                 if (typeof window.syncUserIdentityUI === 'function') window.syncUserIdentityUI();
@@ -22418,46 +22643,63 @@
             }
         });
     </script>
-    
+
 
     <!-- MODAL ĐỔI BIỆT DANH HỌC THUẬT & QUY ĐỊNH 14 NGÀY -->
-    <div id="nickname-modal-box" class="cloud-modal-overlay" style="display:none; z-index: 100000; align-items:center; justify-content:center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px);" onclick="if(event.target===this) window.closeNicknameModal()">
-        <div style="background: #ffffff; border-radius: 18px; width: 100%; max-width: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid #e2e8f0; animation: modalPop 0.2s ease;">
-            <div style="padding: 18px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: #ffffff;">
+    <div id="nickname-modal-box" class="cloud-modal-overlay"
+        style="display:none; z-index: 100000; align-items:center; justify-content:center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(6px);"
+        onclick="if(event.target===this) window.closeNicknameModal()">
+        <div
+            style="background: #ffffff; border-radius: 18px; width: 100%; max-width: 480px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; border: 1px solid #e2e8f0; animation: modalPop 0.2s ease;">
+            <div
+                style="padding: 18px 24px; border-bottom: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; background: #ffffff;">
                 <div style="display: flex; align-items: center; gap: 10px;">
                     <span style="font-size: 18px;">✍</span>
-                    <h3 style="font-size: 16.5px; font-weight: 800; color: #0f172a; margin: 0;">Thiết Lập Biệt Danh Học Thuật</h3>
+                    <h3 style="font-size: 16.5px; font-weight: 800; color: #0f172a; margin: 0;">Thiết Lập Biệt Danh Học
+                        Thuật</h3>
                 </div>
-                <button type="button" onclick="window.closeNicknameModal()" style="background: transparent; border: none; font-size: 18px; color: #64748b; cursor: pointer; padding: 4px;">✕</button>
+                <button type="button" onclick="window.closeNicknameModal()"
+                    style="background: transparent; border: none; font-size: 18px; color: #64748b; cursor: pointer; padding: 4px;">✕</button>
             </div>
             <div style="padding: 24px; display: flex; flex-direction: column; gap: 16px;">
                 <p style="font-size: 13.5px; color: #475569; margin: 0; line-height: 1.5;">
                     Biệt danh này xuất hiện trên Bảng Vinh Danh Loci, Báo cáo Nghiên cứu và Hồ sơ Đồng Sử của bạn.
                 </p>
                 <div style="display: flex; flex-direction: column; gap: 6px;">
-                    <label style="font-size: 12.5px; font-weight: 700; color: #0f172a;">Biệt danh / Tên hiển thị:</label>
-                    <input type="text" id="nickname-custom-input" maxlength="32" placeholder="Ví dụ: Nguyễn Minh Khang" style="width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14.5px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
+                    <label style="font-size: 12.5px; font-weight: 700; color: #0f172a;">Biệt danh / Tên hiển
+                        thị:</label>
+                    <input type="text" id="nickname-custom-input" maxlength="32" placeholder="Ví dụ: Nguyễn Minh Khang"
+                        style="width: 100%; padding: 12px 14px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14.5px; font-weight: 600; color: #0f172a; outline: none; box-sizing: border-box;">
                 </div>
-                <div id="nickname-rule-indicator" style="background: #f8fafc; border-left: 3.5px solid #d97706; padding: 12px 14px; font-size: 12.5px; color: #64748b; line-height: 1.5; border-radius: 0 8px 8px 0;">
+                <div id="nickname-rule-indicator"
+                    style="background: #f8fafc; border-left: 3.5px solid #d97706; padding: 12px 14px; font-size: 12.5px; color: #64748b; line-height: 1.5; border-radius: 0 8px 8px 0;">
                     <strong>Quy định học thuật:</strong> Mỗi tài khoản được đổi tên 14 ngày một lần.
                 </div>
             </div>
-            <div style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
-                <button type="button" onclick="window.closeNicknameModal()" style="padding: 10px 18px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: #475569; cursor: pointer;">Hủy bỏ</button>
-                <button type="button" id="btn-confirm-nickname-change" onclick="window.submitNicknameChangeAction()" style="padding: 10px 22px; background: #0284c7; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 700; color: #ffffff; cursor: pointer; box-shadow: 0 2px 8px rgba(2,132,199,0.3);">Xác nhận đổi tên ➔</button>
+            <div
+                style="padding: 16px 24px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 10px;">
+                <button type="button" onclick="window.closeNicknameModal()"
+                    style="padding: 10px 18px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13.5px; font-weight: 600; color: #475569; cursor: pointer;">Hủy
+                    bỏ</button>
+                <button type="button" id="btn-confirm-nickname-change" onclick="window.submitNicknameChangeAction()"
+                    style="padding: 10px 22px; background: #0284c7; border: none; border-radius: 8px; font-size: 13.5px; font-weight: 700; color: #ffffff; cursor: pointer; box-shadow: 0 2px 8px rgba(2,132,199,0.3);">Xác
+                    nhận đổi tên ➔</button>
             </div>
         </div>
     </div>
 
 
     <!-- FLOATING AI COMPANION LAUNCHER (CHUYỂN SANG BÊN TRÁI - KHÔNG CHE KHUẤT NỘI DUNG VÀ NÚT BẤM) -->
-    <div id="loci-floating-ai-mascot" class="loci-floating-ai-btn"
-        onclick="window.switchPortalTab('ai')"
+    <div id="loci-floating-ai-mascot" class="loci-floating-ai-btn" onclick="window.switchPortalTab('ai')"
         title="Trò chuyện cùng Gia Sư AI Loci (Hỗ trợ 24/7)"
         style="position: fixed; bottom: 24px; left: 24px; right: auto; z-index: 9999; display: flex; align-items: center; gap: 10px; background: #ffffff; padding: 6px 14px 6px 8px; border-radius: 99px; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(37, 99, 235, 0.25); border: 2px solid #38bdf8; cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);">
-        <div style="position: relative; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #eff6ff, #dbeafe); display: grid; place-items: center;">
-            <img src="assets/images/loci_avatar.jpg" alt="Gia Sư AI Robot" style="width: 36px; height: 36px; object-fit: cover; border-radius: 50%; animation: mascotFloat 3s infinite ease-in-out;" onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
-            <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
+        <div
+            style="position: relative; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #eff6ff, #dbeafe); display: grid; place-items: center;">
+            <img src="assets/images/loci_avatar.jpg" alt="Gia Sư AI Robot"
+                style="width: 36px; height: 36px; object-fit: cover; border-radius: 50%; animation: mascotFloat 3s infinite ease-in-out;"
+                onerror="this.onerror=null; this.src='assets/images/icon_loci_emblem.jpg';">
+            <span
+                style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #ffffff; box-shadow: 0 0 6px #10b981;"></span>
         </div>
         <div style="text-align: left;" class="floating-ai-text">
             <div style="font-size: 13px; font-weight: 800; color: #0369a1; line-height: 1.2;">Gia Sư AI Loci</div>
@@ -22467,7 +22709,7 @@
 
     <script id="KeydownEscapeModals">
         // Đóng mọi modal khi nhấn phím ESC
-        window.addEventListener('keydown', function(e) {
+        window.addEventListener('keydown', function (e) {
             if (e.key === 'Escape' || e.keyCode === 27) {
                 if (typeof window.closePetSelectionModal === 'function') window.closePetSelectionModal();
                 const petAdopt = document.getElementById('pet-adoption-modal');
@@ -22483,7 +22725,7 @@
             }
         });
     </script>
-    
+
 </body>
 
 </html>

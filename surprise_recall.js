@@ -932,7 +932,49 @@
       }
     ]
   };
+    // Gán nhãn lessonKey cứng cáp cho mọi mô hình 3D
+  Object.keys(SPATIAL_SURPRISE_MODELS).forEach(k => {
+    (SPATIAL_SURPRISE_MODELS[k] || []).forEach(m => {
+      m.lessonKey = k;
+    });
+  });
+
   window.SPATIAL_SURPRISE_MODELS = SPATIAL_SURPRISE_MODELS;
+
+  // ĐẢM BẢO HÀM KIỂM TRA MỞ KHÓA BÀI HỌC LUÔN SẴN SÀNG TOÀN CỤC
+  if (typeof window.isLessonUnlocked !== 'function') {
+    window.isLessonUnlocked = function(lessonId) {
+      if (!lessonId || lessonId === 'bai_6') return true;
+      try {
+        const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
+          ? window.LociAccountManager.getUser() 
+          : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || localStorage.getItem('loci_local_user') || 'null'));
+        if (user && (user.isAdmin || user.role === 'admin' || user.username === 'admin' || user.isSuperAdmin)) return true;
+        
+        let prog = null;
+        if (window.LociProgression && typeof window.LociProgression.getProgression === 'function') {
+          prog = window.LociProgression.getProgression();
+        } else if (typeof localStorage !== 'undefined') {
+          prog = JSON.parse(localStorage.getItem('loci_study_progression') || '{}');
+        }
+
+        if (lessonId === 'bai_7') {
+          if (prog && prog.bai_7 && prog.bai_7.unlocked) return true;
+          const completedLessons = (user && user.completedLessons) || [];
+          const b6Stations = (user && user.completedStations && user.completedStations.bai_6) ? user.completedStations.bai_6.length : 0;
+          return completedLessons.includes('bai_6') || b6Stations >= 7;
+        }
+
+        if (lessonId === 'bai_8') {
+          if (prog && prog.bai_8 && prog.bai_8.unlocked) return true;
+          const completedLessons = (user && user.completedLessons) || [];
+          const b7Stations = (user && user.completedStations && user.completedStations.bai_7) ? user.completedStations.bai_7.length : 0;
+          return completedLessons.includes('bai_7') || b7Stations >= 7;
+        }
+      } catch (_) {}
+      return false;
+    };
+  }
 
   class SurpriseRecallService {
     constructor() {
@@ -967,9 +1009,17 @@
     // Xác định chính xác các bài học người dùng ĐÃ THỰC SỰ HỌC (theo sát tiến độ, không hiện linh tinh)
     getLearnedLessonKeys() {
       const candidateLessons = ['bai_6', 'bai_7', 'bai_8'];
-      const learned = [];
+      const learned = ['bai_6']; // Bài 6 luôn là bài cơ bản mở đầu
 
-      // 1. Kiểm tra qua hệ thống tiến độ học tập LociProgression
+      // 1. Kiểm tra điều kiện mở khóa bài học toàn cục (isLessonUnlocked)
+      const canUnlockB7 = (typeof window.isLessonUnlocked === 'function')
+        ? window.isLessonUnlocked('bai_7')
+        : false;
+      const canUnlockB8 = (typeof window.isLessonUnlocked === 'function')
+        ? window.isLessonUnlocked('bai_8')
+        : false;
+
+      // 2. Kiểm tra tiến độ học tập thực tế LociProgression
       try {
         let prog = null;
         if (window.LociProgression && typeof window.LociProgression.getProgression === 'function') {
@@ -978,44 +1028,43 @@
           prog = JSON.parse(localStorage.getItem('loci_study_progression') || '{}');
         }
         if (prog && typeof prog === 'object') {
-          candidateLessons.forEach(k => {
-            const p = prog[k];
-            if (p && ((p.stationsVisited && p.stationsVisited.length > 0) || p.flashcardsReviewed || (p.quizScore != null && p.quizScore > 0) || p.completed)) {
-              if (!learned.includes(k)) learned.push(k);
+          if (canUnlockB7) {
+            const p7 = prog.bai_7;
+            if (p7 && (p7.unlocked || (p7.stationsVisited && p7.stationsVisited.length >= 3) || p7.flashcardsReviewed || p7.completed)) {
+              if (!learned.includes('bai_7')) learned.push('bai_7');
             }
-          });
+          }
+          if (canUnlockB8) {
+            const p8 = prog.bai_8;
+            if (p8 && (p8.unlocked || (p8.stationsVisited && p8.stationsVisited.length >= 3) || p8.flashcardsReviewed || p8.completed)) {
+              if (!learned.includes('bai_8')) learned.push('bai_8');
+            }
+          }
         }
       } catch (e) {
         console.warn('[SurpriseRecall] Lỗi đọc tiến trình LociProgression:', e);
       }
 
-      // 2. Kiểm tra qua tiến trình thẻ nhớ ngắt quãng SM-2
-      try {
-        if (typeof localStorage !== 'undefined') {
-          const sm2 = JSON.parse(localStorage.getItem('loci_sm2_progress') || '{}');
-          Object.keys(sm2).forEach(cardId => {
-            candidateLessons.forEach(k => {
-              if (cardId.startsWith(k) && !learned.includes(k)) {
-                learned.push(k);
-              }
-            });
-          });
-        }
-      } catch (_) {}
-
-      // 3. Nếu đang trong ngữ cảnh 1 không gian bài học cụ thể
+      // 3. Nếu đang trong không gian 3D của bài học cụ thể
       const curr = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY)
         || (typeof window.CURRENT_LESSON_KEY !== 'undefined' && window.CURRENT_LESSON_KEY);
-      if (curr && candidateLessons.includes(curr) && !learned.includes(curr)) {
-        learned.push(curr);
+      if (curr && candidateLessons.includes(curr)) {
+        if (!learned.includes(curr)) {
+          if (curr === 'bai_6' || (curr === 'bai_7' && canUnlockB7) || (curr === 'bai_8' && canUnlockB8)) {
+            learned.push(curr);
+          }
+        }
       }
 
-      // 4. Nếu người dùng chưa từng học bài nào (học sinh mới), mặc định CHỈ hiển thị Bài 6 (bài mở đầu cơ bản duy nhất)
-      if (learned.length === 0) {
-        learned.push('bai_6');
-      }
+      // 4. Lọc chặt chẽ: Bài chưa mở khóa TUYỆT ĐỐI KHÔNG BAO GIỜ được xuất hiện
+      const filtered = learned.filter(k => {
+        if (k === 'bai_6') return true;
+        if (k === 'bai_7') return canUnlockB7;
+        if (k === 'bai_8') return canUnlockB8;
+        return false;
+      });
 
-      return learned;
+      return (filtered.length > 0) ? filtered : ['bai_6'];
     }
 
     // Thu thập toàn bộ câu hỏi (100% là Quiz hoặc Type-in / Cloze)
@@ -1178,21 +1227,23 @@
       const currentContextLesson = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY)
         || (typeof window.CURRENT_LESSON_KEY !== 'undefined' && window.CURRENT_LESSON_KEY);
 
-      let targetLesson = null;
-      // Nếu đang trong không gian 3D cụ thể (có camera/lociList) và bài đó hợp lệ, dùng bài đó
+      let targetLesson = 'bai_6';
+      // Nếu đang trong không gian 3D cụ thể và bài đó hợp lệ nằm trong danh sách đã học
       if (window.camera && window.lociList && currentContextLesson && SPATIAL_SURPRISE_MODELS[currentContextLesson]) {
         targetLesson = currentContextLesson;
       } else {
         // Ở ngoài Portal/Trang chủ: CHỈ CHỌN TRONG CÁC BÀI ĐÃ HỌC THEO TIẾN ĐỘ THỰC TẾ
-        targetLesson = learnedKeys[Math.floor(Math.random() * learnedKeys.length)];
+        targetLesson = learnedKeys[Math.floor(Math.random() * learnedKeys.length)] || 'bai_6';
       }
 
       let item = forceItem;
       if (!item) {
-        const pool = SPATIAL_SURPRISE_MODELS[targetLesson] || SPATIAL_SURPRISE_MODELS[learnedKeys[0]] || SPATIAL_SURPRISE_MODELS['bai_6'];
+        const pool = (SPATIAL_SURPRISE_MODELS[targetLesson] && SPATIAL_SURPRISE_MODELS[targetLesson].length > 0)
+          ? SPATIAL_SURPRISE_MODELS[targetLesson]
+          : (SPATIAL_SURPRISE_MODELS[learnedKeys[0]] || SPATIAL_SURPRISE_MODELS['bai_6']);
         if (pool && pool.length > 0) {
-          item = pool[Math.floor(Math.random() * pool.length)];
-          if (item) item.lessonKey = targetLesson;
+          item = Object.assign({}, pool[Math.floor(Math.random() * pool.length)]);
+          item.lessonKey = targetLesson;
         }
       } else if (!item.lessonKey) {
         item.lessonKey = targetLesson;
@@ -1284,7 +1335,7 @@
       wrapper.id = 'loci-surprise-wrapper';
       wrapper.className = 'loci-surprise-wrapper';
 
-      const lKey = item.lessonKey || (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' ? window.EFFECTIVE_LESSON_KEY : 'bai_8');
+      const lKey = item.lessonKey || 'bai_6';
       const lessonName = (lKey === 'bai_8')
         ? 'Bài 8: Kháng chiến chống Mỹ (1954 – 1975)'
         : ((lKey === 'bai_7')
