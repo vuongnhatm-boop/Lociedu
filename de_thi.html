@@ -2311,19 +2311,24 @@
             /* ---------- timer ---------- */
             function startTimer() {
                 stopTimer();
-                tick = setInterval(() => {
+                const updateClock = () => {
                     const left = deadline - Date.now();
                     const txt = $('timer-txt');
                     const box = $('timer');
-                    txt.textContent = fmtClock(left / 1000);
-                    box.classList.toggle('warn', left <= 10 * 60 * 1000 && left > 5 * 60 * 1000);
-                    box.classList.toggle('danger', left <= 5 * 60 * 1000);
+                    if (txt) txt.textContent = fmtClock(left / 1000);
+                    if (box) {
+                        const isWarn = left <= 10 * 60 * 1000 && left > 5 * 60 * 1000;
+                        const isDanger = left <= 5 * 60 * 1000;
+                        if (box.classList.contains('warn') !== isWarn) box.classList.toggle('warn', isWarn);
+                        if (box.classList.contains('danger') !== isDanger) box.classList.toggle('danger', isDanger);
+                    }
                     if (left <= 0) {
                         stopTimer();
                         finishExam(true);
                     }
-                }, 500);
-                $('timer-txt').textContent = fmtClock((deadline - Date.now()) / 1000);
+                };
+                tick = setInterval(updateClock, 1000);
+                updateClock();
             }
 
             function stopTimer() {

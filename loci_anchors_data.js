@@ -1,10 +1,3 @@
-// ═══════════════════════════════════════════════════════════════
-// LOCI ANCHORS DATA — DỮ LIỆU MỐC NEO CUNG ĐIỆN KÍ ỨC (CHUẨN KHOA HỌC & GẠCH ĐẦU DÒNG)
-// DỰ ÁN: CUNG ĐIỆN KÍ ỨC — PHƯƠNG PHÁP LOCI VR
-// CHUYÊN BIỆT 100% CHỦ ĐỀ 3 (TÀI LIỆU CHỦ ĐỀ 3.DOCX)
-// GỒM 4 BÀI: BÀI 6, BÀI 7, BÀI 8, BÀI 9
-// ═══════════════════════════════════════════════════════════════
-
 window.LOCI_ANCHORS = {
   "bai_6": {
     "id": "bai_6",
@@ -1209,33 +1202,69 @@ window.LOCI_ANCHORS = {
         "photos": [
           {
             "title": "Vai trò của Liên Xô – Trung tâm hệ thống XHCN",
-            "caption": "Hồng quân Liên Xô cắm cờ chiến thắng trên nóc tòa nhà Quốc hội Đức (Reichstag), mở ra thời kỳ hệ thống xã hội chủ nghĩa hình thành và phát triển vững mạnh.",
-            "localImage": "assets/images/bai7/b7_img01.jpeg",
-            "url": "assets/images/bai7/b7_img01.jpeg",
+            "caption": "Hệ thống xã hội chủ nghĩa đang hình thành; vai trò của Liên Xô là trung tâm của hệ thống XHCN thời kỳ đầu sau CTTG II.",
+            "localImage": "assets/images/bai7/image1.jpeg",
+            "url": "assets/images/bai7/image1.jpeg",
             "source": "Tư liệu Lịch sử Thế giới 1945"
           },
           {
+            "title": "Nhân dân Indonesia giương cao cờ độc lập",
+            "caption": "Phong trào giải phóng dân tộc dâng cao ở các nước thuộc địa và phụ thuộc; nhân dân Indonesia tuyên bố độc lập.",
+            "localImage": "assets/images/bai7/image2.jpeg",
+            "url": "assets/images/bai7/image2.jpeg",
+            "source": "Lưu trữ Phong trào Giải phóng Dân tộc"
+          },
+          {
+            "title": "Phụ nữ tham gia mít tinh tại Berlin (1/5/1946)",
+            "caption": "Phong trào vì hòa bình, dân chủ dâng cao ở các nước tư bản sau khi chủ nghĩa phát xít bị tiêu diệt.",
+            "localImage": "assets/images/bai7/image3.jpeg",
+            "url": "assets/images/bai7/image3.jpeg",
+            "source": "Ảnh tư liệu Berlin 1946"
+          },
+          {
+            "title": "Quân Anh vào Sài Gòn (tháng 9/1945)",
+            "caption": "Trật tự hai cực I-an-ta và Chiến tranh Lạnh tác động đến Việt Nam; quân đội các nước đế quốc kéo vào dưới danh nghĩa Đồng minh.",
+            "localImage": "assets/images/bai7/image4.jpeg",
+            "url": "assets/images/bai7/image4.jpeg",
+            "source": "Ảnh tư liệu quân Đồng minh 1945"
+          },
+          {
             "title": "Nhân dân đi bỏ phiếu bầu Quốc hội khóa I (6/1/1946)",
-            "caption": "Cử tri Hà Nội và cả nước nô nức đi bỏ phiếu trong cuộc Tổng tuyển cử đầu tiên của nước Việt Nam Dân chủ Cộng hòa, khẳng định quyền làm chủ thiêng liêng.",
-            "localImage": "assets/images/bai7/b7_img05.jpeg",
-            "url": "assets/images/bai7/b7_img05.jpeg",
+            "caption": "Thuận lợi trong nước: Nhân dân đã giành quyền làm chủ, bước đầu hưởng những quyền lợi mới nên đồng lòng ủng hộ cách mạng.",
+            "localImage": "assets/images/bai7/image5.jpeg",
+            "url": "assets/images/bai7/image5.jpeg",
             "source": "Bảo tàng Lịch sử Quốc gia"
           },
           {
-            "title": "Quân Anh và Đồng minh tiến vào miền Nam Việt Nam (9/1945)",
-            "caption": "Quân đội Anh kéo vào Sài Gòn dưới danh nghĩa Đồng minh giải giáp quân Nhật, nhưng thực chất hậu thuẫn cho thực dân Pháp tái chiếm Nam Bộ.",
-            "localImage": "assets/images/bai7/b7_img06.jpeg",
-            "url": "assets/images/bai7/b7_img06.jpeg",
-            "source": "Tư liệu Lịch sử Kháng chiến"
+            "title": "Quân Anh tiến vào miền Nam giải giáp quân Nhật",
+            "caption": "Quân Anh vào phía nam vĩ tuyến 16 để giải giáp quân Nhật; sau đó quân Anh hậu thuẫn cho quân Pháp quay lại xâm lược.",
+            "localImage": "assets/images/bai7/image6.jpeg",
+            "url": "assets/images/bai7/image6.jpeg",
+            "source": "Tư liệu Kháng chiến Nam Bộ"
+          },
+          {
+            "title": "Chính quyền và lực lượng vũ trang non trẻ",
+            "caption": "Chính quyền dân chủ nhân dân và lực lượng vũ trang cách mạng mới thành lập, trang bị thô sơ, thiếu kinh nghiệm tác chiến.",
+            "localImage": "assets/images/bai7/image7.jpeg",
+            "url": "assets/images/bai7/image7.jpeg",
+            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
+          },
+          {
+            "title": "Cơ sở vật chất và đời sống còn lạc hậu",
+            "caption": "Nền kinh tế nghèo nàn, lạc hậu, bị chiến tranh tàn phá nặng nề; tàn dư của chế độ phong kiến thực dân cũ còn đè nặng.",
+            "localImage": "assets/images/bai7/image8.jpeg",
+            "url": "assets/images/bai7/image8.jpeg",
+            "source": "Tư liệu đời sống xã hội 1945"
           },
           {
             "title": "Nạn đói năm 1945 – Tình thế 'ngàn cân treo sợi tóc'",
-            "caption": "Hậu quả tàn khốc của nạn đói năm 1945 cướp đi hơn 2 triệu sinh mạng đồng bào; kinh tế kiệt quệ, giặc đói, giặc dốt, giặc ngoại xâm cùng lúc đe dọa.",
-            "localImage": "assets/images/bai7/b7_img09.jpeg",
-            "url": "assets/images/bai7/b7_img09.jpeg",
+            "caption": "Hậu quả tàn khốc của nạn đói năm 1945 cướp đi hơn 2 triệu sinh mạng đồng bào; đất nước đứng trước hiểm cảnh nghìn cân treo sợi tóc.",
+            "localImage": "assets/images/bai7/image9.jpeg",
+            "url": "assets/images/bai7/image9.jpeg",
             "source": "Ảnh tư liệu nghệ sĩ Võ An Ninh"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image1.jpeg"
       },
       {
         "id": "b7_m2_nam_bo_khang_chien",
@@ -1337,34 +1366,35 @@ window.LOCI_ANCHORS = {
         ],
         "photos": [
           {
+            "title": "Nhân dân Sài Gòn mít tinh mừng độc lập",
+            "caption": "Ngày 2/9/1945, thực dân Pháp xả súng vào cuộc mít tinh mừng độc lập của nhân dân Sài Gòn – Chợ Lớn gây hấn.",
+            "localImage": "assets/images/bai7/image10.jpeg",
+            "url": "assets/images/bai7/image10.jpeg",
+            "source": "Tư liệu Lịch sử Sài Gòn – Chợ Lớn"
+          },
+          {
             "title": "Chợ Bến Thành trong ngày đầu kháng chiến Nam Bộ (23/9/1945)",
-            "caption": "Khói lửa ngút trời khu vực Chợ Bến Thành khi thực dân Pháp xả súng gây hấn và đánh úp các cơ quan cách mạng tại Sài Gòn sáng ngày 23/9/1945.",
-            "localImage": "assets/images/bai7/b7_img11.png",
-            "url": "assets/images/bai7/b7_img11.png",
-            "source": "Tư liệu Lịch sử TP. Hồ Chí Minh"
+            "caption": "Ngày 23/9/1945, Pháp đánh úp trụ sở Ủy ban hành chính Nam Bộ và cơ quan tự vệ Sài Gòn, mở đầu cuộc chiến tranh xâm lược lần hai.",
+            "localImage": "assets/images/bai7/image11.png",
+            "url": "assets/images/bai7/image11.png",
+            "source": "Lưu trữ Lịch sử Kháng chiến Nam Bộ"
           },
           {
             "title": "Người dân và tự vệ Nam Bộ bước vào chiến đấu (23/9/1945)",
-            "caption": "Đáp lời kêu gọi của Ủy ban Kháng chiến Nam Bộ, các tầng lớp nhân dân Nam Bộ anh dũng cầm vũ khí đứng lên kháng chiến chống quân xâm lược Pháp.",
-            "localImage": "assets/images/bai7/b7_img12.jpeg",
-            "url": "assets/images/bai7/b7_img12.jpeg",
+            "caption": "Ủy ban kháng chiến Nam Bộ thành lập; quân dân Nam Bộ với vũ khí thô sơ nhất tề đứng lên kháng chiến giữ vững nền độc lập.",
+            "localImage": "assets/images/bai7/image12.jpeg",
+            "url": "assets/images/bai7/image12.jpeg",
             "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
           },
           {
-            "title": "Đơn vị Nam tiến tại ga Hàng Cỏ chi viện miền Nam (1/10/1945)",
-            "caption": "Đoàn quân Nam tiến đầu tiên tập hợp tại ga Hàng Cỏ (Hà Nội) trước giờ xuất phát vào Nam, thể hiện tình đoàn kết ruột thịt Bắc - Nam một nhà.",
-            "localImage": "assets/images/bai7/b7_img13.jpeg",
-            "url": "assets/images/bai7/b7_img13.jpeg",
+            "title": "Đoàn quân Nam tiến tại ga Hàng Cỏ chi viện miền Nam (1/10/1945)",
+            "caption": "Đảng và Chính phủ huy động cả nước chi viện cho Nam Bộ; các đơn vị Nam tiến khẩn trương lên đường chia lửa cùng tiền tuyến.",
+            "localImage": "assets/images/bai7/image13.jpeg",
+            "url": "assets/images/bai7/image13.jpeg",
             "source": "Thông tấn xã Việt Nam (TTXVN)"
-          },
-          {
-            "title": "Khí thế quật cường của nhân dân Sài Gòn – Thành đồng Tổ quốc",
-            "caption": "Cuộc chiến đấu anh dũng của quân dân Nam Bộ đã bước đầu làm phá sản âm mưu đánh nhanh thắng nhanh của thực dân Pháp, giữ vững ngọn cờ độc lập.",
-            "localImage": "assets/images/bai7/b7_img10.jpeg",
-            "url": "assets/images/bai7/b7_img10.jpeg",
-            "source": "Tư liệu Lịch sử Cách mạng Việt Nam"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image10.jpeg"
       },
       {
         "id": "b7_m3_loi_keu_goi_toan_quoc",
@@ -1466,34 +1496,42 @@ window.LOCI_ANCHORS = {
         ],
         "photos": [
           {
-            "title": "Chủ tịch Hồ Chí Minh ký Hiệp định Sơ bộ 6/3/1946",
-            "caption": "Chủ tịch Hồ Chí Minh cùng đại diện Chính phủ Pháp Jean Sainteny ký Hiệp định Sơ bộ tại 38 phố Lý Thái Tổ (Hà Nội), sách lược khôn khéo 'hòa để tiến'.",
-            "localImage": "assets/images/bai7/b7_img15.jpeg",
-            "url": "assets/images/bai7/b7_img15.jpeg",
+            "title": "Tàu chiến Pháp khiêu khích ở Hải Phòng (5/3/1946)",
+            "caption": "Sau khi Pháp và Tưởng ký Hiệp ước Hoa – Pháp (28/2/1946), tàu chiến Pháp tiến vào vùng biển Hải Phòng khiêu khích.",
+            "localImage": "assets/images/bai7/image14.jpeg",
+            "url": "assets/images/bai7/image14.jpeg",
+            "source": "Lưu trữ Hải quân & Lịch sử Quân sự"
+          },
+          {
+            "title": "Chủ tịch Hồ Chí Minh ký Hiệp định Sơ bộ (6/3/1946)",
+            "caption": "Chủ tịch Hồ Chí Minh ký với Jean Sainteny Hiệp định Sơ bộ 6/3/1946, thể hiện thiện chí hòa bình và sách lược khôn khéo 'hòa để tiến'.",
+            "localImage": "assets/images/bai7/image15.jpeg",
+            "url": "assets/images/bai7/image15.jpeg",
             "source": "Bảo tàng Lịch sử Quốc gia"
           },
           {
-            "title": "Thực dân Pháp bội ước & Gửi tối hậu thư (18/12/1946)",
-            "caption": "Tàu chiến Pháp gây hấn tại Hải Phòng và tướng Pháp Morlière gửi tối hậu thư đòi ta hạ vũ khí, giải tán lực lượng tự vệ Thủ đô Hà Nội ngày 18/12/1946.",
-            "localImage": "assets/images/bai7/b7_img17.jpeg",
-            "url": "assets/images/bai7/b7_img17.jpeg",
-            "source": "Tư liệu Lịch sử Kháng chiến"
+            "title": "Ký kết Tạm ước 14/9/1946 thể hiện thiện chí hòa bình",
+            "caption": "Chủ tịch Hồ Chí Minh ký Tạm ước 14/9/1946 tại Paris nhượng cho Pháp một số quyền lợi kinh tế - văn hóa để kéo dài thời gian chuẩn bị kháng chiến.",
+            "localImage": "assets/images/bai7/image16.jpeg",
+            "url": "assets/images/bai7/image16.jpeg",
+            "source": "Lưu trữ Ngoại giao Việt Nam"
+          },
+          {
+            "title": "Pháp bội ước & Gửi tối hậu thư (18/12/1946)",
+            "caption": "Thực dân Pháp phá hoại điều ký kết, gửi tối hậu thư đòi ta giải tán lực lượng tự vệ để Pháp kiểm soát Thủ đô Hà Nội.",
+            "localImage": "assets/images/bai7/image17.jpeg",
+            "url": "assets/images/bai7/image17.jpeg",
+            "source": "Tư liệu Toàn quốc kháng chiến"
           },
           {
             "title": "Quân dân Hà Nội chiến đấu đáp Lời kêu gọi Toàn quốc kháng chiến (19/12/1946)",
-            "caption": "Quân dân Thủ đô biến từng con phố thành chiến hào, ngã ba thành pháo đài vững chắc chặn đứng các mũi tiến công của quân viễn chinh Pháp.",
-            "localImage": "assets/images/bai7/b7_img18.png",
-            "url": "assets/images/bai7/b7_img18.png",
+            "caption": "Đêm 19/12/1946, Lời kêu gọi toàn quốc kháng chiến của Chủ tịch Hồ Chí Minh vang dội; toàn dân tộc bước vào cuộc trường kỳ kháng chiến.",
+            "localImage": "assets/images/bai7/image18.png",
+            "url": "assets/images/bai7/image18.png",
             "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-          },
-          {
-            "title": "Đường lối kháng chiến toàn dân, toàn diện, trường kỳ",
-            "caption": "Đường lối kháng chiến đúng đắn, sáng tạo nêu rõ trong tác phẩm 'Kháng chiến nhất định thắng lợi' của đồng chí Trường Chinh và Lời kêu gọi của Bác Hồ.",
-            "localImage": "assets/images/bai7/b7_img18.png",
-            "url": "assets/images/bai7/b7_img18.png",
-            "source": "Tư liệu Lịch sử Đảng"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image14.jpeg"
       },
       {
         "id": "b7_m4_ha_noi_60_ngay_dem",
@@ -1595,34 +1633,14 @@ window.LOCI_ANCHORS = {
         ],
         "photos": [
           {
-            "title": "Quyết tử quân ôm bom ba càng bảo vệ Thủ đô (1946 – 1947)",
-            "caption": "Chiến sĩ quyết tử Trung đoàn Thủ đô với cây bom ba càng huyền thoại sẵn sàng lao thẳng vào xe tăng giặc Pháp trên đường phố Hà Nội mùa đông 1946.",
-            "localImage": "assets/images/bai7/b7_img19.jpeg",
-            "url": "assets/images/bai7/b7_img19.jpeg",
+            "title": "Chiến đấu bảo vệ Thủ đô Hà Nội và các đô thị (1946 – 1947)",
+            "caption": "Quyết tử quân ôm bom ba càng quyết tử cho Tổ quốc quyết sinh; giam chân quân Pháp 60 ngày đêm ở Hà Nội để cơ quan đầu não rút lên chiến khu an toàn.",
+            "localImage": "assets/images/bai7/image19.jpeg",
+            "url": "assets/images/bai7/image19.jpeg",
             "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-          },
-          {
-            "title": "Chiến sự ác liệt tại Bắc Bộ phủ, Chợ Đồng Xuân và Nhà Bưu điện",
-            "caption": "Quân dân ta đục tường thông nhà, đào chiến hào ngang đường, giằng co quyết liệt từng tấc đất với quân Pháp tại các vị trí trọng yếu ở Hà Nội.",
-            "localImage": "assets/images/bai7/b7_img19.jpeg",
-            "url": "assets/images/bai7/b7_img19.jpeg",
-            "source": "Tư liệu Lịch sử Thủ đô Hà Nội"
-          },
-          {
-            "title": "Giam chân quân Pháp 60 ngày đêm và cuộc rút quân thần kỳ",
-            "caption": "Sau 60 ngày đêm giam chân quân địch, đêm 17/2/1947, Trung đoàn Thủ đô bí mật vượt sông Hồng dưới gầm cầu Long Biên rút về căn cứ an toàn.",
-            "localImage": "assets/images/bai7/b7_img19.jpeg",
-            "url": "assets/images/bai7/b7_img19.jpeg",
-            "source": "Tư liệu Trung đoàn Thủ đô"
-          },
-          {
-            "title": "Làm thất bại một bước kế hoạch 'đánh nhanh, thắng nhanh' của Pháp",
-            "caption": "Tạo thời gian quý báu để toàn bộ cơ quan đầu não kháng chiến, máy móc nhà máy và kho tàng cơ sở vật chất rút lên chiến khu an toàn.",
-            "localImage": "assets/images/bai7/b7_img19.jpeg",
-            "url": "assets/images/bai7/b7_img19.jpeg",
-            "source": "Bảo tàng Lịch sử Quốc gia"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image19.jpeg"
       },
       {
         "id": "b7_m5_viet_bac_thu_dong_1947",
@@ -1725,26 +1743,13 @@ window.LOCI_ANCHORS = {
         "photos": [
           {
             "title": "Xác tàu chiến Pháp bị bắn chìm trên sông Lô (Thu – Đông 1947)",
-            "caption": "Xác tàu chiến L.C.T của giặc Pháp bị pháo binh ta bắn cháy và chìm nghỉm trên sông Lô (Đoan Hùng, Tuyên Quang) trong Chiến dịch Việt Bắc Thu - Đông 1947.",
-            "localImage": "assets/images/bai7/b7_img20.png",
-            "url": "assets/images/bai7/b7_img20.png",
-            "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-          },
-          {
-            "title": "Quân Pháp rút chạy khỏi căn cứ địa Việt Bắc",
-            "caption": "Hai gọng kìm dù và bộ binh của giặc Pháp bị bẻ gãy tại Chợ Đồn, Chợ Rã, Khe Lau; quân địch thương vong nặng nề buộc phải tháo chạy.",
-            "localImage": "assets/images/bai7/b7_img20.png",
-            "url": "assets/images/bai7/b7_img20.png",
-            "source": "Tư liệu Chiến dịch Việt Bắc"
-          },
-          {
-            "title": "Làm phá sản hoàn toàn kế hoạch 'đánh nhanh, thắng nhanh'",
-            "caption": "Chiến dịch phản công lớn đầu tiên giành thắng lợi vang dội, bảo vệ tuyệt đối an toàn cơ quan đầu não, buộc Pháp chuyển sang đánh lâu dài.",
-            "localImage": "assets/images/bai7/b7_img20.png",
-            "url": "assets/images/bai7/b7_img20.png",
-            "source": "Bảo tàng Lịch sử Quốc gia"
+            "caption": "Xác tàu chiến L.C.T của giặc Pháp bị quân ta bắn cháy trên sông Lô; chiến dịch phản công lớn đánh bại hoàn toàn âm mưu đánh nhanh thắng nhanh của Pháp.",
+            "localImage": "assets/images/bai7/image20.png",
+            "url": "assets/images/bai7/image20.png",
+            "source": "Bảo tàng Chiến dịch Việt Bắc"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image20.png"
       },
       {
         "id": "b7_m6_bien_gioi_thu_dong_1950",
@@ -1846,27 +1851,14 @@ window.LOCI_ANCHORS = {
         ],
         "photos": [
           {
-            "title": "Bộ đội ta xung phong đánh chiếm cứ điểm Đông Khê (16-18/9/1950)",
-            "caption": "Bộ đội xung kích ta đánh chiếm cụm cứ điểm Đông Khê mở màn Chiến dịch Biên giới, chặt đứt mắt xích huyết mạch của địch trên Đường số 4.",
-            "localImage": "assets/images/bai7/b7_img21.jpg",
-            "url": "assets/images/bai7/b7_img21.jpg",
+            "title": "Bộ đội ta xung phong đánh chiếm cứ điểm Đông Khê (Thu – Đông 1950)",
+            "caption": "Quân ta mở màn chiến dịch tấn công cứ điểm Đông Khê, chặn đánh địch trên Đường số 4, giải phóng biên giới Việt - Trung dài 750km, giành quyền chủ động chiến lược.",
+            "localImage": "assets/images/bai7/image21.jpg",
+            "url": "assets/images/bai7/image21.jpg",
             "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-          },
-          {
-            "title": "Giải phóng dải biên giới Việt – Trung dài 750 km, 35 vạn dân",
-            "caption": "Chọc thủng tuyến phòng thủ Hành lang Đông - Tây, xóa sổ hệ thống đồn bốt kẹp của địch trên Đường số 4, khai thông đường liên lạc với quốc tế.",
-            "localImage": "assets/images/bai7/b7_img21.jpg",
-            "url": "assets/images/bai7/b7_img21.jpg",
-            "source": "Tư liệu Chiến dịch Biên giới 1950"
-          },
-          {
-            "title": "Giành quyền chủ động chiến lược trên chiến trường chính Bắc Bộ",
-            "caption": "Chiến dịch tiến công quy mô lớn đầu tiên làm phá sản Kế hoạch Rơ-ve của Pháp; đánh dấu bước ngoặt ta chuyển hẳn sang thế chủ động tiến công.",
-            "localImage": "assets/images/bai7/b7_img21.jpg",
-            "url": "assets/images/bai7/b7_img21.jpg",
-            "source": "Bảo tàng Lịch sử Quốc gia"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image21.jpg"
       },
       {
         "id": "b7_m7_dai_hoi_2_hau_phuong",
@@ -1968,34 +1960,70 @@ window.LOCI_ANCHORS = {
         ],
         "photos": [
           {
-            "title": "Quang cảnh Đại hội đại biểu toàn quốc lần thứ II của Đảng (2/1951)",
-            "caption": "Đại hội đại biểu toàn quốc lần thứ II họp từ ngày 11-19/2/1951 tại xã Vinh Quang, huyện Chiêm Hóa (Tuyên Quang), quyết định đưa Đảng ra hoạt động công khai lấy tên là Đảng Lao động Việt Nam.",
-            "localImage": "assets/images/bai7/b7_img22.gif",
-            "url": "assets/images/bai7/b7_img22.gif",
-            "source": "Bảo tàng Lịch sử Quốc gia"
+            "title": "Đại hội đại biểu toàn quốc lần thứ II của Đảng (tháng 2/1951)",
+            "caption": "Quang cảnh Đại hội II tại Chiêm Hóa (Tuyên Quang), đưa Đảng ra hoạt động công khai lấy tên là Đảng Lao động Việt Nam, củng cố Mặt trận Liên Việt.",
+            "localImage": "assets/images/bai7/image22.gif",
+            "url": "assets/images/bai7/image22.gif",
+            "source": "Lưu trữ Lịch sử Đảng Cộng sản Việt Nam"
           },
           {
-            "title": "Bản đồ các chiến dịch tiến công giữ vững thế chủ động (1951 – 1953)",
-            "caption": "Liên tiếp mở các chiến dịch Trần Hưng Đạo, Hoàng Hoa Thám, Quang Trung, Hòa Bình (1951-1952), Tây Bắc (1952), Thượng Lào (1953) tiêu diệt sinh lực địch.",
-            "localImage": "assets/images/bai7/b7_img24.jpeg",
-            "url": "assets/images/bai7/b7_img24.jpeg",
-            "source": "Tư liệu Bộ Quốc phòng"
+            "title": "Bác Hồ và các đại biểu tại Đại hội II (Chiêm Hóa, Tuyên Quang)",
+            "caption": "Đại hội đánh dấu bước phát triển mới về lãnh đạo kháng chiến, thông qua Chính cương, Điều lệ mới và đường lối cách mạng dân tộc dân chủ nhân dân.",
+            "localImage": "assets/images/bai7/image23.jpeg",
+            "url": "assets/images/bai7/image23.jpeg",
+            "source": "Bảo tàng Cách mạng Việt Nam"
+          },
+          {
+            "title": "Chiến dịch tiến công Trần Hưng Đạo (cuối 1950 – đầu 1951)",
+            "caption": "Quân sự 1951 – 1953: Liên tiếp mở các chiến dịch tiến công giữ vững thế chủ động trên chiến trường trung du và đồng bằng Bắc Bộ.",
+            "localImage": "assets/images/bai7/image24.jpeg",
+            "url": "assets/images/bai7/image24.jpeg",
+            "source": "Bản đồ Tác chiến Bộ Tổng tham mưu"
+          },
+          {
+            "title": "Chiến dịch tiến công Hoàng Hoa Thám (đầu năm 1951)",
+            "caption": "Bộ đội chủ lực tiêu diệt nhiều sinh lực địch trên tuyến đường số 18, củng cố thế chủ động chiến lược.",
+            "localImage": "assets/images/bai7/image25.png",
+            "url": "assets/images/bai7/image25.png",
+            "source": "Bản đồ Tác chiến Quân đội Nhân dân Việt Nam"
+          },
+          {
+            "title": "Chiến dịch Quang Trung (giữa năm 1951)",
+            "caption": "Tiến công tiêu hao sinh lực địch tại Hà Nam, Ninh Bình, giữ vững và mở rộng vùng kiểm soát tự do.",
+            "localImage": "assets/images/bai7/image26.jpeg",
+            "url": "assets/images/bai7/image26.jpeg",
+            "source": "Bản đồ Tác chiến Quân đội Nhân dân Việt Nam"
+          },
+          {
+            "title": "Chiến dịch Hòa Bình (1951 – 1952)",
+            "caption": "Đập tan kế hoạch chiếm đóng Hòa Bình của tướng Đờ Lát đơ Tát-xi-nhi, giữ vững hành lang nối liền Việt Bắc với Liên khu 3, 4.",
+            "localImage": "assets/images/bai7/image27.jpeg",
+            "url": "assets/images/bai7/image27.jpeg",
+            "source": "Tư liệu Chiến dịch Hòa Bình"
+          },
+          {
+            "title": "Chiến dịch Tây Bắc (1952) & Thượng Lào (1953)",
+            "caption": "Giải phóng rộng lớn đất đai Tây Bắc và Thượng Lào, mở rộng căn cứ kháng chiến và thế liên hoàn chiến lược ba nước Đông Dương.",
+            "localImage": "assets/images/bai7/image28.jpeg",
+            "url": "assets/images/bai7/image28.jpeg",
+            "source": "Lưu trữ Tác chiến Liên quân Việt - Lào"
           },
           {
             "title": "Nông dân nhận ruộng trong Cải cách ruộng đất (tháng 12/1953)",
-            "caption": "Quốc hội thông qua Luật Cải cách ruộng đất năm 1953; nông dân vùng tự do hân hoan cắm thẻ nhận ruộng đất, hiện thực hóa mục tiêu 'Người cày có ruộng'.",
-            "localImage": "assets/images/bai7/b7_img29.jpg",
-            "url": "assets/images/bai7/b7_img29.jpg",
+            "caption": "Kinh tế: Năm 1952 phát động vận động sản xuất và tiết kiệm; tháng 12/1953 Quốc hội thông qua Luật Cải cách ruộng đất bồi dưỡng sức dân.",
+            "localImage": "assets/images/bai7/image29.jpg",
+            "url": "assets/images/bai7/image29.jpg",
             "source": "Bảo tàng Lịch sử Quốc gia"
           },
           {
-            "title": "Cải cách giáo dục: Phục vụ kháng chiến, dân sinh và sản xuất",
-            "caption": "Chủ tịch Hồ Chí Minh thăm và động viên thầy trò lớp học thời kháng chiến; đẩy mạnh cải cách giáo dục theo 3 phương châm toàn diện.",
-            "localImage": "assets/images/bai7/b7_img30.jpeg",
-            "url": "assets/images/bai7/b7_img30.jpeg",
+            "title": "Cải cách giáo dục 3 phương châm phục vụ kháng chiến",
+            "caption": "Văn hóa - giáo dục: Cải cách giáo dục theo 3 phương châm: phục vụ kháng chiến, phục vụ dân sinh và phục vụ sản xuất.",
+            "localImage": "assets/images/bai7/image30.jpeg",
+            "url": "assets/images/bai7/image30.jpeg",
             "source": "Thông tấn xã Việt Nam (TTXVN)"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image22.gif"
       },
       {
         "id": "b7_m8_dong_xuan_53_54_nava",
@@ -2097,26 +2125,20 @@ window.LOCI_ANCHORS = {
         "photos": [
           {
             "title": "Tướng Na-va và Bộ Tổng chỉ huy Pháp vạch Kế hoạch Na-va (7/1953)",
-            "caption": "Tổng chỉ huy quân viễn chinh Pháp Henri Navarre được Mỹ viện trợ đề ra kế hoạch 18 tháng hòng chuyển bại thành thắng ở Đông Dương.",
-            "localImage": "assets/images/bai7/b7_img31.gif",
-            "url": "assets/images/bai7/b7_img31.gif",
+            "caption": "Được Mỹ viện trợ, tháng 7/1953 Pháp đề ra Kế hoạch Na-va hy vọng trong 18 tháng giành thắng lợi quân sự quyết định để kết thúc chiến tranh trong danh dự.",
+            "localImage": "assets/images/bai7/image31.gif",
+            "url": "assets/images/bai7/image31.gif",
             "source": "Lưu trữ Lịch sử Quân sự Pháp & Việt Nam"
           },
           {
-            "title": "Tiến công chiến lược Đông – Xuân 1953 – 1954 xé lẻ quân cơ động Pháp",
-            "caption": "Bộ đội ta tiến công dồn dập trên 5 hướng chiến lược, buộc khối cơ động mạnh của Na-va bị phân tán thành 5 cụm cô lập, không thể ứng cứu lẫn nhau.",
-            "localImage": "assets/images/bai7/b7_img32.gif",
-            "url": "assets/images/bai7/b7_img32.gif",
+            "title": "Tiến công chiến lược Đông – Xuân 1953 – 1954 xé lẻ quân cơ động Na-va",
+            "caption": "Quân dân ta chủ động tiến công vào những hướng địch sơ hở, buộc Na-va phải phân tán lực lượng cơ động thành 5 nơi cô lập, chuẩn bị cho Điện Biên Phủ.",
+            "localImage": "assets/images/bai7/image32.gif",
+            "url": "assets/images/bai7/image32.gif",
             "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
-          },
-          {
-            "title": "Chuẩn bị toàn diện mở đòn quyết chiến Điện Biên Phủ",
-            "caption": "Thất bại bước đầu của Kế hoạch Na-va đẩy địch vào thế bị động phòng ngự tại Điện Biên Phủ, tạo thời cơ chín muồi cho trận quyết chiến chiến lược của ta.",
-            "localImage": "assets/images/bai7/b7_img32.gif",
-            "url": "assets/images/bai7/b7_img32.gif",
-            "source": "Tư liệu Lịch sử Chiến dịch 1953 - 1954"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image31.gif"
       },
       {
         "id": "b7_m9_dien_bien_phu_geneva",
@@ -2219,41 +2241,63 @@ window.LOCI_ANCHORS = {
         ],
         "photos": [
           {
+            "title": "Âm mưu tập đoàn cứ điểm Điện Biên Phủ của Pháp",
+            "caption": "Pháp xây dựng Điện Biên Phủ thành tập đoàn cứ điểm mạnh nhất Đông Dương với 49 cứ điểm, 3 phân khu, con nhím khổng lồ bất khả xâm phạm.",
+            "localImage": "assets/images/bai7/image33.png",
+            "url": "assets/images/bai7/image33.png",
+            "source": "Bản đồ Cứ điểm Điện Biên Phủ"
+          },
+          {
             "title": "Bộ Chính trị họp duyệt kế hoạch tác chiến Điện Biên Phủ (12/1953)",
-            "caption": "Chủ tịch Hồ Chí Minh cùng Đại tướng Võ Nguyên Giáp và các đồng chí trong Bộ Chính trị họp tại Tỉn Keo (Thái Nguyên) quyết định mở Chiến dịch Điện Biên Phủ.",
-            "localImage": "assets/images/bai7/b7_img34.jpeg",
-            "url": "assets/images/bai7/b7_img34.jpeg",
+            "caption": "Chủ tịch Hồ Chí Minh cùng Bộ Chính trị họp tại Tỉn Keo (Định Hóa, Thái Nguyên) quyết định mở Chiến dịch Điện Biên Phủ, giao Đại tướng Võ Nguyên Giáp chỉ huy.",
+            "localImage": "assets/images/bai7/image34.jpeg",
+            "url": "assets/images/bai7/image34.jpeg",
             "source": "Bảo tàng Lịch sử Quốc gia"
           },
           {
-            "title": "Tướng Đờ Ca-xtơ-ri cùng toàn bộ Bộ Tham mưu Pháp đầu hàng (7/5/1954)",
-            "caption": "Đúng 17h30 ngày 7/5/1954, lá cờ Quyết chiến Quyết thắng tung bay trên nóc hầm tướng De Castries; toàn bộ tập đoàn cứ điểm Điện Biên Phủ bị tiêu diệt hoàn toàn.",
-            "localImage": "assets/images/bai7/b7_img37.jpeg",
-            "url": "assets/images/bai7/b7_img37.jpeg",
+            "title": "Đợt 1 (13/3 – 17/3/1954): Tấn công Him Lam, Độc Lập, Bản Kéo",
+            "caption": "Mở màn chiến dịch, pháo binh ta dội bão lửa vào cứ điểm Him Lam; ta đập tan cánh cửa phía bắc, tiêu diệt hoàn toàn cứ điểm Him Lam và Độc Lập.",
+            "localImage": "assets/images/bai7/image35.jpg",
+            "url": "assets/images/bai7/image35.jpg",
+            "source": "Bảo tàng Chiến dịch Điện Biên Phủ"
+          },
+          {
+            "title": "Đợt 2 (30/3 – 26/4/1954): Tiến công vây ép phân khu Trung tâm",
+            "caption": "Quân ta tấn công các đồi phía đông (A1, C1, D1, E1), đào giao thông hào siết chặt vòng vây sân bay Mường Thanh, cắt đứt hoàn toàn đường tiếp tế hàng không của Pháp.",
+            "localImage": "assets/images/bai7/image36.jpeg",
+            "url": "assets/images/bai7/image36.jpeg",
+            "source": "Ảnh tư liệu chiến hào Mường Thanh"
+          },
+          {
+            "title": "Đợt 3 (1/5 – 7/5/1954): Bắt sống tướng Đờ Ca-xtơ-ri, toàn thắng",
+            "caption": "Đúng 17h30 ngày 7/5/1954, cờ Quyết chiến Quyết thắng tung bay trên nóc hầm De Castries; toàn bộ Bộ chỉ huy tập đoàn cứ điểm đầu hàng, chiến dịch toàn thắng.",
+            "localImage": "assets/images/bai7/image37.jpeg",
+            "url": "assets/images/bai7/image37.jpeg",
             "source": "Ảnh tư liệu phóng viên chiến trường Triệu Đại"
           },
           {
-            "title": "Ký kết Hiệp định Giơ-ne-vơ chấm dứt chiến tranh (21/7/1954)",
-            "caption": "Hội nghị Giơ-ne-vơ ký kết thành công; các nước công nhận độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của Việt Nam, Lào và Campuchia.",
-            "localImage": "assets/images/bai7/b7_img39.jpg",
-            "url": "assets/images/bai7/b7_img39.jpg",
-            "source": "Lưu trữ Bộ Ngoại giao"
-          },
-          {
-            "title": "Sức mạnh đại đoàn kết toàn dân tộc làm nên chiến thắng Điện Biên Phủ",
-            "caption": "Hàng vạn dân công hỏa tuyến vượt núi băng rừng kéo pháo, gánh đạn, thồ lương thực tiếp tế cho mặt trận; sức mạnh toàn dân làm nên kỳ tích.",
-            "localImage": "assets/images/bai7/b7_img38.jpg",
-            "url": "assets/images/bai7/b7_img38.jpg",
+            "title": "Sức mạnh đại đoàn kết toàn dân tộc làm nên kỳ tích Điện Biên",
+            "caption": "Hàng vạn dân công hỏa tuyến, thanh niên xung phong mở đường xẻ núi, xe thồ thồ hàng ngàn tấn lương thực, vũ khí đảm bảo chiến thắng lịch sử.",
+            "localImage": "assets/images/bai7/image38.jpg",
+            "url": "assets/images/bai7/image38.jpg",
             "source": "Bảo tàng Lịch sử Quân sự Việt Nam"
           },
           {
+            "title": "Ký kết Hiệp định Giơ-ne-vơ (21/7/1954) chấm dứt chiến tranh",
+            "caption": "Hiệp định Giơ-ne-vơ 1954 được ký kết; các nước cam kết tôn trọng độc lập, chủ quyền, thống nhất và toàn vẹn lãnh thổ của ba nước Đông Dương.",
+            "localImage": "assets/images/bai7/image39.jpg",
+            "url": "assets/images/bai7/image39.jpg",
+            "source": "Lưu trữ Bộ Ngoại giao"
+          },
+          {
             "title": "Chiến thắng Điện Biên Phủ lừng lẫy năm châu, chấn động địa cầu",
-            "caption": "Lá cờ Quyết chiến Quyết thắng tung bay trên đỉnh đồi chiến thắng, giáng đòn sụp đổ vào chủ nghĩa thực dân cũ, mở ra thời kỳ giải phóng thuộc địa toàn cầu.",
-            "localImage": "assets/images/bai7/b7_img38.jpg",
-            "url": "assets/images/bai7/b7_img38.jpg",
+            "caption": "Ý nghĩa lịch sử: Đập tan hoàn toàn ách thống trị của thực dân Pháp kéo dài gần 1 thế kỷ, mở đầu sự sụp đổ của hệ thống thuộc địa trên toàn thế giới.",
+            "localImage": "assets/images/bai7/image40.jpg",
+            "url": "assets/images/bai7/image40.jpg",
             "source": "Thông tấn xã Việt Nam (TTXVN)"
           }
-        ]
+        ],
+        "img": "assets/images/bai7/image33.png"
       }
     ]
   },

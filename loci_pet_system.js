@@ -457,7 +457,16 @@
             }
         }
 
+        canAdoptNewPet() {
+            if (!this.petData) return true;
+            return (this.petData.level >= 3) || (this.petData.isCompleted === true);
+        }
+
         selectSpecies(speciesId) {
+            if (this.petData && !this.canAdoptNewPet() && this.petData.speciesId !== speciesId) {
+                alert(`⚠️ Cơ chế Loci: Mỗi lần bạn chỉ được nuôi 1 linh thú! Hãy đồng hành nuôi lớn linh thú hiện tại đạt cấp cao nhất (Hoàn thành) trước khi nhận nuôi linh thú tiếp theo.`);
+                return;
+            }
             if (typeof window.selectCompanionPet === 'function') {
                 window.selectCompanionPet(speciesId);
             }

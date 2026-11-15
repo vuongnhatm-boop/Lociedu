@@ -964,10 +964,64 @@
       }, nextDelay);
     }
 
+    // Xác định chính xác các bài học người dùng ĐÃ THỰC SỰ HỌC (theo sát tiến độ, không hiện linh tinh)
+    getLearnedLessonKeys() {
+      const candidateLessons = ['bai_6', 'bai_7', 'bai_8'];
+      const learned = [];
+
+      // 1. Kiểm tra qua hệ thống tiến độ học tập LociProgression
+      try {
+        let prog = null;
+        if (window.LociProgression && typeof window.LociProgression.getProgression === 'function') {
+          prog = window.LociProgression.getProgression();
+        } else if (typeof localStorage !== 'undefined') {
+          prog = JSON.parse(localStorage.getItem('loci_study_progression') || '{}');
+        }
+        if (prog && typeof prog === 'object') {
+          candidateLessons.forEach(k => {
+            const p = prog[k];
+            if (p && ((p.stationsVisited && p.stationsVisited.length > 0) || p.flashcardsReviewed || (p.quizScore != null && p.quizScore > 0) || p.completed)) {
+              if (!learned.includes(k)) learned.push(k);
+            }
+          });
+        }
+      } catch (e) {
+        console.warn('[SurpriseRecall] Lỗi đọc tiến trình LociProgression:', e);
+      }
+
+      // 2. Kiểm tra qua tiến trình thẻ nhớ ngắt quãng SM-2
+      try {
+        if (typeof localStorage !== 'undefined') {
+          const sm2 = JSON.parse(localStorage.getItem('loci_sm2_progress') || '{}');
+          Object.keys(sm2).forEach(cardId => {
+            candidateLessons.forEach(k => {
+              if (cardId.startsWith(k) && !learned.includes(k)) {
+                learned.push(k);
+              }
+            });
+          });
+        }
+      } catch (_) {}
+
+      // 3. Nếu đang trong ngữ cảnh 1 không gian bài học cụ thể
+      const curr = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY)
+        || (typeof window.CURRENT_LESSON_KEY !== 'undefined' && window.CURRENT_LESSON_KEY);
+      if (curr && candidateLessons.includes(curr) && !learned.includes(curr)) {
+        learned.push(curr);
+      }
+
+      // 4. Nếu người dùng chưa từng học bài nào (học sinh mới), mặc định CHỈ hiển thị Bài 6 (bài mở đầu cơ bản duy nhất)
+      if (learned.length === 0) {
+        learned.push('bai_6');
+      }
+
+      return learned;
+    }
+
     // Thu thập toàn bộ câu hỏi (100% là Quiz hoặc Type-in / Cloze)
     getAllCandidateQuestions() {
       const anchorsData = window.LOCI_ANCHORS || {};
-      const ALLOWED = ['bai_6', 'bai_7', 'bai_8'];
+      const ALLOWED = this.getLearnedLessonKeys();
       const questions = [];
 
       ALLOWED.forEach(k => {
@@ -1119,25 +1173,29 @@
         return false;
       }
 
-      // 2. KÍCH HOẠT THỬ THÁCH MÔ HÌNH 3D TYPE-IN (CẢ TRONG KHÔNG GIAN 3D LẪN Ở NGOÀI PORTAL / TỔNG QUAN)
-      const allKeys = ['bai_6', 'bai_7', 'bai_8'];
-      let lessonKey = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY)
-        ? window.EFFECTIVE_LESSON_KEY
-        : ((typeof localStorage !== 'undefined' && localStorage.getItem('last_visited_lesson')) || 'bai_8');
+      // 2. KÍCH HOẠT THỬ THÁCH MÔ HÌNH 3D TYPE-IN (THEO SÁT TIẾN ĐỘ BÀI ĐÃ HỌC, KHÔNG HIỆN LINH TINH)
+      const learnedKeys = this.getLearnedLessonKeys();
+      const currentContextLesson = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY)
+        || (typeof window.CURRENT_LESSON_KEY !== 'undefined' && window.CURRENT_LESSON_KEY);
 
-      if (!SPATIAL_SURPRISE_MODELS[lessonKey]) {
-        lessonKey = allKeys[Math.floor(Math.random() * allKeys.length)];
+      let targetLesson = null;
+      // Nếu đang trong không gian 3D cụ thể (có camera/lociList) và bài đó hợp lệ, dùng bài đó
+      if (window.camera && window.lociList && currentContextLesson && SPATIAL_SURPRISE_MODELS[currentContextLesson]) {
+        targetLesson = currentContextLesson;
+      } else {
+        // Ở ngoài Portal/Trang chủ: CHỈ CHỌN TRONG CÁC BÀI ĐÃ HỌC THEO TIẾN ĐỘ THỰC TẾ
+        targetLesson = learnedKeys[Math.floor(Math.random() * learnedKeys.length)];
       }
 
       let item = forceItem;
       if (!item) {
-        // Nếu ở ngoài Portal (không có camera 3D), xoay vòng ngẫu nhiên giữa cả 3 bài
-        const targetLesson = (window.camera && window.lociList) ? lessonKey : allKeys[Math.floor(Math.random() * allKeys.length)];
-        const pool = SPATIAL_SURPRISE_MODELS[targetLesson] || SPATIAL_SURPRISE_MODELS['bai_8'];
-        item = pool[Math.floor(Math.random() * pool.length)];
-        if (item) item.lessonKey = targetLesson;
+        const pool = SPATIAL_SURPRISE_MODELS[targetLesson] || SPATIAL_SURPRISE_MODELS[learnedKeys[0]] || SPATIAL_SURPRISE_MODELS['bai_6'];
+        if (pool && pool.length > 0) {
+          item = pool[Math.floor(Math.random() * pool.length)];
+          if (item) item.lessonKey = targetLesson;
+        }
       } else if (!item.lessonKey) {
-        item.lessonKey = lessonKey;
+        item.lessonKey = targetLesson;
       }
 
       if (item) {

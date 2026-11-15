@@ -392,7 +392,7 @@
 
         // 4 Đồng Sử
         players: [
-            { id: 'p1', name: 'Bạn', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/loci_avatar.jpg', isUser: true, hopeStarUsed: false },
+            { id: 'p1', name: 'Bạn', school: 'Đồng Sử Loci', score: 0, avatar: 'assets/images/avatars/student_1.jpg', isUser: true, hopeStarUsed: false },
             { id: 'p2', name: 'Hoàng Huyền Trân', school: 'Lớp 12A1', score: 0, avatar: 'assets/images/avatars/student_2.jpg', isUser: false, hopeStarUsed: false },
             { id: 'p3', name: 'Trần Đức Toàn', school: 'Lớp 12A3', score: 0, avatar: 'assets/images/avatars/student_10.jpg', isUser: false, hopeStarUsed: false },
             { id: 'p4', name: 'Má Thị Dua', school: 'Lớp 12A2', score: 0, avatar: 'assets/images/avatars/student_4.jpg', isUser: false, hopeStarUsed: false }
@@ -618,17 +618,24 @@
         syncMyUser() {
             try {
                 let name = 'Bạn';
+                let avatar = 'assets/images/avatars/student_1.jpg';
                 if (window.LociAccountManager && typeof window.LociAccountManager.getCurrentUser === 'function') {
                     const u = window.LociAccountManager.getCurrentUser();
                     if (u && (u.displayName || u.username)) name = u.displayName || u.username;
+                    if (u && (u.avatarUrl || u.avatar || u.photoURL)) avatar = u.avatarUrl || u.avatar || u.photoURL;
                 } else {
                     const saved = localStorage.getItem('loci_user_profile');
                     if (saved) {
                         const parsed = JSON.parse(saved);
                         if (parsed.nickname || parsed.name) name = parsed.nickname || parsed.name;
+                        if (parsed.avatarUrl || parsed.avatar || parsed.photoURL) avatar = parsed.avatarUrl || parsed.avatar || parsed.photoURL;
                     }
                 }
+                const customAv = localStorage.getItem('loci_user_custom_avatar');
+                if (customAv) avatar = customAv;
+
                 this.players[0].name = name;
+                this.players[0].avatar = avatar;
             } catch (e) {}
         },
 
@@ -1155,9 +1162,9 @@
             }
             if (!opponents || opponents.length < 3) {
                 opponents = [
-                    { id: 'bot_1', name: 'Đồng Sử Hoàng Huyền Trân', school: 'Đồng Sử Loci', avatar: 'assets/images/loci_avatar.jpg', score: 0, isUser: false, speed: 2.2, accuracy: 0.8 },
-                    { id: 'bot_2', name: 'Đồng Sử Đặng Thùy Dương', school: 'Đồng Sử Loci', avatar: 'assets/images/loci_avatar.jpg', score: 0, isUser: false, speed: 2.5, accuracy: 0.75 },
-                    { id: 'bot_3', name: 'Đồng Sử Lý Văn Đoàn', school: 'Đồng Sử Loci', avatar: 'assets/images/loci_avatar.jpg', score: 0, isUser: false, speed: 2.8, accuracy: 0.7 }
+                    { id: 'bot_1', name: 'Đồng Sử Hoàng Huyền Trân', school: 'Đồng Sử Loci', avatar: 'assets/images/avatars/student_2.jpg', score: 0, isUser: false, speed: 2.2, accuracy: 0.8 },
+                    { id: 'bot_2', name: 'Đồng Sử Đặng Thùy Dương', school: 'Đồng Sử Loci', avatar: 'assets/images/avatars/student_6.jpg', score: 0, isUser: false, speed: 2.5, accuracy: 0.75 },
+                    { id: 'bot_3', name: 'Đồng Sử Lý Văn Đoàn', school: 'Đồng Sử Loci', avatar: 'assets/images/avatars/student_7.jpg', score: 0, isUser: false, speed: 2.8, accuracy: 0.7 }
                 ];
             }
 

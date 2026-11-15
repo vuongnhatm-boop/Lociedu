@@ -106,11 +106,11 @@
 
         // Danh sách đối thủ thông minh mô phỏng học sinh trường chuyên (khi không có người thật ghép cùng giây)
         OPPONENT_BOTS: [
-            { name: 'Nguyễn Hoàng Long', school: 'Đồng Sử K12', avatar: 'assets/images/pets/tiger_speed.png', accuracy: 0.82, speedMin: 4, speedMax: 12 },
-            { name: 'Trần Bảo Ngọc', school: 'Đồng Sử K12', avatar: 'assets/images/pets/phoenix_fire.png', accuracy: 0.85, speedMin: 3, speedMax: 10 },
-            { name: 'Đặng Tuấn Kiệt', school: 'Đồng Sử K12', avatar: 'assets/images/pets/kirin_aura.png', accuracy: 0.88, speedMin: 5, speedMax: 14 },
-            { name: 'Lê Thùy Dung', school: 'Đồng Sử K12', avatar: 'assets/images/pets/owl_scholar.png', accuracy: 0.80, speedMin: 4, speedMax: 11 },
-            { name: 'Phạm Minh Quân', school: 'Đồng Sử K12', avatar: 'assets/images/loci_avatar.jpg', accuracy: 0.84, speedMin: 3, speedMax: 9 }
+            { name: 'Nguyễn Hoàng Long', school: 'Đồng Sử K12', avatar: 'assets/images/avatars/student_8.jpg', accuracy: 0.82, speedMin: 4, speedMax: 12 },
+            { name: 'Trần Bảo Ngọc', school: 'Đồng Sử K12', avatar: 'assets/images/avatars/student_3.jpg', accuracy: 0.85, speedMin: 3, speedMax: 10 },
+            { name: 'Đặng Tuấn Kiệt', school: 'Đồng Sử K12', avatar: 'assets/images/avatars/student_11.jpg', accuracy: 0.88, speedMin: 5, speedMax: 14 },
+            { name: 'Lê Thùy Dung', school: 'Đồng Sử K12', avatar: 'assets/images/avatars/student_5.jpg', accuracy: 0.80, speedMin: 4, speedMax: 11 },
+            { name: 'Phạm Minh Quân', school: 'Đồng Sử K12', avatar: 'assets/images/avatars/student_9.jpg', accuracy: 0.84, speedMin: 3, speedMax: 9 }
         ],
 
         init() {
@@ -1611,13 +1611,13 @@
 
         getMyUser() {
             let name = 'Đồng Sử Loci';
-            let avatar = 'assets/images/loci_avatar.jpg';
+            let avatar = 'assets/images/avatars/student_1.jpg';
             try {
                 const u = window.LociAccountManager ? window.LociAccountManager.getUser() : null;
                 if (u && (u.displayName || u.username)) {
                     name = u.displayName || u.username;
                 }
-                const customAv = localStorage.getItem('loci_user_custom_avatar');
+                const customAv = localStorage.getItem('loci_user_custom_avatar') || (u && (u.avatarUrl || u.avatar || u.photoURL));
                 if (customAv) avatar = customAv;
             } catch (_) {}
             return { name, avatar };

@@ -15567,14 +15567,14 @@
             {
                 name: 'Không gian Bài 7 (Kháng chiến chống Pháp)',
                 note: '9 mốc Kháng chiến chống thực dân Pháp (1945 – 1954) · Chiến dịch Điện Biên Phủ',
-                file: 'backrooms_vr.glb',
+                file: 'big_square_commercial_building_opt.glb',
                 img: 'assets/images/bai7/tram5.jpg',
                 lesson: 'bai_7'
             },
             {
                 name: 'Không gian Bài 8 (Kháng chiến chống Mỹ)',
-                note: '10 mốc Kháng chiến chống Mỹ cứu nước (1954 – 1975) · Chiến dịch Hồ Chí Minh',
-                file: 'assets/models/bai8/big_room_opt.glb',
+                note: '9 mốc Kháng chiến chống Mỹ cứu nước (1954 – 1975) · Chiến dịch Hồ Chí Minh',
+                file: 'abandoned_city_street_opt.glb',
                 img: 'assets/images/bai8/b8_img15.jpg',
                 lesson: 'bai_8'
             }
@@ -21842,15 +21842,19 @@
                 ? window.LociAccountManager.getUser() 
                 : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
             const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
+            const currentPet = PET_COMPANIONS[currentPetId];
+            const currentActiveTier = currentPet ? (window.getPetTier(currentPet, userXp) || currentPet.tiers[0]) : null;
+            const isCurrentPetDone = currentActiveTier && currentActiveTier.level >= 7;
 
             grid.innerHTML = Object.values(PET_COMPANIONS).map(pet => {
                 const isActive = pet.id === currentPetId;
                 const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
+                const isLockedSelection = !isActive && !isCurrentPetDone;
                 return `
-                    <div class="pet-choice-card ${isActive ? 'active' : ''}" onclick="window.selectCompanionPet('${pet.id}')"
-                         style="background: #ffffff; border: 2px solid ${isActive ? '#6366f1' : '#e2e8f0'}; border-radius: 18px; padding: 14px 10px; text-align: center; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s; box-shadow: ${isActive ? '0 8px 24px rgba(99, 102, 241, 0.2)' : '0 2px 8px rgba(0,0,0,0.03)'};">
+                    <div class="pet-choice-card ${isActive ? 'active' : ''} ${isLockedSelection ? 'locked-pet-choice' : ''}" onclick="window.selectCompanionPet('${pet.id}')"
+                         style="background: #ffffff; border: 2px solid ${isActive ? '#6366f1' : (isLockedSelection ? '#e2e8f0' : '#38bdf8')}; border-radius: 18px; padding: 14px 10px; text-align: center; cursor: ${isLockedSelection ? 'not-allowed' : 'pointer'}; opacity: ${isLockedSelection ? '0.7' : '1'}; transition: transform 0.15s, box-shadow 0.15s; box-shadow: ${isActive ? '0 8px 24px rgba(99, 102, 241, 0.2)' : '0 2px 8px rgba(0,0,0,0.03)'}; position: relative;">
                         <div style="width: 95px; height: 95px; margin: 0 auto 10px; display: grid; place-items: center; position: relative;">
-                            <img src="${activeTier.img}" alt="${pet.name}" loading="lazy" style="width: 90px; height: 90px; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12)); border-radius: 12px;">
+                            <img src="${activeTier.img}" alt="${pet.name}" loading="lazy" style="width: 90px; height: 90px; object-fit: contain; filter: drop-shadow(0 6px 14px rgba(0,0,0,0.12)); border-radius: 12px; ${isLockedSelection ? 'filter: grayscale(40%);' : ''}">
                             <span style="position: absolute; bottom: 0; right: 0; background: #0f172a; color: #fff; font-size: 10px; font-weight: 800; padding: 2px 6px; border-radius: 6px;">Cấp ${activeTier.level}</span>
                         </div>
                         <span style="display: inline-block; font-size: 10px; font-weight: 800; color: ${pet.badgeColor}; background: ${pet.badgeBg}; border: 1px solid ${pet.badgeBorder}; padding: 2px 8px; border-radius: 99px; margin-bottom: 5px;">
@@ -21858,8 +21862,8 @@
                         </span>
                         <div style="font-size: 13.5px; font-weight: 800; color: #0f172a; margin-bottom: 3px;">${pet.name}</div>
                         <div style="font-size: 11px; color: #64748b; line-height: 1.35; margin-bottom: 8px;">${pet.perk}</div>
-                        <div style="font-size: 11.5px; font-weight: 800; color: ${isActive ? '#6366f1' : '#0284c7'};">
-                            ${isActive ? '✓ Đang đồng hành' : 'Chọn linh thú ➔'}
+                        <div style="font-size: 11.5px; font-weight: 800; color: ${isActive ? '#6366f1' : (isLockedSelection ? '#ef4444' : '#0284c7')};">
+                            ${isActive ? '✓ Đang đồng hành' : (isLockedSelection ? `🔒 Nuôi xong ${currentPet ? currentPet.name : ''} (Cấp 7) trước` : 'Chọn linh thú ➔')}
                         </div>
                     </div>
                 `;
@@ -21990,6 +21994,28 @@
         window.selectCompanionPet = function(petId, isSilent) {
             const pet = PET_COMPANIONS[petId] || PET_COMPANIONS['tiger'];
             if (!pet) return;
+
+            const currentPetId = localStorage.getItem('loci_selected_pet') || 'tiger';
+            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
+                ? window.LociAccountManager.getUser() 
+                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
+            const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
+            const currentPet = PET_COMPANIONS[currentPetId];
+            const currentActiveTier = currentPet ? (window.getPetTier(currentPet, userXp) || currentPet.tiers[0]) : null;
+            const isCurrentPetDone = currentActiveTier && currentActiveTier.level >= 7;
+
+            // QUY TẮC NUÔI THÚ: MỖI LẦN CHỈ ĐƯỢC NUÔI 1 CON, NUÔI XONG (CẤP 7) MỚI ĐƯỢC NUÔI TIẾP
+            if (!isSilent && pet.id !== currentPetId && !isCurrentPetDone) {
+                const curName = currentPet ? currentPet.name : 'linh thú hiện tại';
+                const curLvl = currentActiveTier ? currentActiveTier.level : 1;
+                const msg = `⚠️ Cơ chế nuôi thú: Bạn đang nuôi dưỡng ${curName} (Cấp ${curLvl}/7). Theo quy tắc rèn luyện Loci, mỗi lần bạn chỉ được nuôi 1 con! Hãy đồng hành hoàn thành Cấp 7 của ${curName} trước khi nhận nuôi linh thú tiếp theo nhé!`;
+                if (typeof showToast === 'function') {
+                    showToast(msg, 'warning', 4500);
+                } else {
+                    alert(msg);
+                }
+                return;
+            }
 
             localStorage.setItem('loci_selected_pet', pet.id);
             if (window.LociPet && window.LociPet.petData) {
