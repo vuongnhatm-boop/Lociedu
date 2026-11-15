@@ -2818,33 +2818,249 @@ function _decodeGeminiKey(s) {
         const META_KEY = 'loci360_spaces_meta_v2';
         
         // ==================== CẤU HÌNH MÔ HÌNH 3D CHO TỪNG MỐC LỊCH SỬ ====================
+                // ==================== CẤU HÌNH MÔ HÌNH SA BÀN 3D ĐA VẬT THỂ (DIORAMA NHIỀU MÔ HÌNH CHUẨN KHÔNG GIAN) ====================
         const STATION_3D_CONFIG = {
             'bai_6': {
-                'b6_m1_bao_lua_the_gioi': { title: 'Quả bom nguyên tử Little Boy', url: 'assets/models/tram1/little_boy_atomic_bomb.glb', scale: 0.35, offsetY: 0.0 },
-                'b6_m2_lan_na_nua': { title: 'Lán Nà Nưa lịch sử', url: 'assets/models/tram2/lan_na_nua_opt.glb', scale: 0.85, offsetY: -0.2 },
-                'b6_m3_dinh_tan_trao': { title: 'Hội trường Đình Tân Trào', url: 'assets/models/tram3/uy_ban.glb', scale: 0.75, offsetY: -0.2 },
-                'b6_m4_duong_thai_nguyen': { title: 'Đoàn quân khởi nghĩa', url: 'assets/models/tram4/nguoi_dan_khoi_nghia.glb', scale: 0.85, offsetY: -0.2 },
-                'b6_m5_nha_hat_lon': { title: 'Mít tinh Nhà hát Lớn Hà Nội', url: 'assets/models/tram5/mit_tinh_nha_hat_lon.glb', scale: 0.90, offsetY: -0.2 },
-                'b6_m6_ngo_mon_sai_gon': { title: 'Nhân dân Sài Gòn quật khởi', url: 'assets/models/bai7/tram2/nhan_dan_nambo_chien_dau.glb', scale: 0.85, offsetY: -0.2 },
-                'b6_m7_hoang_trieu_cao_chung': { title: 'Vua Bảo Đại thoái vị', url: 'assets/models/tram7/vua_bao_dai_thoai_vi.glb', scale: 0.85, offsetY: -0.2 },
-                'b6_m8_quang_truong_ba_dinh': { title: 'Bác Hồ đọc Tuyên ngôn Độc lập', url: 'assets/models/tram8/bac_ho_tuyen_ngon.glb', scale: 0.85, offsetY: -0.2 },
-                'b6_m9_phong_vang_son': { title: 'Đài Thắng Lợi & Tầm vóc lịch sử', url: 'assets/models/bai7/tram8/chien_thang_dien_bien_phu.glb', scale: 0.80, offsetY: -0.2 }
+                'b6_m1_bao_lua_the_gioi': {
+                    title: 'Trạm 1: Bão lửa Thế giới (Bom nguyên tử, Xe tăng T34 & Hồng quân LX)',
+                    url: 'assets/models/tram1/little_boy_atomic_bomb.glb',
+                    models: [
+                        { url: 'assets/models/tram1/little_boy_atomic_bomb.glb', title: 'Bom nguyên tử Little Boy', pos: [0.75, 0, 0.1], scale: 0.38, rotY: 0.2 },
+                        { url: 'assets/models/tram1/fat_man.glb', title: 'Bom nguyên tử Fat Man', pos: [1.35, 0, 0.35], scale: 0.34, rotY: -0.3 },
+                        { url: 'assets/models/tram1/t34_tank.glb', title: 'Xe tăng T-34 Hồng quân', pos: [-0.95, 0, -0.2], scale: 0.75, rotY: 0.4 },
+                        { url: 'assets/models/tram1/soviet_soldier.glb', title: 'Chiến sĩ Hồng quân Liên Xô', pos: [-0.35, 0, 0.55], scale: 0.85, rotY: 0 },
+                        { url: 'assets/models/tram1/sandbag_wall.glb', title: 'Bao cát công sự phòng tuyến', pos: [0, 0, -0.65], scale: 0.70, rotY: 0 }
+                    ]
+                },
+                'b6_m2_lan_na_nua': {
+                    title: 'Trạm 2: Lán Nà Nưa & Quân lệnh số 1 Kháng Nhật',
+                    url: 'assets/models/tram2/lan_na_nua_opt.glb',
+                    models: [
+                        { url: 'assets/models/tram2/lan_na_nua_opt.glb', title: 'Lán Nà Nưa lịch sử', pos: [-0.75, 0, -0.2], scale: 0.85, rotY: 0.3 },
+                        { url: 'assets/models/tram2/uy_ban_quan_lenh_1_opt.glb', title: 'Ủy ban Khởi nghĩa & Quân lệnh số 1', pos: [0.85, 0, 0.25], scale: 0.80, rotY: -0.3 },
+                        { url: 'assets/models/tram2/phong_trao_khang_nhat_opt.glb', title: 'Đoàn quân Kháng Nhật', pos: [0.1, 0, 0.7], scale: 0.80, rotY: 0 }
+                    ]
+                },
+                'b6_m3_dinh_tan_trao': {
+                    title: 'Trạm 3: Hội trường Đình Tân Trào & Đại biểu Quốc dân',
+                    url: 'assets/models/tram3/uy_ban.glb',
+                    models: [
+                        { url: 'assets/models/tram3/uy_ban.glb', title: 'Đình Tân Trào', pos: [-0.6, 0, 0], scale: 0.85, rotY: 0.25 },
+                        { url: 'assets/models/tram3/nguoi_dan.glb', title: 'Đại biểu Quốc dân nhân dân', pos: [0.75, 0, 0.25], scale: 0.85, rotY: -0.3 }
+                    ]
+                },
+                'b6_m4_duong_thai_nguyen': {
+                    title: 'Trạm 4: Cây Đa Tân Trào & Quân giải phóng',
+                    url: 'assets/models/tram4/cay_da.glb',
+                    models: [
+                        { url: 'assets/models/tram4/cay_da.glb', title: 'Cây đa Tân Trào', pos: [-0.85, 0, -0.2], scale: 0.85, rotY: 0 },
+                        { url: 'assets/models/tram4/nguoi_dan_khoi_nghia.glb', title: 'Quân giải phóng xuất quân', pos: [0.75, 0, 0.25], scale: 0.85, rotY: -0.3 },
+                        { url: 'assets/models/tram4/dung_day_khoi_nghia.glb', title: 'Quần chúng đứng lên', pos: [0.0, 0, 0.65], scale: 0.80, rotY: 0 }
+                    ]
+                },
+                'b6_m5_nha_hat_lon': {
+                    title: 'Trạm 5: Mít tinh Nhà hát Lớn Hà Nội & Toàn quốc',
+                    url: 'assets/models/tram5/mit_tinh_nha_hat_lon.glb',
+                    models: [
+                        { url: 'assets/models/tram5/mit_tinh_nha_hat_lon.glb', title: 'Mít tinh Nhà hát Lớn Hà Nội', pos: [-0.6, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/tram5/thang_loi_toan_quoc.glb', title: 'Khí thế thắng lợi toàn quốc', pos: [0.75, 0, 0.25], scale: 0.85, rotY: -0.3 }
+                    ]
+                },
+                'b6_m6_ngo_mon_sai_gon': {
+                    title: 'Trạm 6: Giành chính quyền Huế & Sài Gòn',
+                    url: 'assets/models/tram6/gianh_khoi_nghia_cuoi_cung.glb',
+                    models: [
+                        { url: 'assets/models/tram6/gianh_khoi_nghia_cuoi_cung.glb', title: 'Nhân dân Sài Gòn nổi dậy', pos: [-0.6, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/tram6/co_do_hue.glb', title: 'Cờ đỏ sao vàng Ngọ Môn Huế', pos: [0.7, 0, 0.25], scale: 0.85, rotY: -0.25 }
+                    ]
+                },
+                'b6_m7_hoang_trieu_cao_chung': {
+                    title: 'Trạm 7: Vua Bảo Đại thoái vị trao ấn kiếm',
+                    url: 'assets/models/tram7/vua_bao_dai_thoai_vi.glb',
+                    models: [
+                        { url: 'assets/models/tram7/vua_bao_dai_thoai_vi.glb', title: 'Vua Bảo Đại thoái vị trao ấn kiếm', pos: [0, 0, 0], scale: 0.95, rotY: 0 }
+                    ]
+                },
+                'b6_m8_quang_truong_ba_dinh': {
+                    title: 'Trạm 8: Bác Hồ đọc Tuyên ngôn Độc lập Ba Đình',
+                    url: 'assets/models/tram8/bac_ho_tuyen_ngon.glb',
+                    models: [
+                        { url: 'assets/models/tram8/bac_ho_tuyen_ngon.glb', title: 'Bác Hồ đọc Tuyên ngôn Độc lập', pos: [0, 0, 0], scale: 0.95, rotY: 0 }
+                    ]
+                },
+                'b6_m9_phong_vang_son': {
+                    title: 'Trạm 9: Tổng kết thắng lợi Cách mạng tháng Tám',
+                    url: 'assets/models/bai7/tram8/chien_thang_dien_bien_phu.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram8/chien_thang_dien_bien_phu.glb', title: 'Tượng đài chiến sĩ chiến thắng', pos: [-0.55, 0, 0], scale: 0.82, rotY: 0.2 },
+                        { url: 'assets/models/tram5/thang_loi_toan_quoc.glb', title: 'Cờ Tổ quốc & Tầm vóc lịch sử', pos: [0.65, 0, 0.25], scale: 0.82, rotY: -0.25 }
+                    ]
+                }
             },
             'bai_7': {
-                'b7_m1': { title: '3 ông Đồng minh & Tình thế ngàn cân treo sợi tóc', url: 'assets/models/bai7/tram1/3ooong.glb', scale: 0.85 },
-                'b7_m2': { title: 'Mít tinh Sài Gòn Pháp đánh', url: 'assets/models/bai7/tram2/mit_tinh_saigon_phap_danh.glb', scale: 0.85 },
-                'b7_m3': { title: 'Bác Hồ ký Tạm ước & Hiệp định', url: 'assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb', scale: 0.85 },
-                'b7_m4': { title: 'Đồng Sử chiến đấu & Vượt sông Hồng', url: 'assets/models/bai7/tram4/chien_si_chien_dau.glb', scale: 0.85 },
-                'b7_m5': { title: 'Tập luyện chiến dịch Việt Bắc', url: 'assets/models/bai7/tram5/tap_luyen_chien_dich_vbtd.glb', scale: 0.85 },
-                'b7_m6': { title: 'Bác Hồ chỉ đạo chiến dịch Biên giới', url: 'assets/models/bai7/tram6/bac_ho_chi_dao_bien_gioi.glb', scale: 0.85 },
-                'b7_m7': { title: 'Xe đạp thồ tiếp tế Điện Biên', url: 'assets/models/bai7/tram7/xe_dap_tho.glb', scale: 0.85 },
-                'b7_m8': { title: 'Tướng Đờ Cát & Đại tướng Võ Nguyên Giáp', url: 'assets/models/bai7/tram8/tuong_do_cat.glb', scale: 0.85 },
-                'b7_m9': { title: 'Bắt sống Tướng Đờ Cát & Kéo pháo', url: 'assets/models/bai7/tram9/do_cat_bi_bat.glb', scale: 0.85 }
+                'b7_m1': {
+                    title: 'Trạm 1: Bối cảnh sau 1945 & Tình thế ngàn cân treo sợi tóc',
+                    url: 'assets/models/bai7/tram1/3ooong.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram1/3ooong.glb', title: 'Quân Đồng minh vào miền Bắc & Nam', pos: [-0.95, 0, -0.1], scale: 0.85, rotY: 0.25 },
+                        { url: 'assets/models/bai7/tram1/nhan_dan_lam_chu.glb', title: 'Nhân dân đã giành quyền làm chủ', pos: [0.05, 0, 0.35], scale: 0.90, rotY: 0 },
+                        { url: 'assets/models/bai7/tram1/kinh_te_lac_hau.glb', title: 'Kinh tế nghèo nàn, kiệt quệ sau chiến tranh', pos: [0.95, 0, -0.1], scale: 0.85, rotY: -0.25 }
+                    ]
+                },
+                'b7_m2': {
+                    title: 'Trạm 2: Kháng chiến chống Pháp ở Nam Bộ (23/9/1945)',
+                    url: 'assets/models/bai7/tram2/mit_tinh_saigon_phap_danh.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram2/mit_tinh_saigon_phap_danh.glb', title: 'Mít tinh Sài Gòn Pháp tấn công', pos: [-0.85, 0, -0.1], scale: 0.85, rotY: 0.3 },
+                        { url: 'assets/models/bai7/tram2/nhan_dan_nambo_chien_dau.glb', title: 'Nhân dân Nam Bộ kiên cường kháng chiến', pos: [0.1, 0, 0.35], scale: 0.85, rotY: 0 },
+                        { url: 'assets/models/bai7/tram2/chi_vien_cho_mien_nam.glb', title: 'Đoàn quân chi viện cho miền Nam', pos: [0.95, 0, -0.1], scale: 0.85, rotY: -0.3 }
+                    ]
+                },
+                'b7_m3': {
+                    title: 'Trạm 3: Đấu tranh ngoại giao, Hiệp định Sơ bộ & Lời kêu gọi',
+                    url: 'assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram3/bac_ho_ki_cam_ket.glb', title: 'Bác Hồ ký Tạm ước & Hiệp định', pos: [-0.65, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai7/tram3/bac_ho_keu_goi_toan_quoc_khang_chien.glb', title: 'Bác Hồ đọc Lời kêu gọi Toàn quốc kháng chiến', pos: [0.65, 0, 0.2], scale: 0.85, rotY: -0.2 }
+                    ]
+                },
+                'b7_m4': {
+                    title: 'Trạm 4: Cuộc chiến đấu ở các đô thị & Đường lối kháng chiến',
+                    url: 'assets/models/bai7/tram4/chien_si_chien_dau.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram4/chien_si_chien_dau.glb', title: 'Chiến sĩ quyết tử bảo vệ Thủ đô', pos: [-0.85, 0, -0.1], scale: 0.85, rotY: 0.3 },
+                        { url: 'assets/models/bai7/tram4/vuot_song_hong.glb', title: 'Trung đoàn Thủ đô vượt sông Hồng an toàn', pos: [0.1, 0, 0.35], scale: 0.85, rotY: 0 },
+                        { url: 'assets/models/bai7/tram4/giam_chan_quan_phap.glb', title: 'Giam chân quân Pháp trong thành phố', pos: [0.95, 0, -0.1], scale: 0.85, rotY: -0.3 }
+                    ]
+                },
+                'b7_m5': {
+                    title: 'Trạm 5: Chiến dịch Việt Bắc Thu - Đông 1947',
+                    url: 'assets/models/bai7/tram5/tap_luyen_chien_dich_vbtd.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram5/tap_luyen_chien_dich_vbtd.glb', title: 'Tập luyện & phục kích chiến dịch Việt Bắc', pos: [-0.6, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai7/tram5/tap_luyen_viet_bac_thu_dong.glb', title: 'Bảo vệ an toàn cơ quan đầu não kháng chiến', pos: [0.65, 0, 0.2], scale: 0.85, rotY: -0.2 }
+                    ]
+                },
+                'b7_m6': {
+                    title: 'Trạm 6: Chiến dịch Biên giới Thu - Đông 1950',
+                    url: 'assets/models/bai7/tram6/bac_ho_chi_dao_bien_gioi.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram6/bac_ho_chi_dao_bien_gioi.glb', title: 'Bác Hồ trực tiếp chỉ huy chiến dịch Biên giới', pos: [0, 0, 0], scale: 0.95, rotY: 0 }
+                    ]
+                },
+                'b7_m7': {
+                    title: 'Trạm 7: Hậu phương kháng chiến & Xe đạp thồ Điện Biên',
+                    url: 'assets/models/bai7/tram7/xe_dap_tho.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram7/xe_dap_tho.glb', title: 'Đoàn xe đạp thồ tiếp tế Điện Biên', pos: [-0.6, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai7/tram7/dai_hoi_2_chiem_hoa.glb', title: 'Đại hội toàn quốc lần thứ II (1951)', pos: [0.65, 0, 0.2], scale: 0.85, rotY: -0.2 }
+                    ]
+                },
+                'b7_m8': {
+                    title: 'Trạm 8: Kế hoạch Nava & Chiến dịch Điện Biên Phủ 1954',
+                    url: 'assets/models/bai7/tram8/tuong_do_cat.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram8/tuong_do_cat.glb', title: 'Tướng Đờ Cát trong hầm chỉ huy', pos: [-0.85, 0, -0.1], scale: 0.85, rotY: 0.3 },
+                        { url: 'assets/models/bai7/tram8/dai_tuong_vo_nguyen_giap_chi_huy.glb', title: 'Đại tướng Võ Nguyên Giáp chỉ huy tác chiến', pos: [0.1, 0, 0.35], scale: 0.85, rotY: 0 },
+                        { url: 'assets/models/bai7/tram8/chien_thang_dien_bien_phu.glb', title: 'Cờ Quyết chiến Quyết thắng trên nóc hầm', pos: [0.95, 0, -0.1], scale: 0.85, rotY: -0.3 }
+                    ]
+                },
+                'b7_m9': {
+                    title: 'Trạm 9: Thắng lợi Điện Biên Phủ & Hiệp định Giơ-ne-vơ 1954',
+                    url: 'assets/models/bai7/tram9/do_cat_bi_bat.glb',
+                    models: [
+                        { url: 'assets/models/bai7/tram9/do_cat_bi_bat.glb', title: 'Bắt sống Tướng Đờ Cát & Toàn bộ bộ tham mưu', pos: [-0.85, 0, -0.1], scale: 0.85, rotY: 0.3 },
+                        { url: 'assets/models/bai7/tram9/keo_phao_dien_bien_phu.glb', title: 'Kéo pháo vào trận địa Điện Biên Phủ', pos: [0.1, 0, 0.35], scale: 0.85, rotY: 0 },
+                        { url: 'assets/models/bai7/tram9/gie_ne_ve.glb', title: 'Hội nghị và Hiệp định Giơ-ne-vơ 1954', pos: [0.95, 0, -0.1], scale: 0.85, rotY: -0.3 }
+                    ]
+                }
+            },
+            'bai_8': {
+                'b8_m1_boi_canh_hai_mien': {
+                    title: 'Trạm 1: Bối cảnh sau 1954 & Đất nước tạm thời chia cắt hai miền',
+                    url: 'assets/models/bai8/tram1/my_bat_tay.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram1/my_bat_tay.glb', title: 'Mỹ bắt tay lập chính quyền Ngô Đình Diệm', pos: [-0.95, 0, 0.2], scale: 0.85, rotY: 0.3 },
+                        { url: 'assets/models/bai8/tram1/xay_dung_xa_hoi_chu_nghia.glb', title: 'Miền Bắc khôi phục kinh tế & xây dựng CNXH', pos: [0.4, 0, 0.2], scale: 0.85, rotY: -0.2 },
+                        { url: 'assets/models/bai8/tram1/mien_nam_chong_my.glb', title: 'Miền Nam kiên cường chống Mỹ - Diệm', pos: [1.05, 0, 0.2], scale: 0.85, rotY: -0.4 },
+                        { url: 'assets/models/bai8/tram1/chien_tranh_lanh_2_tay.glb', title: 'Cục diện Chiến tranh Lạnh', pos: [0.4, 0, -0.55], scale: 0.85, rotY: 0 }
+                    ]
+                },
+                'b8_m2_dong_khoi_1959_1960': {
+                    title: 'Trạm 2: Nghị quyết 15 của Đảng & Phong trào Đồng khởi (1959 - 1960)',
+                    url: 'assets/models/bai8/tram2/doi_quan_toc_dai_ben_tre.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram2/doi_quan_toc_dai_ben_tre.glb', title: 'Đội quân tóc dài Bến Tre Đồng khởi', pos: [-0.75, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai8/tram2/mat_tran_dan_toc_giai_phong.glb', title: 'Mặt trận Dân tộc Giải phóng miền Nam', pos: [0.75, 0, 0.2], scale: 0.85, rotY: -0.3 },
+                        { url: 'assets/models/bai8/tram2/dai_hoi_dang_toan_quoc.glb', title: 'Đại hội toàn quốc lần thứ III của Đảng', pos: [0, 0, -0.45], scale: 0.85, rotY: 0 }
+                    ]
+                },
+                'b8_m3_chien_tranh_dac_biet': {
+                    title: 'Trạm 3: Đánh bại chiến lược Chiến tranh đặc biệt của Mỹ (1961 - 1965)',
+                    url: 'assets/models/bai8/tram3/chien_thang_ap_bac.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram3/chien_thang_ap_bac.glb', title: 'Chiến thắng Ấp Bắc bẻ gãy chiến thuật Mỹ', pos: [-0.75, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai8/tram3/luc_luong_quan_giai_phong.glb', title: 'Lực lượng vũ trang Quân Giải phóng', pos: [0.75, 0, 0.2], scale: 0.85, rotY: -0.3 },
+                        { url: 'assets/models/bai8/tram3/my_dung_truc_thang_van.glb', title: 'Trực thăng vận & Thiết xa vận Mỹ thất bại', pos: [0, 0, -0.45], scale: 0.85, rotY: 0 }
+                    ]
+                },
+                'b8_m4_chien_tranh_cuc_bo': {
+                    title: 'Trạm 4: Đánh bại chiến lược Chiến tranh cục bộ & Chiến thắng Vạn Tường',
+                    url: 'assets/models/bai8/tram4/chien_thang_van_tuong.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram4/chien_thang_van_tuong.glb', title: 'Chiến thắng Vạn Tường mở đầu đánh Mỹ', pos: [-0.55, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai8/tram4/xe_dap_tho.glb', title: 'Đường Hồ Chí Minh trên bộ tiếp tế', pos: [0.65, 0, 0.2], scale: 0.85, rotY: -0.2 }
+                    ]
+                },
+                'b8_m5_mau_than_1968': {
+                    title: 'Trạm 5: Cuộc Tổng tiến công và nổi dậy Tết Mậu Thân 1968',
+                    url: 'assets/models/bai8/tram5/tong_tien_cong_mau_than.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram5/tong_tien_cong_mau_than.glb', title: 'Tổng tiến công Tết Mậu Thân 1968', pos: [-0.75, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai8/tram5/danh_chiem_dai_su_my.glb', title: 'Biệt động đánh chiếm Tòa Đại sứ Mỹ', pos: [0.75, 0, 0.2], scale: 0.85, rotY: -0.3 },
+                        { url: 'assets/models/bai8/tram5/dam_phan_pari_1968.glb', title: 'Buộc Mỹ chấp nhận đàm phán tại Paris', pos: [0, 0, -0.45], scale: 0.85, rotY: 0 }
+                    ]
+                },
+                'b8_m6_viet_nam_hoa_chien_tranh': {
+                    title: 'Trạm 6: Đánh bại Việt Nam hoá chiến tranh & Chiến đấu 1969 - 1972',
+                    url: 'assets/models/bai8/tram6/lao_vn_campuchia.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram6/lao_vn_campuchia.glb', title: 'Liên minh đoàn kết ba nước Đông Dương', pos: [-0.55, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai8/tram6/mat_tran_quang_tri.glb', title: 'Chiến đấu anh dũng mặt trận Quảng Trị', pos: [0.65, 0, 0.2], scale: 0.85, rotY: -0.2 }
+                    ]
+                },
+                'b8_m7_dien_bien_phu_tren_khong': {
+                    title: 'Trạm 7: Trận Điện Biên Phủ trên không 1972 & Hiệp định Paris 1973',
+                    url: 'assets/models/bai8/tram7/ban_pha_phao_dai_bay_b52.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram7/ban_pha_phao_dai_bay_b52.glb', title: 'Bắn rơi pháo đài bay B-52 trên bầu trời Hà Nội', pos: [-0.75, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai8/tram7/quan_my_rut_quan_1973.glb', title: 'Quân Mỹ cuốn cờ rút khỏi Việt Nam', pos: [0.75, 0, 0.2], scale: 0.85, rotY: -0.3 },
+                        { url: 'assets/models/bai8/tram7/hiep_dinh.glb', title: 'Ký kết Hiệp định Paris về Việt Nam 1973', pos: [0, 0, -0.45], scale: 0.85, rotY: 0 }
+                    ]
+                },
+                'b8_m8_giai_phong_mien_nam': {
+                    title: 'Trạm 8: Tạo thế và lực, Hội nghị 21 & Chiến thắng Phước Long (1975)',
+                    url: 'assets/models/bai8/tram8/chien_thang_phuoc_long.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram8/chien_thang_phuoc_long.glb', title: 'Chiến thắng Đường 14 - Phước Long tạo thế đòn bẩy', pos: [-0.65, 0, 0], scale: 0.85, rotY: 0.2 },
+                        { url: 'assets/models/bai8/tram8/hai_co_van_my.glb', title: 'Mỹ không có khả năng can thiệp trở lại', pos: [0.65, 0, 0.2], scale: 0.85, rotY: -0.2 }
+                    ]
+                },
+                'b8_m9_dai_thang_mua_xuan': {
+                    title: 'Trạm 9: Cuộc Tổng tiến công & Đại thắng mùa Xuân 1975 toàn thắng',
+                    url: 'assets/models/bai8/tram9/xe_tang_giai_phong_390.glb',
+                    models: [
+                        { url: 'assets/models/bai8/tram9/xe_tang_giai_phong_390.glb', title: 'Xe tăng 390 húc đổ cổng Dinh Độc Lập', pos: [-0.95, 0, 0.2], scale: 0.85, rotY: 0.3 },
+                        { url: 'assets/models/bai8/tram9/cong_dinh_doc_lap.glb', title: 'Cổng Dinh Độc Lập trưa ngày 30/4/1975', pos: [0.35, 0, -0.35], scale: 0.90, rotY: 0 },
+                        { url: 'assets/models/bai8/tram9/chien_dich_hue_da_nang.glb', title: 'Chiến dịch giải phóng Huế - Đà Nẵng', pos: [0.95, 0, 0.3], scale: 0.85, rotY: -0.3 }
+                    ]
+                }
             }
         };
 
         function getStation3DConfig(lessonKey, a, i) {
             const lessonCfg = STATION_3D_CONFIG[lessonKey] || STATION_3D_CONFIG['bai_6'];
+            if (!lessonCfg) return null;
             if (a && a.id && lessonCfg[a.id]) return lessonCfg[a.id];
             const order = (a && a.order) || (i + 1);
             const vals = Object.values(lessonCfg);
@@ -2961,40 +3177,58 @@ function _decodeGeminiKey(s) {
                 anchor: a
             };
 
-            // 2. Tải mô hình 3D thực tế
+            // 2. Tải cụm mô hình sa bàn 3D hoàn chỉnh (Diorama Đa vật thể như không gian 3D chuẩn)
             const cfg = getStation3DConfig(space.lesson, a, i);
-            if (cfg && cfg.url && gltfLoader) {
-                gltfLoader.load(cfg.url, gltf => {
-                    const model = gltf.scene;
-                    const bbox = new THREE.Box3().setFromObject(model);
-                    const size = bbox.getSize(new THREE.Vector3());
-                    const center = bbox.getCenter(new THREE.Vector3());
-                    const maxDim = Math.max(size.x, size.y, size.z) || 1;
-                    const targetScale = (cfg.scale || 1.1) * (4.8 / maxDim); // Phóng to 3.5 lần
+            if (cfg && gltfLoader) {
+                const modelList = (Array.isArray(cfg.models) && cfg.models.length > 0)
+                    ? cfg.models
+                    : (cfg.url ? [{ url: cfg.url, pos: [0, cfg.offsetY || 0, 0], scale: cfg.scale || 1.0, rotY: cfg.rotY || 0 }] : []);
 
-                    model.scale.setScalar(targetScale);
-                    model.position.x = -center.x * targetScale;
-                    model.position.y = -bbox.min.y * targetScale + 0.06 + (cfg.offsetY || 0);
-                    model.position.z = -center.z * targetScale;
+                modelList.forEach((sub, subIdx) => {
+                    if (!sub.url) return;
+                    gltfLoader.load(sub.url, gltf => {
+                        const model = gltf.scene;
+                        const bbox = new THREE.Box3().setFromObject(model);
+                        const size = bbox.getSize(new THREE.Vector3());
+                        const center = bbox.getCenter(new THREE.Vector3());
+                        const maxDim = Math.max(size.x, size.y, size.z) || 1;
+                        
+                        // Tỉ lệ vàng để các mô hình trong cụm sa bàn hiển thị vừa vặn, không che khuất nhau
+                        const baseScaleMultiplier = modelList.length > 1 ? 3.4 : 4.6;
+                        const targetScale = (sub.scale || 1.0) * (baseScaleMultiplier / maxDim);
 
-                    if (cfg.rotY) model.rotation.y = cfg.rotY;
+                        model.scale.setScalar(targetScale);
+                        
+                        const offX = (sub.pos && typeof sub.pos[0] === 'number') ? sub.pos[0] : 0;
+                        const offY = (sub.pos && typeof sub.pos[1] === 'number') ? sub.pos[1] : 0;
+                        const offZ = (sub.pos && typeof sub.pos[2] === 'number') ? sub.pos[2] : 0;
 
-                    model.traverse(child => {
-                        if (child.isMesh) {
-                            child.userData = { anchorId: a.id, anchor: a };
-                            if (child.material && child.material.map) {
-                                child.material.map.colorSpace = THREE.SRGBColorSpace;
+                        model.position.x = -center.x * targetScale + offX;
+                        model.position.y = -bbox.min.y * targetScale + 0.08 + offY;
+                        model.position.z = -center.z * targetScale + offZ;
+
+                        if (sub.rotY) model.rotation.y = sub.rotY;
+
+                        model.traverse(child => {
+                            if (child.isMesh) {
+                                child.userData = { anchorId: a.id, anchor: a };
+                                if (child.material && child.material.map) {
+                                    child.material.map.colorSpace = THREE.SRGBColorSpace;
+                                }
                             }
-                        }
-                    });
+                        });
 
-                    placeholder.visible = false;
-                    stationGroup.add(model);
-                    if (marker3DObjects[a.id]) {
-                        marker3DObjects[a.id].model = model;
-                    }
-                }, undefined, err => {
-                    console.warn('[360] Lỗi nạp mô hình 3D:', a.id, cfg.url, err);
+                        placeholder.visible = false;
+                        stationGroup.add(model);
+
+                        if (marker3DObjects[a.id]) {
+                            if (!marker3DObjects[a.id].models) marker3DObjects[a.id].models = [];
+                            marker3DObjects[a.id].models.push(model);
+                            marker3DObjects[a.id].model = model;
+                        }
+                    }, undefined, err => {
+                        console.warn('[360] Lỗi nạp mô hình sa bàn 3D:', a.id, sub.url, err);
+                    });
                 });
             }
         }
