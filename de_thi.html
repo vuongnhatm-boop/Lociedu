@@ -225,7 +225,7 @@
             padding: 28px 0 80px;
         }
 
-        .screen { display: none; animation: rise .45s var(--ease); }
+        .screen { display: none; animation: rise .35s var(--ease); transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform, opacity; }
         .screen.on { display: block; }
 
         @keyframes rise {

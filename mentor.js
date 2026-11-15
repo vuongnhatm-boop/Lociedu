@@ -652,7 +652,7 @@ function _decodeGeminiKey(s) {
     if (userPos.right && !userPos.left) delete pos.left;
     Object.assign(root.style, pos);
     if (userPos.right && !userPos.left) root.classList.add('lm-right');
-    root.innerHTML = `<button id="lm-avatar" title="Gia sư AI Loci — Bấm để trò chuyện" aria-label="Gia sư AI Loci">${AVATAR_SVG}<span class="lm-dot"></span></button><div id="lm-bubble" role="status" aria-live="polite"></div>`;
+    root.innerHTML = `<button id="lm-avatar" title="Gia sư AI Loci — Bấm để trò chuyện" aria-label="Gia sư AI Loci"><img src="assets/images/loci_avatar.jpg" alt="Gia Sư AI Robot" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;" onerror="this.onerror=null;this.src='../assets/images/loci_avatar.jpg';"><span class="lm-dot"></span></button><div id="lm-bubble" role="status" aria-live="polite"></div>`;
     document.body.appendChild(root);
     bubble = root.querySelector('#lm-bubble');
 

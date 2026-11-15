@@ -1,7 +1,7 @@
 /**
  * ============================================================================
  * LOCI EDU - UNIFIED ACCOUNT & PROGRESS MANAGER (BACKEND CORE)
- * Quản lý đồng bộ tập trung: Tài khoản, Thẻ Căn Cước Đồng Sử, Tiến độ học, XP,
+ * Quản lý đồng bộ tập trung: Tài khoản, Căn cước học sinh, Tiến độ học, XP,
  * Cấp bậc Loci, Thống kê làm bài và Trạng thái xác thực.
  * Hoạt động mượt mà cả Offline (Local) và Real-time Cloud (Firestore).
  * ============================================================================
@@ -21,28 +21,6 @@
   };
 
   const DEFAULT_SEED_ACCOUNTS = {
-    "quantri": {
-      uid: "loci_superadmin_quantri",
-      username: "quantri",
-      displayName: "Quản Trị Viên Tối Cao",
-      email: "quantri@loci.edu.vn",
-      password: (typeof global.btoa === 'function' ? global.btoa('quantri123') : 'quantri123'),
-      photoURL: "assets/images/loci_avatar.jpg",
-      avatar: "assets/images/loci_avatar.jpg",
-      school: "Hệ Thống Loci Edu",
-      role: "superadmin",
-      isAdmin: true,
-      isSuperAdmin: true,
-      canBypassLocks: true,
-      xp: 999999,
-      level: 7,
-      streak: 999,
-      honorRole: "Tổng Quản Trị Hệ Thống Toàn Quyền",
-      petName: "Thanh Long Thần Uy",
-      petTier: 7,
-      lociCups: 999,
-      registeredAt: "2026-01-01T00:00:00.000Z"
-    },
     "admin": {
       uid: "loci_admin_bgk",
       username: "admin",
@@ -160,7 +138,7 @@
       xp: 3120,
       level: 4,
       streak: 14,
-      honorRole: "Đồng Sử Tích cực · 3,120 pts",
+      honorRole: "Học sinh Tích cực · 3,120 pts",
       petName: "Kỳ Lân Trí Tuệ",
       petTier: 2,
       registeredAt: "2026-08-28T10:10:00.000Z"
@@ -194,7 +172,7 @@
       xp: 2850,
       level: 3,
       streak: 10,
-      honorRole: "Đồng Sử Tiên tiến · 2,850 pts",
+      honorRole: "Học sinh Tiên tiến · 2,850 pts",
       petName: "Cửu Vĩ Linh Hồ",
       petTier: 2,
       registeredAt: "2026-09-22T13:20:00.000Z"
@@ -228,7 +206,7 @@
       xp: 2540,
       level: 3,
       streak: 7,
-      honorRole: "Đồng Sử Triển vọng · 2,540 pts",
+      honorRole: "Học sinh Triển vọng · 2,540 pts",
       petName: "Kỳ Lân Trí Tuệ",
       petTier: 1,
       registeredAt: "2026-10-18T18:00:00.000Z"
@@ -409,7 +387,7 @@
       const uname = src.username || (src.email ? src.email.split('@')[0] : 'hocsinh');
       const cleanUname = String(uname).replace(/[^a-zA-Z0-9_-]/g, '').toLowerCase() || 'hocsinh';
       const isAdminUser = cleanUname === 'admin' || src.role === 'admin' || !!src.isAdmin;
-      const dname = src.displayName || (isAdminUser ? 'Ban Giám Khảo Loci' : uname) || 'Đồng Sử Loci';
+      const dname = src.displayName || (isAdminUser ? 'Ban Giám Khảo Loci' : uname) || 'Học sinh Loci';
       const uid = src.uid || ('loci_' + cleanUname);
       const email = src.email || (cleanUname + '@loci.edu.vn');
       const xp = isAdminUser ? 99999 : parseInt(src.xp || (src.stats && src.stats.xp) || 50, 10);
@@ -464,20 +442,25 @@
         setCookie('loci_user_uid', profile.uid, 365);
         setCookie('loci_user_display', profile.displayName, 365);
 
-        // Also register into accounts list (bảo lưu mật khẩu và quy tắc đổi tên)
+        // Also register into accounts list (BẢO LƯU 100% TIẾN ĐỘ, XP, CẤP ĐỘ, STATS VÀ MẬT KHẨU)
         const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
         const prevAcc = accounts[profile.username] || {};
         accounts[profile.username] = {
           ...prevAcc,
-          uid: profile.uid,
-          username: profile.username,
-          displayName: profile.displayName,
-          email: profile.email,
+          ...profile,
           hasCustomNickname: profile.hasCustomNickname !== undefined ? profile.hasCustomNickname : (prevAcc.hasCustomNickname !== undefined ? prevAcc.hasCustomNickname : true),
           lastNicknameChangeDate: profile.lastNicknameChangeDate || prevAcc.lastNicknameChangeDate || null,
           updatedAt: profile.updatedAt
         };
         localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+
+        // Lưu bản sao lưu tiến độ học tập và thẻ SM-2 riêng biệt theo username để không bao giờ bị mất
+        try {
+          const currentProg = localStorage.getItem('loci_study_progression');
+          if (currentProg) localStorage.setItem('loci_prog_' + profile.username, currentProg);
+          const currentSm2 = localStorage.getItem('loci_sm2_progress');
+          if (currentSm2) localStorage.setItem('loci_sm2_' + profile.username, currentSm2);
+        } catch (_) {}
       } catch (err) {
         console.warn('[LociAccountManager] Lỗi lưu LocalStorage:', err);
       }
@@ -546,6 +529,14 @@
         level: 1,
         tierName: 'Tập sự Loci'
       });
+
+      // Khôi phục tiến độ học tập và thẻ SM-2 riêng của tài khoản này
+      try {
+        const savedProg = localStorage.getItem('loci_prog_' + cleanName);
+        if (savedProg) localStorage.setItem('loci_study_progression', savedProg);
+        const savedSm2 = localStorage.getItem('loci_sm2_' + cleanName);
+        if (savedSm2) localStorage.setItem('loci_sm2_progress', savedSm2);
+      } catch (_) {}
 
       this._currentUser = profile;
       this._persistAll(profile);

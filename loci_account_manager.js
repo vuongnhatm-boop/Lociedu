@@ -442,20 +442,25 @@
         setCookie('loci_user_uid', profile.uid, 365);
         setCookie('loci_user_display', profile.displayName, 365);
 
-        // Also register into accounts list (bảo lưu mật khẩu và quy tắc đổi tên)
+        // Also register into accounts list (BẢO LƯU 100% TIẾN ĐỘ, XP, CẤP ĐỘ, STATS VÀ MẬT KHẨU)
         const accounts = JSON.parse(localStorage.getItem(STORAGE_KEYS.ACCOUNTS) || '{}');
         const prevAcc = accounts[profile.username] || {};
         accounts[profile.username] = {
           ...prevAcc,
-          uid: profile.uid,
-          username: profile.username,
-          displayName: profile.displayName,
-          email: profile.email,
+          ...profile,
           hasCustomNickname: profile.hasCustomNickname !== undefined ? profile.hasCustomNickname : (prevAcc.hasCustomNickname !== undefined ? prevAcc.hasCustomNickname : true),
           lastNicknameChangeDate: profile.lastNicknameChangeDate || prevAcc.lastNicknameChangeDate || null,
           updatedAt: profile.updatedAt
         };
         localStorage.setItem(STORAGE_KEYS.ACCOUNTS, JSON.stringify(accounts));
+
+        // Lưu bản sao lưu tiến độ học tập và thẻ SM-2 riêng biệt theo username để không bao giờ bị mất
+        try {
+          const currentProg = localStorage.getItem('loci_study_progression');
+          if (currentProg) localStorage.setItem('loci_prog_' + profile.username, currentProg);
+          const currentSm2 = localStorage.getItem('loci_sm2_progress');
+          if (currentSm2) localStorage.setItem('loci_sm2_' + profile.username, currentSm2);
+        } catch (_) {}
       } catch (err) {
         console.warn('[LociAccountManager] Lỗi lưu LocalStorage:', err);
       }
@@ -524,6 +529,14 @@
         level: 1,
         tierName: 'Tập sự Loci'
       });
+
+      // Khôi phục tiến độ học tập và thẻ SM-2 riêng của tài khoản này
+      try {
+        const savedProg = localStorage.getItem('loci_prog_' + cleanName);
+        if (savedProg) localStorage.setItem('loci_study_progression', savedProg);
+        const savedSm2 = localStorage.getItem('loci_sm2_' + cleanName);
+        if (savedSm2) localStorage.setItem('loci_sm2_progress', savedSm2);
+      } catch (_) {}
 
       this._currentUser = profile;
       this._persistAll(profile);

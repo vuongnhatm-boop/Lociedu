@@ -22249,10 +22249,6 @@
                 try { localStorage.setItem('loci_companion_pet_data_v1', JSON.stringify(window.LociPet.petData)); } catch (_) { }
             }
 
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function')
-                ? window.LociAccountManager.getUser()
-                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
 
             // Update DOM

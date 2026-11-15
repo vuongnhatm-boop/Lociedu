@@ -5900,15 +5900,8 @@
       customModelUrl = 'trien_lam_nau.glb';
     }
 
-    // Kiểm tra nếu là không gian Triển lãm Nâu (chỉ áp dụng cho Bài 6)
-    const isBrownGallery = (customModelUrl && (
-      customModelUrl.toLowerCase().includes('triển lãm nâu') ||
-      customModelUrl.toLowerCase().includes('trien lam nau') ||
-      customModelUrl.toLowerCase().includes('triển lãm') ||
-      customModelUrl.toLowerCase().includes('trien lam') ||
-      customModelUrl.toLowerCase().includes('brown')
-    )) || galleryParam.includes('brown') || galleryParam.includes('nâu') || galleryParam.includes('triển lãm')
-      || LESSON_PARAM === 'bai_6' || (!LESSON_PARAM && customModelUrl === 'trien_lam_nau.glb');
+    // Kiểm tra nếu là không gian Loci 3D tiêu chuẩn (Bài 6, Bài 7, Bài 8 hoặc Triển lãm Nâu)
+    const isBrownGallery = true; // Toàn bộ không gian 3D Bài 6, 7, 8 đều dùng hệ thống 3D Loci sa bàn + Dual Tabs
 
     // Chế độ bài học: ?lesson=bai_6 ... -> nạp sẵn các mốc chuẩn (khóa nội dung, chỉ cho kéo thả vị trí)
     const LESSON_KEY = LESSON_PARAM;
@@ -13178,6 +13171,10 @@
             camera.position.set(-3.7, 1.65, -1.0);
             camera.lookAt(-6.0, 1.0, -2.0);
             if (orbitControls) orbitControls.target.set(-6.0, 1.0, -2.0);
+          } else if (EFFECTIVE_LESSON_KEY === 'bai_8') {
+            camera.position.set(-4.2, 1.65, -1.8);
+            camera.lookAt(-6.0, 1.0, -3.2);
+            if (orbitControls) orbitControls.target.set(-6.0, 1.0, -3.2);
           } else {
             camera.position.set(0, 1.65, 0.5);
             camera.lookAt(-6.6, 1.4, -1.6);
@@ -13216,9 +13213,7 @@
 
             child.castShadow = false;
             child.receiveShadow = false;
-            child.frustumCulled = true;
-            child.matrixAutoUpdate = false;
-            child.updateMatrix();
+            child.frustumCulled = false; // Luôn hiển thị không gian, không bị culling void đen
             if (child.material) {
               const mats = Array.isArray(child.material) ? child.material : [child.material];
               mats.forEach(m => {

@@ -1006,65 +1006,40 @@
       }, nextDelay);
     }
 
-    // Xác định chính xác các bài học người dùng ĐÃ THỰC SỰ HỌC (theo sát tiến độ, không hiện linh tinh)
+    // Xác định chính xác các bài học người dùng ĐÃ THỰC SỰ HỌC (theo sát tiến độ, TUYỆT ĐỐI KHÔNG HIỆN BÀI CHƯA HỌC)
     getLearnedLessonKeys() {
-      const candidateLessons = ['bai_6', 'bai_7', 'bai_8'];
-      const learned = ['bai_6']; // Bài 6 luôn là bài cơ bản mở đầu
+      const learned = ['bai_6']; // Bài 6 là bài học cơ sở luôn mở
 
-      // 1. Kiểm tra điều kiện mở khóa bài học toàn cục (isLessonUnlocked)
-      const canUnlockB7 = (typeof window.isLessonUnlocked === 'function')
-        ? window.isLessonUnlocked('bai_7')
-        : false;
-      const canUnlockB8 = (typeof window.isLessonUnlocked === 'function')
-        ? window.isLessonUnlocked('bai_8')
-        : false;
-
-      // 2. Kiểm tra tiến độ học tập thực tế LociProgression
+      // Kiểm tra thực tế trong localStorage người dùng đã học bài nào:
+      // Phải có dữ liệu thẻ SM-2 đã ôn hoặc mốc trạm 3D đã ghé thăm
       try {
-        let prog = null;
-        if (window.LociProgression && typeof window.LociProgression.getProgression === 'function') {
-          prog = window.LociProgression.getProgression();
-        } else if (typeof localStorage !== 'undefined') {
-          prog = JSON.parse(localStorage.getItem('loci_study_progression') || '{}');
+        let sm2 = {};
+        try { sm2 = JSON.parse(localStorage.getItem('loci_sm2_progress') || '{}'); } catch (_) {}
+        const sm2Keys = Object.keys(sm2);
+
+        let prog = {};
+        try { prog = JSON.parse(localStorage.getItem('loci_study_progression') || '{}'); } catch (_) {}
+
+        // Kiểm tra Bài 7: Người dùng đã thực sự học Bài 7 chưa?
+        const hasB7SM2 = sm2Keys.some(k => k.startsWith('b7_') || k.includes('bai_7') || k.includes('b7m'));
+        const hasB7Prog = prog && prog.bai_7 && ((prog.bai_7.stationsVisited && prog.bai_7.stationsVisited.length > 0) || prog.bai_7.completed || prog.bai_7.flashcardsReviewed > 0);
+        const inB7Space = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY === 'bai_7');
+        if (hasB7SM2 || hasB7Prog || inB7Space) {
+          learned.push('bai_7');
         }
-        if (prog && typeof prog === 'object') {
-          if (canUnlockB7) {
-            const p7 = prog.bai_7;
-            if (p7 && (p7.unlocked || (p7.stationsVisited && p7.stationsVisited.length >= 3) || p7.flashcardsReviewed || p7.completed)) {
-              if (!learned.includes('bai_7')) learned.push('bai_7');
-            }
-          }
-          if (canUnlockB8) {
-            const p8 = prog.bai_8;
-            if (p8 && (p8.unlocked || (p8.stationsVisited && p8.stationsVisited.length >= 3) || p8.flashcardsReviewed || p8.completed)) {
-              if (!learned.includes('bai_8')) learned.push('bai_8');
-            }
-          }
+
+        // Kiểm tra Bài 8: Người dùng đã thực sự học Bài 8 chưa?
+        const hasB8SM2 = sm2Keys.some(k => k.startsWith('b8_') || k.includes('bai_8') || k.includes('b8m'));
+        const hasB8Prog = prog && prog.bai_8 && ((prog.bai_8.stationsVisited && prog.bai_8.stationsVisited.length > 0) || prog.bai_8.completed || prog.bai_8.flashcardsReviewed > 0);
+        const inB8Space = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY === 'bai_8');
+        if (hasB8SM2 || hasB8Prog || inB8Space) {
+          learned.push('bai_8');
         }
       } catch (e) {
-        console.warn('[SurpriseRecall] Lỗi đọc tiến trình LociProgression:', e);
+        console.warn('[SurpriseRecall] Lỗi kiểm tra tiến độ học thực tế:', e);
       }
 
-      // 3. Nếu đang trong không gian 3D của bài học cụ thể
-      const curr = (typeof window.EFFECTIVE_LESSON_KEY !== 'undefined' && window.EFFECTIVE_LESSON_KEY)
-        || (typeof window.CURRENT_LESSON_KEY !== 'undefined' && window.CURRENT_LESSON_KEY);
-      if (curr && candidateLessons.includes(curr)) {
-        if (!learned.includes(curr)) {
-          if (curr === 'bai_6' || (curr === 'bai_7' && canUnlockB7) || (curr === 'bai_8' && canUnlockB8)) {
-            learned.push(curr);
-          }
-        }
-      }
-
-      // 4. Lọc chặt chẽ: Bài chưa mở khóa TUYỆT ĐỐI KHÔNG BAO GIỜ được xuất hiện
-      const filtered = learned.filter(k => {
-        if (k === 'bai_6') return true;
-        if (k === 'bai_7') return canUnlockB7;
-        if (k === 'bai_8') return canUnlockB8;
-        return false;
-      });
-
-      return (filtered.length > 0) ? filtered : ['bai_6'];
+      return Array.from(new Set(learned));
     }
 
     // Thu thập toàn bộ câu hỏi (100% là Quiz hoặc Type-in / Cloze)
