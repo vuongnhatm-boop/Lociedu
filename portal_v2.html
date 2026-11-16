@@ -22063,10 +22063,6 @@
                 try { localStorage.setItem('loci_companion_pet_data_v1', JSON.stringify(window.LociPet.petData)); } catch (_) {}
             }
 
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
-                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            const userXp = user ? (user.xp || (user.stats && user.stats.xp) || 0) : 0;
             const activeTier = window.getPetTier(pet, userXp) || pet.tiers[0];
 
             // Update DOM
@@ -22377,7 +22373,7 @@
         };
 
         // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP & KIỂM TRA MỞ KHÓA TIẾN TRÌNH
-        window.enterSpatialRoom = function(href, spaceName, lessonId, isTourMode) {
+        window.enterSpatialRoom = async function(href, spaceName, lessonId, isTourMode) {
             // 1. Tự động cấp quyền Khách nếu chưa đăng nhập (không chặn cửa, không ép popup)
             if (!window.isUserLoggedIn()) {
                 try {
@@ -22407,7 +22403,8 @@
 
             // 3. Giữ kỷ luật sư phạm cho học sinh, nhưng cho phép Giám khảo/Khách vào tham quan
             if (!canBypass && lessonId && !window.isLessonUnlocked(lessonId)) {
-                const confirmTour = confirm(`🔒 Bài học "${spaceName}" yêu cầu học tuần tự Bài 6 để tích lũy điểm Bảng Vàng.\n\nBạn có muốn vào THAM QUAN THỬ KHÔNG GIAN 3D (Chế độ Trải nghiệm Giám khảo) không?`);
+                const msg = `Bài học "${spaceName}" khuyến khích học tuần tự Bài 6 để tích lũy điểm Bảng Vàng.\n\nBạn có muốn vào THAM QUAN KHÔNG GIAN 3D (Chế độ Trải nghiệm Giám khảo) ngay bây giờ không?`;
+                const confirmTour = await (window.lociConfirm ? window.lociConfirm(msg, 'Mở Không Gian Tham Quan', 'info') : confirm(msg));
                 if (confirmTour) {
                     window.location.href = href + (href.includes('?') ? '&' : '?') + 'mode=tour&preview=guest';
                 }
