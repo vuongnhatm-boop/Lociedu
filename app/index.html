@@ -4585,12 +4585,7 @@
       <span id="anchor-lock-text">Mốc: Khóa [K]</span>
     </button>
 
-    <!-- Nút Chuyển Chế Độ Ảnh Mốc (Siêu Nhẹ 60fps để Sắp Xếp) -->
-    <button id="btn-toggle-photo-mode" onclick="window.togglePhotoMarkerMode();"
-      title="Bật/Tắt chế độ Ảnh mốc 2D siêu mượt để kéo thả sắp xếp mốc">
-      <span id="photo-mode-icon">🖼️</span>
-      <span id="photo-mode-text">Mốc: Ảnh 2D</span>
-    </button>
+
 
     <!-- Nút Xuất Đường Mốc Mới -->
     <button id="btn-export-arranged-route" onclick="window.exportArrangedLociRoute();"
@@ -6836,8 +6831,7 @@
 
         const isBai6 = (!EFFECTIVE_LESSON_KEY || EFFECTIVE_LESSON_KEY === 'bai_6');
         let sObj = null;
-        const isPhotoOnly = (typeof window.isPhotoMarkerModeEnabled === 'function' && window.isPhotoMarkerModeEnabled());
-        if (!isPhotoOnly) {
+        
         if (isBai6) {
           if (realOrder === 1 && typeof buildTrueLociStation1 === 'function') {
             sObj = buildTrueLociStation1(locus);
@@ -6908,7 +6902,7 @@
             sObj = buildCleanEmptyStation(locus, realOrder);
           }
         }
-        } // Hết khối !isPhotoOnly
+        
 
         if (sObj) {
           group.add(sObj);
