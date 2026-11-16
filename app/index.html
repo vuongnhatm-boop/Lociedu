@@ -4193,7 +4193,35 @@
       font-size: 0.7rem;
       white-space: nowrap;
     }
-  </style>
+  
+    /* --- NÚT ĐIỀU KHIỂN CHẾ ĐỘ ẢNH MỐC & XUẤT ĐƯỜNG MỐC (TỐI ƯU SẮP XẾP MỐC 60 FPS) --- */
+    #btn-toggle-photo-mode, #btn-export-arranged-route {
+      display: inline-flex !important;
+      align-items: center !important;
+      gap: 6px !important;
+      background: rgba(15, 23, 42, 0.92) !important;
+      border: 1.5px solid #38bdf8 !important;
+      color: #f8fafc !important;
+      padding: 8px 14px !important;
+      border-radius: 99px !important;
+      font-size: 13px !important;
+      font-weight: 800 !important;
+      cursor: pointer !important;
+      pointer-events: auto !important;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(56,189,248,0.3) !important;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+      margin-left: 8px !important;
+      user-select: none !important;
+    }
+    #btn-export-arranged-route {
+      border-color: #f59e0b !important;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(245,158,11,0.3) !important;
+    }
+    #btn-toggle-photo-mode:hover, #btn-export-arranged-route:hover {
+      transform: scale(1.05) !important;
+    }
+
+</style>
   <!-- Sơ đồ tư duy bằng Mermaid.js -->
   <script src="https://cdn.jsdelivr.net/npm/mermaid@10.6.1/dist/mermaid.min.js"></script>
   <script>
@@ -4555,6 +4583,20 @@
             " onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
       <span id="anchor-lock-icon">🔒</span>
       <span id="anchor-lock-text">Mốc: Khóa [K]</span>
+    </button>
+
+    <!-- Nút Chuyển Chế Độ Ảnh Mốc (Siêu Nhẹ 60fps để Sắp Xếp) -->
+    <button id="btn-toggle-photo-mode" onclick="window.togglePhotoMarkerMode();"
+      title="Bật/Tắt chế độ Ảnh mốc 2D siêu mượt để kéo thả sắp xếp mốc">
+      <span id="photo-mode-icon">🖼️</span>
+      <span id="photo-mode-text">Mốc: Ảnh 2D</span>
+    </button>
+
+    <!-- Nút Xuất Đường Mốc Mới -->
+    <button id="btn-export-arranged-route" onclick="window.exportArrangedLociRoute();"
+      title="Xuất mảng toạ độ đường mốc mới để cập nhật lên lociedu.com">
+      <span>📋</span>
+      <span>Xuất đường mốc</span>
     </button>
 
     <!-- Realtime THPT 2027 Countdown Chip in Top Navigation -->
@@ -5845,6 +5887,11 @@
 
       updateAnchorLockUI();
 
+      // [YÊU CẦU NGƯỜI DÙNG]: Khi mở khóa [K] để sắp xếp, chuyển các mốc thành ĐỐM SÁNG siêu nhẹ 60 FPS
+      if (typeof refresh3DMarkers === 'function') {
+        refresh3DMarkers();
+      }
+
       if (isAnchorsLocked) {
         if (draggingMarker) {
           draggingMarker = null;
@@ -5852,11 +5899,11 @@
           renderer.domElement.style.cursor = 'default';
         }
         if (typeof showToast === 'function') {
-          showToast('🔒 ĐÃ KHÓA CỐ ĐỊNH CÁC MỐC KÝ ỨC! Mốc không bị xê dịch khi học. Nhấn phím [K] để mở khóa sắp xếp lại.', 'info', 3200);
+          showToast('🔒 ĐÃ KHÓA & LƯU ĐƯỜNG MỐC MỚI [K]! Các mốc đã hiển thị tại vị trí mới.', 'info', 3500);
         }
       } else {
         if (typeof showToast === 'function') {
-          showToast('🔓 ĐÃ MỞ KHÓA SẮP XẾP MỐC [K]! Nhấn giữ và kéo thả mốc đến vị trí mới. Nhấn [K] để khóa lại.', 'warning', 4500);
+          showToast('🔓 ĐÃ BẬT SẮP XẾP [K]! Các mốc đã chuyển thành ĐỐM SÁNG SIÊU NHẸ (0 lag). Kéo thả mốc đến vị trí mới rồi nhấn [K] để khóa.', 'success', 4500);
         }
       }
     }
@@ -6688,12 +6735,109 @@
       const realOrder = locus.order || (markerIdx >= 0 ? markerIdx + 1 : 1);
       locus.order = realOrder;
 
+      // ══════════════════════════════════════════════════════════════════════════
+      // [YÊU CẦU NGƯỜI DÙNG]: KHI BẬT PHÍM [K] ĐỂ SẮP XẾP MỐC -> CHUYỂN TOÀN BỘ MỐC
+      // THÀNH CÁC ĐỐM SÁNG PHÁT QUANG (GLOWING ORBS) ĐỂ 0% LAG VÀ DỄ DÀNG KÉO THẢ!
+      // ══════════════════════════════════════════════════════════════════════════
+      if (!isAnchorsLocked) {
+        let colorHex = getStatusColor(locus.status) || 0x00f2fe;
+        if (realOrder === 1) colorHex = 0xf59e0b; // Vàng hổ phách
+        else if (realOrder === 5) colorHex = 0xef4444; // Đỏ cờ
+        else if (realOrder === 8 || realOrder === 9) colorHex = 0x10b981; // Xanh lục bảo
+        const colorStr = '#' + colorHex.toString(16).padStart(6, '0');
+
+        // 1. Quả cầu đốm sáng phát quang trung tâm (Glowing Core)
+        const orbGeo = new THREE.SphereGeometry(0.25, 24, 24);
+        const orbMat = new THREE.MeshStandardMaterial({
+          color: 0xffffff,
+          emissive: colorHex,
+          emissiveIntensity: 2.2,
+          roughness: 0.1,
+          metalness: 0.1
+        });
+        const orbMesh = new THREE.Mesh(orbGeo, orbMat);
+        orbMesh.position.y = 0.55;
+        orbMesh.name = 'diamond';
+        group.add(orbMesh);
+
+        // 2. Vòng hào quang mềm phát sáng (Soft Outer Glow Sprite)
+        const glowCanvas = document.createElement('canvas');
+        glowCanvas.width = 128; glowCanvas.height = 128;
+        const gctx = glowCanvas.getContext('2d');
+        const grad = gctx.createRadialGradient(64, 64, 0, 64, 64, 64);
+        grad.addColorStop(0, colorStr + 'FF');
+        grad.addColorStop(0.35, colorStr + '77');
+        grad.addColorStop(1, colorStr + '00');
+        gctx.fillStyle = grad;
+        gctx.fillRect(0, 0, 128, 128);
+        const glowTex = new THREE.CanvasTexture(glowCanvas);
+        const glowMat = new THREE.SpriteMaterial({
+          map: glowTex,
+          transparent: true,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false
+        });
+        const glowSprite = new THREE.Sprite(glowMat);
+        glowSprite.position.y = 0.55;
+        glowSprite.scale.set(1.5, 1.5, 1);
+        group.add(glowSprite);
+
+        // 3. Vòng tròn neon chỉ điểm chân đế (Ground Neon Ring)
+        const ringGeo = new THREE.TorusGeometry(0.38, 0.02, 12, 32);
+        const ringMat = new THREE.MeshBasicMaterial({ color: colorHex });
+        const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+        ringMesh.rotation.x = Math.PI / 2;
+        ringMesh.position.y = 0.04;
+        group.add(ringMesh);
+
+        // 4. Huy hiệu số thứ tự mốc to rõ bên trên (#1, #2, #3...)
+        const bCanvas = document.createElement('canvas');
+        bCanvas.width = 256; bCanvas.height = 256;
+        const bctx = bCanvas.getContext('2d');
+        bctx.fillStyle = colorStr;
+        bctx.beginPath();
+        bctx.arc(128, 128, 96, 0, Math.PI * 2);
+        bctx.fill();
+        bctx.lineWidth = 12;
+        bctx.strokeStyle = '#ffffff';
+        bctx.stroke();
+        bctx.fillStyle = '#ffffff';
+        bctx.font = 'bold 88px "Outfit", "Plus Jakarta Sans", sans-serif';
+        bctx.textAlign = 'center';
+        bctx.textBaseline = 'middle';
+        bctx.fillText('#' + realOrder, 128, 130);
+        const bTex = new THREE.CanvasTexture(bCanvas);
+        const bMat = new THREE.SpriteMaterial({ map: bTex, transparent: true, depthWrite: false });
+        const badgeSprite = new THREE.Sprite(bMat);
+        badgeSprite.position.y = 1.25;
+        badgeSprite.scale.set(0.68, 0.68, 1);
+        group.add(badgeSprite);
+
+        // 5. Hitbox siêu nhạy để chuột chạm vào kéo thả tức thì (không bao giờ trượt)
+        const hitboxGeo = new THREE.CylinderGeometry(0.55, 0.55, 1.6, 12);
+        const hitboxMat = new THREE.MeshBasicMaterial({ visible: false });
+        const hitboxMesh = new THREE.Mesh(hitboxGeo, hitboxMat);
+        hitboxMesh.position.y = 0.8;
+        hitboxMesh.userData = { id: locus.id, order: realOrder, name: locus.name, status: locus.status };
+        hitboxMesh.name = 'station_hitbox_' + realOrder;
+        group.add(hitboxMesh);
+        if (!window.stationHitboxList) window.stationHitboxList = [];
+        window.stationHitboxList.push(hitboxMesh);
+
+        markerGroup.add(group);
+        marker3DObjects.push(group);
+        return group;
+      }
+
+
       if (typeof isBrownGallery !== 'undefined' && isBrownGallery) {
         // Trong Triển lãm Nâu, bục đá cắm từ sàn Y = 0
         group.position.set(locus.pos[0], 0, locus.pos[2]);
 
         const isBai6 = (!EFFECTIVE_LESSON_KEY || EFFECTIVE_LESSON_KEY === 'bai_6');
         let sObj = null;
+        const isPhotoOnly = (typeof window.isPhotoMarkerModeEnabled === 'function' && window.isPhotoMarkerModeEnabled());
+        if (!isPhotoOnly) {
         if (isBai6) {
           if (realOrder === 1 && typeof buildTrueLociStation1 === 'function') {
             sObj = buildTrueLociStation1(locus);
@@ -6764,6 +6908,7 @@
             sObj = buildCleanEmptyStation(locus, realOrder);
           }
         }
+        } // Hết khối !isPhotoOnly
 
         if (sObj) {
           group.add(sObj);
@@ -6838,11 +6983,51 @@
         return p;
       }
 
-      // 1. Tìm ảnh tư liệu lịch sử tương ứng của mốc
+      // 1. Tìm ảnh tư liệu lịch sử tương ứng của mốc (Đầy đủ 100% cho Bài 6, 7, 8)
       const anchorSrc = (typeof findAnchorSource === 'function') ? findAnchorSource(locus) : null;
       let rawImg = locus.img || (locus.photos && locus.photos[0] ? locus.photos[0].localImage : '');
       if (!rawImg && anchorSrc && anchorSrc.anchor) {
         rawImg = anchorSrc.anchor.img || (anchorSrc.anchor.photos && anchorSrc.anchor.photos[0] ? anchorSrc.anchor.photos[0].localImage : '');
+      }
+      if (!rawImg) {
+        const BAI_PHOTO_TABLE = {
+          'bai_6': [
+            'assets/images/bai6_chuan/b6_t1_bom_nguyen_tu.png',
+            'assets/images/bai6_chuan/b6_t2_luc_luong_chuan_bi.png',
+            'assets/images/bai6_chuan/b6_t3_dinh_tan_trao.png',
+            'assets/images/bai6_chuan/b6_t4_giai_phong_thai_nguyen.png',
+            'assets/images/bai6_chuan/b6_t5_mit_tinh_nha_hat_lon.png',
+            'assets/images/bai6_chuan/b6_t6_khoi_nghia_hue.png',
+            'assets/images/bai6_chuan/b6_t7_bao_dai_thoai_vi.png',
+            'assets/images/bai6_chuan/b6_t8_tuyen_ngon_doc_lap.png',
+            'assets/images/bai6_chuan/b6_t9_nguyen_nhan_thang_loi.png'
+          ],
+          'bai_7': [
+            'assets/images/bai7/image1.jpeg',
+            'assets/images/bai7/image10.jpeg',
+            'assets/images/bai7/image14.jpeg',
+            'assets/images/bai7/image19.jpeg',
+            'assets/images/bai7/image20.png',
+            'assets/images/bai7/image21.jpg',
+            'assets/images/bai7/image22.gif',
+            'assets/images/bai7/image31.gif',
+            'assets/images/bai7/image33.png'
+          ],
+          'bai_8': [
+            'assets/images/bai8/b8_img01.jpeg',
+            'assets/images/bai8/b8_img03.jpg',
+            'assets/images/bai8/b8_img06.jpeg',
+            'assets/images/bai8/b8_img12.jpeg',
+            'assets/images/bai8/b8_img17.png',
+            'assets/images/bai8/b8_img20.png',
+            'assets/images/bai8/b8_img24.jpg',
+            'assets/images/bai8/b8_img27.jpeg',
+            'assets/images/bai8/b8_img29.jpeg'
+          ]
+        };
+        const curLsn = (EFFECTIVE_LESSON_KEY === 'bai_7' || EFFECTIVE_LESSON_KEY === 'bai_8') ? EFFECTIVE_LESSON_KEY : 'bai_6';
+        const pList = BAI_PHOTO_TABLE[curLsn] || BAI_PHOTO_TABLE['bai_6'];
+        rawImg = pList[realOrder - 1] || pList[0];
       }
 
       // 2. Minimalist Glowing Core (Khối ngọc trung tâm phát sáng)
@@ -12814,6 +12999,97 @@
       const notice = document.getElementById('loci-quiz-notice');
       if (notice) notice.style.display = 'none';
     }
+
+    
+    // ══════════════════════════════════════════════════════════════════════════
+    // HỆ THỐNG CHẾ ĐỘ ẢNH MỐC SIÊU NHẸ (PHOTO MARKER MODE) & XUẤT ĐƯỜNG MỐC
+    // ══════════════════════════════════════════════════════════════════════════
+    window.isPhotoMarkerModeEnabled = function() {
+      // Mặc định luôn là true (Chế độ Ảnh Mốc) để tối ưu sắp xếp mốc 60 FPS không lag
+      const val = localStorage.getItem('loci_photo_marker_mode');
+      return (val === null) ? true : (val === 'true');
+    };
+
+    window.togglePhotoMarkerMode = function() {
+      const current = window.isPhotoMarkerModeEnabled();
+      const next = !current;
+      localStorage.setItem('loci_photo_marker_mode', next ? 'true' : 'false');
+      window.updatePhotoModeUI();
+      if (typeof refresh3DMarkers === 'function') refresh3DMarkers();
+      if (typeof showToast === 'function') {
+        showToast(next ? '🖼️ ĐÃ BẬT CHẾ ĐỘ ẢNH MỐC (Siêu nhẹ 60 FPS để sắp xếp mốc)!' : '🏛️ ĐÃ BẬT CHẾ ĐỘ MÔ HÌNH 3D SA BÀN!', 'info', 3000);
+      }
+    };
+
+    window.updatePhotoModeUI = function() {
+      const isPhoto = window.isPhotoMarkerModeEnabled();
+      const txt = document.getElementById('photo-mode-text');
+      const icon = document.getElementById('photo-mode-icon');
+      const btn = document.getElementById('btn-toggle-photo-mode');
+      if (txt) txt.textContent = isPhoto ? 'Mốc: Ảnh 2D' : 'Mốc: Mô hình 3D';
+      if (icon) icon.textContent = isPhoto ? '🖼️' : '🏛️';
+      if (btn) {
+        btn.style.borderColor = isPhoto ? '#38bdf8' : '#a855f7';
+        btn.style.boxShadow = isPhoto ? '0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(56,189,248,0.3)' : '0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(168,85,247,0.3)';
+      }
+    };
+
+    window.exportArrangedLociRoute = function() {
+      const curLesson = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY) ? EFFECTIVE_LESSON_KEY : 'bai_6';
+      if (!window.lociList || window.lociList.length === 0) {
+        if (typeof showToast === 'function') showToast('⚠️ Chưa có danh sách mốc để xuất!', 'warning');
+        return;
+      }
+
+      const positions = window.lociList.map(l => [
+        parseFloat(Number(l.pos[0]).toFixed(2)),
+        parseFloat(Number(l.pos[1] !== undefined ? l.pos[1] : 0.01).toFixed(2)),
+        parseFloat(Number(l.pos[2]).toFixed(2))
+      ]);
+
+      const arrayName = curLesson === 'bai_7' ? 'bai7SequentialPositions' : (curLesson === 'bai_8' ? 'bai8SequentialPositions' : 'brownArcPositions');
+      
+      const jsonStr = JSON.stringify(positions, null, 2);
+      const codeSnippet = `// TỌA ĐỘ 9 MỐC ĐÃ SẮP XẾP (${curLesson.toUpperCase()}):\nconst ${arrayName} = [\n` +
+        positions.map((p, idx) => `  [${p[0]}, ${p[1]}, ${p[2]}] // Trạm ${idx + 1}: ${window.lociList[idx] ? window.lociList[idx].name : ''}`).join(',\n') +
+        `\n];`;
+
+      try {
+        localStorage.setItem('loci_exported_route_' + curLesson, JSON.stringify(positions));
+        navigator.clipboard.writeText(codeSnippet);
+      } catch (_) {}
+
+      // Hiển thị Modal thông báo trực quan
+      let modal = document.getElementById('loci-export-route-modal');
+      if (!modal) {
+        modal = document.createElement('div');
+        modal.id = 'loci-export-route-modal';
+        modal.style.cssText = 'position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:999999; display:flex; align-items:center; justify-content:center; backdrop-filter:blur(6px); animation:fadeIn 0.25s;';
+        document.body.appendChild(modal);
+      }
+      modal.innerHTML = `
+        <div style="background:#0f172a; border:2px solid #f59e0b; border-radius:20px; width:90%; max-width:620px; padding:24px 28px; box-shadow:0 25px 60px rgba(0,0,0,0.8), 0 0 30px rgba(245,158,11,0.25); color:#fff; font-family:'Outfit','Plus Jakarta Sans',sans-serif;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+            <h3 style="margin:0; font-size:18px; color:#fbbf24; display:flex; align-items:center; gap:8px;">
+              <span>📋</span> Đã lưu & xuất toạ độ đường mốc (${curLesson.toUpperCase()})
+            </h3>
+            <button onclick="document.getElementById('loci-export-route-modal').style.display='none';" style="background:none; border:none; color:#94a3b8; font-size:22px; cursor:pointer;">✕</button>
+          </div>
+          <p style="font-size:13.5px; color:#cbd5e1; line-height:1.6; margin-bottom:14px;">
+            Toạ độ 9 trạm bạn vừa sắp xếp đã được <b>tự động copy vào bộ nhớ tạm (Clipboard)</b> và lưu an toàn vào máy! Bạn chỉ cần gửi toạ độ này hoặc thông báo trong chat, hệ thống sẽ cập nhật ngay đường mốc này lên <b>lociedu.com</b>.
+          </p>
+          <textarea id="loci-export-textarea" readonly style="width:100%; height:160px; background:#020617; border:1px solid #334155; border-radius:10px; color:#38bdf8; font-family:monospace; font-size:12px; padding:10px; box-sizing:border-box; resize:none;">${codeSnippet}</textarea>
+          <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+            <button onclick="navigator.clipboard.writeText(document.getElementById('loci-export-textarea').value); if(typeof showToast==='function') showToast('✓ Đã copy toạ độ!', 'success');" style="background:#f59e0b; border:none; color:#0f172a; font-weight:800; padding:10px 20px; border-radius:99px; cursor:pointer;">📋 Sao chép lại</button>
+            <button onclick="document.getElementById('loci-export-route-modal').style.display='none';" style="background:#334155; border:none; color:#fff; font-weight:700; padding:10px 18px; border-radius:99px; cursor:pointer;">Đóng</button>
+          </div>
+        </div>
+      `;
+      modal.style.display = 'flex';
+      if (typeof showToast === 'function') showToast('✓ Đã xuất toạ độ và copy vào Clipboard!', 'success', 3000);
+    };
+
+    setTimeout(() => { if (typeof window.updatePhotoModeUI === 'function') window.updatePhotoModeUI(); }, 250);
 
     function refresh3DMarkers() {
       if (typeof clearModelLoadQueue === 'function') clearModelLoadQueue();
