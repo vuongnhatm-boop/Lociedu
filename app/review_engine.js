@@ -115,7 +115,7 @@ ${contentContext}
     // --- SM-2 ALGORITHM ĐIỀU CHỈNH THEO YÊU CẦU ---
     // quality:
     //   1-2: Chưa nhớ / Quên sạch -> reset repetition, interval 0 (15 phút), xuất hiện lại nhiều lần
-    //   3: Nhớ mang máng -> interval 1 ngày, xuất hiện lại sớm để củng cố
+    //   3: Đã gỡ bỏ, chỉ giữ Chưa nhớ và Nhớ rõ
     //   4-5: Đã nhớ / Nhớ hoàn hảo -> giãn cách nhanh (3 -> 8 -> 21 ngày...), không ôn lại nhiều nữa
     // --- ĐỘNG CƠ THUẬT TOÁN SM-2 CHUẨN XÁC THEO BÁO CÁO NCKH ---
     // EF' = EF + [0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)], EF >= 1.3
@@ -142,8 +142,8 @@ ${contentContext}
         const deltaEF = 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02);
         item.easinessFactor = Math.max(1.3, Math.min(3.5, (item.easinessFactor || 2.5) + deltaEF));
 
-        if (q >= 3) {
-            // Nhớ rõ (q=5) hoặc nhớ mang máng (q=3): Lập lịch tự động 1 -> 3 -> 7,... ngày
+        if (q >= 4) {
+            // Đã nhớ rõ (q=5): Lập lịch tự động 1 -> 3 -> 7,... ngày
             if (item.repetitions === 0) {
                 item.interval = 1; // I(1) = 1 ngày
             } else if (item.repetitions === 1) {
@@ -155,9 +155,9 @@ ${contentContext}
             item.repetitions += 1;
             item.nextReviewDate = Date.now() + item.interval * 24 * 60 * 60 * 1000;
             item.correctCount = (item.correctCount || 0) + 1;
-            item.status = (q >= 4) ? 'mastered' : 'vague';
+            item.status = 'mastered';
         } else {
-            // Chưa nhớ (q < 3): Chuỗi bị reset, nhắc ôn lại ngày hôm sau và sau 15 phút trong phiên
+            // Chưa nhớ (q=1): Chuỗi bị reset, nhắc ôn lại ngày hôm sau và sau 15 phút trong phiên
             item.repetitions = 0;
             item.interval = 1; // Yêu cầu lặp lại ngày hôm sau
             item.nextReviewDate = Date.now() + 15 * 60 * 1000; // Ôn lại sau 15 phút
@@ -171,8 +171,7 @@ ${contentContext}
     // Xác định trạng thái ghi nhớ & trọng số xuất hiện bất chợt cho từng thẻ:
     // 1. Chưa làm: weight = 5.0 (tần suất nhiều nhất)
     // 2. Chưa nhớ: weight = 4.0 (tần suất cao để lặp lại)
-    // 3. Nhớ mang máng: weight = 2.5 (xuất hiện bất chợt để củng cố)
-    // 4. Đã nhớ: weight = 0 (trong hạn không xuất hiện lại; nếu quá hạn nhiều ngày chỉ 0.25 để nhắc nhẹ)
+    // 3. Đã nhớ: weight = 0 (trong hạn không xuất hiện lại; nếu quá hạn nhiều ngày chỉ 0.25 để nhắc nhẹ)
     getCardRecallState(questionId) {
         const item = this.progressData[questionId];
         if (!item || item.totalAttempts === 0 || item.lastQuality === null) {
@@ -204,17 +203,7 @@ ${contentContext}
             };
         }
 
-        if (item.lastQuality === 3) {
-            // Nhớ mang máng: Trọng số 2.5, ưu tiên xuất hiện lại để củng cố
-            return {
-                status: 'vague',
-                weight: 2.5,
-                label: 'Nhớ mang máng',
-                badgeText: 'Mang máng · Hỏi củng cố',
-                interval: item.interval,
-                repetitions: item.repetitions
-            };
-        }
+        
 
         // Chưa nhớ (lastQuality < 3)
         // Trọng số 4.0, tần suất cao
@@ -316,10 +305,9 @@ ${contentContext}
                             </div>
                         </div>
                     </div>
-                    <div id="rv-feedback" style="display: none; gap: 10px; justify-content: center;">
-                        <button class="rv-rate-btn" data-quality="1" style="background:#ef4444; border:none; padding:10px 15px; border-radius:8px; color:white; cursor:pointer;">Quên sạch</button>
-                        <button class="rv-rate-btn" data-quality="3" style="background:#f59e0b; border:none; padding:10px 15px; border-radius:8px; color:white; cursor:pointer;">Nhớ mang máng</button>
-                        <button class="rv-rate-btn" data-quality="5" style="background:#10b981; border:none; padding:10px 15px; border-radius:8px; color:white; cursor:pointer;">Nhớ hoàn hảo</button>
+                    <div id="rv-feedback" style="display: none; gap: 12px; justify-content: center;">
+                        <button class="rv-rate-btn" data-quality="1" style="background:#ef4444; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:600; cursor:pointer;">Chưa nhớ</button>
+                        <button class="rv-rate-btn" data-quality="5" style="background:#10b981; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:600; cursor:pointer;">Đã nhớ rõ</button>
                     </div>
                 `;
             } else if (q.type === 'quiz') {

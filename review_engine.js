@@ -13,7 +13,7 @@ class ReviewEngine {
     getApiKey() {
         return localStorage.getItem('loci_gemini_api_key');
     }
-    
+
     getModel() {
         return localStorage.getItem('loci_gemini_model') || 'gemini-3.5-flash';
     }
@@ -65,7 +65,7 @@ ${contentContext}
         try {
             let aiReplyText = "";
             const isOpenRouter = apiKey.startsWith('sk-');
-            
+
             if (isOpenRouter) {
                 const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
                     method: 'POST',
@@ -95,11 +95,11 @@ ${contentContext}
                 const data = await response.json();
                 aiReplyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "{}";
             }
-            
+
             // Dọn dẹp markdown nếu API lỡ trả về
             aiReplyText = aiReplyText.replace(/^```json\s*/, '').replace(/```\s*$/, '').trim();
             const parsed = JSON.parse(aiReplyText);
-            
+
             return {
                 flashcards: parsed.flashcards || locusData.flashcards || [],
                 quizzes: parsed.quizzes || locusData.quizzes || [],
@@ -115,7 +115,7 @@ ${contentContext}
     // --- SM-2 ALGORITHM ĐIỀU CHỈNH THEO YÊU CẦU ---
     // quality:
     //   1-2: Chưa nhớ / Quên sạch -> reset repetition, interval 0 (15 phút), xuất hiện lại nhiều lần
-    //   3: Nhớ mang máng -> interval 1 ngày, xuất hiện lại sớm để củng cố
+    //   3: Đã gỡ bỏ, chỉ giữ Chưa nhớ và Nhớ rõ
     //   4-5: Đã nhớ / Nhớ hoàn hảo -> giãn cách nhanh (3 -> 8 -> 21 ngày...), không ôn lại nhiều nữa
     // --- ĐỘNG CƠ THUẬT TOÁN SM-2 CHUẨN XÁC THEO BÁO CÁO NCKH ---
     // EF' = EF + [0.1 - (5 - q) * (0.08 + (5 - q) * 0.02)], EF >= 1.3
@@ -142,8 +142,8 @@ ${contentContext}
         const deltaEF = 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02);
         item.easinessFactor = Math.max(1.3, Math.min(3.5, (item.easinessFactor || 2.5) + deltaEF));
 
-        if (q >= 3) {
-            // Nhớ rõ (q=5) hoặc nhớ mang máng (q=3): Lập lịch tự động 1 -> 3 -> 7,... ngày
+        if (q >= 4) {
+            // Đã nhớ rõ (q=5): Lập lịch tự động 1 -> 3 -> 7,... ngày
             if (item.repetitions === 0) {
                 item.interval = 1; // I(1) = 1 ngày
             } else if (item.repetitions === 1) {
@@ -155,9 +155,9 @@ ${contentContext}
             item.repetitions += 1;
             item.nextReviewDate = Date.now() + item.interval * 24 * 60 * 60 * 1000;
             item.correctCount = (item.correctCount || 0) + 1;
-            item.status = (q >= 4) ? 'mastered' : 'vague';
+            item.status = 'mastered';
         } else {
-            // Chưa nhớ (q < 3): Chuỗi bị reset, nhắc ôn lại ngày hôm sau và sau 15 phút trong phiên
+            // Chưa nhớ (q=1): Chuỗi bị reset, nhắc ôn lại ngày hôm sau và sau 15 phút trong phiên
             item.repetitions = 0;
             item.interval = 1; // Yêu cầu lặp lại ngày hôm sau
             item.nextReviewDate = Date.now() + 15 * 60 * 1000; // Ôn lại sau 15 phút
@@ -171,8 +171,7 @@ ${contentContext}
     // Xác định trạng thái ghi nhớ & trọng số xuất hiện bất chợt cho từng thẻ:
     // 1. Chưa làm: weight = 5.0 (tần suất nhiều nhất)
     // 2. Chưa nhớ: weight = 4.0 (tần suất cao để lặp lại)
-    // 3. Nhớ mang máng: weight = 2.5 (xuất hiện bất chợt để củng cố)
-    // 4. Đã nhớ: weight = 0 (trong hạn không xuất hiện lại; nếu quá hạn nhiều ngày chỉ 0.25 để nhắc nhẹ)
+    // 3. Đã nhớ: weight = 0 (trong hạn không xuất hiện lại; nếu quá hạn nhiều ngày chỉ 0.25 để nhắc nhẹ)
     getCardRecallState(questionId) {
         const item = this.progressData[questionId];
         if (!item || item.totalAttempts === 0 || item.lastQuality === null) {
@@ -204,17 +203,7 @@ ${contentContext}
             };
         }
 
-        if (item.lastQuality === 3) {
-            // Nhớ mang máng: Trọng số 2.5, ưu tiên xuất hiện lại để củng cố
-            return {
-                status: 'vague',
-                weight: 2.5,
-                label: 'Nhớ mang máng',
-                badgeText: 'Mang máng · Hỏi củng cố',
-                interval: item.interval,
-                repetitions: item.repetitions
-            };
-        }
+        
 
         // Chưa nhớ (lastQuality < 3)
         // Trọng số 4.0, tần suất cao
@@ -272,13 +261,14 @@ ${contentContext}
             });
             document.body.appendChild(overlay);
         }
-        
+
         let currentIndex = 0;
-        
+
         const renderCurrentQuestion = () => {
             if (currentIndex >= allQuestions.length) {
                 overlay.innerHTML = `
                     <div style="background: rgba(255,255,255,0.1); padding: 40px; border-radius: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.2);">
+                        <h2 style="font-size: 24px; color: #4ade80; margin-bottom: 20px;">🎉 Hoàn thành xuất sắc!</h2>
                         <h2 style="font-size: 24px; color: #10b981; margin-bottom: 20px;">Hoàn thành xuất sắc!</h2>
                         <p style="margin-bottom: 30px;">Bạn đã ôn tập xong các mốc kiến thức này.</p>
                         <button id="rv-close-btn" style="padding: 12px 24px; border-radius: 99px; border: none; background: #3b82f6; color: white; cursor: pointer; font-weight: bold;">Đóng</button>
@@ -315,10 +305,9 @@ ${contentContext}
                             </div>
                         </div>
                     </div>
-                    <div id="rv-feedback" style="display: none; gap: 10px; justify-content: center;">
-                        <button class="rv-rate-btn" data-quality="1" style="background:#ef4444; border:none; padding:10px 15px; border-radius:8px; color:white; cursor:pointer;">Quên sạch</button>
-                        <button class="rv-rate-btn" data-quality="3" style="background:#f59e0b; border:none; padding:10px 15px; border-radius:8px; color:white; cursor:pointer;">Nhớ mang máng</button>
-                        <button class="rv-rate-btn" data-quality="5" style="background:#10b981; border:none; padding:10px 15px; border-radius:8px; color:white; cursor:pointer;">Nhớ hoàn hảo</button>
+                    <div id="rv-feedback" style="display: none; gap: 12px; justify-content: center;">
+                        <button class="rv-rate-btn" data-quality="1" style="background:#ef4444; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:600; cursor:pointer;">Chưa nhớ</button>
+                        <button class="rv-rate-btn" data-quality="5" style="background:#10b981; border:none; padding:10px 20px; border-radius:8px; color:white; font-weight:600; cursor:pointer;">Đã nhớ rõ</button>
                     </div>
                 `;
             } else if (q.type === 'quiz') {
@@ -326,7 +315,7 @@ ${contentContext}
                 q.data.options.forEach((opt, idx) => {
                     optionsHtml += `<button class="rv-quiz-opt" data-idx="${idx}" style="display:block; width:100%; padding:15px; margin-bottom:10px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.2); border-radius:12px; color:white; text-align:left; cursor:pointer; transition: 0.2s;">${opt}</button>`;
                 });
-                
+
                 contentHTML = `
                     <div style="font-size: 14px; opacity: 0.5; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px;">Trắc nghiệm</div>
                     <div style="font-size: 20px; margin-bottom: 25px;">${q.data.question}</div>
@@ -379,7 +368,7 @@ ${contentContext}
                 const fcCard = document.getElementById('rv-fc-card');
                 const fcInner = document.getElementById('rv-fc-inner');
                 const feedbackDiv = document.getElementById('rv-feedback');
-                
+
                 fcCard.onclick = () => {
                     if (isFlipped) return; // Only flip once
                     isFlipped = true;
@@ -401,18 +390,33 @@ ${contentContext}
                 const nextBtn = document.getElementById('rv-next-btn');
                 const expl = document.getElementById('rv-explanation');
                 let answered = false;
-                
+
                 document.querySelectorAll('.rv-quiz-opt').forEach(btn => {
                     btn.onclick = (e) => {
                         if (answered) return;
                         answered = true;
                         const selectedIdx = parseInt(e.currentTarget.dataset.idx);
                         const isCorrect = selectedIdx === q.data.correct;
-                        
+
                         if (isCorrect) {
                             e.currentTarget.style.background = 'rgba(16, 185, 129, 0.2)';
                             e.currentTarget.style.borderColor = '#10b981';
                             this.processReview(q.id, 5); // perfect
+                            // Cộng +0.5 XP cho câu trả lời đúng
+                            try {
+                                const raw = localStorage.getItem('loci_user_profile');
+                                if (raw) {
+                                    const u = JSON.parse(raw);
+                                    u.xp = (u.xp || 0) + 0.5;
+                                    localStorage.setItem('loci_user_profile', JSON.stringify(u));
+                                    if (typeof window.dispatchEvent === 'function') {
+                                        window.dispatchEvent(new CustomEvent('loci_user_updated', { detail: u }));
+                                    }
+                                }
+                                if (window.LociPet && typeof window.LociPet.addExp === 'function') {
+                                    window.LociPet.addExp(0.5, 'Trả lời đúng câu hỏi ôn tập Loci');
+                                }
+                            } catch (_) {}
                         } else {
                             e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
                             e.currentTarget.style.borderColor = '#ef4444';
@@ -420,12 +424,12 @@ ${contentContext}
                             document.querySelector(`.rv-quiz-opt[data-idx="${q.data.correct}"]`).style.borderColor = '#10b981';
                             this.processReview(q.id, 1); // wrong
                         }
-                        
+
                         expl.style.display = 'block';
                         nextBtn.style.display = 'block';
                     };
                 });
-                
+
                 nextBtn.onclick = () => {
                     currentIndex++;
                     renderCurrentQuestion();
@@ -435,21 +439,23 @@ ${contentContext}
                 const nextBtn = document.getElementById('rv-next-btn');
                 const resultDiv = document.getElementById('rv-blank-result');
                 const input = document.getElementById('rv-blank-input');
-                
+
                 if (input) input.focus();
 
                 checkBtn.onclick = () => {
                     const userAns = input.value.trim().toLowerCase();
                     const correctAns = q.data.answer.toLowerCase();
-                    
+
                     if (userAns === correctAns || correctAns.includes(userAns) && userAns.length > 2) {
+                        resultDiv.innerHTML = '<span style="color:#10b981;">✅ Chính xác!</span> (' + q.data.answer + ')';
                         resultDiv.innerHTML = '<span style="color:#10b981; font-weight:700;">Chính xác!</span> (' + q.data.answer + ')';
                         this.processReview(q.id, 5);
                     } else {
+                        resultDiv.innerHTML = '<span style="color:#ef4444;">❌ Sai.</span> Đáp án đúng: <b>' + q.data.answer + '</b>';
                         resultDiv.innerHTML = '<span style="color:#ef4444; font-weight:700;">Sai.</span> Đáp án đúng: <b>' + q.data.answer + '</b>';
                         this.processReview(q.id, 1);
                     }
-                    
+
                     resultDiv.style.display = 'block';
                     checkBtn.style.display = 'none';
                     nextBtn.style.display = 'block';
@@ -475,7 +481,7 @@ ${contentContext}
                 checkBtn.onclick = () => {
                     const typed = input.value.trim();
                     const checker = window.LociFlashcardFormats?.checkTypeInAnswer;
-                    const res = checker 
+                    const res = checker
                         ? checker(typed, q.data.answer, q.data.accepted || [])
                         : { score: 100, status: 'exact', title: 'Hoàn tất', target: q.data.answer, recommendedGrade: 5 };
 

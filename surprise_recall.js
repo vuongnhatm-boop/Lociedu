@@ -7,9 +7,8 @@
  *   + 2. Gõ điền câu trả lời / từ khuyết (Type-in / Cloze test)
  *   + TUYỆT ĐỐI KHÔNG DÙNG NÚT BẤM TỰ NHẬN (chấm điểm hoàn toàn tự động qua câu trả lời).
  * - THUẬT TOÁN SM-2 ĐIỀU CHỈNH:
- *   + Đã nhớ (Trả lời đúng / Score >= 80%): Giãn cách xa (3 -> 8 -> 21 ngày...), KHÔNG ôn lại nhiều nữa.
- *   + Nhớ mang máng (Score 50-79%): Giữ chu kỳ ngắn 1 ngày, xuất hiện lại sớm để củng cố.
- *   + Chưa nhớ (Trả lời sai / Bỏ trống): Hẹn lại sau 15 phút, xuất hiện tần suất cao.
+ *   + Đã nhớ rõ (Score >= 70%): Giãn cách xa (1 -> 3 -> 7 ngày...), củng cố bền vững.
+ *   + Chưa nhớ (Score < 70% / Sai / Bỏ trống): Hẹn lại sau 15 phút, xuất hiện tần suất cao.
  *   + Chưa làm: Trọng số ưu tiên cao nhất (5.0), tần suất nhiều hơn tất cả các nhóm.
  * - CƠ CHẾ BẤT CHỢT & BẢO VỆ PHÒNG THI (EXAM SHIELD):
  *   + Tự động kích hoạt câu hỏi ngẫu nhiên sau 2.5 - 4.5 phút.
@@ -1132,7 +1131,7 @@
     }
 
     // Chọn câu hỏi theo trọng số thuật toán SM-2:
-    // Chưa làm (Weight 5.0) -> Chưa nhớ (Weight 4.0) -> Nhớ mang máng (Weight 2.5) -> Đã nhớ (Weight 0)
+    // Chưa làm (Weight 5.0) -> Chưa nhớ (Weight 4.0) -> Đã nhớ (Weight 0)
     pickWeightedQuestion() {
       const questions = this.getAllCandidateQuestions();
       if (!questions.length) return null;
@@ -1457,7 +1456,7 @@
           submitBtn.disabled = true;
 
           const res = evaluateTypeInText(typedVal, item.target, item.accepted || [], item.hint || '');
-          const quality = res.recommendedGrade || (res.score >= 80 ? 5 : (res.score >= 50 ? 3 : 1));
+          const quality = (res.score >= 70 || (res.recommendedGrade && res.recommendedGrade >= 4)) ? 5 : 1;
 
           if (quality >= 4) {
             playAudioFeedback('success');
@@ -1651,7 +1650,7 @@
             submitBtn.disabled = true;
 
             const res = evaluateTypeInText(typedVal, targetAnswer, q.data.accepted || [], q.data.hint || '');
-            const quality = res.recommendedGrade || (res.score >= 80 ? 5 : (res.score >= 50 ? 3 : 1));
+            const quality = (res.score >= 70 || (res.recommendedGrade && res.recommendedGrade >= 4)) ? 5 : 1;
 
             if (quality >= 4) {
               playAudioFeedback('success');
@@ -1704,15 +1703,6 @@
             <div>
               <b>Đã ghi nhớ vững vàng!</b><br>
               <span>Thuật toán SM-2 đã giãn cách thẻ này. Bạn sẽ <b>không bị ôn lại nhiều nữa</b>.</span>
-            </div>
-          </div>`;
-      } else if (quality === 3) {
-        toastHtml = `
-          <div class="loci-surprise-feedback-toast vague">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            <div>
-              <b>Đã ghi nhận nhớ mang máng!</b><br>
-              <span>Thẻ này sẽ <b>bất chợt xuất hiện lại sớm</b> để bạn hoàn thiện trọn vẹn.</span>
             </div>
           </div>`;
       } else {

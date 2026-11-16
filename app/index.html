@@ -4195,31 +4195,9 @@
     }
   
     /* --- NÚT ĐIỀU KHIỂN CHẾ ĐỘ ẢNH MỐC & XUẤT ĐƯỜNG MỐC (TỐI ƯU SẮP XẾP MỐC 60 FPS) --- */
-    #btn-toggle-photo-mode, #btn-export-arranged-route {
-      display: inline-flex !important;
-      align-items: center !important;
-      gap: 6px !important;
-      background: rgba(15, 23, 42, 0.92) !important;
-      border: 1.5px solid #38bdf8 !important;
-      color: #f8fafc !important;
-      padding: 8px 14px !important;
-      border-radius: 99px !important;
-      font-size: 13px !important;
-      font-weight: 800 !important;
-      cursor: pointer !important;
-      pointer-events: auto !important;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(56,189,248,0.3) !important;
-      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
-      margin-left: 8px !important;
-      user-select: none !important;
-    }
-    #btn-export-arranged-route {
-      border-color: #f59e0b !important;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(245,158,11,0.3) !important;
-    }
-    #btn-toggle-photo-mode:hover, #btn-export-arranged-route:hover {
-      transform: scale(1.05) !important;
-    }
+    #btn-toggle-photo-mode, 
+    
+    #btn-toggle-photo-mode:hover, 
 
 </style>
   <!-- Sơ đồ tư duy bằng Mermaid.js -->
@@ -4581,18 +4559,13 @@
               margin-left: 8px !important;
               user-select: none !important;
             " onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
-      <span id="anchor-lock-icon">🔒</span>
-      <span id="anchor-lock-text">Mốc: Khóa [K]</span>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="display:inline-block; vertical-align:middle;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <span id="anchor-lock-text">Khóa mốc [K]</span>
     </button>
 
 
 
-    <!-- Nút Xuất Đường Mốc Mới -->
-    <button id="btn-export-arranged-route" onclick="window.exportArrangedLociRoute();"
-      title="Xuất mảng toạ độ đường mốc mới để cập nhật lên lociedu.com">
-      <span>📋</span>
-      <span>Xuất đường mốc</span>
-    </button>
+    
 
     <!-- Realtime THPT 2027 Countdown Chip in Top Navigation -->
 
@@ -5857,7 +5830,7 @@
         btn.style.boxShadow = '0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(16,185,129,0.3)';
         btn.style.background = 'rgba(15, 23, 42, 0.92)';
         if (icon) icon.textContent = '🔒';
-        if (text) text.textContent = 'Mốc: Khóa [K]';
+        if (text) text.textContent = 'Khóa mốc [K]';
         btn.title = 'Mốc đang khóa cố định. Nhấn phím [K] để mở khóa kéo thả sắp xếp.';
       } else {
         btn.style.borderColor = '#f59e0b';
@@ -5894,11 +5867,11 @@
           renderer.domElement.style.cursor = 'default';
         }
         if (typeof showToast === 'function') {
-          showToast('🔒 ĐÃ KHÓA & LƯU ĐƯỜNG MỐC MỚI [K]! Các mốc đã hiển thị tại vị trí mới.', 'info', 3500);
+          showToast('Đã khóa cố định các mốc ký ức [Phím K]. Mốc hiển thị chuẩn xác tại vị trí đã đặt.', 'info', 3500);
         }
       } else {
         if (typeof showToast === 'function') {
-          showToast('🔓 ĐÃ BẬT SẮP XẾP [K]! Các mốc đã chuyển thành ĐỐM SÁNG SIÊU NHẸ (0 lag). Kéo thả mốc đến vị trí mới rồi nhấn [K] để khóa.', 'success', 4500);
+          showToast('Đã mở khóa sắp xếp mốc [Phím K]. Mốc chuyển thành đốm sáng gọn nhẹ. Hãy kéo thả đến vị trí mong muốn rồi bấm [K] để khóa.', 'info', 4500);
         }
       }
     }
@@ -13409,6 +13382,57 @@
       );
     }
 
+    
+    // ══════════════════════════════════════════════════════════════════════════
+    // BẦU TRỜI KHÍ QUYỂN LOW-POLY HÀO HÙNG CHO BÀI 8 (KHÁNG CHIẾN CHỐNG MỸ)
+    // ══════════════════════════════════════════════════════════════════════════
+    let polySkyDome = null;
+    function initPolySkyDome() {
+      if (polySkyDome) {
+        try { scene.remove(polySkyDome); } catch (_) {}
+        polySkyDome = null;
+      }
+      // Vòm trời bán cầu Low-Poly rộng lớn 180m
+      const skyGeo = new THREE.SphereGeometry(180, 28, 18);
+      
+      const canvas = document.createElement('canvas');
+      canvas.width = 512; canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+      const grad = ctx.createLinearGradient(0, 0, 0, 512);
+      grad.addColorStop(0.0, '#0f172a'); // Đỉnh vòm trời xanh đậm vũ trụ
+      grad.addColorStop(0.35, '#1e293b');
+      grad.addColorStop(0.65, '#0369a1'); // Tầng trời xanh hy vọng
+      grad.addColorStop(0.85, '#f59e0b'); // Chân trời rực ánh nắng vàng
+      grad.addColorStop(1.0, '#ea580c'); // Ráng chiều rực lửa lịch sử
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, 512, 512);
+
+      // Thêm các đám mây đa giác cách điệu
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
+      for (let i = 0; i < 32; i++) {
+        const cx = (i * 67) % 512;
+        const cy = 180 + ((i * 41) % 190);
+        const r = 26 + (i % 6) * 12;
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const skyTex = new THREE.CanvasTexture(canvas);
+      if (THREE.SRGBColorSpace) skyTex.colorSpace = THREE.SRGBColorSpace;
+      
+      const skyMat = new THREE.MeshBasicMaterial({
+        map: skyTex,
+        side: THREE.BackSide,
+        depthWrite: false
+      });
+
+      polySkyDome = new THREE.Mesh(skyGeo, skyMat);
+      polySkyDome.position.set(0, 0, 0);
+      scene.add(polySkyDome);
+      scene.background = null; // Cho phép vòm trời 3D hiển thị trọn vẹn
+    }
+
     function onModelLoaded(loadedScene) {
       try {
         if (roomMesh) scene.remove(roomMesh);
@@ -13430,10 +13454,18 @@
         camera.far = 400;
         camera.updateProjectionMatrix();
 
-        // Căn giữa phòng triển lãm
-        roomMesh.scale.setScalar(1.0);
-        roomMesh.position.set(-center.x, 0, -center.z);
-        roomMesh.rotation.set(0, 0, 0);
+        // Căn giữa và điều chỉnh kích thước không gian chuẩn xác
+        if (EFFECTIVE_LESSON_KEY === 'bai_8') {
+          // [YÊU CẦU NGƯỜI DÙNG]: Mở rộng đại lộ Bài 8 khoáng đạt, rộng rãi (tỉ lệ 1.45x)
+          roomMesh.scale.set(1.45, 1.25, 1.45);
+          roomMesh.position.set(-center.x * 1.45, 0, -center.z * 1.45);
+          roomMesh.rotation.set(0, 0, 0);
+          initPolySkyDome();
+        } else {
+          roomMesh.scale.setScalar(1.0);
+          roomMesh.position.set(-center.x, 0, -center.z);
+          roomMesh.rotation.set(0, 0, 0);
+        }
 
         // Đặt camera ở vị trí chuẩn nhìn về Trạm 1
         if (isBrownGallery) {
@@ -13771,11 +13803,15 @@
       _currentFpsVelocity.lerp(_targetFpsVelocity, moveDamp);
 
       if (_currentFpsVelocity.lengthSq() > 0.0001) {
-        camera.position.addScaledVector(_currentFpsVelocity, delta);
-        camera.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, camera.position.x));
-        camera.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, camera.position.z));
+        const bounds = (typeof getLessonBounds === 'function') ? getLessonBounds() : ROOM_BOUNDS;
+        const targetX = camera.position.x + _currentFpsVelocity.x * delta;
+        const targetZ = camera.position.z + _currentFpsVelocity.z * delta;
+
+        // CHỐNG XUYÊN TƯỜNG (Strict Collision Clamp): Khóa tuyệt đối không cho camera đi xuyên vách tường
+        camera.position.x = Math.max(bounds.minX, Math.min(bounds.maxX, targetX));
+        camera.position.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, targetZ));
       }
-      camera.position.y = ROOM_BOUNDS.eyeHeight;
+      camera.position.y = (ROOM_BOUNDS && ROOM_BOUNDS.eyeHeight) ? ROOM_BOUNDS.eyeHeight : 1.65;
     }
 
     /* --- POINTER LOCK & HUD CONTROLS --- */
@@ -16135,7 +16171,7 @@
     }
 
     // Biến lưu trữ tiến trình thử thách từ khóa (Active Recall)
-    bdtPassedSteps = new Set([0, 1, 2, 3, 4, 5, 6, 7, 8, 9]); // Mo khoa san toan bo de thuyet trinh
+    bdtPassedSteps = new Set(); // Bắt đầu rỗng: Bắt buộc gõ đúng từ khóa mới mở khóa
     let bdtCompletedLoci = new Set();
 
     function triggerNextStationAction() {
@@ -16165,7 +16201,12 @@
     }
 
     const BDT_HISTORICAL_KEYWORDS = [
+      // Bài 6: Cách mạng tháng Tám 1945
       '6/8/1945', '9/8/1945', '13/8/1945', '14/8/1945', '14 đến 15/8/1945', '14-15/8/1945', '15/8/1945', '16/8/1945', '16 đến 17/8/1945', '16-17/8/1945', '18/8/1945', '19/8/1945', '23/8/1945', '25/8/1945', '28/8/1945', '30/8/1945', '2/9/1945', 'tháng 3/1945', 'tháng 8/1945',
+      // Bài 7: Kháng chiến chống Pháp (1945 - 1954)
+      'Điện Biên Phủ', 'Dien Bien Phu', 'Võ Nguyên Giáp', 'Vo Nguyen Giap', 'Việt Bắc', 'Viet Bac', 'Biên giới', 'Bien gioi', '1946', '1950', '1953', '1954', 'Na-va', 'Nava', 'Hiệp định Giơ-ne-vơ', 'Gio-ne-vo', 'Giơnevơ', 'Gionevo', 'Toàn quốc kháng chiến', '19/12/1946', 'Đờ Cát', 'De Castries', 'xe đạp thồ', 'Chiêm Hóa', 'Đại hội II', 'Nam Bộ kháng chiến', '23/9/1945',
+      // Bài 8: Kháng chiến chống Mỹ (1954 - 1975)
+      'Đồng Khởi', 'Dong Khoi', 'Bến Tre', 'Ben Tre', 'Đội quân tóc dài', 'Doi quan toc dai', 'Nguyễn Thị Định', 'Ấp Bắc', 'Ap Bac', 'Vạn Tường', 'Van Tuong', 'Tết Mậu Thân', 'Tet Mau Than', '1968', 'Quảng Trị', 'Quang Tri', 'B-52', 'B52', 'Điện Biên Phủ trên không', '1972', 'Hiệp định Paris', 'Hiep dinh Paris', '1973', 'Đường 14', 'Phước Long', 'Phuoc Long', '30/4/1975', '30/4', 'Dinh Độc Lập', 'Dinh Doc Lap', 'Xe tăng 390', 'Xe tang 390', 'Chiến dịch Hồ Chí Minh', 'Tây Nguyên', 'Tay Nguyen', 'Huế', 'Đà Nẵng', 'Da Nang', 'Ngô Đình Diệm', 'Ngo Dinh Diem', '1954', '1975', 'Chiến tranh đặc biệt', 'Chiến tranh cục bộ', 'Việt Nam hóa chiến tranh',
       '6/8', '9/8', '13/8', '14/8', '15/8', '16/8', '18/8', '19/8', '23/8', '25/8', '28/8', '30/8', '2/9', '1945',
       'Hi-rô-si-ma', 'Hiroshima', 'Na-ga-xa-ki', 'Na-ga-sa-ki', 'Nagasaki', 'Quan Đông', 'Mãn Châu', 'bom nguyên tử', 'đầu hàng',
       'Lán Nà Nưa', 'Nà Nưa', 'Ủy ban Khởi nghĩa Toàn quốc', 'Ủy ban Khởi nghĩa', 'Quân lệnh số 1', 'Quân lệnh 1', 'Ba Tơ', 'du kích Ba Tơ', 'Trường Sơn', 'kháng Nhật cứu nước',
@@ -16188,6 +16229,15 @@
           found.push(kw);
         }
       }
+      // Trích xuất các cụm in đậm **...**
+      const bolds = text.match(/\*\*([^*]+)\*\*/g);
+      if (bolds) {
+        bolds.forEach(b => {
+          const clean = b.replace(/\*\*/g, '').trim();
+          if (clean && clean.length >= 2 && !found.includes(clean)) found.push(clean);
+        });
+      }
+      // Trích xuất các cụm trong ngoặc kép
       const quotes = text.match(/['"“]([^'"”]{2,30})['"”]/g);
       if (quotes) {
         quotes.forEach(q => {
@@ -16195,23 +16245,44 @@
           if (clean && !found.includes(clean)) found.push(clean);
         });
       }
-      if (found.length === 0) {
-        const capWords = text.match(/\b[A-ZÀÁẢÃẠĂẮẰẲẴẶÂẤẦẨẪẬĐÈÉẺẼẸÊẾỀỂỄỆÌÍỈĨỊÒÓỎÕỌÔỐỒỔỖỘƠỚỜỞỠỢÙÚỦŨỤƯỨỪỬỮỰỲÝỶỸỴ][a-zàáảãạăắằẳẵặâấầẩẫậđèéẻẽẹêếềểễệìíỉĩịòóỏõọôốồổỗộơớờởỡợùúủũụưứừửữựỳýỷỹỵ0-9\-\/]+\b/g);
-        if (capWords) found.push(...capWords.slice(0, 3));
+      // Trích xuất các mốc năm/ngày tháng
+      const dates = text.match(/\b\d{1,2}[\/\-]\d{1,2}(?:[\/\-]\d{4})?\b|\b\d{4}\b/g);
+      if (dates) {
+        dates.forEach(d => { if (!found.includes(d)) found.push(d); });
       }
       return found;
+    }
+
+    function removeVietnameseAccents(str) {
+      if (!str) return '';
+      return str.normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .replace(/đ/g, 'd')
+        .replace(/Đ/g, 'D');
+    }
+
+    function normalizeBdtText(str) {
+      if (!str) return '';
+      let s = str.toLowerCase().replace(/[–—\-]/g, ' ');
+      s = s.replace(/[.,\/#!$%\^&\*;:{}=_`~()?"']/g, ' ');
+      return s.trim().replace(/\s+/g, ' ');
     }
 
     function checkKeywordMatch(userInput, acceptableKeywords) {
       if (!userInput || !userInput.trim()) return false;
       const normUser = normalizeBdtText(userInput);
+      const unaccentUser = removeVietnameseAccents(normUser);
       if (!normUser || normUser.length < 2) return false;
 
       for (const kw of acceptableKeywords) {
         const normKw = normalizeBdtText(kw);
-        if (normUser === normKw) return true;
-        if (normKw.length >= 3 && (normUser.includes(normKw) || normKw.includes(normUser))) {
-          if (normUser.length >= 2 && normKw.length >= 2) return true;
+        const unaccentKw = removeVietnameseAccents(normKw);
+        if (normUser === normKw || unaccentUser === unaccentKw) return true;
+        if (normKw.length >= 3 && (normKw.includes(normUser) || normUser.includes(normKw))) {
+          return true;
+        }
+        if (unaccentKw.length >= 3 && (unaccentKw.includes(unaccentUser) || unaccentUser.includes(unaccentKw))) {
+          return true;
         }
       }
       return false;
@@ -16241,6 +16312,7 @@
       const kwBox = document.getElementById('bdt-keyword-box');
       const userVal = inp ? inp.value.trim() : '';
 
+      // Nếu đã vượt qua ý này trước đó, bấm Tiếp tục sẽ chuyển ý tiếp
       if (bdtPassedSteps.has(bdtCurrentStep)) {
         if (bdtCurrentStep < bdtCurrentPoints.length - 1) {
           renderBrownStep(bdtCurrentStep + 1);
@@ -16250,7 +16322,33 @@
         return;
       }
 
+      // [YÊU CẦU NGƯỜI DÙNG]: BẮT BUỘC PHẢI GÕ ĐÚNG TỪ KHÓA, GÕ SAI HAY ĐỂ TRỐNG TUYỆT ĐỐI KHÔNG CHO QUA!
+      if (!userVal || userVal.length < 2) {
+        if (msg) {
+          msg.className = 'bdt-kw-msg error';
+          msg.textContent = 'Hãy nhập từ khóa hoặc sự kiện lịch sử của ý này để mở khóa!';
+        }
+        if (inp) {
+          inp.style.borderColor = '#ef4444';
+          inp.style.background = 'rgba(239, 68, 68, 0.15)';
+          inp.focus();
+        }
+        return;
+      }
+
       const isCorrect = checkKeywordMatch(userVal, kws);
+      if (!isCorrect) {
+        if (msg) {
+          msg.className = 'bdt-kw-msg error';
+          msg.textContent = 'Chưa chính xác! Hãy đọc kỹ ý kiến thức bên cạnh hoặc xem gợi ý.';
+        }
+        if (inp) {
+          inp.style.borderColor = '#ef4444';
+          inp.style.background = 'rgba(239, 68, 68, 0.15)';
+          inp.focus();
+        }
+        return; // CHẶN LẠI NGAY, KHÔNG CHO QUA!
+      }
       if (isCorrect) {
         bdtPassedSteps.add(bdtCurrentStep);
         if (inp) {
@@ -17506,7 +17604,7 @@
       if (bdtCompletedLoci.has(locus.id)) {
         bdtPassedSteps = new Set(points.map((_, i) => i));
       } else {
-        bdtPassedSteps = new Set(points.map((_, i) => i)); // Mo khoa san toan bo de thuyet trinh
+        bdtPassedSteps = new Set(); // Bắt đầu rỗng: Bắt buộc gõ đúng từ khóa mới mở khóa
       }
 
       // Nút Tiếp: Ghi rõ tên trạm kế tiếp
