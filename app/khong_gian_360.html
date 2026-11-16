@@ -2088,8 +2088,6 @@ function _decodeGeminiKey(s) {
             }
         }
         
-</style>
-
         /* Ẩn triệt để các nút rườm rà của điện thoại khi ở trên máy tính */
         @media (min-width: 769px) {
             #v-gyro,
@@ -2134,8 +2132,14 @@ function _decodeGeminiKey(s) {
                 border-color: #38bdf8;
                 transform: translateY(-1px);
             }
+            .dt-tool-btn.active {
+                background: rgba(14, 165, 233, 0.35) !important;
+                border-color: #38bdf8 !important;
+                color: #38bdf8 !important;
+                box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+            }
         }
-
+    </style>
 </head>
 
 <body>
@@ -2370,6 +2374,9 @@ function _decodeGeminiKey(s) {
                 </button>
                 <button class="dt-tool-btn" id="dt-btn-zoomout" onclick="window.triggerDesktopZoomMarker(0.85)" title="Thu nhỏ không gian / mốc">
                     🔍- <span>Thu nhỏ</span>
+                </button>
+                <button class="dt-tool-btn" id="dt-btn-move" onclick="window.triggerDesktopMoveMarker()" title="Di chuyển vị trí mốc sa bàn đang chọn trong phòng">
+                    🔄 <span>Di chuyển</span>
                 </button>
                 <button class="dt-tool-btn" id="dt-btn-lock" onclick="window.toggleLockMarkers()" title="Khóa / Mở khóa mốc (chống kéo lệch)">
                     🔒 <span id="lock-marker-txt">Khóa mốc</span>
@@ -3178,6 +3185,16 @@ function _decodeGeminiKey(s) {
             };
 
             // 2. Tải cụm mô hình sa bàn 3D hoàn chỉnh (Diorama Đa vật thể như không gian 3D chuẩn)
+            // Khôi phục scale người dùng đã chỉnh phóng to/thu nhỏ
+            let savedScale = null;
+            try {
+                const scaleMap = JSON.parse(localStorage.getItem('loci_360_marker_scales') || '{}');
+                if (scaleMap[a.id]) savedScale = scaleMap[a.id];
+            } catch (_) {}
+            if (savedScale && stationGroup) {
+                stationGroup.scale.setScalar(savedScale);
+            }
+
             const cfg = getStation3DConfig(space.lesson, a, i);
             if (cfg && gltfLoader) {
                 const modelList = (Array.isArray(cfg.models) && cfg.models.length > 0)
@@ -8618,6 +8635,22 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 function showLocusDetail(a) {
                     if (!a) return;
                     selId = a.id;
+                    window._currentSelectedMarkerId = a.id;
+                    
+                    // Highlight mốc sa bàn 3D đang được chọn
+                    try {
+                        for (const mkId in marker3DObjects) {
+                            const item = marker3DObjects[mkId];
+                            if (item && item.ringMesh && item.ringMesh.material) {
+                                if (mkId === a.id) {
+                                    item.ringMesh.material.color.setHex(0xf59e0b); // Vàng nổi bật mốc đang chọn
+                                } else {
+                                    item.ringMesh.material.color.setHex(0x38bdf8); // Xanh chuẩn
+                                }
+                            }
+                        }
+                    } catch (_) {}
+
                     renderAnchorsList();
                     try { window.LociMentor && LociMentor.track('locus_open', { id: a.id, title: a.title }); } catch (_) { }
 
@@ -8723,8 +8756,8 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             ` : '';
         })()}
         <div style="display:flex; gap:8px; margin-top:16px;">
-            <button class="btn s" id="btn-reposition-marker" style="flex:1; font-size:12px; padding:10px;"> Đặt lại vị trí</button>
-            <button class="info-rm-btn" id="rm-marker" style="flex:1; font-size:12px; padding:10px; margin:0;"> Gỡ mốc</button>
+            <button class="btn s" id="btn-reposition-marker" style="flex:1; font-size:12px; padding:10px; background:linear-gradient(135deg, #0284c7, #38bdf8); color:#fff; border:none; font-weight:700;">🔄 Đặt lại vị trí</button>
+            <button class="info-rm-btn" id="rm-marker" style="flex:1; font-size:12px; padding:10px; margin:0;">🗑️ Gỡ mốc</button>
         </div>
     `;
                     info.classList.add('on');
@@ -8799,6 +8832,21 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                                 : `<small>🗂️ FLASHCARD (CHẠM ĐỂ XEM ĐÁP ÁN)</small><span>${esc(card.front)}</span>`;
                         };
                     });
+
+                    const btnRepo = $('btn-reposition-marker');
+                    if (btnRepo) {
+                        btnRepo.onclick = () => {
+                            if (window._isMarkersLocked) {
+                                if (typeof toast === 'function') toast('🔒 Mốc đang bị khóa! Vui lòng bấm mở khóa trên thanh công cụ.');
+                                return;
+                            }
+                            info.classList.remove('on');
+                            selId = a.id;
+                            window._currentSelectedMarkerId = a.id;
+                            setPlacing(true);
+                            if (typeof toast === 'function') toast(`📍 Đang dời mốc "${a.title}". Hãy chạm vào điểm mới trên ảnh 360 để đặt!`);
+                        };
+                    }
 
                     $('rm-marker').onclick = () => {
                         delete space.markers[a.id];
@@ -11265,22 +11313,58 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             }
         };
 
+        // Phóng to / Thu nhỏ mô hình sa bàn 3D thực tế
+        window._markerCustomScales = window._markerCustomScales || {};
         window.triggerDesktopZoomMarker = function(factor) {
-            if (window._currentSelectedMarkerId && window.currentSpace && window.currentSpace.markers) {
-                const m = window.currentSpace.markers[window._currentSelectedMarkerId];
-                if (m) {
-                    m.scale = Math.min(3.0, Math.max(0.3, (m.scale || 1.0) * factor));
-                    if (typeof toast === 'function') toast('🔍 Đã điều chỉnh kích thước mốc: ' + Math.round(m.scale * 100) + '%');
+            const activeId = window._currentSelectedMarkerId || (typeof selId !== 'undefined' ? selId : null);
+            if (activeId && marker3DObjects && marker3DObjects[activeId]) {
+                const obj3d = marker3DObjects[activeId];
+                if (obj3d && obj3d.stationGroup) {
+                    const currentScale = obj3d.stationGroup.scale.x || 1.0;
+                    const nextScale = Math.min(3.5, Math.max(0.25, currentScale * factor));
+                    obj3d.stationGroup.scale.setScalar(nextScale);
+                    window._markerCustomScales[activeId] = nextScale;
+                    
+                    try {
+                        localStorage.setItem('loci_360_marker_scales', JSON.stringify(window._markerCustomScales));
+                    } catch (_) {}
+
+                    const pct = Math.round(nextScale * 100);
+                    if (typeof toast === 'function') {
+                        toast((factor > 1 ? '🔍+ Đã phóng to sa bàn mốc: ' : '🔍- Đã thu nhỏ sa bàn mốc: ') + pct + '%');
+                    }
                     return;
                 }
             }
-            // Nếu không chọn mốc cụ thể, zoom góc nhìn không gian 360
+            // Nếu không có mốc nào đang chọn, zoom góc nhìn FOV của ảnh toàn cảnh
             if (window.viewer && typeof window.viewer.getFov === 'function') {
                 const currFov = window.viewer.getFov();
-                const newFov = factor > 1 ? Math.max(30, currFov - 10) : Math.min(100, currFov + 10);
+                const newFov = factor > 1 ? Math.max(25, currFov - 10) : Math.min(100, currFov + 10);
                 window.viewer.setFov(newFov);
+                if (typeof toast === 'function') toast(factor > 1 ? '🔍 Phóng to góc nhìn không gian' : '🔍 Thu nhỏ góc nhìn không gian');
             } else if (typeof toast === 'function') {
                 toast(factor > 1 ? '🔍 Phóng to không gian' : '🔍 Thu nhỏ không gian');
+            }
+        };
+
+        // Kích hoạt chế độ di chuyển mốc sa bàn trong phòng
+        window.triggerDesktopMoveMarker = function() {
+            if (window._isMarkersLocked) {
+                if (typeof toast === 'function') toast('🔒 Mốc đang bị khóa! Hãy bấm "Khóa mốc" để mở khóa trước.');
+                return;
+            }
+            const activeId = window._currentSelectedMarkerId || (typeof selId !== 'undefined' ? selId : null);
+            if (!activeId) {
+                if (typeof toast === 'function') toast('💡 Hãy bấm vào 1 mốc sa bàn trong phòng trước, sau đó bấm Di chuyển.');
+                return;
+            }
+            if (typeof selId !== 'undefined') selId = activeId;
+            window._currentSelectedMarkerId = activeId;
+            if (typeof setPlacing === 'function') setPlacing(true);
+            const btnMove = document.getElementById('dt-btn-move');
+            if (btnMove) btnMove.classList.add('active');
+            if (typeof toast === 'function') {
+                toast('📍 Chế độ di chuyển: Hãy chạm vào vị trí mới trong phòng để dời sa bàn đến đó!');
             }
         };
     </script>

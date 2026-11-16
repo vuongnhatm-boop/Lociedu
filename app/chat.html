@@ -3078,31 +3078,43 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
             return out.join('').replace(/\u0000(\d+)\u0000/g, (_, i) => blocks[i]);
         }
 
-        // Extract [ACTION:...] tags -> buttons
+        // Extract [ACTION:...] tags -> Action Buttons cho AI Agent
         function parseActions(text) {
             const acts = [];
-            const clean = text.replace(/\[ACTION:([A-Z_]+)(?::([^\]]*))?\]/g, (_, type, arg) => {
+            const clean = text.replace(/\[ACTION:([A-Za-z_]+)(?::([^\]]*))?\]/gi, (_, type, arg) => {
+                const uType = (type || '').toUpperCase();
                 const target = (arg || '').trim();
-                if (type === 'NAVIGATE' || type === 'TELEPORT') {
-                    if (target === 'bai_6') {
-                        acts.push({ label: '🚀 Khám phá Bài 6 (Cách mạng Tháng 8)', href: 'khong_gian_360.html?lesson=bai_6' });
-                    } else if (target === 'bai_7') {
-                        acts.push({ label: '🚀 Khám phá Bài 7 (K/c chống Pháp)', href: 'khong_gian_360.html?lesson=bai_7' });
-                    } else if (target === 'bai_8') {
-                        acts.push({ label: '🚀 Khám phá Bài 8 (K/c chống Mỹ)', href: 'khong_gian_360.html?lesson=bai_8' });
-                    } else if (target === 'review' || target === 'flashcard') {
-                        acts.push({ label: '🃏 Thẻ ôn tập ghi nhớ Loci', href: 'review.html' });
-                    } else if (target === 'de_thi' || target === 'exam') {
-                        acts.push({ label: '📝 Vào Phòng Đề ôn tập', href: 'de_thi.html' });
-                    } else if (target === 'arena' || target === 'duong_dua') {
-                        acts.push({ label: '⚔️ Vào Đường đua tri thức (1v1)', href: 'portal_v2.html#arena' });
-                    } else if (target === 'olympia' || target === 'cup_loci') {
-                        acts.push({ label: '🏆 Tham gia Cúp Loci (Olympia)', href: 'portal_v2.html#olympia' });
-                    } else if (target === 'ket_noi' || target === 'group' || target === 'bxh') {
-                        acts.push({ label: '👥 Xem Nhóm học tập & BXH', href: 'ket_noi.html' });
-                    } else {
-                        acts.push({ label: '🏛️ Đến không gian học tập', href: 'portal_v2.html' });
+                if (uType === 'NAVIGATE' || uType === 'TELEPORT') {
+                    let href = target || 'portal_v2.html';
+                    let label = '🚀 Đi đến trang';
+                    const tLower = target.toLowerCase();
+                    if (tLower.includes('cung_dien_ky_uc') || tLower === '3d') {
+                        if (tLower.includes('bai_6')) { href = 'cung_dien_ky_uc.html?lesson=bai_6'; label = '🏛️ Cung điện 3D Bài 6 (CMT8 1945)'; }
+                        else if (tLower.includes('bai_7')) { href = 'cung_dien_ky_uc.html?lesson=bai_7'; label = '🏛️ Cung điện 3D Bài 7 (Điện Biên Phủ)'; }
+                        else if (tLower.includes('bai_8')) { href = 'cung_dien_ky_uc.html?lesson=bai_8'; label = '🏛️ Cung điện 3D Bài 8 (Chiến dịch HCM)'; }
+                        else { href = 'cung_dien_ky_uc.html'; label = '🏛️ Khám phá Cung điện Ký ức 3D'; }
+                    } else if (tLower.includes('360')) {
+                        if (tLower.includes('bai_6')) { href = 'khong_gian_360.html?lesson=bai_6'; label = '🌐 Không gian 360° Bài 6'; }
+                        else if (tLower.includes('bai_7')) { href = 'khong_gian_360.html?lesson=bai_7'; label = '🌐 Không gian 360° Bài 7'; }
+                        else if (tLower.includes('bai_8')) { href = 'khong_gian_360.html?lesson=bai_8'; label = '🌐 Không gian 360° Bài 8'; }
+                        else { href = 'khong_gian_360.html'; label = '🌐 Không gian 360° Thực tế ảo'; }
+                    } else if (tLower.includes('de_thi') || tLower.includes('exam')) {
+                        href = 'de_thi.html'; label = '📝 Phòng Luyện Đề THPT Quốc Gia';
+                    } else if (tLower.includes('review') || tLower.includes('flashcard')) {
+                        href = 'review.html'; label = '🃏 Thẻ Ghi Nhớ Loci (SM-2)';
+                    } else if (tLower.includes('duong_len_dinh') || tLower.includes('olympia')) {
+                        href = 'game_duong_len_dinh_loci.html'; label = '🏆 Đấu trường Đường Lên Đỉnh Loci';
+                    } else if (tLower.includes('arena')) {
+                        href = 'arena_duel.html'; label = '⚔️ Đấu trường 1v1 PvP';
+                    } else if (tLower.includes('ket_noi') || tLower.includes('bxh')) {
+                        href = 'ket_noi.html'; label = '👥 Cộng đồng Sử Loci & BXH';
+                    } else if (tLower.includes('portal') || tLower === 'home') {
+                        href = 'portal_v2.html'; label = '🏠 Về Trang Chủ Cổng Loci';
+                    } else if (target) {
+                        href = target;
+                        label = '🚀 Mở ngay: ' + target.replace('.html', '');
                     }
+                    acts.push({ label, href });
                 }
                 else if (type === 'QUIZ_START') acts.push({ label: '🃏 Thẻ ôn tập', href: 'review.html' }, { label: '📝 Đề ôn tập (28 câu)', href: 'de_thi.html' });
                 else if (type === 'EXAM_START') acts.push({ label: '📝 Vào Phòng Đề ôn tập', href: 'de_thi.html' });
@@ -3921,6 +3933,64 @@ html.is-embedded .sidebar, body.is-embedded .sidebar { display: flex !important;
 
             // 0. PHẢN HỒI QUAN SÁT KHÔNG GIAN 3D THỜI GIAN THỰC
             const visionCtx = context?.spatialVisionContext || null;
+            // Nhận diện lệnh AI Agent điều hướng và giải đáp vị trí chức năng trong LOCI EDU
+            if (q.includes('cung điện') || q.includes('cung dien') || (q.includes('bài 6') && (q.includes('vào') || q.includes('mở') || q.includes('xem'))) || (q.includes('bài 7') && (q.includes('vào') || q.includes('mở') || q.includes('xem'))) || (q.includes('bài 8') && (q.includes('vào') || q.includes('mở') || q.includes('xem')))) {
+                let target = 'cung_dien_ky_uc.html';
+                let name = 'Cung điện Ký ức 3D';
+                if (q.includes('bài 6') || q.includes('bai 6')) { target = 'cung_dien_ky_uc.html?lesson=bai_6'; name = 'Cung điện 3D Bài 6 (Cách mạng Tháng Tám 1945)'; }
+                else if (q.includes('bài 7') || q.includes('bai 7')) { target = 'cung_dien_ky_uc.html?lesson=bai_7'; name = 'Cung điện 3D Bài 7 (Chiến dịch Điện Biên Phủ 1954)'; }
+                else if (q.includes('bài 8') || q.includes('bai 8')) { target = 'cung_dien_ky_uc.html?lesson=bai_8'; name = 'Cung điện 3D Bài 8 (Chiến dịch Hồ Chí Minh 1975)'; }
+                return `Dạ được chứ! Mình đang kích hoạt AI Agent đưa bạn đến **${name}** ngay đây! [ACTION:NAVIGATE:${target}]`;
+            }
+
+            if (q.includes('360') || q.includes('không gian 360') || q.includes('phòng 360')) {
+                let target = 'khong_gian_360.html';
+                if (q.includes('bài 6') || q.includes('bai 6')) target = 'khong_gian_360.html?lesson=bai_6';
+                else if (q.includes('bài 7') || q.includes('bai 7')) target = 'khong_gian_360.html?lesson=bai_7';
+                else if (q.includes('bài 8') || q.includes('bai 8')) target = 'khong_gian_360.html?lesson=bai_8';
+                return `Dạ được chứ! Mình đang đưa bạn vào **Không gian 360° Thực tế ảo** để gắn và ngắm các sa bàn lịch sử! [ACTION:NAVIGATE:${target}]`;
+            }
+
+            if (q.includes('đề thi') || q.includes('phòng thi') || q.includes('thi thử') || q.includes('làm đề') || q.includes('thpt')) {
+                return `Phòng Luyện Đề & Thi Thử THPT Quốc Gia có đầy đủ ngân hàng đề thi chuẩn Bộ GD&ĐT (28 câu/đề) có bấm giờ và chấm điểm tự động. Mình đang đưa bạn vào ngay! [ACTION:NAVIGATE:de_thi.html]`;
+            }
+
+            if (q.includes('thẻ học') || q.includes('flashcard') || q.includes('sm-2') || q.includes('sm2') || q.includes('ôn tập')) {
+                return `Tính năng Thẻ ghi nhớ thông minh Spaced Repetition (thuật toán SM-2) giúp bạn lật thẻ và nhắc lại các mốc lịch sử dễ quên. Mình đưa bạn đến đó ngay! [ACTION:NAVIGATE:review.html]`;
+            }
+
+            if (q.includes('đường lên đỉnh') || q.includes('olympia') || q.includes('cúp loci') || q.includes('leo đỉnh')) {
+                return `Cuộc thi Đường Lên Đỉnh Loci với 4 vòng thi kịch tính (Khởi động, Vượt chướng ngại vật, Tăng tốc, Về đích). Mình đang đưa bạn vào đấu trường! [ACTION:NAVIGATE:game_duong_len_dinh_loci.html]`;
+            }
+
+            if (q.includes('đấu trường') || q.includes('1v1') || q.includes('pvp') || q.includes('đối kháng')) {
+                return `Đấu trường Đối kháng 1v1 PvP thời gian thực giúp bạn so tài tốc độ giải đề với các bạn học sinh khác. Mình đang đưa bạn vào! [ACTION:NAVIGATE:arena_duel.html]`;
+            }
+
+            if (q.includes('bảng xếp hạng') || q.includes('bxh') || q.includes('cộng đồng') || q.includes('kết nối')) {
+                return `Bảng xếp hạng vinh danh Top học sinh Loci và Diễn đàn trao đổi mẹo học Lịch sử 12 nằm tại trang Kết nối Cộng đồng. Mình đưa bạn đến đó nhé! [ACTION:NAVIGATE:ket_noi.html]`;
+            }
+
+            if (q.includes('đổi pet') || q.includes('thú cưng') || q.includes('linh thú') || q.includes('đổi tên') || q.includes('nickname')) {
+                return `Tính năng Đổi Linh Thú (Companion Pet) và Đổi Nickname/Avatar nằm tại **Cổng Portal (portal_v2.html)**: Bạn chỉ cần nhấn vào Avatar học sinh ở góc trên bên phải màn hình để mở bảng hồ sơ. Mình đưa bạn về Cổng Loci ngay nhé! [ACTION:NAVIGATE:portal_v2.html]`;
+            }
+
+            if (q.includes('trang chủ') || q.includes('portal') || q.includes('cổng loci')) {
+                return `Đang đưa bạn trở về Trang chủ Cổng Loci Edu! [ACTION:NAVIGATE:portal_v2.html]`;
+            }
+
+            if (q.includes('ở phần nào') || q.includes('ở đâu') || q.includes('tìm ở đâu')) {
+                return `Hệ thống LOCI EDU gồm các khu vực chính:
+• **Cung điện 3D (Bài 6, 7, 8):** Xem sa bàn đa vật thể và đi bộ trong không gian mô phỏng (cung_dien_ky_uc.html).
+• **Không gian 360°:** Gắn các mốc diorama vào căn phòng thật (khong_gian_360.html).
+• **Luyện Đề THPT:** Thi thử và chấm điểm 28 câu chuẩn Bộ (de_thi.html).
+• **Thẻ Flashcard SM-2:** Ôn tập ngắt quãng trí nhớ dài hạn (review.html).
+• **Đấu trường Leo Đỉnh & 1v1:** Thi tài cùng bạn bè (game_duong_len_dinh_loci.html / arena_duel.html).
+• **Đổi Pet / Hồ sơ:** Bấm vào Avatar góc trên bên phải tại Cổng Portal (portal_v2.html).
+
+Bạn muốn mình đưa bạn đến phần nào? [ACTION:NAVIGATE:portal_v2.html]`;
+            }
+
             const isVisualQuery = /(?:nhìn|thấy|mô\s+hình|không\s+gian|trước\s+mặt|mốc\s+này|bức\s+ảnh|xe\s+tăng|máy\s+bay|tổ\s+hợp|hiệp\s+định)/i.test(q);
 
             if (visionCtx && (isVisualQuery || visionCtx.modelLabel)) {
@@ -4308,7 +4378,18 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
                         }
                     }
                 },
-                onAction: () => {}
+                onAction: action => {
+                    if (action && action.type === 'navigate' && action.url) {
+                        console.log('🤖 [AI Agent] Đang thực thi chuyển hướng đến:', action.url);
+                        setTimeout(() => {
+                            if (window.top !== window.self) {
+                                window.top.location.href = action.url;
+                            } else {
+                                window.location.href = action.url;
+                            }
+                        }, 1200);
+                    }
+                }
             });
             ai.speak = () => {};
             ai.stopWakeWordListening?.();
@@ -4330,7 +4411,18 @@ Chèn các tag hành động điều khiển nếu phù hợp: [ACTION:TELEPORT:
                         }
                     }
                 },
-                onAction: () => {}
+                onAction: action => {
+                    if (action && action.type === 'navigate' && action.url) {
+                        console.log('🤖 [AI Agent] Đang thực thi chuyển hướng đến:', action.url);
+                        setTimeout(() => {
+                            if (window.top !== window.self) {
+                                window.top.location.href = action.url;
+                            } else {
+                                window.location.href = action.url;
+                            }
+                        }, 1200);
+                    }
+                }
             });
             updateEngineBadge(true);
         }

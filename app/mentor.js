@@ -642,6 +642,32 @@ function _decodeGeminiKey(s) {
   let root, bubble, panel, hideTimer, barAnim;
 
   function buildUI() {
+    // 1. Chống hiện 2 con AI khi trang con nằm trong iframe (ví dụ: khong_gian_360 nhúng trong portal_v2)
+    if (window.self !== window.top) {
+      console.log('[mentor.js] Trang đang nằm trong iframe -> Ẩn avatar nổi để không trùng lặp 2 AI.');
+      return;
+    }
+
+    // 2. Chống hiện 2 con AI khi trang đã có nút Mascot AI chính thức (#loci-floating-ai-mascot)
+    const portalMascot = document.getElementById('loci-floating-ai-mascot');
+    if (portalMascot) {
+      console.log('[mentor.js] Đã phát hiện Mascot AI chính thức -> Hợp nhất điều khiển, không sinh thêm nút tròn thứ 2.');
+      portalMascot.onclick = () => {
+        if (typeof window.switchPortalTab === 'function') {
+          window.switchPortalTab('ai');
+        } else {
+          togglePanel('chat');
+        }
+      };
+      if (!document.getElementById('lm-style')) {
+        const st = document.createElement('style'); st.id = 'lm-style'; st.textContent = CSS; document.head.appendChild(st);
+      }
+      panel = document.createElement('div');
+      panel.id = 'lm-panel';
+      document.body.appendChild(panel);
+      return;
+    }
+
     if (!document.getElementById('lm-style')) {
       const st = document.createElement('style'); st.id = 'lm-style'; st.textContent = CSS; document.head.appendChild(st);
     }

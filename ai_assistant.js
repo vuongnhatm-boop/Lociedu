@@ -790,15 +790,44 @@ export class LociAIAssistant {
      * Luôn gắn kết câu chuyện với 1 mẹo liên tưởng trực quan trong Cung điện Ký ức Loci 3D.
      * Tự động thêm thẻ [ACTION:save_story] ở cuối khi bạn chia sẻ một mẩu chuyện/mẹo nhớ hay để học sinh có thể lưu lại.
 
-5. CHẾ ĐỘ AI AGENT ĐIỀU KHIỂN WEB (TỰ HIỂU VÀ ĐÁP ỨNG MỌI YÊU CẦU CỦA NGƯỜI DÙNG):
-   Khi người dùng ra lệnh điều khiển web, hãy tự động hiểu ngữ cảnh và chèn các thẻ hành động tương ứng:
-   - Bay/di chuyển đến mốc lịch sử: [ACTION:teleport:<id>] (ví dụ: dien_bien_phu, cach_mang_thang_tam, dong_khoi, chien_dich_ho_chi_minh, hiep_dinh_geneve).
-   - Mở bài khảo trắc nghiệm nhanh của mốc: [ACTION:quiz_start]
-   - Chụp ảnh lưu niệm không gian 3D: [ACTION:snapshot]
-   - Mở Sổ tay Câu chuyện Ký ức Loci: [ACTION:open_stories]
-   - Lưu câu chuyện vào sổ tay: [ACTION:save_story]
-   - Chuyển hướng trang web: [ACTION:navigate:portal_v2.html], [ACTION:navigate:de_thi.html], [ACTION:navigate:arena_duel.html], [ACTION:navigate:game_duong_len_dinh_loci.html], [ACTION:navigate:ket_noi.html], [ACTION:navigate:review.html]
-   - Ẩn/tắt trợ lý: [ACTION:dismiss] như "màn hình tivi", "kệ tivi", "phòng khách tivi"... mà phải gắn đúng vào các trạm sa bàn, di tích lịch sử trong 3 không gian trên.
+5. VAI TRÒ AI AGENT TOÀN NĂNG & ĐIỀU HÀNH NỀN TẢNG LOCI EDU:
+   Bạn là một **AI AGENT THÔNG MINH** am hiểu tường tận kiến trúc và vị trí mọi tính năng của nền tảng LOCI EDU:
+   
+   A. BẢN ĐỒ CÁC TRANG & CHỨC NĂNG (SITEMAP):
+      • Cổng Tổng quan Portal: "portal_v2.html" (Chọn bài học, đổi linh thú Companion Pet, đồng bộ Cloud, đổi Nickname, bảng tiến độ).
+      • Cung điện Ký ức 3D (Không gian 3D đi bộ sa bàn diorama):
+        - Tổng quan 3D: "cung_dien_ky_uc.html"
+        - Cung điện Bài 6 (Cách mạng Tháng Tám 1945): "cung_dien_ky_uc.html?lesson=bai_6"
+        - Cung điện Bài 7 (Điện Biên Phủ 1954): "cung_dien_ky_uc.html?lesson=bai_7"
+        - Cung điện Bài 8 (Đại thắng Mùa Xuân 1975): "cung_dien_ky_uc.html?lesson=bai_8"
+      • Không gian 360° Thực tế ảo (Gắn sa bàn 3D vào ảnh căn phòng thực tế):
+        - Không gian 360 tổng quan: "khong_gian_360.html"
+        - Không gian 360 Bài 6: "khong_gian_360.html?lesson=bai_6"
+        - Không gian 360 Bài 7: "khong_gian_360.html?lesson=bai_7"
+        - Không gian 360 Bài 8: "khong_gian_360.html?lesson=bai_8"
+      • Phòng Đề ôn tập & Thi thử THPT Quốc gia (28 câu/đề, chấm điểm tự động): "de_thi.html"
+      • Thẻ ghi nhớ thông minh Spaced Repetition (Thuật toán SM-2 giãn cách): "review.html"
+      • Đấu trường Tri thức Loci (Leo Đỉnh Loci 4 vòng thi Olympia): "game_duong_len_dinh_loci.html"
+      • Đấu trường 1v1 PvP thời gian thực: "arena_duel.html"
+      • Cộng đồng Sử Loci & Bảng xếp hạng: "ket_noi.html"
+      • Gia sư AI Loci: "chat.html"
+      • Đổi Linh thú (Pet) / Đổi Nickname / Lưu Cloud: Nằm ở góc trên bên phải Cổng Portal (portal_v2.html), nhấn vào Avatar hồ sơ học sinh.
+
+   B. KHI NGƯỜI DÙNG HỎI VỊ TRÍ ("Cái này ở phần nào?", "Vào đâu để thi/học/đổi pet/xem BXH...?"):
+      - Giải thích rõ ràng vị trí của tính năng/nội dung đó trong LOCI EDU.
+      - Tự động gắn thẻ điều hướng: [ACTION:NAVIGATE:<url>] để người dùng có thể nhấp vào đi ngay!
+
+   C. KHI NGƯỜI DÙNG RA LỆNH ĐIỀU HƯỚNG ("Đưa tôi vào đây", "Đưa tôi đến...", "Mở...", "Cho tôi xem...", "Chuyển sang bài 6/7/8..."):
+      - Lập tức xác nhận và chuyển hướng người dùng: "Dạ được chứ! Mình đang đưa bạn đến [Tên mục] ngay đây!"
+      - BẮT BUỘC chèn thẻ hành động tương ứng:
+        * Vào Cung điện 3D Bài 6/7/8: [ACTION:NAVIGATE:cung_dien_ky_uc.html?lesson=bai_6] (hoặc bai_7, bai_8, cung_dien_ky_uc.html)
+        * Vào Không gian 360°: [ACTION:NAVIGATE:khong_gian_360.html]
+        * Vào Phòng Đề thi THPT: [ACTION:NAVIGATE:de_thi.html]
+        * Vào Thẻ học Flashcard: [ACTION:NAVIGATE:review.html]
+        * Vào Đường lên đỉnh Loci: [ACTION:NAVIGATE:game_duong_len_dinh_loci.html]
+        * Vào Đấu trường 1v1: [ACTION:NAVIGATE:arena_duel.html]
+        * Về Trang chủ Portal / Đổi Pet: [ACTION:NAVIGATE:portal_v2.html]
+        * Xem Bảng xếp hạng / Cộng đồng: [ACTION:NAVIGATE:ket_noi.html]
    - Trình bày câu trả lời khoa học, sáng sủa, có tiêu đề Markdown, gạch đầu dòng rõ ràng, bảng biểu so sánh hoặc thẻ tóm tắt mốc thời gian để học sinh dễ nắm bắt.
 `;
     const lociList = context.lociList || [];
@@ -1458,8 +1487,65 @@ ${summaryDirective}
       return;
     }
 
+    // 0.3 Lệnh điều hướng trang thông minh (AI Agent Autonomous Navigation)
+    if (q.includes('cung điện') || q.includes('cung dien') || q.includes('3d') || q.includes('bài 6') || q.includes('bai 6') || q.includes('bài 7') || q.includes('bai 7') || q.includes('bài 8') || q.includes('bai 8')) {
+      let targetLesson = 'cung_dien_ky_uc.html';
+      let title = 'Cung điện Ký ức 3D';
+      if (q.includes('bài 6') || q.includes('bai 6') || q.includes('tháng tám') || q.includes('cmt8')) {
+        targetLesson = 'cung_dien_ky_uc.html?lesson=bai_6';
+        title = 'Cung điện 3D Bài 6: Cách mạng Tháng Tám 1945';
+      } else if (q.includes('bài 7') || q.includes('bai 7') || q.includes('điện biên') || q.includes('pháp')) {
+        targetLesson = 'cung_dien_ky_uc.html?lesson=bai_7';
+        title = 'Cung điện 3D Bài 7: Chiến dịch Điện Biên Phủ 1954';
+      } else if (q.includes('bài 8') || q.includes('bai 8') || q.includes('hồ chí minh') || q.includes('mỹ') || q.includes('1975')) {
+        targetLesson = 'cung_dien_ky_uc.html?lesson=bai_8';
+        title = 'Cung điện 3D Bài 8: Đại thắng Mùa Xuân 1975';
+      }
+      const reply = `Đang đưa bạn đến ${title}! [ACTION:NAVIGATE:${targetLesson}]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: targetLesson });
+      return;
+    }
+
+    if (q.includes('360') || q.includes('không gian 360') || q.includes('khong gian 360') || q.includes('phòng 360')) {
+      let target360 = 'khong_gian_360.html';
+      if (q.includes('bài 6') || q.includes('bai 6')) target360 = 'khong_gian_360.html?lesson=bai_6';
+      else if (q.includes('bài 7') || q.includes('bai 7')) target360 = 'khong_gian_360.html?lesson=bai_7';
+      else if (q.includes('bài 8') || q.includes('bai 8')) target360 = 'khong_gian_360.html?lesson=bai_8';
+      const reply = `Đang đưa bạn vào Không gian 360° Thực tế ảo! [ACTION:NAVIGATE:${target360}]`;
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: target360 });
+      return;
+    }
+
+    if (q.includes('thẻ học') || q.includes('flashcard') || q.includes('ôn tập') || q.includes('sm-2') || q.includes('sm2')) {
+      const reply = 'Đang đưa bạn vào Thẻ Ghi Nhớ Thông Minh Spaced Repetition (SM-2)! [ACTION:NAVIGATE:review.html]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: 'review.html' });
+      return;
+    }
+
+    if (q.includes('bảng xếp hạng') || q.includes('bxh') || q.includes('cộng đồng') || q.includes('nhóm học tập')) {
+      const reply = 'Đang đưa bạn đến Cộng đồng Sử Loci và Bảng Xếp Hạng! [ACTION:NAVIGATE:ket_noi.html]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: 'ket_noi.html' });
+      return;
+    }
+
+    if (q.includes('đổi pet') || q.includes('thú cưng') || q.includes('linh thú') || q.includes('đổi tên') || q.includes('nickname')) {
+      const reply = 'Tính năng Đổi Linh Thú và Hồ Sơ nằm tại Cổng Portal (nhấn vào Avatar góc trên bên phải)! Mình đang đưa bạn về Cổng Loci ngay. [ACTION:NAVIGATE:portal_v2.html]';
+      this.onMessage({ role: 'assistant', text: reply });
+      this.speak(reply);
+      this.onAction({ type: 'navigate', url: 'portal_v2.html' });
+      return;
+    }
+
     // 0.3 Lệnh điều hướng trang
-    if (q.includes('về trang chủ') || q.includes('về portal') || q.includes('trang chủ')) {
+    if (q.includes('về trang chủ') || q.includes('về portal') || q.includes('trang chủ') || q.includes('portal')) {
       const reply = 'Đang đưa bạn trở về Trang chủ Cổng Loci Edu! [ACTION:NAVIGATE:portal_v2.html]';
       this.onMessage({ role: 'assistant', text: reply });
       this.speak(reply);
