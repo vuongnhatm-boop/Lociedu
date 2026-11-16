@@ -6018,16 +6018,16 @@
       ];
 
       const bai8SequentialPositions = [
-        //  9 TRẠM BÀI 8 BỐ TRÍ DƯỚI MẶT ĐẤT (Y = 0.0) CHUẨN SƯ PHẠM NCKH
-        [-6.0, 0.0, -3.2], // Trạm 1: Bối cảnh sau 1954 & Đất nước tạm thời chia cắt hai miền
-        [-8.2, 0.0, -0.8], // Trạm 2: Phong trào Đồng khởi (1959 - 1960) & Đại hội III
-        [-7.8, 0.0, 2.2],  // Trạm 3: Đánh bại Chiến tranh đặc biệt (1961 - 1965)
-        [-3.8, 0.0, 3.8],  // Trạm 4: Đánh bại Chiến tranh cục bộ (1965 - 1968)
-        [1.2, 0.0, 3.8],   // Trạm 5: Cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân (1968)
-        [6.5, 0.0, 3.6],   // Trạm 6: Đánh bại Việt Nam hóa chiến tranh (1969 - 1972)
-        [9.2, 0.0, 1.2],   // Trạm 7: Trận Điện Biên Phủ trên không (1972) & Hiệp định Paris (1973)
-        [8.5, 0.0, -2.8],  // Trạm 8: Nghị quyết 21 & Đòn trinh sát Đường 14 - Phước Long
-        [2.5, 0.0, -3.4]   // Trạm 9: Cuộc Tổng tiến công và nổi dậy Xuân 1975 — Toàn thắng
+        // ─── 9 TRẠM BÀI 8 BỐ TRÍ TRÊN ĐƯỜNG PHỐ QUANG ĐÃNG (KHÔNG DÍNH TƯỜNG ĐỔ) ───
+        [-4.5, 0.01, -2.5], // Trạm 1: Bối cảnh sau 1954 & Cầu Hiền Lương Vĩ tuyến 17
+        [-4.8, 0.01, -0.3], // Trạm 2: Phong trào Đồng khởi (1959 - 1960) & Đội quân tóc dài
+        [-4.5, 0.01, 1.8],  // Trạm 3: Đánh bại Chiến tranh đặc biệt (Chiến thắng Ấp Bắc)
+        [-1.8, 0.01, 2.8],  // Trạm 4: Đánh bại Chiến tranh cục bộ & Chiến thắng Vạn Tường
+        [1.8, 0.01, 2.8],   // Trạm 5: Cuộc Tổng tiến công và nổi dậy Xuân Mậu Thân 1968
+        [4.5, 0.01, 1.8],   // Trạm 6: Đánh bại Việt Nam hóa chiến tranh (Quảng Trị)
+        [4.8, 0.01, -0.3],  // Trạm 7: Trận Điện Biên Phủ trên không (1972) & Hiệp định Paris (1973)
+        [4.5, 0.01, -2.5],  // Trạm 8: Nghị quyết 21 & Chiến thắng Đường 14 - Phước Long
+        [0.0, 0.01, -3.2]   // Trạm 9: Cuộc Tổng tiến công Xuân 1975 — Xe tăng 390 Dinh Độc Lập
       ];
 
       const brownArcPositions = [
@@ -15525,6 +15525,53 @@
       ]
     };
 
+    const BAI8_POINT_MODELS = {
+      1: [
+        { title: 'Chính quyền Ngô Đình Diệm & Vĩ tuyến 17', url: 'assets/models/bai8/tram1/my_bat_tay.glb' },
+        { title: 'Miền Bắc khôi phục kinh tế & xây dựng CNXH', url: 'assets/models/bai8/tram1/xay_dung_xa_hoi_chu_nghia.glb' },
+        { title: 'Miền Nam kiên cường chống Mỹ - Diệm', url: 'assets/models/bai8/tram1/mien_nam_chong_my.glb' },
+        { title: 'Cục diện Chiến tranh Lạnh hai cực', url: 'assets/models/bai8/tram1/chien_tranh_lanh_2_tay.glb' }
+      ],
+      2: [
+        { title: 'Phong trào Đồng Khởi 1960 — Đội quân tóc dài', url: 'assets/models/bai8/tram2/doi_quan_toc_dai_ben_tre.glb' },
+        { title: 'Mặt trận Dân tộc Giải phóng miền Nam (20/12/1960)', url: 'assets/models/bai8/tram2/mat_tran_dan_toc_giai_phong.glb' },
+        { title: 'Hội nghị 15 BCH Trung ương Đảng & Đại hội III', url: 'assets/models/bai8/tram2/dai_hoi_dang_toan_quoc.glb' },
+        { title: 'Đấu tranh chống chế độ Mỹ - Diệm', url: 'assets/models/bai8/tram2/mien_nam_dau_tranh.glb' }
+      ],
+      3: [
+        { title: 'Chiến thắng Ấp Bắc bẻ gãy chiến thuật Mỹ', url: 'assets/models/bai8/tram3/chien_thang_ap_bac.glb' },
+        { title: 'Lực lượng vũ trang Quân Giải phóng miền Nam', url: 'assets/models/bai8/tram3/luc_luong_quan_giai_phong.glb' },
+        { title: 'Trực thăng vận & Thiết xa vận Mỹ thất bại', url: 'assets/models/bai8/tram3/my_dung_truc_thang_van.glb' }
+      ],
+      4: [
+        { title: 'Chiến thắng Vạn Tường mở đầu đánh Mỹ', url: 'assets/models/bai8/tram4/chien_thang_van_tuong.glb' },
+        { title: 'Đường Hồ Chí Minh trên bộ & Xe đạp thồ tiếp tế', url: 'assets/models/bai8/tram4/xe_dap_tho.glb' }
+      ],
+      5: [
+        { title: 'Tổng tiến công và nổi dậy Tết Mậu Thân 1968', url: 'assets/models/bai8/tram5/tong_tien_cong_mau_than.glb' },
+        { title: 'Biệt động đánh chiếm Tòa Đại sứ Mỹ', url: 'assets/models/bai8/tram5/danh_chiem_dai_su_my.glb' },
+        { title: 'Buộc Mỹ chấp nhận đàm phán tại Paris', url: 'assets/models/bai8/tram5/dam_phan_pari_1968.glb' }
+      ],
+      6: [
+        { title: 'Liên minh đoàn kết ba nước Đông Dương', url: 'assets/models/bai8/tram6/lao_vn_campuchia.glb' },
+        { title: 'Chiến đấu anh dũng mặt trận Quảng Trị', url: 'assets/models/bai8/tram6/mat_tran_quang_tri.glb' }
+      ],
+      7: [
+        { title: 'Bắn rơi pháo đài bay B-52 trên bầu trời Hà Nội', url: 'assets/models/bai8/tram7/ban_pha_phao_dai_bay_b52.glb' },
+        { title: 'Quân Mỹ cuốn cờ rút khỏi Việt Nam', url: 'assets/models/bai8/tram7/quan_my_rut_quan_1973.glb' },
+        { title: 'Ký kết Hiệp định Paris về Việt Nam (1973)', url: 'assets/models/bai8/tram7/hiep_dinh.glb' }
+      ],
+      8: [
+        { title: 'Chiến thắng Đường 14 - Phước Long tạo thế đòn bẩy', url: 'assets/models/bai8/tram8/chien_thang_phuoc_long.glb' },
+        { title: 'Mỹ không có khả năng can thiệp trở lại', url: 'assets/models/bai8/tram8/hai_co_van_my.glb' }
+      ],
+      9: [
+        { title: 'Xe tăng 390 húc đổ cổng Dinh Độc Lập', url: 'assets/models/bai8/tram9/xe_tang_giai_phong_390.glb' },
+        { title: 'Cổng Dinh Độc Lập trưa ngày 30/4/1975', url: 'assets/models/bai8/tram9/cong_dinh_doc_lap.glb' },
+        { title: 'Chiến dịch giải phóng Huế - Đà Nẵng', url: 'assets/models/bai8/tram9/chien_dich_hue_da_nang.glb' }
+      ]
+    };
+
     function resolveMiniAssetUrl(relUrl) {
       if (!relUrl) return '';
       const pName = (typeof window !== 'undefined' && window.location) ? window.location.pathname : '';
@@ -15573,7 +15620,7 @@
       const sIdx = (typeof stepIdx === 'number' && !isNaN(stepIdx)) ? stepIdx : (window.bdtCurrentStep || 0);
 
       const curLesson = (typeof EFFECTIVE_LESSON_KEY !== 'undefined' && EFFECTIVE_LESSON_KEY) ? EFFECTIVE_LESSON_KEY : 'bai_6';
-      const pointMap = curLesson === 'bai_7' ? BAI7_POINT_MODELS : BAI6_POINT_MODELS;
+      const pointMap = curLesson === 'bai_7' ? BAI7_POINT_MODELS : (curLesson === 'bai_8' ? BAI8_POINT_MODELS : BAI6_POINT_MODELS);
       const stationPointList = pointMap[curOrder] || [];
       const pointMeta = stationPointList[sIdx] || stationPointList[0] || null;
 
@@ -25212,10 +25259,9 @@ Hỏi: ...
         // Zoom cận cảnh trực tiếp model minh họa (khoảng cách 1.55m, cao 1.25m)
         let dir = camera.position.clone().sub(targetModelPos);
         dir.y = 0;
-        if (isB8 && locus.order === 9) {
-          // Trạm 9: Tách biệt rõ ràng góc nhìn Tây Nguyên (bên trái) và Huế - Đà Nẵng (bên phải), tuyệt đối không chéo ngược
-          if (stepIdx === 0) dir.set(-0.35, 0, 0.95);
-          else if (stepIdx === 1) dir.set(0.35, 0, 0.95);
+        if (isB8) {
+          // Trong Bài 8, luôn hướng góc nhìn từ tim đường phố thông thoáng vào mô hình, chống kẹt tường
+          dir.set(0 - targetModelPos.x, 0, 0 - targetModelPos.z);
         }
         if (dir.lengthSq() < 0.05) dir.set(0, 0, 1);
         dir.normalize();

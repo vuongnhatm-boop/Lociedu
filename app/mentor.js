@@ -421,7 +421,7 @@ function _decodeGeminiKey(s) {
 
   async function queryGemini(promptText, history = []) {
     const keys = getCandidateKeys();
-    const candidateModels = ['gemini-2.5-flash', 'gemini-1.5-flash', 'gemini-flash-latest'];
+    const candidateModels = ['gemini-2.0-flash', 'gemini-1.5-flash', 'gemini-1.5-flash-8b'];
 
     // Chuẩn bị payload Gemini
     const contents = [];
@@ -440,8 +440,11 @@ function _decodeGeminiKey(s) {
     for (const key of keys) {
       for (const m of candidateModels) {
         try {
+          const ctrl = new AbortController();
+          const tId = setTimeout(() => ctrl.abort(), 5500);
           const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${m}:generateContent?key=${key}`, {
             method: 'POST',
+            signal: ctrl.signal,
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
               contents: contents,
@@ -450,7 +453,7 @@ function _decodeGeminiKey(s) {
                 maxOutputTokens: 800
               }
             })
-          });
+          }).finally(() => clearTimeout(tId));
           if (resp.ok) {
             const data = await resp.json();
             const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
@@ -917,6 +920,33 @@ function _decodeGeminiKey(s) {
     chatMessages.push({ role: 'user', text: userText });
     renderPanel('chat');
 
+    const q = (userText || '').toLowerCase().trim();
+
+    // 0. TRẢ LỜI NGAY LẬP TỨC CHO CÁC CÂU HỎI VỊ TRÍ, ĐIỀU KHIỂN & HỎI ĐƯỜNG (KHÔNG ĐỂ USER CHỜ TREO)
+    if (q.includes('ở đâu') || q.includes('đang ở đâu') || q.includes('đây là đâu') || q.includes('chỗ nào')) {
+      const whereReply = `🏛️ **Bạn đang ở trong Không gian 360° Thực tế ảo (Cung điện Ký ức Loci)!**\n\nTại đây, bạn có thể ngắm các cụm sa bàn lịch sử 3D sống động (Bài 6, 7, 8) được neo trực tiếp vào không gian căn phòng thực tế của bạn.\n• **Khám phá:** Giữ chuột trái kéo để xoay góc nhìn 360°, bấm vào các đĩa hologram để mở bài học.\n• **Phóng to/Thu nhỏ:** Bấm vào mốc rồi dùng nút **[🔍+ Phóng to]** / **[🔍- Thu nhỏ]** trên thanh công cụ.\n• **Di chuyển mốc:** Bấm vào mốc rồi chọn nút **[🔄 Di chuyển]** hoặc kéo thả trực tiếp mốc đến vị trí bạn muốn!`;
+      chatMessages.push({ role: 'ai', text: whereReply });
+      renderPanel('chat');
+      if (state.settings.voice) speak(whereReply);
+      return;
+    }
+
+    if (q.includes('di chuyển') || q.includes('di chuyen') || q.includes('dời mốc') || q.includes('chuyển mốc') || q.includes('kéo mốc')) {
+      const moveReply = `📍 **Cách di chuyển mốc sa bàn 3D trong phòng 360° cực kỳ dễ dàng:**\n\n👉 **Cách 1 (Kéo thả trực tiếp):** Nhấp giữ chuột trái vào mốc sa bàn trong phòng, rê chuột đến chỗ mới rồi thả tay ra!\n\n👉 **Cách 2 (Dùng thanh công cụ):**\n1. Nhấp chuột vào mốc sa bàn muốn chuyển (vòng tròn sẽ sáng màu **Vàng**).\n2. Bấm nút **[🔄 Di chuyển]** trên thanh công cụ phía trên (hoặc nút *'Đặt lại vị trí'* trong bảng mốc).\n3. Nhấp chuột vào bất kỳ vị trí nào trên tường, sàn hoặc bàn trong phòng, sa bàn sẽ bay ngay đến đó!`;
+      chatMessages.push({ role: 'ai', text: moveReply });
+      renderPanel('chat');
+      if (state.settings.voice) speak(moveReply);
+      return;
+    }
+
+    if (q.includes('phóng to') || q.includes('thu nhỏ') || q.includes('kích thước') || q.includes('scale')) {
+      const zoomReply = `🔍 **Cách phóng to / thu nhỏ sa bàn 3D:**\n1. Nhấp chuột vào mốc sa bàn bạn muốn chỉnh kích thước.\n2. Bấm nút **[🔍+ Phóng to]** hoặc **[🔍- Thu nhỏ]** trên thanh công cụ phía trên để tăng/giảm kích thước sa bàn theo ý muốn (hệ thống sẽ tự động lưu lại tỉ lệ này).`;
+      chatMessages.push({ role: 'ai', text: zoomReply });
+      renderPanel('chat');
+      if (state.settings.voice) speak(zoomReply);
+      return;
+    }
+
     const msgBox = panel.querySelector('#lm-chat-messages');
     if (msgBox) {
       const loadingEl = document.createElement('div');
@@ -940,7 +970,12 @@ Nhiệm vụ:
 Độ dài câu trả lời: 100 - 250 từ. Trình bày đẹp bằng gạch đầu dòng và từ khóa in đậm.`;
 
     const fullPrompt = `${systemContext}\n\nCâu hỏi của học sinh: ${userText}`;
-    let aiReply = await queryGemini(fullPrompt, chatMessages.slice(-6));
+    let aiReply = null;
+    try {
+      aiReply = await queryGemini(fullPrompt, chatMessages.slice(-6));
+    } catch (apiErr) {
+      console.warn('[mentor.js] Lỗi kết nối Gemini API:', apiErr);
+    }
 
     // Fallback thông minh nếu offline / rate-limit
     if (!aiReply) {

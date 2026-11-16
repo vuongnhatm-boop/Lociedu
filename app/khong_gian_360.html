@@ -7830,6 +7830,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     const nextUnplaced = list.slice(curIdx + 1).concat(list.slice(0, curIdx)).find(a => !space.markers[a.id]);
 
                     renderMarkersOnPano();
+                    if (typeof window.cancelMoveMode === 'function') window.cancelMoveMode();
                     if (nextUnplaced) {
                         selId = nextUnplaced.id;
                         toast('✓ Đã gắn mốc! Tiếp tục gắn mốc: ' + nextUnplaced.title);
@@ -11353,7 +11354,11 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 if (typeof toast === 'function') toast('🔒 Mốc đang bị khóa! Hãy bấm "Khóa mốc" để mở khóa trước.');
                 return;
             }
-            const activeId = window._currentSelectedMarkerId || (typeof selId !== 'undefined' ? selId : null);
+            let activeId = window._currentSelectedMarkerId || (typeof selId !== 'undefined' ? selId : null);
+            if (!activeId && window.currentSpace && window.currentSpace.markers) {
+                const keys = Object.keys(window.currentSpace.markers);
+                if (keys.length > 0) activeId = keys[0];
+            }
             if (!activeId) {
                 if (typeof toast === 'function') toast('💡 Hãy bấm vào 1 mốc sa bàn trong phòng trước, sau đó bấm Di chuyển.');
                 return;
@@ -11363,9 +11368,26 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             if (typeof setPlacing === 'function') setPlacing(true);
             const btnMove = document.getElementById('dt-btn-move');
             if (btnMove) btnMove.classList.add('active');
-            if (typeof toast === 'function') {
-                toast('📍 Chế độ di chuyển: Hãy chạm vào vị trí mới trong phòng để dời sa bàn đến đó!');
+
+            // Hiển thị banner hướng dẫn di chuyển trực quan
+            let banner = document.getElementById('loci-move-guide-banner');
+            if (!banner) {
+                banner = document.createElement('div');
+                banner.id = 'loci-move-guide-banner';
+                banner.style.cssText = 'position:fixed; top:75px; left:50%; transform:translateX(-50%); z-index:9999; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; padding:10px 22px; border-radius:99px; box-shadow:0 8px 24px rgba(2,132,199,0.4); font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:12px; border:2px solid #fff; animation: bounceIn 0.3s;';
+                banner.innerHTML = `<span>📍 Chạm vào bất kỳ vị trí nào trên tường / sàn / bàn để dời sa bàn đến đó!</span><button type="button" onclick="window.cancelMoveMode()" style="background:rgba(255,255,255,0.25); border:none; color:#fff; border-radius:99px; padding:3px 12px; font-weight:700; cursor:pointer;">✕ Đóng</button>`;
+                document.body.appendChild(banner);
+            } else {
+                banner.style.display = 'flex';
             }
+        };
+
+        window.cancelMoveMode = function() {
+            if (typeof setPlacing === 'function') setPlacing(false);
+            const btnMove = document.getElementById('dt-btn-move');
+            if (btnMove) btnMove.classList.remove('active');
+            const banner = document.getElementById('loci-move-guide-banner');
+            if (banner) banner.style.display = 'none';
         };
     </script>
   
