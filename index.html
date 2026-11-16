@@ -569,6 +569,9 @@
         };
     </script>
 
+    <!-- HỆ THỐNG POP-UP THÔNG BÁO RIÊNG BIỆT LOCI EDU (THAY THẾ POP-UP HỆ THỐNG) -->
+    <script src="custom_popup_system.js"></script>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>LOCI EDU - Cung Điện Tri Thức</title>
@@ -12841,6 +12844,7 @@
             }
         }
     </style>
+    <style>#lm-root { display: none !important; }</style>
 </head>
 
 <body>
@@ -17307,20 +17311,55 @@
 
         // Thông báo đẩy logic
         window.requestNotiPortal = async () => {
-            if (typeof LociFirebase === 'undefined') return alert('Đang kết nối Firebase...');
+            if (typeof LociFirebase === 'undefined') {
+                return (window.lociAlert ? window.lociAlert('Đang kết nối Firebase...') : alert('Đang kết nối Firebase...'));
+            }
             const result = await LociFirebase.requestNotificationPermission();
             if (result && result.token) {
-                alert("Đã bật nhận thông báo thành công!");
+                if (window.showCustomDialog) {
+                    window.showCustomDialog({
+                        type: 'success',
+                        badge: 'THÔNG BÁO HOẠT ĐỘNG',
+                        title: 'Đã Bật Nhận Thông Báo Thành Công',
+                        message: 'Thiết bị của bạn đã được kích hoạt nhận thông báo học tập và gợi nhớ kiến thức 1-3-7 từ LOCI EDU.',
+                        confirmText: 'Đã hiểu'
+                    });
+                } else {
+                    alert("Đã bật nhận thông báo thành công!");
+                }
                 const notiBtn = document.getElementById('btn-request-noti-portal');
                 if (notiBtn) notiBtn.style.display = 'none';
             } else {
-                alert("Chưa thể bật thông báo:\n" + (result ? result.error : "Lỗi không xác định."));
+                const errMsg = result ? result.error : "Lỗi không xác định.";
+                if (window.showCustomDialog) {
+                    window.showCustomDialog({
+                        type: 'warning',
+                        badge: 'CHƯA CẤP QUYỀN',
+                        title: 'Chưa Thể Bật Thông Báo',
+                        message: errMsg,
+                        confirmText: 'Đã hiểu'
+                    });
+                } else {
+                    alert("Chưa thể bật thông báo:\n" + errMsg);
+                }
             }
         };
 
         if (typeof LociFirebase !== 'undefined' && LociFirebase.onMessageListener) {
             LociFirebase.onMessageListener((payload) => {
-                alert("Thông báo mới: " + (payload.notification?.title || '') + " - " + (payload.notification?.body || ''));
+                const title = payload.notification?.title || 'Thông Báo Mới Từ LOCI EDU';
+                const body = payload.notification?.body || '';
+                if (window.showCustomDialog) {
+                    window.showCustomDialog({
+                        type: 'noti',
+                        badge: 'THÔNG BÁO MỚI',
+                        title: title,
+                        message: body,
+                        confirmText: 'Đã hiểu'
+                    });
+                } else {
+                    alert(title + "\n" + body);
+                }
             });
         }
     </script>

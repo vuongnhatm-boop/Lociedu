@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="custom_popup_system.js"></script>
 
     <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
     <script id="desktop-scale-meta-controller">
@@ -2206,23 +2207,18 @@
             cursor: pointer;
             user-select: none;
             outline: none;
-            transform: translate3d(0, 0, 0);
-            backface-visibility: hidden;
         }
 
         .flip-card-inner {
             position: relative;
             width: 100%;
             min-height: 240px;
+            transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
             transform-style: preserve-3d;
-            -webkit-transform-style: preserve-3d;
-            will-change: transform;
-            transform: translate3d(0, 0, 0);
-            transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .flip-card-stage.is-flipped .flip-card-inner {
-            transform: rotateY(180deg) translate3d(0, 0, 0);
+            transform: rotateY(180deg);
         }
 
         .flip-card-front,
@@ -2241,9 +2237,7 @@
             flex-direction: column;
             justify-content: space-between;
             box-sizing: border-box;
-            transform: translate3d(0, 0, 0);
-            will-change: transform;
-            transition: border-color 0.18s ease, box-shadow 0.18s ease;
+            transition: all 0.25s ease;
         }
 
         .flip-card-front {

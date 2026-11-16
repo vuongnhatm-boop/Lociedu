@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <script src="custom_popup_system.js"></script>
 
     <!-- Tự động giữ nguyên cách sắp xếp chuẩn máy tính và thu nhỏ theo tỉ lệ khi mở trên điện thoại di động -->
     <script id="desktop-scale-meta-controller">
@@ -225,7 +226,7 @@
             padding: 28px 0 80px;
         }
 
-        .screen { display: none; animation: rise .35s var(--ease); transform: translate3d(0, 0, 0); backface-visibility: hidden; will-change: transform, opacity; }
+        .screen { display: none; animation: rise .45s var(--ease); }
         .screen.on { display: block; }
 
         @keyframes rise {

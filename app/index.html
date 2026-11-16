@@ -44,6 +44,9 @@
         })();
     </script>
 
+  <!-- HỆ THỐNG POP-UP THÔNG BÁO RIÊNG BIỆT LOCI EDU (THAY THẾ HOÀN TOÀN POP-UP HỆ THỐNG) -->
+  <script src="custom_popup_system.js"></script>
+
 
 
   <!-- KHỞI TẠO HỆ THỐNG TRỢ LÝ ẢO AI & PHÍM TẮT B TOÀN CỤC (SẴN SÀNG NGAY KHI TẢI TRANG) -->
@@ -24203,8 +24206,9 @@
       openSpatialQuizModal(null, true);
     });
 
-    progResetBtn.addEventListener('click', () => {
-      if (confirm('Bạn có chắc muốn đặt lại toàn bộ tiến trình học và điểm trắc nghiệm không?')) {
+    progResetBtn.addEventListener('click', async () => {
+      const ok = await (window.lociConfirm ? window.lociConfirm('Bạn có chắc muốn đặt lại toàn bộ tiến trình học và điểm trắc nghiệm không?', 'Đặt Lại Tiến Trình', 'warning') : confirm('Bạn có chắc muốn đặt lại toàn bộ tiến trình học và điểm trắc nghiệm không?'));
+      if (ok) {
         ai.resetLearningProgress();
         lociList.forEach(l => l.status = 'unlearned');
         saveLociData();

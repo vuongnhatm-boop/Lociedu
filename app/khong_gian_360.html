@@ -44,6 +44,9 @@
         })();
     </script>
 
+    <!-- HỆ THỐNG POP-UP THÔNG BÁO RIÊNG BIỆT LOCI EDU (THAY THẾ POP-UP HỆ THỐNG) -->
+    <script src="custom_popup_system.js"></script>
+
 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
@@ -174,17 +177,50 @@ function _decodeGeminiKey(s) {
         window.requestNoti = async () => {
             const result = await LociFirebase.requestNotificationPermission();
             if (result && result.token) {
-                alert("Đã bật nhận thông báo thành công!");
+                if (window.showCustomDialog) {
+                    window.showCustomDialog({
+                        type: 'success',
+                        badge: 'THÔNG BÁO HOẠT ĐỘNG',
+                        title: 'Đã Bật Nhận Thông Báo Thành Công',
+                        message: 'Thiết bị của bạn đã được kích hoạt nhận thông báo học tập và gợi nhớ kiến thức 1-3-7 từ LOCI EDU.',
+                        confirmText: 'Đã hiểu'
+                    });
+                } else {
+                    alert("Đã bật nhận thông báo thành công!");
+                }
                 const notiBtn = document.getElementById('btn-request-noti');
                 if (notiBtn) notiBtn.style.display = 'none';
             } else {
-                alert("Chưa thể bật thông báo:\n" + (result ? result.error : "Lỗi không xác định."));
+                const errMsg = result ? result.error : "Lỗi không xác định.";
+                if (window.showCustomDialog) {
+                    window.showCustomDialog({
+                        type: 'warning',
+                        badge: 'CHƯA CẤP QUYỀN',
+                        title: 'Chưa Thể Bật Thông Báo',
+                        message: errMsg,
+                        confirmText: 'Đã hiểu'
+                    });
+                } else {
+                    alert("Chưa thể bật thông báo:\n" + errMsg);
+                }
             }
         };
 
         if (LociFirebase.onMessageListener) {
             LociFirebase.onMessageListener((payload) => {
-                alert("🔔 Thông báo mới: " + (payload.notification?.title || '') + " - " + (payload.notification?.body || ''));
+                const title = payload.notification?.title || 'Thông Báo Mới Từ LOCI EDU';
+                const body = payload.notification?.body || '';
+                if (window.showCustomDialog) {
+                    window.showCustomDialog({
+                        type: 'noti',
+                        badge: 'THÔNG BÁO MỚI',
+                        title: title,
+                        message: body,
+                        confirmText: 'Đã hiểu'
+                    });
+                } else {
+                    alert(title + "\n" + body);
+                }
             });
         }
 
@@ -3650,7 +3686,8 @@ function _decodeGeminiKey(s) {
                 el.onclick = async e => {
                     if (e.target.dataset.del) {
                         e.stopPropagation();
-                        if (confirm('Xóa không gian này?')) {
+                        const ok = await (window.lociConfirm ? window.lociConfirm('Bạn có chắc chắn muốn xóa không gian này không?', 'Xóa Không Gian', 'error') : confirm('Xóa không gian này?'));
+                        if (ok) {
                             const dm = loadMeta().find(x => x.id === e.target.dataset.del);
                             for (const n of ((dm && dm.nodes) || [])) if (n.id !== 'n0') await dbDeleteImage(dm.id + '__' + n.id);
                             await dbDeleteImage(e.target.dataset.del);
@@ -7706,10 +7743,11 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 dragZone.addEventListener('pointercancel', endSheetDrag);
                 dragZone.addEventListener('lostpointercapture', endSheetDrag);
 
-                $('btn-custom-anchor').onclick = () => {
-                    const title = prompt('Bước 1/2: Nhập tên vị trí mốc bạn chọn trong phòng (vd: Chiếc bàn gỗ, Cửa sổ, Kệ sách):');
+                $('btn-custom-anchor').onclick = async () => {
+                    const promptFn = window.lociPrompt || prompt;
+                    const title = await promptFn('Bước 1/2: Nhập tên vị trí mốc bạn chọn trong phòng (vd: Chiếc bàn gỗ, Cửa sổ, Kệ sách):', '', 'Đặt Mốc Loci Mới');
                     if (!title || !title.trim()) return;
-                    const knowledge = prompt('Bước 2/2: Mốc "' + title.trim() + '" này gắn với kiến thức/sự kiện lịch sử nào để sau này ôn tập?\n(vd: Ngày 2/9/1945 Bác Hồ đọc Tuyên ngôn, Chiến dịch Điện Biên Phủ 1954):');
+                    const knowledge = await promptFn('Bước 2/2: Mốc "' + title.trim() + '" này gắn với kiến thức/sự kiện lịch sử nào để sau này ôn tập?\n(vd: Ngày 2/9/1945 Bác Hồ đọc Tuyên ngôn, Chiến dịch Điện Biên Phủ 1954):', '', 'Gắn Sự Kiện Lịch Sử');
                     const customId = 'c_' + Date.now();
                     if (!space.customAnchors) space.customAnchors = [];
                     const anchorObj = {
@@ -10281,7 +10319,8 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
 
                 window.authLogout = async () => {
                     if (!window.LociFirebase) return;
-                    if (confirm('Đăng xuất tài khoản?')) {
+                    const ok = await (window.lociConfirm ? window.lociConfirm('Bạn có chắc chắn muốn đăng xuất tài khoản không?', 'Đăng Xuất') : confirm('Đăng xuất tài khoản?'));
+                    if (ok) {
                         await LociFirebase.logout();
                     }
                 };
@@ -10879,8 +10918,9 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             wrap.appendChild(add);
         }
 
-        function lmarPromptCustomModel() {
-            const url = prompt('Dán URL file .glb (https://…)\nMô hình sẽ được lưu lại trên thiết bị này.');
+        async function lmarPromptCustomModel() {
+            const promptFn = window.lociPrompt || prompt;
+            const url = await promptFn('Dán URL file .glb (https://…)\nMô hình sẽ được lưu lại trên thiết bị này.', '', 'Thêm Mô Hình 3D');
             if (!url) return;
             const trimmed = url.trim();
             if (!/^https?:\/\//i.test(trimmed)) {
