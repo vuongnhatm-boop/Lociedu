@@ -15589,7 +15589,10 @@
             if (modelPath && !modelPath.startsWith('Không gian chuẩn') && !modelPath.startsWith('model không gian 3d') && !modelPath.endsWith('trien_lam_nau.glb') && !modelPath.includes('commercial_building') && !modelPath.includes('abandoned_city') && !modelPath.includes('backrooms')) {
                 modelPath = BASE + modelPath;
             }
-            let href = modelPath ? 'app/index.html?model=' + encodeURIComponent(modelPath) + '&name=' + encodeURIComponent(s.name) : 'app/index.html?name=' + encodeURIComponent(s.name);
+            // Dùng đường dẫn phù hợp theo ngữ cảnh: nếu đang ở trong thư mục /app/ thì gọi 'index.html', nếu ở ngoài root thì gọi 'app/index.html'
+            const isInsideApp = window.location.pathname.indexOf('/app/') !== -1;
+            const appPathPrefix = isInsideApp ? '' : 'app/';
+            let href = modelPath ? (appPathPrefix + 'index.html?model=' + encodeURIComponent(modelPath) + '&name=' + encodeURIComponent(s.name)) : (appPathPrefix + 'index.html?name=' + encodeURIComponent(s.name));
             if (s.lesson) {
                 href += '&lesson=' + encodeURIComponent(s.lesson);
             }
@@ -15600,18 +15603,13 @@
             else if (s.lesson === 'bai_7') badge = '5 MỐC 3D • ĐIỆN BIÊN PHỦ';
             else if (s.lesson === 'bai_8') badge = '9 MỐC 3D • VĨ TUYẾN 17';
 
-                        const isLockedLesson = (s.lesson === 'bai_7' || s.lesson === 'bai_8');
-            const footerActionHtml = isLockedLesson ? `
-                    <div class="space-footer-action" style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
-                        <span class="space-tour-btn" onclick="event.preventDefault(); event.stopPropagation(); window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}', true);" style="font-size:12px; font-weight:800; color:#0284c7; background:rgba(2,132,199,0.12); padding:5px 12px; border-radius:99px; border:1px solid #bae6fd; cursor:pointer;" title="Chế độ Giám khảo / Khách tham quan 3D">👁️ Tham quan 3D</span>
-                        <span class="space-enter-btn">Vào học ➔</span>
-                    </div>` : `
+            const footerActionHtml = `
                     <div class="space-footer-action">
                         <span class="space-status-ready">● Sẵn sàng ôn luyện</span>
                         <span class="space-enter-btn">Vào phòng ➔</span>
                     </div>`;
 
-            return `<a class="space" href="javascript:void(0)" onclick="window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}')">
+            return `<a class="space" href="${href}" onclick="event.preventDefault(); window.enterSpatialRoom('${href}', '${s.name}', '${s.lesson}')">
                 <div class="space-thumb" style="${thumbStyle}">
                     <span class="space-pill-top">${badge}</span>
                     <span class="space-pill-bottom">KHÔNG GIAN 3D</span>
@@ -22343,37 +22341,13 @@
         };
 
 
-        // KIỂM TRA ĐIỀU KIỆN MỞ KHÓA BÀI HỌC (BÀI 6 MỞ ĐẦU -> BÀI 7 -> BÀI 8)
+        // MỞ KHÓA TẤT CẢ BÀI HỌC VÀ KHÔNG GIAN 3D CHO HỌC SINH & GIÁM KHẢO
         window.isLessonUnlocked = function(lessonId) {
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
-                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            
-            if (user && (user.isAdmin || user.role === 'admin' || user.username === 'admin')) {
-                return true; // Ban giám khảo có quyền truy cập tất cả
-            }
-
-            if (!lessonId || lessonId === 'bai_6') return true; // Bài 6 luôn mở
-
-            if (lessonId === 'bai_7') {
-                if (!user) return false;
-                const completedLessons = user.completedLessons || [];
-                const b6Stations = (user.completedStations && user.completedStations.bai_6) ? user.completedStations.bai_6.length : 0;
-                return completedLessons.includes('bai_6') || b6Stations >= 7;
-            }
-
-            if (lessonId === 'bai_8') {
-                if (!user) return false;
-                const completedLessons = user.completedLessons || [];
-                const b7Stations = (user.completedStations && user.completedStations.bai_7) ? user.completedStations.bai_7.length : 0;
-                return completedLessons.includes('bai_7') || b7Stations >= 7;
-            }
-
             return true;
         };
 
-        // BẢO VỆ KHÔNG GIAN 3D: BẮT BUỘC ĐĂNG NHẬP & KIỂM TRA MỞ KHÓA TIẾN TRÌNH
-        window.enterSpatialRoom = async function(href, spaceName, lessonId, isTourMode) {
+        // VÀO KHÔNG GIAN 3D TRỰC TIẾP, AN TOÀN, TỰ ĐỘNG CẤP QUYỀN TRẢI NGHIỆM
+        window.enterSpatialRoom = function(href, spaceName, lessonId, isTourMode) {
             // 1. Tự động cấp quyền Khách nếu chưa đăng nhập (không chặn cửa, không ép popup)
             if (!window.isUserLoggedIn()) {
                 try {
@@ -22390,24 +22364,9 @@
                 } catch(_) {}
             }
 
-            // 2. Chế độ Tham quan 3D (dành cho Khách & Giám khảo xem trước mô hình không tính điểm)
+            // 2. Chế độ Tham quan 3D (dành cho Khách & Giám khảo)
             if (isTourMode) {
                 window.location.href = href + (href.includes('?') ? '&' : '?') + 'mode=tour&preview=guest';
-                return;
-            }
-
-            const user = (window.LociAccountManager && typeof window.LociAccountManager.getUser === 'function') 
-                ? window.LociAccountManager.getUser() 
-                : (window._lociLocalUser || JSON.parse(localStorage.getItem('loci_user_profile') || 'null'));
-            const canBypass = user && (user.isSuperAdmin || user.canBypassLocks || user.role === 'admin' || user.role === 'superadmin' || user.username === 'quantri' || user.username === 'admin' || user.isGuest);
-
-            // 3. Giữ kỷ luật sư phạm cho học sinh, nhưng cho phép Giám khảo/Khách vào tham quan
-            if (!canBypass && lessonId && !window.isLessonUnlocked(lessonId)) {
-                const msg = `Bài học "${spaceName}" khuyến khích học tuần tự Bài 6 để tích lũy điểm Bảng Vàng.\n\nBạn có muốn vào THAM QUAN KHÔNG GIAN 3D (Chế độ Trải nghiệm Giám khảo) ngay bây giờ không?`;
-                const confirmTour = await (window.lociConfirm ? window.lociConfirm(msg, 'Mở Không Gian Tham Quan', 'info') : confirm(msg));
-                if (confirmTour) {
-                    window.location.href = href + (href.includes('?') ? '&' : '?') + 'mode=tour&preview=guest';
-                }
                 return;
             }
 
