@@ -4185,21 +4185,31 @@ function _decodeGeminiKey(s) {
     });
 
     // =========================================================================
-    // HỆ THỐNG CHỐNG XUYÊN TƯỜNG THỰC TẾ (MESH RAYCAST + AXIS SLIDING)
+    // HỆ THỐNG CHỐNG XUYÊN TƯỜNG SIÊU TỐC (2D SPATIAL TRIANGLE GRID + AXIS SLIDING)
     // =========================================================================
     let wallColliders = [];
-    const _wallRaycaster = new THREE.Raycaster();
-    const _wallOrigin = new THREE.Vector3();
-    const _wallDir = new THREE.Vector3();
-    const _sweepBox = new THREE.Box3();
-    const _sweepMin = new THREE.Vector3();
-    const _sweepMax = new THREE.Vector3();
+    let wallGrid = new Map();
+    let wallTris = null;
+    let wallTrisCount = 0;
+    let _rayVisited = new Int32Array(0);
+    let _rayStamp = 1;
+    const _vA = new THREE.Vector3();
+    const _vB = new THREE.Vector3();
+    const _vC = new THREE.Vector3();
+    const _edge1 = new THREE.Vector3();
+    const _edge2 = new THREE.Vector3();
+    const _triNorm = new THREE.Vector3();
     const PLAYER_COLLISION_RADIUS = 0.42;
 
     function buildWallColliders(rootObj) {
       wallColliders = [];
+      wallGrid = new Map();
+      wallTris = null;
+      wallTrisCount = 0;
       if (!rootObj) return;
       rootObj.updateMatrixWorld(true);
+
+      const triBuf = [];
       rootObj.traverse((child) => {
         if (!child.isMesh || !child.visible || !child.geometry) return;
         const mBox = new THREE.Box3().setFromObject(child);
@@ -4211,50 +4221,119 @@ function _decodeGeminiKey(s) {
         if (mBox.max.y < 0.30 || mBox.min.y > 2.15) return;
         if (height < 0.25 && (spanX > 10 || spanZ > 10) && mBox.max.y < 0.45) return;
         wallColliders.push({ mesh: child, box: mBox });
+
+        const posAttr = child.geometry.attributes && child.geometry.attributes.position;
+        if (!posAttr) return;
+        const index = child.geometry.index;
+        const triTotal = index ? Math.floor(index.count / 3) : Math.floor(posAttr.count / 3);
+        const mw = child.matrixWorld;
+
+        for (let t = 0; t < triTotal; t++) {
+          const i0 = index ? index.getX(t * 3) : t * 3;
+          const i1 = index ? index.getX(t * 3 + 1) : t * 3 + 1;
+          const i2 = index ? index.getX(t * 3 + 2) : t * 3 + 2;
+          _vA.fromBufferAttribute(posAttr, i0).applyMatrix4(mw);
+          _vB.fromBufferAttribute(posAttr, i1).applyMatrix4(mw);
+          _vC.fromBufferAttribute(posAttr, i2).applyMatrix4(mw);
+
+          const minY = Math.min(_vA.y, _vB.y, _vC.y);
+          const maxY = Math.max(_vA.y, _vB.y, _vC.y);
+          if (maxY < 0.35 || minY > 2.05) continue;
+
+          _edge1.subVectors(_vB, _vA);
+          _edge2.subVectors(_vC, _vA);
+          _triNorm.crossVectors(_edge1, _edge2);
+          const normLen = _triNorm.length();
+          if (normLen < 1e-6) continue;
+          if (Math.abs(_triNorm.y) / normLen > 0.85) continue;
+
+          const triIdx = wallTrisCount++;
+          triBuf.push(_vA.x, _vA.y, _vA.z, _vB.x, _vB.y, _vB.z, _vC.x, _vC.y, _vC.z);
+
+          const gx0 = Math.floor(Math.min(_vA.x, _vB.x, _vC.x));
+          const gx1 = Math.floor(Math.max(_vA.x, _vB.x, _vC.x));
+          const gz0 = Math.floor(Math.min(_vA.z, _vB.z, _vC.z));
+          const gz1 = Math.floor(Math.max(_vA.z, _vB.z, _vC.z));
+          if ((gx1 - gx0 + 1) * (gz1 - gz0 + 1) > 400) continue;
+          for (let gx = gx0; gx <= gx1; gx++) {
+            const rowKey = (gx + 512) * 1024;
+            for (let gz = gz0; gz <= gz1; gz++) {
+              const cellKey = rowKey + (gz + 512);
+              let bucket = wallGrid.get(cellKey);
+              if (!bucket) {
+                bucket = [];
+                wallGrid.set(cellKey, bucket);
+              }
+              bucket.push(triIdx);
+            }
+          }
+        }
       });
+
+      wallTris = new Float32Array(triBuf);
+      _rayVisited = new Int32Array(wallTrisCount);
       window.wallCollidersCount = wallColliders.length;
     }
 
     function castWallRay(ox, oy, oz, dx, dy, dz, maxDist) {
-      if (wallColliders.length === 0 || maxDist <= 0) return Infinity;
-      _wallOrigin.set(ox, oy, oz);
-      _wallDir.set(dx, dy, dz).normalize();
-      _wallRaycaster.set(_wallOrigin, _wallDir);
-      _wallRaycaster.near = 0.01;
-      _wallRaycaster.far = maxDist;
+      if (wallTrisCount === 0 || maxDist <= 0) return Infinity;
+      const dLen = Math.hypot(dx, dy, dz);
+      if (dLen < 1e-6) return Infinity;
+      const rx = dx / dLen;
+      const ry = dy / dLen;
+      const rz = dz / dLen;
 
-      const pad = 0.35;
-      _sweepMin.set(
-        Math.min(ox, ox + _wallDir.x * maxDist) - pad,
-        Math.min(oy, oy + _wallDir.y * maxDist) - 0.2,
-        Math.min(oz, oz + _wallDir.z * maxDist) - pad
-      );
-      _sweepMax.set(
-        Math.max(ox, ox + _wallDir.x * maxDist) + pad,
-        Math.max(oy, oy + _wallDir.y * maxDist) + 0.2,
-        Math.max(oz, oz + _wallDir.z * maxDist) + pad
-      );
-      _sweepBox.set(_sweepMin, _sweepMax);
+      const ex = ox + rx * maxDist;
+      const ez = oz + rz * maxDist;
+      const pad = 0.05;
+      const gx0 = Math.floor(Math.min(ox, ex) - pad);
+      const gx1 = Math.floor(Math.max(ox, ex) + pad);
+      const gz0 = Math.floor(Math.min(oz, ez) - pad);
+      const gz1 = Math.floor(Math.max(oz, ez) + pad);
+
+      _rayStamp++;
+      if (_rayStamp > 2000000000) {
+        _rayVisited.fill(0);
+        _rayStamp = 1;
+      }
 
       let minHit = Infinity;
-      for (let i = 0; i < wallColliders.length; i++) {
-        const col = wallColliders[i];
-        if (!col.mesh.visible || !col.box.intersectsBox(_sweepBox)) continue;
+      for (let gx = gx0; gx <= gx1; gx++) {
+        const rowKey = (gx + 512) * 1024;
+        for (let gz = gz0; gz <= gz1; gz++) {
+          const bucket = wallGrid.get(rowKey + (gz + 512));
+          if (!bucket) continue;
+          for (let i = 0; i < bucket.length; i++) {
+            const triIdx = bucket[i];
+            if (_rayVisited[triIdx] === _rayStamp) continue;
+            _rayVisited[triIdx] = _rayStamp;
 
-        // Tạm bật DoubleSide khi raycast để tường 1 mặt vẫn chặn tuyệt đối từ cả 2 phía
-        const mats = Array.isArray(col.mesh.material) ? col.mesh.material : [col.mesh.material];
-        const prevSides = mats.map(m => (m ? m.side : THREE.FrontSide));
-        try {
-          for (let j = 0; j < mats.length; j++) {
-            if (mats[j]) mats[j].side = THREE.DoubleSide;
-          }
-          const hits = _wallRaycaster.intersectObject(col.mesh, false);
-          if (hits.length > 0 && hits[0].distance < minHit) {
-            minHit = hits[0].distance;
-          }
-        } finally {
-          for (let j = 0; j < mats.length; j++) {
-            if (mats[j]) mats[j].side = prevSides[j];
+            const b = triIdx * 9;
+            const ax = wallTris[b], ay = wallTris[b + 1], az = wallTris[b + 2];
+            const e1x = wallTris[b + 3] - ax, e1y = wallTris[b + 4] - ay, e1z = wallTris[b + 5] - az;
+            const e2x = wallTris[b + 6] - ax, e2y = wallTris[b + 7] - ay, e2z = wallTris[b + 8] - az;
+
+            const px = ry * e2z - rz * e2y;
+            const py = rz * e2x - rx * e2z;
+            const pz = rx * e2y - ry * e2x;
+            const det = e1x * px + e1y * py + e1z * pz;
+            if (det > -1e-6 && det < 1e-6) continue;
+
+            const invDet = 1.0 / det;
+            const tx = ox - ax, ty = oy - ay, tz = oz - az;
+            const u = (tx * px + ty * py + tz * pz) * invDet;
+            if (u < 0 || u > 1) continue;
+
+            const qx = ty * e1z - tz * e1y;
+            const qy = tz * e1x - tx * e1z;
+            const qz = tx * e1y - ty * e1x;
+            const v = (rx * qx + ry * qy + rz * qz) * invDet;
+            if (v < 0 || u + v > 1) continue;
+
+            const t = (e2x * qx + e2y * qy + e2z * qz) * invDet;
+            if (t > 0.01 && t < minHit && t <= maxDist) {
+              minHit = t;
+            }
           }
         }
       }
