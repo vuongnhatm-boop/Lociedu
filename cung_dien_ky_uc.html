@@ -4340,28 +4340,7 @@ function _decodeGeminiKey(s) {
       return minHit;
     }
 
-    window.isWallNoclip = false;
-    window.toggleNoclipHack = function(forceState) {
-      window.isWallNoclip = (typeof forceState === 'boolean') ? forceState : !window.isWallNoclip;
-      if (typeof showToast === 'function') {
-        showToast(
-          window.isWallNoclip
-            ? '👻 <b>ĐÃ BẬT HACK XUYÊN TƯỜNG:</b> Đi xuyên qua mọi bức tường!'
-            : '🧱 <b>ĐÃ TẮT XUYÊN TƯỜNG:</b> Khôi phục va chạm tường bình thường.',
-          window.isWallNoclip ? 'warning' : 'info',
-          2600
-        );
-      }
-      return window.isWallNoclip;
-    };
-
     function resolveWallCollision(fromX, fromZ, toX, toZ, radius = PLAYER_COLLISION_RADIUS) {
-      if (window.isWallNoclip) {
-        return {
-          x: Math.max(-40, Math.min(40, toX)),
-          z: Math.max(-40, Math.min(40, toZ))
-        };
-      }
       let curX = fromX;
       let curZ = fromZ;
       const dx = toX - fromX;
@@ -7255,7 +7234,6 @@ function _decodeGeminiKey(s) {
 
           if (orbitControls.enabled) {
             orbitControls.update();
-            if (!window.isWallNoclip) {
               // Prevent Free-Look Orbit camera from clipping outside walls or through interior walls
               orbitControls.target.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, orbitControls.target.x));
               orbitControls.target.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, orbitControls.target.z));
@@ -7286,8 +7264,7 @@ function _decodeGeminiKey(s) {
                       Math.max(0.45, orbitControls.target.y + ody * ratio),
                       orbitControls.target.z + odz * ratio
                     );
-                  }
-                }
+          }
               }
             }
           }
