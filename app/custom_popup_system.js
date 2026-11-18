@@ -32,7 +32,7 @@
       visibility: hidden;
       transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.24s;
       pointer-events: none;
-      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Plus Jakarta Sans', system-ui, sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
     }
 
     .loci-popup-overlay.active {
@@ -496,21 +496,28 @@
     cardEl.className = `loci-popup-card type-${type}`;
 
     // Cập nhật header
-    document.getElementById('loci-popup-icon').innerHTML = iconHtml;
-    document.getElementById('loci-popup-badge').textContent = badge;
-    document.getElementById('loci-popup-title').textContent = title;
+    const iconEl = document.getElementById('loci-popup-icon');
+    const badgeEl = document.getElementById('loci-popup-badge');
+    const titleEl = document.getElementById('loci-popup-title');
+    if (iconEl) iconEl.innerHTML = iconHtml;
+    if (badgeEl) badgeEl.textContent = badge;
+    if (titleEl) titleEl.textContent = title;
     
     // Nút xác nhận & nút hủy
     const confirmBtn = document.getElementById('loci-popup-confirm-btn');
-    confirmBtn.className = isDanger ? 'loci-popup-btn-danger' : 'loci-popup-btn-confirm';
-    document.getElementById('loci-popup-confirm-text').textContent = confirmText;
+    if (confirmBtn) confirmBtn.className = isDanger ? 'loci-popup-btn-danger' : 'loci-popup-btn-confirm';
+    const confirmTextEl = document.getElementById('loci-popup-confirm-text');
+    if (confirmTextEl) confirmTextEl.textContent = confirmText;
 
     const cancelBtn = document.getElementById('loci-popup-cancel-btn');
-    if (opts.showCancel) {
-      cancelBtn.style.display = 'inline-flex';
-      document.getElementById('loci-popup-cancel-text').textContent = cancelText;
-    } else {
-      cancelBtn.style.display = 'none';
+    const cancelTextEl = document.getElementById('loci-popup-cancel-text');
+    if (cancelBtn) {
+      if (opts.showCancel) {
+        cancelBtn.style.display = 'inline-flex';
+        if (cancelTextEl) cancelTextEl.textContent = cancelText;
+      } else {
+        cancelBtn.style.display = 'none';
+      }
     }
 
     // Ảnh tư liệu nếu có

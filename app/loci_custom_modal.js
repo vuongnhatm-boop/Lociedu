@@ -30,7 +30,7 @@
       opacity: 0;
       pointer-events: none;
       transition: opacity 0.22s ease-out;
-      font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
     .loci-popup-overlay.active {
       opacity: 1;

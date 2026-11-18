@@ -510,7 +510,7 @@ function _decodeGeminiKey(s) {
 
   /* ---------------- UI RENDERING ---------------- */
   const CSS = `
-  #lm-root{position:fixed;z-index:9000;font-family:'Outfit','Inter',system-ui,sans-serif;display:flex;align-items:flex-end;gap:12px;pointer-events:none}
+  #lm-root{position:fixed;z-index:9000;font-family:'Plus Jakarta Sans','Be Vietnam Pro',system-ui,sans-serif;display:flex;align-items:flex-end;gap:12px;pointer-events:none}
   #lm-root *{box-sizing:border-box}
   #lm-root.lm-right{flex-direction:row-reverse}
   
@@ -620,7 +620,7 @@ function _decodeGeminiKey(s) {
   .lm-loading span:nth-child(3){animation-delay:.3s}
   @keyframes lmDots{0%,100%{opacity:.3;transform:translateY(0)}50%{opacity:1;transform:translateY(-3px)}}
 
-  #lm-modal{position:fixed;inset:0;z-index:9500;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);font-family:'Outfit','Inter',system-ui,sans-serif;opacity:0;transition:opacity .3s}
+  #lm-modal{position:fixed;inset:0;z-index:9500;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.65);backdrop-filter:blur(8px);font-family:'Plus Jakarta Sans','Be Vietnam Pro',system-ui,sans-serif;opacity:0;transition:opacity .3s}
   #lm-modal.on{opacity:1}
   #lm-modal .lm-card{width:min(440px,calc(100vw - 28px));max-height:86vh;overflow:auto;background:rgba(15,23,42,.95);border:1px solid rgba(56,189,248,.3);border-radius:24px;padding:22px;color:#f8fafc;box-shadow:0 30px 70px rgba(0,0,0,.6);transform:scale(.95);transition:transform .35s cubic-bezier(.16,1,.3,1)}
   #lm-modal.on .lm-card{transform:none}

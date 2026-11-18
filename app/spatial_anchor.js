@@ -204,7 +204,7 @@
 
     /* ---------------- UI skeleton ---------------- */
     const CSS = `
-.lsa-root{position:fixed;inset:0;z-index:820;background:#05070d;display:none;overflow:hidden;font-family:'Outfit','Plus Jakarta Sans',system-ui,sans-serif;color:#f8fafc;touch-action:none}
+.lsa-root{position:fixed;inset:0;z-index:820;background:#05070d;display:none;overflow:hidden;font-family:'Plus Jakarta Sans','Be Vietnam Pro',system-ui,sans-serif;color:#f8fafc;touch-action:none}
 .lsa-root.on{display:block}
 #lsa-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;z-index:0}
 .lsa-vignette{position:absolute;inset:0;background:radial-gradient(120% 80% at 50% 40%,transparent 55%,rgba(0,0,0,.55) 100%);pointer-events:none;z-index:1}

@@ -145,11 +145,11 @@
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22></text></svg>">
 
-  <!-- Google Fonts: Be Vietnam Pro & Inter (Chuẩn Tiếng Việt 100%, sắc nét tuyệt đối, không bao giờ lỗi phông) -->
+  <!-- Google Fonts: Plus Jakarta Sans & Be Vietnam Pro (Chuẩn Tiếng Việt 100%, đồng bộ toàn hệ thống) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
-    href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Inter:wght@400;500;600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
     rel="stylesheet" />
 
   <style>
@@ -180,7 +180,7 @@
       height: 100%;
       overflow: hidden;
       background: #090d16;
-      font-family: 'Be Vietnam Pro', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       color: var(--text-main);
       user-select: none;
     }
@@ -2533,7 +2533,7 @@
     }
 
     .kinetic-word {
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
       font-weight: 700;
       font-size: clamp(20px, 4vw, 42px);
       line-height: 1;
@@ -2584,7 +2584,7 @@
       text-transform: uppercase;
       animation: blink 2s infinite ease-in-out;
       pointer-events: none;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
     }
 
     @keyframes blink {
@@ -2639,7 +2639,7 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
       font-weight: 700;
       font-size: 18px;
       color: #fff;
@@ -2792,7 +2792,7 @@
       pointer-events: none;
       animation: pulseText 3s infinite ease-in-out;
       text-align: center;
-      font-family: 'Space Grotesk', sans-serif;
+      font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
     }
 
     /* --- SPATIAL KNOWLEDGE QUIZ & PROGRESS MODALS --- */
@@ -6773,7 +6773,7 @@
         bctx.strokeStyle = '#ffffff';
         bctx.stroke();
         bctx.fillStyle = '#ffffff';
-        bctx.font = 'bold 88px "Outfit", "Plus Jakarta Sans", sans-serif';
+        bctx.font = 'bold 88px "Plus Jakarta Sans", "Be Vietnam Pro", "Plus Jakarta Sans", sans-serif';
         bctx.textAlign = 'center';
         bctx.textBaseline = 'middle';
         bctx.fillText('#' + realOrder, 128, 130);
@@ -7123,7 +7123,7 @@
       ctx.fill();
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 54px "Outfit", "Plus Jakarta Sans", sans-serif';
+      ctx.font = 'bold 54px "Plus Jakarta Sans", "Be Vietnam Pro", "Plus Jakarta Sans", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(orderNum ? ('#' + orderNum) : '', 126, 129);
@@ -7136,18 +7136,18 @@
         else if (locus.order === 1) tagText = '★ THỜI CƠ NGÀN NĂM CÓ MỘT — 15/8';
 
         ctx.fillStyle = '#fbbf24';
-        ctx.font = 'bold 36px "Outfit", "Plus Jakarta Sans", sans-serif';
+        ctx.font = 'bold 36px "Plus Jakarta Sans", "Be Vietnam Pro", "Plus Jakarta Sans", sans-serif';
         ctx.textAlign = 'left';
         ctx.fillText(tagText, 212, 86);
 
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 52px "Outfit", "Plus Jakarta Sans", sans-serif';
+        ctx.font = 'bold 52px "Plus Jakarta Sans", "Be Vietnam Pro", "Plus Jakarta Sans", sans-serif';
         const displayName = locus.name || 'Mốc Ký Ức';
         const labelText = displayName.length > 26 ? displayName.slice(0, 25) + '…' : displayName;
         ctx.fillText(labelText, 212, 150);
       } else {
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 52px "Outfit", "Plus Jakarta Sans", sans-serif';
+        ctx.font = 'bold 52px "Plus Jakarta Sans", "Be Vietnam Pro", "Plus Jakarta Sans", sans-serif';
         ctx.textAlign = 'left';
         ctx.textBaseline = 'middle';
         const displayName = locus.name || 'Mốc Ký Ức';
@@ -7303,7 +7303,7 @@
 
         // Tiêu đề phân khu
         ctx.fillStyle = '#ffffff';
-        ctx.font = 'bold 54px "Outfit", "Plus Jakarta Sans", sans-serif';
+        ctx.font = 'bold 54px "Plus Jakarta Sans", "Be Vietnam Pro", "Plus Jakarta Sans", sans-serif';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.fillText(z.title, 600, 115);
@@ -7428,7 +7428,7 @@
       fctx.lineWidth = 6;
       fctx.strokeRect(4, 4, 248, 172);
       fctx.fillStyle = '#dc2626';
-      fctx.font = 'bold 92px "Outfit", sans-serif';
+      fctx.font = 'bold 92px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       fctx.textAlign = 'center';
       fctx.textBaseline = 'middle';
       fctx.fillText('15', 128, 90);
@@ -7527,7 +7527,7 @@
       nctx.lineWidth = 6;
       nctx.stroke();
       nctx.fillStyle = '#ffd700';
-      nctx.font = 'bold 64px "Outfit", sans-serif';
+      nctx.font = 'bold 64px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       nctx.textAlign = 'center';
       nctx.textBaseline = 'middle';
       nctx.fillText('2 - 9', 128, 64);
@@ -7593,7 +7593,7 @@
       ctx.stroke();
 
       ctx.fillStyle = textColor;
-      ctx.font = 'bold 23px "Outfit", sans-serif';
+      ctx.font = 'bold 23px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
       ctx.fillText(text, width / 2, height / 2);
@@ -8109,7 +8109,7 @@
       ctx.fillRect(88, 54, 18, 12);
 
       // Dòng chữ vàng lịch sử dưới cờ: 9/8/1945 LIÊN XÔ TIÊU DIỆT PHÁT XÍT NHẬT
-      ctx.font = 'bold 22px "Outfit", sans-serif';
+      ctx.font = 'bold 22px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('9/8/1945: LIÊN XÔ ĐÁNH TAN ĐẠO QUÂN QUAN ĐÔNG', 256, 228);
 
@@ -9262,7 +9262,7 @@
 
       // Tiêu đề son đỏ rực
       ctx.fillStyle = '#b91c1c';
-      ctx.font = 'bold 30px "Outfit", sans-serif';
+      ctx.font = 'bold 30px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(title, 256, 55);
 
@@ -9276,12 +9276,12 @@
 
       // Phụ đề thời gian & tổ chức
       ctx.fillStyle = '#92400e';
-      ctx.font = 'bold 19px "Outfit", sans-serif';
+      ctx.font = 'bold 19px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.fillText(subtitle, 256, 105);
 
       // Lời hiệu triệu lịch sử hào hùng
       ctx.fillStyle = '#1e293b';
-      ctx.font = 'bold 17px "Outfit", sans-serif';
+      ctx.font = 'bold 17px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.fillText(extraText, 256, 145);
 
       // Con dấu tròn đỏ đậm (Official Deep Red Wax Seal)
@@ -9317,7 +9317,7 @@
       ctx.fill();
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 11px "Outfit", sans-serif';
+      ctx.font = 'bold 11px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('VIỆT NAM', 0, 28);
       ctx.restore();
@@ -9668,16 +9668,16 @@
       });
 
       ctx.fillStyle = '#fef08a';
-      ctx.font = 'bold 24px "Outfit", sans-serif';
+      ctx.font = 'bold 24px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText(title, 256, 48);
 
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 22px "Outfit", sans-serif';
+      ctx.font = 'bold 22px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.fillText(subtitle, 256, 92);
 
       ctx.fillStyle = '#fde68a';
-      ctx.font = 'bold 15px "Outfit", sans-serif';
+      ctx.font = 'bold 15px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ctx.fillText(note, 256, 132);
 
       const tex = new THREE.CanvasTexture(canvas);
@@ -9761,7 +9761,7 @@
       bctx.fillStyle = '#991b1b';
       bctx.fillRect(0, 0, 128, 128);
       bctx.fillStyle = '#fde047';
-      bctx.font = 'bold 26px "Outfit", sans-serif';
+      bctx.font = 'bold 26px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       bctx.textAlign = 'center';
       bctx.textBaseline = 'middle';
       bctx.fillText('QUÂN', 64, 45);
@@ -10369,11 +10369,11 @@
       pctx.lineWidth = 6;
       pctx.strokeRect(6, 6, 588, 168);
       pctx.fillStyle = '#fde047';
-      pctx.font = 'bold 22px "Outfit", sans-serif';
+      pctx.font = 'bold 22px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       pctx.textAlign = 'center';
       pctx.fillText('XUẤT QUÂN GIẢI PHÓNG THÁI NGUYÊN (16/8/1945)', 300, 52);
       pctx.fillStyle = '#38bdf8';
-      pctx.font = 'bold 18px "Outfit", sans-serif';
+      pctx.font = 'bold 18px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       pctx.fillText('Đồng chí Võ Nguyên Giáp chỉ huy Việt Nam Giải phóng quân', 300, 100);
       pctx.fillText('Tiến về giải phóng thị xã Thái Nguyên — Mở đường về Hà Nội!', 300, 138);
       const plaqueTex = new THREE.CanvasTexture(plaqueCanvas);
@@ -10545,11 +10545,11 @@
       pctx.lineWidth = 6;
       pctx.strokeRect(6, 6, 588, 168);
       pctx.fillStyle = '#fde047';
-      pctx.font = 'bold 22px "Outfit", sans-serif';
+      pctx.font = 'bold 22px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       pctx.textAlign = 'center';
       pctx.fillText('MÍT TINH NHÀ HÁT LỚN HÀ NỘI (19/8/1945)', 300, 52);
       pctx.fillStyle = '#f8fafc';
-      pctx.font = 'bold 18px "Outfit", sans-serif';
+      pctx.font = 'bold 18px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       pctx.fillText('Biển người mít tinh chuyển thành khởi nghĩa vũ trang,', 300, 100);
       pctx.fillText('Đánh chiếm Phủ Khâm sai Bắc Bộ — Giành chính quyền ở Thủ đô!', 300, 138);
       const plaqueTex = new THREE.CanvasTexture(plaqueCanvas);
@@ -10728,11 +10728,11 @@
       pctx.lineWidth = 6;
       pctx.strokeRect(6, 6, 588, 168);
       pctx.fillStyle = '#38bdf8';
-      pctx.font = 'bold 22px "Outfit", sans-serif';
+      pctx.font = 'bold 22px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       pctx.textAlign = 'center';
       pctx.fillText('HUẾ (23/8) & SÀI GÒN (25/8) QUẬT KHỞI', 300, 52);
       pctx.fillStyle = '#fde047';
-      pctx.font = 'bold 18px "Outfit", sans-serif';
+      pctx.font = 'bold 18px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       pctx.fillText('Tổng khởi nghĩa toàn quốc thắng lợi rực rỡ', 300, 100);
       pctx.fillText('Đồng Nai Thượng & Hà Tiên giành thắng lợi cuối cùng (28/8)', 300, 138);
       const plaqueTex = new THREE.CanvasTexture(plaqueCanvas);
@@ -10888,11 +10888,11 @@
       ectx.lineWidth = 6;
       ectx.strokeRect(6, 6, 588, 168);
       ectx.fillStyle = '#991b1b';
-      ectx.font = 'bold 24px "Outfit", sans-serif';
+      ectx.font = 'bold 24px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ectx.textAlign = 'center';
       ectx.fillText('CHIẾU THOÁI VỊ VUA BẢO ĐẠI (30/8/1945)', 300, 52);
       ectx.fillStyle = '#1e293b';
-      ectx.font = 'italic bold 20px "Outfit", sans-serif';
+      ectx.font = 'italic bold 20px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       ectx.fillText('"Thà làm dân một nước độc lập,', 300, 100);
       ectx.fillText('hơn làm vua một nước nô lệ!"', 300, 138);
       const edictTex = new THREE.CanvasTexture(edictCanvas);
@@ -11057,11 +11057,11 @@
       dctx.lineWidth = 6;
       dctx.strokeRect(6, 6, 588, 188);
       dctx.fillStyle = '#dc2626';
-      dctx.font = 'bold 24px "Outfit", sans-serif';
+      dctx.font = 'bold 24px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       dctx.textAlign = 'center';
       dctx.fillText('TUYÊN NGÔN ĐỘC LẬP (2/9/1945)', 300, 52);
       dctx.fillStyle = '#0f172a';
-      dctx.font = 'italic bold 18px "Outfit", sans-serif';
+      dctx.font = 'italic bold 18px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       dctx.fillText('"Nước Việt Nam có quyền hưởng tự do và độc lập,', 300, 102);
       dctx.fillText('và sự thật đã thành một nước tự do, độc lập!"', 300, 142);
       const decTex = new THREE.CanvasTexture(decCanvas);
@@ -12752,7 +12752,7 @@
 
       // Tiêu đề Bài học
       sCtx.fillStyle = '#fef08a';
-      sCtx.font = 'bold 16px "Outfit", sans-serif';
+      sCtx.font = 'bold 16px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       sCtx.textAlign = 'center';
       const steleLessonHeader = (LESSON_DATA && LESSON_DATA.title)
         ? `★ ${LESSON_DATA.title.toUpperCase()} ★`
@@ -12770,7 +12770,7 @@
       // Tiêu đề Trạm mốc (Lấy từ locus)
       const rawTitle = (locus.title || locus.name || `Trạm ${realOrder}`).replace(/^Trạm\s*\d+\s*:\s*/i, '');
       sCtx.fillStyle = '#ffffff';
-      sCtx.font = 'bold 23px "Outfit", sans-serif';
+      sCtx.font = 'bold 23px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       let displayTitle = rawTitle;
       if (displayTitle.length > 34) {
         displayTitle = displayTitle.substring(0, 32) + '...';
@@ -12779,18 +12779,18 @@
 
       // Huy hiệu mốc
       sCtx.fillStyle = '#fbbf24';
-      sCtx.font = 'bold 15px "Outfit", sans-serif';
+      sCtx.font = 'bold 15px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       sCtx.fillText(`MỐC LỊCH SỬ ${realOrder}/9 · CHỦ ĐỀ 3 SGK LỊCH SỬ 12`, 256, 130);
 
       // Tóm tắt ngắn mốc
       sCtx.fillStyle = '#e2e8f0';
-      sCtx.font = 'normal 13px "Outfit", sans-serif';
+      sCtx.font = 'normal 13px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       const summarySnippet = locus.summary ? locus.summary.substring(0, 72) + '...' : 'Không gian trưng bày mốc lịch sử chuẩn Loci VR';
       sCtx.fillText(summarySnippet, 256, 172);
 
       // Dòng hướng dẫn tương tác
       sCtx.fillStyle = '#38bdf8';
-      sCtx.font = 'bold 14px "Outfit", sans-serif';
+      sCtx.font = 'bold 14px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif';
       sCtx.fillText('👉 Bấm chuột vào trạm để mở Bài học, Thẻ nhớ & Trắc nghiệm', 256, 218);
 
       const steleTex = new THREE.CanvasTexture(steleCanvas);

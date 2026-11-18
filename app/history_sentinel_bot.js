@@ -775,7 +775,7 @@ Trả về JSON đúng cấu trúc:
                     z-index: 9999999 !important;
                     opacity: 1 !important;
                     animation: lociSentinelFadeIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-                    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif !important;
+                    font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, -apple-system, sans-serif !important;
                     padding: 16px !important;
                     box-sizing: border-box !important;
                 }

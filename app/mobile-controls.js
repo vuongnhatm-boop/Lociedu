@@ -33,7 +33,7 @@
             display: flex;
             justify-content: space-between;
             align-items: flex-end;
-            font-family: sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
         }
 
         /* Joystick styles */

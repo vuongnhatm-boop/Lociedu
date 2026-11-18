@@ -339,14 +339,17 @@ export const LociFirebase = {
      * Lưu tiến trình học của học sinh vào Firestore
      */
     async saveStudyStats(stats) {
+        const authedUser = auth && auth.currentUser ? auth.currentUser : null;
         const uid = this.currentUser ? this.currentUser.uid : 'guest_local';
         // Luôn bảo lưu cục bộ trước tiên
         try {
             localStorage.setItem('loci_study_stats_' + uid, JSON.stringify(stats));
         } catch (_) {}
 
+        if (!authedUser) return true;
+
         try {
-            const userRef = doc(db, 'users', uid);
+            const userRef = doc(db, 'users', authedUser.uid);
             const payload = {
                 stats: {
                     weekMin: stats.weekMin ?? 0,
@@ -357,13 +360,11 @@ export const LociFirebase = {
                     updatedAt: serverTimestamp()
                 }
             };
-            if (this.currentUser) {
-                payload.displayName = this.currentUser.displayName || '';
-                payload.email = this.currentUser.email || '';
-                payload.photoURL = this.currentUser.photoURL || '';
-            }
+            payload.displayName = authedUser.displayName || this.currentUser?.displayName || '';
+            payload.email = authedUser.email || this.currentUser?.email || '';
+            payload.photoURL = authedUser.photoURL || this.currentUser?.photoURL || '';
             await this._withTimeout(setDoc(userRef, payload, { merge: true }), 1500);
-            console.log('[Firestore] Study stats saved successfully for:', uid);
+            console.log('[Firestore] Study stats saved successfully for:', authedUser.uid);
             return true;
         } catch (error) {
             console.warn('[Firestore] Lưu study stats offline/timeout, đã bảo lưu cục bộ.');
@@ -375,15 +376,18 @@ export const LociFirebase = {
      * Tải tiến trình học từ Firestore
      */
     async loadStudyStats() {
+        const authedUser = auth && auth.currentUser ? auth.currentUser : null;
         const uid = this.currentUser ? this.currentUser.uid : 'guest_local';
-        try {
-            const userRef = doc(db, 'users', uid);
-            const snap = await this._withTimeout(getDoc(userRef), 1500);
-            if (snap.exists()) {
-                return snap.data().stats || null;
+        if (authedUser) {
+            try {
+                const userRef = doc(db, 'users', authedUser.uid);
+                const snap = await this._withTimeout(getDoc(userRef), 1500);
+                if (snap.exists()) {
+                    return snap.data().stats || null;
+                }
+            } catch (error) {
+                console.warn('[Firestore] Không tải được stats từ cloud, dùng cục bộ.');
             }
-        } catch (error) {
-            console.warn('[Firestore] Không tải được stats từ cloud, dùng cục bộ.');
         }
         try {
             const cached = localStorage.getItem('loci_study_stats_' + uid);
@@ -396,14 +400,15 @@ export const LociFirebase = {
      * Đồng bộ danh sách không gian 360 & mốc gắn tự tạo lên Firestore
      */
     async syncSpaces(spacesList) {
-        const uid = this.currentUser ? this.currentUser.uid : 'guest_local';
+        const authedUser = auth && auth.currentUser ? auth.currentUser : null;
+        if (!authedUser) return true;
         try {
-            const spacesRef = doc(db, 'user_spaces', uid);
+            const spacesRef = doc(db, 'user_spaces', authedUser.uid);
             await this._withTimeout(setDoc(spacesRef, {
                 spaces: spacesList || [],
                 updatedAt: serverTimestamp()
             }, { merge: true }), 1500);
-            console.log('[Firestore] Synced 360 spaces to cloud for:', uid);
+            console.log('[Firestore] Synced 360 spaces to cloud for:', authedUser.uid);
             return true;
         } catch (error) {
             console.warn('[Firestore] Sync 360 spaces offline/timeout, dữ liệu đã lưu trong máy.');
@@ -415,16 +420,17 @@ export const LociFirebase = {
      * Tải danh sách không gian 360 đã lưu từ Firestore
      */
     async loadSpaces() {
+        const authedUser = auth && auth.currentUser ? auth.currentUser : null;
+        if (!authedUser) return [];
         try {
-            const uid = this.currentUser ? this.currentUser.uid : 'guest_local';
-            const spacesRef = doc(db, 'user_spaces', uid);
-            const snap = await getDoc(spacesRef);
+            const spacesRef = doc(db, 'user_spaces', authedUser.uid);
+            const snap = await this._withTimeout(getDoc(spacesRef), 2000);
             if (snap.exists()) {
                 return snap.data().spaces || [];
             }
             return [];
         } catch (error) {
-            console.error('[Firestore] Error loading spaces:', error);
+            console.warn('[Firestore] Không tải được spaces từ cloud, dùng dữ liệu cục bộ:', error?.code || error?.message || error);
             return [];
         }
     },

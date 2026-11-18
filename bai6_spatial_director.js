@@ -490,7 +490,7 @@
             border: opts.border || '#f59e0b',
             borderWidth: opts.borderWidth || 5,
             color: opts.color || '#ffffff',
-            font: opts.font || 'bold 28px "Outfit", sans-serif',
+            font: opts.font || 'bold 28px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif',
             radius: opts.radius || 14,
             width: opts.width || 512,
             height: opts.height || 100
@@ -522,7 +522,7 @@
             border: opts.border || '#fbbf24',
             borderWidth: opts.borderWidth || 5,
             color: opts.color || '#fef08a',
-            font: opts.font || 'bold 28px "Outfit", sans-serif',
+            font: opts.font || 'bold 28px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif',
             radius: opts.radius || 14,
             width: opts.width || 560,
             height: opts.height || 100
@@ -706,7 +706,7 @@
             border: '#fbbf24',
             borderWidth: 6,
             color: '#fef08a',
-            font: 'bold 36px "Outfit", serif',
+            font: 'bold 36px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif',
             radius: 16,
             width: 512,
             height: 120
@@ -784,7 +784,7 @@
             box-shadow: 0 12px 36px rgba(0,0,0,0.65), 0 0 20px rgba(245, 158, 11, 0.25);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            font-family: 'Outfit', -apple-system, sans-serif;
+            font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', -apple-system, sans-serif;
             color: #ffffff;
             width: 330px;
             transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
@@ -960,7 +960,7 @@
             border: '#fde047',
             borderWidth: 6,
             color: '#facc15',
-            font: 'bold 26px "Outfit", serif',
+            font: 'bold 26px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif',
             radius: 16,
             width: 512,
             height: 140
@@ -1210,7 +1210,7 @@
 
                 createFloatingBadge('THẮNG LỢI TOÀN QUỐC',
                     new THREE.Vector3(stBase.x + 0.55, stBase.y + 1.85, stBase.z + 0.15),
-                    { border: '#ffd700', bg: 'linear-gradient(135deg, rgba(220, 38, 38, 0.95), rgba(180, 83, 9, 0.95))', color: '#fef08a', font: 'bold 32px "Outfit", sans-serif', planeW: 1.8, planeH: 0.42 }
+                    { border: '#ffd700', bg: 'linear-gradient(135deg, rgba(220, 38, 38, 0.95), rgba(180, 83, 9, 0.95))', color: '#fef08a', font: 'bold 32px "Plus Jakarta Sans", "Be Vietnam Pro", sans-serif', planeW: 1.8, planeH: 0.42 }
                 );
 
                 createMoc5HanoiVictoryCelebration(stBase);

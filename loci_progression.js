@@ -205,7 +205,7 @@
                 background: rgba(15, 23, 42, 0.65);
                 backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
                 display: flex; align-items: center; justify-content: center;
-                padding: 16px; font-family: 'Outfit', sans-serif;
+                padding: 16px; font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif;
                 animation: lociLockFade 0.25s ease forwards;
             `;
 

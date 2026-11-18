@@ -281,7 +281,7 @@
             display: 'flex',
             flexDirection: 'column',
             gap: '8px',
-            fontFamily: "'Outfit', sans-serif",
+            fontFamily: "'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif",
             animation: 'slideInRight 0.3s ease forwards'
         });
 
@@ -590,7 +590,7 @@
                     box-sizing: border-box !important;
                     color: #0f172a !important;
                     animation: lociRemSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
-                    font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, sans-serif !important;
+                    font-family: 'Plus Jakarta Sans', 'Be Vietnam Pro', system-ui, sans-serif !important;
                 }
                 body.dark-mode .loci-reminder-glass-box {
                     background: rgba(22, 30, 46, 0.82) !important;
