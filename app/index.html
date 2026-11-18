@@ -4590,6 +4590,30 @@
       <span>💾 Lưu mặc định</span>
     </button>
 
+    <!-- Nút Hack Xuyên Tường (Mặc định TẮT để chống xuyên tường; bấm Hack hoặc [V] để xuyên tường tự do) -->
+    <button id="btn-noclip-hack"
+      onclick="if (typeof window.toggleNoclipHack === 'function') window.toggleNoclipHack();"
+      title="Bật / Tắt chế độ Hack xuyên tường để đi xuyên qua mọi bức tường (Phím tắt V)" style="
+              display: inline-flex !important;
+              align-items: center !important;
+              gap: 6px !important;
+              background: rgba(15, 23, 42, 0.92) !important;
+              border: 1.5px solid rgba(168, 85, 247, 0.65) !important;
+              color: #f8fafc !important;
+              padding: 8px 14px !important;
+              border-radius: 99px !important;
+              font-size: 13px !important;
+              font-weight: 800 !important;
+              cursor: pointer !important;
+              pointer-events: auto !important;
+              box-shadow: 0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(168,85,247,0.28) !important;
+              transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+              margin-left: 8px !important;
+              user-select: none !important;
+            " onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+      <span id="noclip-hack-text">👻 Hack xuyên tường [V]</span>
+    </button>
+
 
 
     
@@ -6073,16 +6097,15 @@
       ];
 
       const brownArcPositions = [
-        // ─── 9 TRẠM 100% NẰM TRỌN TRONG LÒNG SẢNH TRIỂN LÃM (TUẦN TỰ KIM ĐỒNG HỒ) ───
-        [-6.6, 0.08, -1.6], // Trạm 1: Bão lửa Thế giới (15/8/1945 - Cánh Tây Bắc)
-        [-3.8, 0.08, -2.5], // Trạm 2: Lán Nà Nưa & Quân lệnh 1 (13/8 - Vách Bắc Tây)
-        [-0.6, 0.08, -2.7], // Trạm 3: Đình Tân Trào & Đại hội Quốc dân (16-17/8 - Vách Bắc Trung tâm)
-        [2.6, 0.08, -2.5],  // Trạm 4: Giải phóng Thái Nguyên & 4 tỉnh (16-18/8 - Vách Bắc Đông)
-        [6.2, 0.08, -1.6],  // Trạm 5: Khởi nghĩa Hà Nội — Nhà hát Lớn (19/8 - Cánh Đông Bắc)
-        [6.2, 0.08, 1.6],   // Trạm 6: Khởi nghĩa Huế & Sài Gòn (23/8 & 25/8 - Cánh Đông Nam)
-        [2.4, 0.08, 2.6],   // Trạm 7: Vua Bảo Đại thoái vị — Ngọ Môn (30/8 - Vách Nam Đông)
-        [-1.6, 0.08, 2.6],  // Trạm 8: Ba Đình Độc lập — Tuyên ngôn Độc lập (2/9 - Vách Nam Tây)
-        [-6.2, 0.08, 1.2]   // Trạm 9: Tổng kết Ý nghĩa Lịch sử & Đuốc thiêng (Cánh Tây Nam)
+        [-15.67, 0.26, 0.32], // 1. Trạm 1: Bão lửa Thế giới — Thời cơ ngàn năm có một
+        [-10.08, 0.26, 0.27], // 2. Trạm 2: Lán Nà Nưa — Cao trào Kháng Nhật & Quân lệnh số 1
+        [-4.43, 0.26, -0.31], // 3. Trạm 3: Đình Tân Trào — Quyết định lịch sử & Đại hội Quốc dân
+        [0.84, 0.26, 0.03], // 4. Trạm 4: Đường Thái Nguyên — Giải phóng quân tiến quân & 4 tỉnh tiên phong
+        [5.87, 0.26, 0.3], // 5. Trạm 5: Nhà hát Lớn Hà Nội — Thủ đô bùng cháy khởi nghĩa
+        [9.76, 0.26, 1.75], // 6. Trạm 6: Ngọ Môn Huế & Sài Gòn — Thắng lợi lan tỏa về Nam
+        [14.45, 0.26, 3.26], // 7. Trạm 7: Chiều 30/8 tại Huế — Hoàng triều cáo chung
+        [14.89, 0.26, -0.05], // 8. Trạm 8: Quảng trường Ba Đình — Khai sinh nước Việt Nam
+        [17.1, 0.26, -7.72] // 9. Trạm 9: Phòng Vàng Son — Nguyên nhân, Tầm vóc lịch sử & 3 Bài học
       ];
 
       return LESSON_DATA.anchors.map((anchor, i) => {
@@ -6152,7 +6175,7 @@
 
     function initLociData() {
       // Tự động dọn cache vị trí cũ nếu phiên bản layout mới tuần tự chưa được áp dụng
-      const LOCI_PERFECT_LAYOUT_V = 'v2026_inner_gallery_v4';
+      const LOCI_PERFECT_LAYOUT_V = 'v2026_bai_6_default_1795023198573';
       try {
         if (localStorage.getItem('loci_bai6_layout_ver') !== LOCI_PERFECT_LAYOUT_V) {
           localStorage.removeItem('loci_user_arranged_bai6');
@@ -13110,13 +13133,44 @@
         btn.innerHTML = '<span>⏳ Đang ghi mặc định...</span>';
       }
       try {
-        const res = await fetch('/api/save_default_loci', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-        const data = await res.json();
-        if (!res.ok || !data.ok) throw new Error(data.error || 'Lỗi lưu');
+        const isOnEditorPort = (location.port === '8765');
+        const endpoints = isOnEditorPort
+          ? ['/api/save_default_loci', 'http://127.0.0.1:8765/api/save_default_loci']
+          : ['http://127.0.0.1:8765/api/save_default_loci', 'http://localhost:8765/api/save_default_loci', '/api/save_default_loci'];
+        let data = null;
+        let lastErr = '';
+        for (let i = 0; i < endpoints.length; i++) {
+          const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+          const timer = ctrl ? setTimeout(() => ctrl.abort(), 5000) : null;
+          try {
+            const res = await fetch(endpoints[i], {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+              signal: ctrl ? ctrl.signal : undefined
+            });
+            if (timer) clearTimeout(timer);
+            const raw = await res.text();
+            if (!raw || !raw.trim()) {
+              lastErr = 'HTTP ' + res.status + ' (empty body)';
+              continue;
+            }
+            let parsed = null;
+            try { parsed = JSON.parse(raw); } catch (_) {
+              lastErr = 'HTTP ' + res.status + ' (non-JSON)';
+              continue;
+            }
+            if (res.ok && parsed && parsed.ok) {
+              data = parsed;
+              break;
+            }
+            lastErr = (parsed && parsed.error) || ('HTTP ' + res.status);
+          } catch (fetchErr) {
+            if (timer) clearTimeout(timer);
+            lastErr = fetchErr.message;
+          }
+        }
+        if (!data || !data.ok) throw new Error(lastErr || 'Server lưu local (:8765) chưa phản hồi');
         if (data.versionKey && data.newVersion) {
           localStorage.setItem(data.versionKey, data.newVersion);
         }
@@ -13125,8 +13179,9 @@
         }
       } catch (err) {
         if (typeof showToast === 'function') {
-          showToast('❌ Không lưu được mặc định: ' + err.message, 'warning', 4000);
+          showToast('❌ Không lưu được mặc định: ' + err.message + ' — Đang mở bảng copy toạ độ dự phòng!', 'warning', 4500);
         }
+        if (typeof window.exportArrangedLociRoute === 'function') window.exportArrangedLociRoute();
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -13814,6 +13869,14 @@
         return;
       }
 
+      // Phím V: Bật / Tắt Hack xuyên tường
+      if ((e.code === 'KeyV' || e.key === 'v' || e.key === 'V') && !isModalOpen()) {
+        if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.isContentEditable)) return;
+        e.preventDefault();
+        if (typeof window.toggleNoclipHack === 'function') window.toggleNoclipHack();
+        return;
+      }
+
       // Phím Q: Lùi mốc trong lộ trình
       if (e.code === 'KeyQ' && !isModalOpen()) {
         e.preventDefault();
@@ -14032,7 +14095,44 @@
       return minHit;
     }
 
+    window.isWallNoclip = false;
+    window.toggleNoclipHack = function(forceState) {
+      window.isWallNoclip = (typeof forceState === 'boolean') ? forceState : !window.isWallNoclip;
+      const btn = document.getElementById('btn-noclip-hack');
+      const txt = document.getElementById('noclip-hack-text');
+      if (btn) {
+        if (window.isWallNoclip) {
+          btn.style.setProperty('background', 'linear-gradient(135deg, #9333ea, #ec4899)', 'important');
+          btn.style.setProperty('border-color', '#f0abfc', 'important');
+          btn.style.setProperty('box-shadow', '0 6px 22px rgba(236,72,153,0.55)', 'important');
+        } else {
+          btn.style.setProperty('background', 'rgba(15, 23, 42, 0.92)', 'important');
+          btn.style.setProperty('border-color', 'rgba(168, 85, 247, 0.65)', 'important');
+          btn.style.setProperty('box-shadow', '0 6px 20px rgba(0,0,0,0.5), 0 0 12px rgba(168,85,247,0.28)', 'important');
+        }
+      }
+      if (txt) {
+        txt.textContent = window.isWallNoclip ? '👻 Đang Xuyên Tường [V]' : '👻 Hack xuyên tường [V]';
+      }
+      if (typeof showToast === 'function') {
+        showToast(
+          window.isWallNoclip
+            ? '👻 <b>ĐÃ BẬT HACK XUYÊN TƯỜNG:</b> Bạn có thể đi xuyên qua mọi bức tường!'
+            : '🧱 <b>ĐÃ TẮT XUYÊN TƯỜNG:</b> Khôi phục va chạm tường bình thường.',
+          window.isWallNoclip ? 'warning' : 'info',
+          2600
+        );
+      }
+      return window.isWallNoclip;
+    };
+
     function resolveWallCollision(fromX, fromZ, toX, toZ, radius = PLAYER_COLLISION_RADIUS) {
+      if (window.isWallNoclip) {
+        return {
+          x: Math.max(-65, Math.min(65, toX)),
+          z: Math.max(-65, Math.min(65, toZ))
+        };
+      }
       let curX = fromX;
       let curZ = fromZ;
       const dx = toX - fromX;
@@ -23508,36 +23608,38 @@
 
           if (orbitControls.enabled) {
             orbitControls.update();
-            // Prevent Free-Look Orbit camera from clipping outside walls or through interior walls
-            orbitControls.target.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, orbitControls.target.x));
-            orbitControls.target.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, orbitControls.target.z));
-            camera.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, camera.position.x));
-            camera.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, camera.position.z));
-            const maxCamY = ROOM_BOUNDS.maxY || 8;
-            camera.position.y = Math.max(0.45, Math.min(maxCamY, camera.position.y));
-            if (typeof castWallRay === 'function') {
-              const odx = camera.position.x - orbitControls.target.x;
-              const ody = camera.position.y - orbitControls.target.y;
-              const odz = camera.position.z - orbitControls.target.z;
-              const oDist = Math.hypot(odx, ody, odz);
-              if (oDist > 0.4) {
-                const hitDist = castWallRay(
-                  orbitControls.target.x,
-                  orbitControls.target.y,
-                  orbitControls.target.z,
-                  odx / oDist,
-                  ody / oDist,
-                  odz / oDist,
-                  oDist + 0.1
-                );
-                if (hitDist < oDist) {
-                  const safeDist = Math.max(0.5, hitDist - 0.35);
-                  const ratio = safeDist / oDist;
-                  camera.position.set(
-                    orbitControls.target.x + odx * ratio,
-                    Math.max(0.45, orbitControls.target.y + ody * ratio),
-                    orbitControls.target.z + odz * ratio
+            // Prevent Free-Look Orbit camera from clipping outside walls or through interior walls (unless Hack Noclip is ON)
+            if (!window.isWallNoclip) {
+              orbitControls.target.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, orbitControls.target.x));
+              orbitControls.target.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, orbitControls.target.z));
+              camera.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, camera.position.x));
+              camera.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, camera.position.z));
+              const maxCamY = ROOM_BOUNDS.maxY || 8;
+              camera.position.y = Math.max(0.45, Math.min(maxCamY, camera.position.y));
+              if (typeof castWallRay === 'function') {
+                const odx = camera.position.x - orbitControls.target.x;
+                const ody = camera.position.y - orbitControls.target.y;
+                const odz = camera.position.z - orbitControls.target.z;
+                const oDist = Math.hypot(odx, ody, odz);
+                if (oDist > 0.4) {
+                  const hitDist = castWallRay(
+                    orbitControls.target.x,
+                    orbitControls.target.y,
+                    orbitControls.target.z,
+                    odx / oDist,
+                    ody / oDist,
+                    odz / oDist,
+                    oDist + 0.1
                   );
+                  if (hitDist < oDist) {
+                    const safeDist = Math.max(0.5, hitDist - 0.35);
+                    const ratio = safeDist / oDist;
+                    camera.position.set(
+                      orbitControls.target.x + odx * ratio,
+                      Math.max(0.45, orbitControls.target.y + ody * ratio),
+                      orbitControls.target.z + odz * ratio
+                    );
+                  }
                 }
               }
             }

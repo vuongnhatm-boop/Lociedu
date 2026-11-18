@@ -4340,7 +4340,28 @@ function _decodeGeminiKey(s) {
       return minHit;
     }
 
+    window.isWallNoclip = false;
+    window.toggleNoclipHack = function(forceState) {
+      window.isWallNoclip = (typeof forceState === 'boolean') ? forceState : !window.isWallNoclip;
+      if (typeof showToast === 'function') {
+        showToast(
+          window.isWallNoclip
+            ? '👻 <b>ĐÃ BẬT HACK XUYÊN TƯỜNG:</b> Đi xuyên qua mọi bức tường!'
+            : '🧱 <b>ĐÃ TẮT XUYÊN TƯỜNG:</b> Khôi phục va chạm tường bình thường.',
+          window.isWallNoclip ? 'warning' : 'info',
+          2600
+        );
+      }
+      return window.isWallNoclip;
+    };
+
     function resolveWallCollision(fromX, fromZ, toX, toZ, radius = PLAYER_COLLISION_RADIUS) {
+      if (window.isWallNoclip) {
+        return {
+          x: Math.max(-40, Math.min(40, toX)),
+          z: Math.max(-40, Math.min(40, toZ))
+        };
+      }
       let curX = fromX;
       let curZ = fromZ;
       const dx = toX - fromX;
@@ -7234,36 +7255,38 @@ function _decodeGeminiKey(s) {
 
           if (orbitControls.enabled) {
             orbitControls.update();
-            // Prevent Free-Look Orbit camera from clipping outside walls or through interior walls
-            orbitControls.target.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, orbitControls.target.x));
-            orbitControls.target.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, orbitControls.target.z));
-            camera.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, camera.position.x));
-            camera.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, camera.position.z));
-            const maxCamY = ROOM_BOUNDS.maxY || 6;
-            camera.position.y = Math.max(0.45, Math.min(maxCamY, camera.position.y));
-            if (typeof castWallRay === 'function') {
-              const odx = camera.position.x - orbitControls.target.x;
-              const ody = camera.position.y - orbitControls.target.y;
-              const odz = camera.position.z - orbitControls.target.z;
-              const oDist = Math.hypot(odx, ody, odz);
-              if (oDist > 0.4) {
-                const hitDist = castWallRay(
-                  orbitControls.target.x,
-                  orbitControls.target.y,
-                  orbitControls.target.z,
-                  odx / oDist,
-                  ody / oDist,
-                  odz / oDist,
-                  oDist + 0.1
-                );
-                if (hitDist < oDist) {
-                  const safeDist = Math.max(0.5, hitDist - 0.35);
-                  const ratio = safeDist / oDist;
-                  camera.position.set(
-                    orbitControls.target.x + odx * ratio,
-                    Math.max(0.45, orbitControls.target.y + ody * ratio),
-                    orbitControls.target.z + odz * ratio
+            if (!window.isWallNoclip) {
+              // Prevent Free-Look Orbit camera from clipping outside walls or through interior walls
+              orbitControls.target.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, orbitControls.target.x));
+              orbitControls.target.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, orbitControls.target.z));
+              camera.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, camera.position.x));
+              camera.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, camera.position.z));
+              const maxCamY = ROOM_BOUNDS.maxY || 6;
+              camera.position.y = Math.max(0.45, Math.min(maxCamY, camera.position.y));
+              if (typeof castWallRay === 'function') {
+                const odx = camera.position.x - orbitControls.target.x;
+                const ody = camera.position.y - orbitControls.target.y;
+                const odz = camera.position.z - orbitControls.target.z;
+                const oDist = Math.hypot(odx, ody, odz);
+                if (oDist > 0.4) {
+                  const hitDist = castWallRay(
+                    orbitControls.target.x,
+                    orbitControls.target.y,
+                    orbitControls.target.z,
+                    odx / oDist,
+                    ody / oDist,
+                    odz / oDist,
+                    oDist + 0.1
                   );
+                  if (hitDist < oDist) {
+                    const safeDist = Math.max(0.5, hitDist - 0.35);
+                    const ratio = safeDist / oDist;
+                    camera.position.set(
+                      orbitControls.target.x + odx * ratio,
+                      Math.max(0.45, orbitControls.target.y + ody * ratio),
+                      orbitControls.target.z + odz * ratio
+                    );
+                  }
                 }
               }
             }
