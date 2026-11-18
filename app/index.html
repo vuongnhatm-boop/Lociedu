@@ -5872,6 +5872,7 @@
     } catch (_) { }
 
     function updateAnchorLockUI() {
+      if (typeof window.refreshSaveDefaultButtonVisibility === 'function') window.refreshSaveDefaultButtonVisibility();
       var btn = document.getElementById('btn-toggle-anchor-lock');
       var icon = document.getElementById('anchor-lock-icon');
       var text = document.getElementById('anchor-lock-text');
@@ -13190,13 +13191,15 @@
       }
     };
 
+    window.refreshSaveDefaultButtonVisibility = function() {
+      const btn = document.getElementById('btn-save-default-loci');
+      if (!btn) return;
+      const isLocal = (location.hostname === '127.0.0.1' || location.hostname === 'localhost' || location.protocol === 'file:');
+      const shouldShow = isLocal || (typeof isAnchorsLocked !== 'undefined' && !isAnchorsLocked);
+      btn.style.setProperty('display', shouldShow ? 'inline-flex' : 'none', 'important');
+    };
     (function initLocalDefaultSaveButton() {
-      const isLocal = (location.hostname === '127.0.0.1' || location.hostname === 'localhost');
-      if (!isLocal) return;
-      const showBtn = () => {
-        const btn = document.getElementById('btn-save-default-loci');
-        if (btn) btn.style.setProperty('display', 'inline-flex', 'important');
-      };
+      const showBtn = () => { if (typeof window.refreshSaveDefaultButtonVisibility === 'function') window.refreshSaveDefaultButtonVisibility(); };
       if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', showBtn);
       else showBtn();
     })();
