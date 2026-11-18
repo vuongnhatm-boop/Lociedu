@@ -13443,19 +13443,8 @@
         window.roomMesh = loadedScene;
 
         const box = new THREE.Box3().setFromObject(roomMesh);
-        const center = box.getCenter(new THREE.Vector3());
-
         const size = box.getSize(new THREE.Vector3());
-        let limitX = Math.max(35, (size.x / 2) + 8);
-        let limitZ = Math.max(35, (size.z / 2) + 8);
-        ROOM_BOUNDS.minX = -limitX;
-        ROOM_BOUNDS.maxX = limitX;
-        ROOM_BOUNDS.minZ = -limitZ;
-        ROOM_BOUNDS.maxZ = limitZ;
-        ROOM_BOUNDS.eyeHeight = 1.65;
-
-        camera.far = 400;
-        camera.updateProjectionMatrix();
+        const center = box.getCenter(new THREE.Vector3());
 
         // Căn giữa và điều chỉnh kích thước không gian chuẩn xác
         if (EFFECTIVE_LESSON_KEY === 'bai_8') {
@@ -13468,6 +13457,31 @@
           roomMesh.scale.setScalar(1.0);
           roomMesh.position.set(-center.x, 0, -center.z);
           roomMesh.rotation.set(0, 0, 0);
+        }
+
+        // Tính lại Bounding Box thực tế SAU KHI scale & căn giữa để khóa biên tường chuẩn xác
+        roomMesh.updateMatrixWorld(true);
+        const worldBox = new THREE.Box3().setFromObject(roomMesh);
+        const worldSize = worldBox.getSize(new THREE.Vector3());
+        const wallPadX = worldSize.x > 4 ? 0.55 : 0.2;
+        const wallPadZ = worldSize.z > 4 ? 0.55 : 0.2;
+        ROOM_BOUNDS.minX = worldBox.min.x + wallPadX;
+        ROOM_BOUNDS.maxX = worldBox.max.x - wallPadX;
+        ROOM_BOUNDS.minZ = worldBox.min.z + wallPadZ;
+        ROOM_BOUNDS.maxZ = worldBox.max.z - wallPadZ;
+        ROOM_BOUNDS.maxY = Math.max(4.5, worldBox.max.y - 0.35);
+        ROOM_BOUNDS.eyeHeight = 1.65;
+
+        // Đảm bảo toàn bộ các trạm Loci của bài học đều nằm trong vùng cho phép đi tới
+        if (LESSON_DATA && Array.isArray(LESSON_DATA.anchors)) {
+          LESSON_DATA.anchors.forEach(a => {
+            if (a && Array.isArray(a.pos)) {
+              ROOM_BOUNDS.minX = Math.min(ROOM_BOUNDS.minX, a.pos[0] - 1.5);
+              ROOM_BOUNDS.maxX = Math.max(ROOM_BOUNDS.maxX, a.pos[0] + 1.5);
+              ROOM_BOUNDS.minZ = Math.min(ROOM_BOUNDS.minZ, a.pos[2] - 1.5);
+              ROOM_BOUNDS.maxZ = Math.max(ROOM_BOUNDS.maxZ, a.pos[2] + 1.5);
+            }
+          });
         }
 
         // Đặt camera ở vị trí chuẩn nhìn về Trạm 1
@@ -13535,6 +13549,9 @@
         });
 
         scene.add(roomMesh);
+        if (typeof buildWallColliders === 'function') {
+          buildWallColliders(roomMesh);
+        }
         refresh3DMarkers();
 
         // Ẩn lớp phủ tải
@@ -13765,6 +13782,138 @@
     const _currentFpsVelocity = new THREE.Vector3();
     const _targetFpsVelocity = new THREE.Vector3();
 
+    // =========================================================================
+    // HỆ THỐNG CHỐNG XUYÊN TƯỜNG THỰC TẾ (MESH RAYCAST + AXIS SLIDING)
+    // =========================================================================
+    let wallColliders = [];
+    const _wallRaycaster = new THREE.Raycaster();
+    const _wallOrigin = new THREE.Vector3();
+    const _wallDir = new THREE.Vector3();
+    const _sweepBox = new THREE.Box3();
+    const _sweepMin = new THREE.Vector3();
+    const _sweepMax = new THREE.Vector3();
+    const PLAYER_COLLISION_RADIUS = 0.42;
+
+    function buildWallColliders(rootObj) {
+      wallColliders = [];
+      if (!rootObj) return;
+      rootObj.updateMatrixWorld(true);
+      rootObj.traverse((child) => {
+        if (!child.isMesh || !child.visible || !child.geometry) return;
+        const mBox = new THREE.Box3().setFromObject(child);
+        if (mBox.isEmpty()) return;
+        const height = mBox.max.y - mBox.min.y;
+        const spanX = mBox.max.x - mBox.min.x;
+        const spanZ = mBox.max.z - mBox.min.z;
+        // Bỏ qua mặt sàn phẳng dưới chân (y < 0.30) và trần cao quá đầu người (minY > 2.15)
+        if (mBox.max.y < 0.30 || mBox.min.y > 2.15) return;
+        if (height < 0.25 && (spanX > 10 || spanZ > 10) && mBox.max.y < 0.45) return;
+        wallColliders.push({ mesh: child, box: mBox });
+      });
+      window.wallCollidersCount = wallColliders.length;
+    }
+
+    function castWallRay(ox, oy, oz, dx, dy, dz, maxDist) {
+      if (wallColliders.length === 0 || maxDist <= 0) return Infinity;
+      _wallOrigin.set(ox, oy, oz);
+      _wallDir.set(dx, dy, dz).normalize();
+      _wallRaycaster.set(_wallOrigin, _wallDir);
+      _wallRaycaster.near = 0.01;
+      _wallRaycaster.far = maxDist;
+
+      const pad = 0.35;
+      _sweepMin.set(
+        Math.min(ox, ox + _wallDir.x * maxDist) - pad,
+        Math.min(oy, oy + _wallDir.y * maxDist) - 0.2,
+        Math.min(oz, oz + _wallDir.z * maxDist) - pad
+      );
+      _sweepMax.set(
+        Math.max(ox, ox + _wallDir.x * maxDist) + pad,
+        Math.max(oy, oy + _wallDir.y * maxDist) + 0.2,
+        Math.max(oz, oz + _wallDir.z * maxDist) + pad
+      );
+      _sweepBox.set(_sweepMin, _sweepMax);
+
+      let minHit = Infinity;
+      for (let i = 0; i < wallColliders.length; i++) {
+        const col = wallColliders[i];
+        if (!col.mesh.visible || !col.box.intersectsBox(_sweepBox)) continue;
+
+        // Tạm bật DoubleSide khi raycast để tường 1 mặt vẫn chặn tuyệt đối từ cả 2 phía
+        const mats = Array.isArray(col.mesh.material) ? col.mesh.material : [col.mesh.material];
+        const prevSides = mats.map(m => (m ? m.side : THREE.FrontSide));
+        try {
+          for (let j = 0; j < mats.length; j++) {
+            if (mats[j]) mats[j].side = THREE.DoubleSide;
+          }
+          const hits = _wallRaycaster.intersectObject(col.mesh, false);
+          if (hits.length > 0 && hits[0].distance < minHit) {
+            minHit = hits[0].distance;
+          }
+        } finally {
+          for (let j = 0; j < mats.length; j++) {
+            if (mats[j]) mats[j].side = prevSides[j];
+          }
+        }
+      }
+      return minHit;
+    }
+
+    function resolveWallCollision(fromX, fromZ, toX, toZ, radius = PLAYER_COLLISION_RADIUS) {
+      let curX = fromX;
+      let curZ = fromZ;
+      const dx = toX - fromX;
+      const dz = toZ - fromZ;
+      const heights = [0.75, 1.35];
+      const lateralOffsets = [-0.22, 0, 0.22];
+
+      // 1. Trục X (cho phép trượt dọc theo tường khi đi chéo)
+      if (Math.abs(dx) > 1e-5) {
+        const signX = dx > 0 ? 1 : -1;
+        const absDx = Math.abs(dx);
+        const maxCheck = absDx + radius;
+        let minHit = Infinity;
+        for (let hIdx = 0; hIdx < heights.length; hIdx++) {
+          for (let oIdx = 0; oIdx < lateralOffsets.length; oIdx++) {
+            const d = castWallRay(curX, heights[hIdx], curZ + lateralOffsets[oIdx], signX, 0, 0, maxCheck);
+            if (d < minHit) minHit = d;
+          }
+        }
+        if (minHit < maxCheck) {
+          const allowed = Math.max(0, minHit - radius - 0.01);
+          curX += signX * Math.min(absDx, allowed);
+        } else {
+          curX += dx;
+        }
+      }
+
+      // 2. Trục Z
+      if (Math.abs(dz) > 1e-5) {
+        const signZ = dz > 0 ? 1 : -1;
+        const absDz = Math.abs(dz);
+        const maxCheck = absDz + radius;
+        let minHit = Infinity;
+        for (let hIdx = 0; hIdx < heights.length; hIdx++) {
+          for (let oIdx = 0; oIdx < lateralOffsets.length; oIdx++) {
+            const d = castWallRay(curX + lateralOffsets[oIdx], heights[hIdx], curZ, 0, 0, signZ, maxCheck);
+            if (d < minHit) minHit = d;
+          }
+        }
+        if (minHit < maxCheck) {
+          const allowed = Math.max(0, minHit - radius - 0.01);
+          curZ += signZ * Math.min(absDz, allowed);
+        } else {
+          curZ += dz;
+        }
+      }
+
+      // 3. Khóa biên giới hạn toàn phòng
+      curX = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, curX));
+      curZ = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, curZ));
+      return { x: curX, z: curZ };
+    }
+    window.resolveWallCollision = resolveWallCollision;
+
     function updateFPSMovement(delta) {
       if (!isFPSMode) return;
 
@@ -13806,13 +13955,13 @@
       _currentFpsVelocity.lerp(_targetFpsVelocity, moveDamp);
 
       if (_currentFpsVelocity.lengthSq() > 0.0001) {
-        const bounds = (typeof getLessonBounds === 'function') ? getLessonBounds() : ROOM_BOUNDS;
         const targetX = camera.position.x + _currentFpsVelocity.x * delta;
         const targetZ = camera.position.z + _currentFpsVelocity.z * delta;
 
-        // CHỐNG XUYÊN TƯỜNG (Strict Collision Clamp): Khóa tuyệt đối không cho camera đi xuyên vách tường
-        camera.position.x = Math.max(bounds.minX, Math.min(bounds.maxX, targetX));
-        camera.position.z = Math.max(bounds.minZ, Math.min(bounds.maxZ, targetZ));
+        // CHỐNG XUYÊN TƯỜNG (Mesh Raycast + Axis Sliding + Boundary Clamp)
+        const resolved = resolveWallCollision(camera.position.x, camera.position.z, targetX, targetZ);
+        camera.position.x = resolved.x;
+        camera.position.z = resolved.z;
       }
       camera.position.y = (ROOM_BOUNDS && ROOM_BOUNDS.eyeHeight) ? ROOM_BOUNDS.eyeHeight : 1.65;
     }
@@ -20584,8 +20733,15 @@
       dz /= len;
 
       const standDist = (typeof isBrownGallery !== 'undefined' && isBrownGallery) ? 2.10 : 1.65;
-      let standX = tx + dx * standDist;
-      let standZ = tz + dz * standDist;
+      let effectiveDist = standDist;
+      if (typeof castWallRay === 'function') {
+        const wallHit = castWallRay(tx, 1.2, tz, dx, 0, dz, standDist + 0.55);
+        if (wallHit < standDist + 0.55) {
+          effectiveDist = Math.max(0.6, wallHit - 0.55);
+        }
+      }
+      let standX = tx + dx * effectiveDist;
+      let standZ = tz + dz * effectiveDist;
 
       standX = Math.max(ROOM_BOUNDS.minX + 0.4, Math.min(ROOM_BOUNDS.maxX - 0.4, standX));
       standZ = Math.max(ROOM_BOUNDS.minZ + 0.4, Math.min(ROOM_BOUNDS.maxZ - 0.4, standZ));
@@ -22730,9 +22886,17 @@
             moveDir.addScaledVector(forward, -stickY / stickMag);
             moveDir.addScaledVector(right, stickX / stickMag);
 
-            cameraGroup.position.addScaledVector(moveDir, MOVE_SPEED * normMag * delta);
-            cameraGroup.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, cameraGroup.position.x));
-            cameraGroup.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, cameraGroup.position.z));
+            const stepScale = MOVE_SPEED * normMag * delta;
+            const vrTargetX = cameraGroup.position.x + moveDir.x * stepScale;
+            const vrTargetZ = cameraGroup.position.z + moveDir.z * stepScale;
+            if (typeof resolveWallCollision === 'function') {
+              const resolved = resolveWallCollision(cameraGroup.position.x, cameraGroup.position.z, vrTargetX, vrTargetZ);
+              cameraGroup.position.x = resolved.x;
+              cameraGroup.position.z = resolved.z;
+            } else {
+              cameraGroup.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, vrTargetX));
+              cameraGroup.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, vrTargetZ));
+            }
           }
         }
 
@@ -23159,7 +23323,42 @@
             });
           }
 
-          if (orbitControls.enabled) orbitControls.update();
+          if (orbitControls.enabled) {
+            orbitControls.update();
+            // Prevent Free-Look Orbit camera from clipping outside walls or through interior walls
+            orbitControls.target.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, orbitControls.target.x));
+            orbitControls.target.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, orbitControls.target.z));
+            camera.position.x = Math.max(ROOM_BOUNDS.minX, Math.min(ROOM_BOUNDS.maxX, camera.position.x));
+            camera.position.z = Math.max(ROOM_BOUNDS.minZ, Math.min(ROOM_BOUNDS.maxZ, camera.position.z));
+            const maxCamY = ROOM_BOUNDS.maxY || 8;
+            camera.position.y = Math.max(0.45, Math.min(maxCamY, camera.position.y));
+            if (typeof castWallRay === 'function') {
+              const odx = camera.position.x - orbitControls.target.x;
+              const ody = camera.position.y - orbitControls.target.y;
+              const odz = camera.position.z - orbitControls.target.z;
+              const oDist = Math.hypot(odx, ody, odz);
+              if (oDist > 0.4) {
+                const hitDist = castWallRay(
+                  orbitControls.target.x,
+                  orbitControls.target.y,
+                  orbitControls.target.z,
+                  odx / oDist,
+                  ody / oDist,
+                  odz / oDist,
+                  oDist + 0.1
+                );
+                if (hitDist < oDist) {
+                  const safeDist = Math.max(0.5, hitDist - 0.35);
+                  const ratio = safeDist / oDist;
+                  camera.position.set(
+                    orbitControls.target.x + odx * ratio,
+                    Math.max(0.45, orbitControls.target.y + ody * ratio),
+                    orbitControls.target.z + odz * ratio
+                  );
+                }
+              }
+            }
+          }
           // Chỉ kiểm tra raycast chuột khi KHÔNG ở trong VR (tránh xung đột)
           updateLociHtmlPins();
 
