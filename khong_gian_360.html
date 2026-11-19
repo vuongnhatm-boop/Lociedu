@@ -2027,6 +2027,398 @@ function _decodeGeminiKey(s) {
             box-shadow: 0 0 28px rgba(14, 165, 233, 1), 0 0 54px rgba(56, 189, 248, 0.8) !important;
         }
 
+
+        /* ═══════════════════════════════════════════════════════════════════════════
+           GIAO DIỆN 2 TAB KHÔNG GIAN & ĐƯỜNG NỐI SVG ĐỘNG (GIỐNG KHÔNG GIAN 3D)
+           ═══════════════════════════════════════════════════════════════════════════ */
+        #brown-dual-tabs-container {
+          position: fixed;
+          inset: 0;
+          z-index: 9100;
+          pointer-events: none;
+          opacity: 0;
+          visibility: hidden;
+          transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+        }
+        #brown-dual-tabs-container.open { opacity: 1; visibility: visible; }
+
+        #bdt-stage-wrap {
+          position: absolute;
+          left: 44%;
+          top: 50%;
+          transform: translateY(-50%);
+          display: flex;
+          align-items: center;
+          gap: 22px;
+          pointer-events: auto;
+        }
+
+        .bdt-title-pill {
+          position: absolute;
+          bottom: calc(100% + 14px);
+          left: 0;
+          width: 400px;
+          max-width: 42vw;
+          background: rgba(255, 255, 255, 0.90) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 16px;
+          padding: 10px 16px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16), 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+          pointer-events: auto;
+          box-sizing: border-box;
+          animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .bdt-title-icon { font-size: 18px; flex-shrink: 0; }
+        .bdt-title-text {
+          font-size: 14.5px;
+          font-weight: 800;
+          color: #0f172a !important;
+          letter-spacing: -0.2px;
+          line-height: 1.35;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .bdt-step-pill {
+          width: 400px;
+          max-width: 42vw;
+          background: rgba(255, 255, 255, 0.92) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 20px;
+          padding: 16px 20px;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          box-shadow: 0 20px 48px rgba(15, 23, 42, 0.18), 0 4px 12px rgba(2, 132, 199, 0.1) !important;
+          cursor: pointer;
+          user-select: none;
+          transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.22s, box-shadow 0.22s;
+          animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .bdt-step-pill:hover {
+          transform: translateY(-2px) scale(1.015);
+          border-color: rgba(2, 132, 199, 0.5) !important;
+        }
+        @keyframes bdtZoomIn {
+          from { opacity: 0; transform: scale(0.92) translateY(12px); }
+          to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+        .bdt-step-badge {
+          flex-shrink: 0;
+          width: 32px;
+          height: 32px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%) !important;
+          color: #ffffff !important;
+          font-weight: 800;
+          font-size: 14px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          box-shadow: 0 4px 12px rgba(2, 132, 199, 0.35) !important;
+        }
+        .bdt-step-text {
+          flex: 1;
+          font-size: 13.5px;
+          line-height: 1.58;
+          color: #0f172a !important;
+          font-weight: 500;
+        }
+        .bdt-step-icon {
+          flex-shrink: 0;
+          font-size: 11px;
+          font-weight: 800;
+          color: #0284c7 !important;
+          background: rgba(2, 132, 199, 0.1);
+          border: 1px solid rgba(2, 132, 199, 0.25);
+          border-radius: 6px;
+          padding: 3px 8px;
+        }
+
+        .bdt-pure-photo-wrap {
+          width: 280px;
+          height: 195px;
+          border-radius: 20px;
+          overflow: hidden;
+          background: #0f172a;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          box-shadow: 0 20px 48px rgba(15, 23, 42, 0.2) !important;
+          pointer-events: auto;
+          cursor: pointer;
+          animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+          position: relative;
+        }
+        .bdt-pure-photo-img {
+          width: 100%;
+          height: 100%;
+          background-size: cover;
+          background-position: center;
+          transition: transform 0.4s ease, opacity 0.3s ease;
+        }
+        .bdt-pure-photo-wrap:hover .bdt-pure-photo-img { transform: scale(1.04); }
+
+        .bdt-close-pill {
+          position: absolute;
+          top: -38px;
+          right: 0;
+          width: 30px;
+          height: 30px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.92) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          color: #475569 !important;
+          cursor: pointer;
+          display: grid;
+          place-items: center;
+          font-size: 13px;
+          pointer-events: auto;
+          transition: 0.2s;
+          box-shadow: 0 4px 12px rgba(15, 23, 42, 0.14) !important;
+        }
+        .bdt-close-pill:hover {
+          background: #ef4444 !important;
+          color: #ffffff !important;
+          border-color: #ef4444 !important;
+          transform: scale(1.08);
+        }
+
+        .bdt-kw-box {
+          position: absolute;
+          top: calc(100% + 14px);
+          left: 0;
+          width: 400px;
+          max-width: 42vw;
+          background: rgba(255, 255, 255, 0.93) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 16px;
+          padding: 10px 14px;
+          display: flex;
+          flex-direction: column;
+          gap: 6px;
+          box-shadow: 0 16px 36px rgba(15, 23, 42, 0.16) !important;
+          pointer-events: auto;
+          box-sizing: border-box;
+          animation: bdtZoomIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+        .bdt-kw-row { display: flex; align-items: center; gap: 8px; }
+        .bdt-kw-input {
+          flex: 1;
+          background: rgba(241, 245, 249, 0.95) !important;
+          border: 1px solid rgba(203, 213, 225, 0.9) !important;
+          border-radius: 10px;
+          padding: 7px 12px;
+          font-size: 13px;
+          color: #0f172a !important;
+          font-weight: 600;
+          outline: none;
+        }
+        .bdt-kw-input:focus { border-color: #0284c7 !important; background: #ffffff !important; }
+        .bdt-kw-btn-hint {
+          background: rgba(245, 158, 11, 0.14) !important;
+          border: 1px solid rgba(245, 158, 11, 0.4) !important;
+          border-radius: 10px;
+          padding: 6px 12px;
+          cursor: pointer;
+          font-size: 12px;
+          font-weight: 700;
+          color: #b45309 !important;
+        }
+        .bdt-kw-btn-submit {
+          background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 100%) !important;
+          border: none;
+          border-radius: 10px;
+          padding: 7px 14px;
+          font-weight: 800;
+          font-size: 12px;
+          color: #ffffff !important;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .bdt-kw-msg { font-size: 11.5px; line-height: 1.35; color: #475569 !important; min-height: 14px; }
+        .bdt-kw-msg.success { color: #059669 !important; font-weight: 700; }
+        .bdt-kw-msg.error { color: #dc2626 !important; font-weight: 700; }
+        .bdt-kw-msg.hint { color: #d97706 !important; font-weight: 700; }
+        @keyframes bdtShake {
+          0%, 100% { transform: translateX(0); }
+          20%, 60% { transform: translateX(-6px); }
+          40%, 80% { transform: translateX(6px); }
+        }
+        .bdt-shake { animation: bdtShake 0.4s ease-in-out; }
+
+        #bdt-action-bar {
+          position: absolute;
+          left: 44%;
+          top: calc(50% + 185px);
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          pointer-events: auto;
+          background: rgba(255, 255, 255, 0.93) !important;
+          backdrop-filter: blur(24px) saturate(180%) !important;
+          -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+          border: 1.5px solid rgba(255, 255, 255, 0.95) !important;
+          border-radius: 20px;
+          padding: 8px 14px;
+          box-shadow: 0 16px 40px rgba(15, 23, 42, 0.18) !important;
+          z-index: 9200;
+        }
+        .bdt-nav-cluster { display: flex; align-items: center; gap: 6px; }
+        .bdt-glass-nav-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 7px 12px;
+          border-radius: 12px;
+          border: 1px solid rgba(203, 213, 225, 0.85);
+          background: rgba(248, 250, 252, 0.95);
+          color: #0f172a;
+          font-weight: 700;
+          font-size: 12px;
+          cursor: pointer;
+          white-space: nowrap;
+        }
+        .bdt-glass-nav-btn.next {
+          background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+          color: #ffffff;
+          border: 1px solid rgba(2, 132, 199, 0.8);
+        }
+        .bdt-picker-wrap { position: relative; }
+        .bdt-picker-trigger {
+          display: inline-flex;
+          align-items: center;
+          gap: 5px;
+          padding: 7px 11px;
+          border-radius: 12px;
+          border: 1px solid rgba(2, 132, 199, 0.3);
+          background: rgba(2, 132, 199, 0.08);
+          color: #0369a1;
+          font-weight: 800;
+          font-size: 12px;
+          cursor: pointer;
+        }
+        .bdt-picker-popover {
+          position: absolute;
+          bottom: calc(100% + 12px);
+          left: 50%;
+          transform: translateX(-50%) scale(0.95);
+          width: 280px;
+          max-height: 340px;
+          overflow-y: auto;
+          background: rgba(255, 255, 255, 0.97);
+          border: 1.5px solid rgba(255, 255, 255, 0.95);
+          border-radius: 18px;
+          padding: 10px;
+          box-shadow: 0 20px 48px rgba(15, 23, 42, 0.22);
+          opacity: 0;
+          visibility: hidden;
+          pointer-events: none;
+          transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 9300;
+        }
+        .bdt-picker-wrap.open .bdt-picker-popover {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          transform: translateX(-50%) scale(1);
+        }
+        .bdt-picker-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 4px 8px 8px;
+          border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+          font-size: 11.5px;
+          font-weight: 800;
+          color: #475569;
+        }
+        .bdt-picker-close-btn { background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 12px; }
+        .bdt-picker-grid { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+        .bdt-picker-item {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 10px;
+          border-radius: 10px;
+          border: 1px solid transparent;
+          background: transparent;
+          color: #0f172a;
+          font-size: 12px;
+          font-weight: 600;
+          cursor: pointer;
+          text-align: left;
+          width: 100%;
+        }
+        .bdt-picker-item.active {
+          background: rgba(2, 132, 199, 0.15);
+          border-color: #0284c7;
+          color: #0284c7;
+          font-weight: 800;
+        }
+        .bdt-picker-item-num {
+          width: 22px;
+          height: 22px;
+          border-radius: 50%;
+          background: #e2e8f0;
+          color: #0f172a;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 11px;
+          font-weight: 800;
+          flex-shrink: 0;
+        }
+        .bdt-picker-item.active .bdt-picker-item-num { background: #0284c7; color: #ffffff; }
+        .bdt-picker-item-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .bdt-action-divider { width: 1px; height: 20px; background: rgba(203, 213, 225, 0.8); }
+        .bdt-step-dots-wrap { display: flex; align-items: center; gap: 8px; }
+        .bdt-step-dots { display: flex; align-items: center; gap: 6px; }
+        .bdt-step-dot {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          background: rgba(148, 163, 184, 0.5);
+          cursor: pointer;
+          transition: all 0.22s;
+        }
+        .bdt-step-dot.active {
+          width: 20px;
+          border-radius: 99px;
+          background: #0284c7;
+          box-shadow: 0 0 8px rgba(2, 132, 199, 0.45);
+        }
+        .bdt-step-counter { font-size: 11.5px; font-weight: 800; color: #475569; }
+        @media (max-width: 900px) {
+          #bdt-stage-wrap {
+            left: 4% !important;
+            width: 92% !important;
+            top: auto !important;
+            bottom: 74px !important;
+            transform: none !important;
+            flex-direction: column-reverse !important;
+            gap: 8px !important;
+          }
+          .bdt-title-pill, .bdt-step-pill, .bdt-kw-box { position: relative; top: auto; bottom: auto; left: auto; width: 100%; max-width: 100%; }
+          .bdt-pure-photo-wrap { width: 100% !important; height: 145px !important; }
+          #bdt-action-bar {
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            width: 94% !important;
+            top: auto !important;
+            bottom: 12px !important;
+            justify-content: space-between !important;
+          }
+        }
+
         /* --- CHẾ ĐỘ MÁY TÍNH (DESKTOP): CHỈ HIỆN ĐẶT MỐC, DI CHUYỂN & PHÓNG TO MỐC --- */
         @media (min-width: 900px) {
             #go-capture, #go-ar-live {
@@ -2411,6 +2803,94 @@ function _decodeGeminiKey(s) {
     <section class="screen" id="viewer">
         <div id="pano"></div>
         <div id="markers"></div>
+
+        <!-- GIAO DIỆN 2 TAB KHÔNG GIAN & ĐƯỜNG NỐI SVG ĐỘNG (NHƯ KHÔNG GIAN 3D) -->
+        <div id="brown-dual-tabs-container">
+          <svg id="bdt-svg-overlay" style="position:fixed; inset:0; width:100vw; height:100vh; pointer-events:none; z-index:9150;">
+            <defs>
+              <linearGradient id="bdt-glow-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.95" />
+                <stop offset="100%" stop-color="#0284c7" stop-opacity="0.95" />
+              </linearGradient>
+              <filter id="bdt-glow-filter" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="2.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <path id="bdt-path-locus" d="" stroke="url(#bdt-glow-grad)" stroke-width="2.6" fill="none" stroke-linecap="round" filter="url(#bdt-glow-filter)" />
+            <path id="bdt-path-tabs" d="" stroke="url(#bdt-glow-grad)" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-dasharray="5 3" filter="url(#bdt-glow-filter)" />
+            <circle id="bdt-dot-locus" cx="-200" cy="-200" r="6.5" fill="#38bdf8" filter="url(#bdt-glow-filter)" />
+            <circle id="bdt-dot-big" cx="-200" cy="-200" r="4.5" fill="#0284c7" />
+            <circle id="bdt-dot-small" cx="-200" cy="-200" r="4.5" fill="#0284c7" />
+          </svg>
+
+          <div id="bdt-stage-wrap">
+            <div id="bdt-title-pill" class="bdt-title-pill">
+              <span id="bdt-title-icon" class="bdt-title-icon">📍</span>
+              <span id="bdt-title-text" class="bdt-title-text">Tiêu đề Trạm</span>
+            </div>
+
+            <div id="bdt-step-card" class="bdt-step-pill" title="Nhấp chuột vào thẻ để xem ý tiếp theo ➔">
+              <div class="bdt-step-badge" id="bdt-step-num">1</div>
+              <div class="bdt-step-text" id="bdt-step-text"></div>
+              <div class="bdt-step-icon" title="Ảnh tư liệu bên cạnh">TƯ LIỆU</div>
+            </div>
+
+            <div id="bdt-keyword-box" class="bdt-kw-box">
+              <div class="bdt-kw-row">
+                <span class="bdt-kw-icon" style="font-size:12px; font-weight:800; color:#d97706;">Từ khóa:</span>
+                <input type="text" id="bdt-kw-input" class="bdt-kw-input" placeholder="Gõ 1 từ khóa của ý trên để tiếp tục..." autocomplete="off" spellcheck="false" />
+                <button id="bdt-kw-hint-btn" class="bdt-kw-btn-hint" type="button" title="Xem gợi ý từ khóa">Gợi ý</button>
+                <button id="bdt-kw-submit-btn" class="bdt-kw-btn-submit" type="button" title="Xác nhận từ khóa và chuyển ý">Tiếp tục ➔</button>
+              </div>
+              <div id="bdt-kw-msg" class="bdt-kw-msg">🔑 Nhập từ khóa in đậm màu xanh để mở khóa ý tiếp theo.</div>
+            </div>
+
+            <div id="bdt-pure-photo-wrap" class="bdt-pure-photo-wrap" title="Ảnh tư liệu lịch sử gắn với mốc">
+              <div id="bdt-pure-photo-img" class="bdt-pure-photo-img"></div>
+              <div id="bdt-pure-photo-caption" style="position:absolute; bottom:0; left:0; right:0; background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.55) 75%, transparent 100%); padding:8px 12px; font-size:11px; color:#f8fafc; font-weight:600; line-height:1.35; pointer-events:none; border-bottom-left-radius:18px; border-bottom-right-radius:18px;"></div>
+            </div>
+
+            <button id="bdt-close-btn" class="bdt-close-pill" type="button" title="Đóng (Esc)">✕</button>
+          </div>
+
+          <div id="bdt-action-bar">
+            <div class="bdt-nav-cluster">
+              <button id="bdt-nav-prev-btn" class="bdt-glass-nav-btn prev" type="button" title="Về trạm trước">
+                <span>❮</span> <span>Trạm trước</span>
+              </button>
+              <div id="bdt-picker-wrap" class="bdt-picker-wrap">
+                <button id="bdt-picker-btn" class="bdt-picker-trigger" type="button" title="Chọn trạm bất kỳ">
+                  <span id="bdt-picker-label">Trạm 1</span>
+                  <span class="bdt-picker-chevron">▾</span>
+                </button>
+                <div id="bdt-picker-popover" class="bdt-picker-popover">
+                  <div class="bdt-picker-header">
+                    <span>CHỌN TRẠM ĐI TỚI</span>
+                    <button id="bdt-picker-close" class="bdt-picker-close-btn" type="button">✕</button>
+                  </div>
+                  <div id="bdt-picker-grid" class="bdt-picker-grid"></div>
+                </div>
+              </div>
+              <button id="bdt-nav-next-btn" class="bdt-glass-nav-btn next" type="button" title="Sang trạm tiếp theo">
+                <span>Trạm sau</span> <span>❯</span>
+              </button>
+            </div>
+            <div class="bdt-action-divider"></div>
+            <div class="bdt-step-dots-wrap">
+              <div id="bdt-step-dots" class="bdt-step-dots"></div>
+              <span class="bdt-step-counter" id="bdt-step-counter">1/3</span>
+            </div>
+            <div class="bdt-action-divider"></div>
+            <button id="bdt-open-notes-btn" class="bdt-glass-nav-btn" type="button" title="Mở ghi chú vị trí neo & thẻ Flashcard">
+              <span>📝</span> <span>Ghi chú & Thẻ</span>
+            </button>
+          </div>
+        </div>
+
         <div id="fade"></div>
         <div id="nodebar"></div>
         <div id="minimap-box"><canvas id="minimap" width="136" height="136"></canvas></div>
@@ -8764,14 +9244,6 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 }
 
                 function focusOnMarker(id) {
-                    const rawPos = space.markers && space.markers[id];
-                    if (!rawPos) return;
-                    const px = Array.isArray(rawPos) ? rawPos[0] : (typeof rawPos.x === 'number' ? rawPos.x : 0);
-                    const py = Array.isArray(rawPos) ? rawPos[1] : (typeof rawPos.y === 'number' ? rawPos.y : 0);
-                    const pz = Array.isArray(rawPos) ? rawPos[2] : (typeof rawPos.z === 'number' ? rawPos.z : -1);
-                    if (isNaN(px) || isNaN(pz)) return;
-                    targetYaw = Math.atan2(-px, -pz);
-                    targetPitch = Math.asin(Math.max(-0.95, Math.min(0.95, py)));
                     showLocusDetail(findAnchorById(id));
                 }
 
@@ -8903,7 +9375,12 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             <button class="info-rm-btn" id="rm-marker" style="flex:1; font-size:12px; padding:10px; margin:0;">🗑️ Gỡ mốc</button>
         </div>
     `;
-                    info.classList.add('on');
+                    if (typeof window.open360SpatialDualTabs === 'function') {
+                        info.classList.remove('on');
+                        window.open360SpatialDualTabs(a);
+                    } else {
+                        info.classList.add('on');
+                    }
 
                     // Ghi nhận tiến trình học tập trạm Loci
                     if (window.LociProgression && typeof window.LociProgression.recordStationVisit === 'function') {
@@ -9118,6 +9595,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                             el.classList.toggle('sel', id === selId);
                         }
                     }
+                    if (typeof window.update360DualTabsLines === 'function') window.update360DualTabsLines();
                     if (miniOn && (miniTick++ % 3 === 0)) drawMinimap();
                 }
 
@@ -9654,6 +10132,335 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 window.renderSaved = renderSaved;
                 window.renderMarkersOnPano = renderMarkersOnPano;
                 window.showLocusDetail = showLocusDetail;
+
+                // ═══════════════════════════════════════════════════════════════════════════
+                // HỆ THỐNG HIỂN THỊ 2 TAB ĐỘNG & ĐƯỜNG CONG SVG NỐI MỐC 3D (NHƯ KHÔNG GIAN 3D)
+                // ═══════════════════════════════════════════════════════════════════════════
+                let _bdt360ActiveAnchor = null;
+                let _bdt360Points = [];
+                let _bdt360Photos = [];
+                let _bdt360Step = 0;
+                let _bdt360Keywords = [];
+                const _bdt360PassedSteps = new Set();
+
+                function extractStepHighlightAndKeywords(rawText) {
+                    const text = String(rawText || '').trim();
+                    const kwSet = new Set();
+                    // Tìm mốc thời gian (ngày/tháng/năm), số liệu, hoặc cụm từ quan trọng
+                    const regex = /(\b\d{1,2}\/\d{1,2}(?:\/\d{4})?\b|\b\d{4}\s*[–-]\s*\d{4}\b|\b(?:19|20)\d{2}\b|Hi-rô-si-ma|Na-ga-xa-ki|Quan Đông|Đồng minh|Trần Trọng Kim|Tân Trào|Nà Nưa|Quân lệnh số 1|Hà Nội|Huế|Sài Gòn|Bảo Đại|Ba Đình|Tuyên ngôn Độc lập|Điện Biên Phủ|Giơ-ne-vơ|Việt Bắc|Biên giới|Na-va|Đồng khởi|Ấp Bắc|Vạn Tường|Mậu Thân|Quảng Trị|Pa-ri|Paris|Phước Long|Hồ Chí Minh|Dinh Độc Lập)/gi;
+                    const matches = text.match(regex) || [];
+                    matches.forEach(m => kwSet.add(m.trim()));
+                    if (kwSet.size === 0) {
+                        const words = text.split(/[,.;:()]/)[0].trim().split(/\s+/).slice(0, 3).join(' ');
+                        if (words) kwSet.add(words);
+                    }
+                    const kwList = Array.from(kwSet);
+                    let html = esc(text);
+                    kwList.forEach(kw => {
+                        const safeKw = kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                        html = html.replace(new RegExp(safeKw, 'g'), '<b style="color:#0284c7; background:rgba(2,132,199,0.1); padding:1px 5px; border-radius:5px; font-weight:800;">$&</b>');
+                    });
+                    return { html, keywords: kwList };
+                }
+
+                function stripViAccents(str) {
+                    return String(str || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').toLowerCase().trim();
+                }
+
+                function render360DualTabStep(idx) {
+                    if (!_bdt360Points.length) return;
+                    _bdt360Step = Math.max(0, Math.min(_bdt360Points.length - 1, idx));
+                    const numEl = document.getElementById('bdt-step-num');
+                    const txtEl = document.getElementById('bdt-step-text');
+                    const cardEl = document.getElementById('bdt-step-card');
+                    const counterEl = document.getElementById('bdt-step-counter');
+                    const dotsEl = document.getElementById('bdt-step-dots');
+                    const photoImg = document.getElementById('bdt-pure-photo-img');
+                    const photoCap = document.getElementById('bdt-pure-photo-caption');
+                    const kwInput = document.getElementById('bdt-kw-input');
+                    const kwMsg = document.getElementById('bdt-kw-msg');
+
+                    const rawPoint = _bdt360Points[_bdt360Step] || '';
+                    const { html, keywords } = extractStepHighlightAndKeywords(rawPoint);
+                    _bdt360Keywords = keywords;
+
+                    if (numEl) numEl.textContent = String(_bdt360Step + 1);
+                    if (txtEl) txtEl.innerHTML = html;
+                    if (cardEl) {
+                        cardEl.style.animation = 'none';
+                        void cardEl.offsetWidth;
+                        cardEl.style.animation = 'bdtZoomIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) both';
+                    }
+                    if (counterEl) counterEl.textContent = `${_bdt360Step + 1}/${_bdt360Points.length}`;
+
+                    if (dotsEl) {
+                        dotsEl.innerHTML = _bdt360Points.map((_, i) =>
+                            `<span class="bdt-step-dot ${i === _bdt360Step ? 'active' : ''}" data-idx="${i}" title="Ý #${i + 1}"></span>`
+                        ).join('');
+                        dotsEl.querySelectorAll('.bdt-step-dot').forEach(d => {
+                            d.onclick = (ev) => {
+                                ev.stopPropagation();
+                                render360DualTabStep(parseInt(d.dataset.idx, 10) || 0);
+                            };
+                        });
+                    }
+
+                    const pObj = _bdt360Photos[_bdt360Step] || _bdt360Photos[0] || null;
+                    if (photoImg && pObj) {
+                        const rawUrl = pObj.localImage || pObj.url || '';
+                        const isInApp = window.location.pathname.includes('/app/');
+                        const resolvedUrl = (isInApp && rawUrl && !rawUrl.startsWith('http') && !rawUrl.startsWith('../') && !rawUrl.startsWith('data:'))
+                            ? ('../' + rawUrl.replace(/^\/+/, ''))
+                            : rawUrl;
+                        photoImg.style.backgroundImage = resolvedUrl ? `url('${resolvedUrl}')` : 'none';
+                        if (photoCap) photoCap.textContent = pObj.title || pObj.caption || (_bdt360ActiveAnchor ? _bdt360ActiveAnchor.title : '');
+                    }
+
+                    if (kwInput && kwMsg) {
+                        kwInput.value = '';
+                        if (_bdt360PassedSteps.has(_bdt360Step)) {
+                            kwMsg.className = 'bdt-kw-msg success';
+                            kwMsg.textContent = '✓ Đã mở khóa ý này! Bấm thẻ hoặc Tiếp tục ➔ để sang ý kế.';
+                        } else {
+                            kwMsg.className = 'bdt-kw-msg';
+                            kwMsg.textContent = '🔑 Nhập 1 từ khóa in đậm màu xanh (hoặc bấm Tiếp tục ➔) để sang ý tiếp theo.';
+                        }
+                    }
+                    requestAnimationFrame(update360DualTabsLines);
+                }
+
+                function advance360DualTabStepOrStation() {
+                    if (_bdt360Step + 1 < _bdt360Points.length) {
+                        _bdt360PassedSteps.add(_bdt360Step);
+                        render360DualTabStep(_bdt360Step + 1);
+                    } else {
+                        navigate360AdjacentStation(1);
+                    }
+                }
+
+                function navigate360AdjacentStation(dir) {
+                    const list = anchorsOfLesson().filter(a => space && space.markers && space.markers[a.id]);
+                    if (!list.length) return;
+                    const curIdx = list.findIndex(a => _bdt360ActiveAnchor && a.id === _bdt360ActiveAnchor.id);
+                    const nextIdx = (curIdx + dir + list.length) % list.length;
+                    showLocusDetail(list[nextIdx]);
+                }
+
+                function populate360StationPicker() {
+                    const grid = document.getElementById('bdt-picker-grid');
+                    if (!grid) return;
+                    const list = anchorsOfLesson();
+                    grid.innerHTML = list.map((a, i) => {
+                        const order = a.order || (i + 1);
+                        const isActive = _bdt360ActiveAnchor && _bdt360ActiveAnchor.id === a.id;
+                        const cleanName = (a.title || '').replace(/^Trạm\s*\d+\s*:\s*/i, '');
+                        return `<button type="button" class="bdt-picker-item ${isActive ? 'active' : ''}" data-aid="${esc(a.id)}">
+                            <span class="bdt-picker-item-num">${order}</span>
+                            <span class="bdt-picker-item-text">Trạm ${order}: ${esc(cleanName)}</span>
+                        </button>`;
+                    }).join('');
+                    grid.querySelectorAll('.bdt-picker-item').forEach(btn => {
+                        btn.onclick = (ev) => {
+                            ev.stopPropagation();
+                            const aid = btn.getAttribute('data-aid');
+                            const wrap = document.getElementById('bdt-picker-wrap');
+                            if (wrap) wrap.classList.remove('open');
+                            const targetA = findAnchorById(aid);
+                            if (targetA) showLocusDetail(targetA);
+                        };
+                    });
+                }
+
+                function update360DualTabsLines() {
+                    const container = document.getElementById('brown-dual-tabs-container');
+                    if (!container || !container.classList.contains('open') || !_bdt360ActiveAnchor) return;
+                    const pathLocus = document.getElementById('bdt-path-locus');
+                    const pathTabs = document.getElementById('bdt-path-tabs');
+                    const dotLocus = document.getElementById('bdt-dot-locus');
+                    const dotBig = document.getElementById('bdt-dot-big');
+                    const dotSmall = document.getElementById('bdt-dot-small');
+                    const stepCard = document.getElementById('bdt-step-card');
+                    const photoWrap = document.getElementById('bdt-pure-photo-wrap');
+                    if (!pathLocus || !pathTabs || !stepCard || !photoWrap || !camera) return;
+
+                    const cr = stepCard.getBoundingClientRect();
+                    const pr = photoWrap.getBoundingClientRect();
+                    if (!cr.width || !pr.width) return;
+
+                    const aid = _bdt360ActiveAnchor.id;
+                    let worldTarget = null;
+                    if (marker3DObjects[aid] && marker3DObjects[aid].stationGroup) {
+                        worldTarget = marker3DObjects[aid].stationGroup.position.clone();
+                        worldTarget.y += 0.65;
+                    } else if (markerEls[aid] && markerEls[aid].vec) {
+                        worldTarget = markerEls[aid].vec.clone();
+                    }
+                    if (worldTarget) {
+                        const proj = worldTarget.sub(camera.position).project(camera);
+                        if (proj.z >= 1) {
+                            pathLocus.setAttribute('d', '');
+                            dotLocus.setAttribute('cx', '-200');
+                            dotLocus.setAttribute('cy', '-200');
+                        } else {
+                            const lx = Math.round((proj.x * 0.5 + 0.5) * window.innerWidth);
+                            const ly = Math.round((-(proj.y * 0.5) + 0.5) * window.innerHeight);
+                            const bx = Math.round(cr.left);
+                            const by = Math.round(cr.top + cr.height * 0.5);
+
+                            dotLocus.setAttribute('cx', String(lx));
+                            dotLocus.setAttribute('cy', String(ly));
+                            dotBig.setAttribute('cx', String(bx));
+                            dotBig.setAttribute('cy', String(by));
+
+                            const cp1x = Math.round(lx + (bx - lx) * 0.45);
+                            const cp1y = Math.round(ly - 20);
+                            const cp2x = Math.round(lx + (bx - lx) * 0.75);
+                            const cp2y = Math.round(by + 10);
+                            pathLocus.setAttribute('d', `M ${lx} ${ly} C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${bx} ${by}`);
+                        }
+                    }
+
+                    const startX = Math.round(cr.right);
+                    const startY = Math.round(cr.top + cr.height * 0.5);
+                    const endX = Math.round(pr.left);
+                    const endY = Math.round(pr.top + pr.height * 0.5);
+                    dotSmall.setAttribute('cx', String(endX));
+                    dotSmall.setAttribute('cy', String(endY));
+                    const midX = Math.round((startX + endX) * 0.5);
+                    pathTabs.setAttribute('d', `M ${startX} ${startY} C ${midX} ${startY}, ${midX} ${endY}, ${endX} ${endY}`);
+                }
+                window.update360DualTabsLines = update360DualTabsLines;
+
+                window.close360SpatialDualTabs = function() {
+                    const container = document.getElementById('brown-dual-tabs-container');
+                    if (container) container.classList.remove('open');
+                    const wrap = document.getElementById('bdt-picker-wrap');
+                    if (wrap) wrap.classList.remove('open');
+                };
+
+                window.open360SpatialDualTabs = function(a) {
+                    if (!a) return;
+                    _bdt360ActiveAnchor = a;
+                    _bdt360PassedSteps.clear();
+
+                    // Xoay mượt camera 360 để đưa mô hình 3D mốc sang bên trái (~25% màn hình), nhường bên phải cho 2 Tab
+                    const rawPos = space && space.markers && space.markers[a.id];
+                    if (rawPos) {
+                        const px = Array.isArray(rawPos) ? rawPos[0] : (typeof rawPos.x === 'number' ? rawPos.x : 0);
+                        const py = Array.isArray(rawPos) ? rawPos[1] : (typeof rawPos.y === 'number' ? rawPos.y : 0);
+                        const pz = Array.isArray(rawPos) ? rawPos[2] : (typeof rawPos.z === 'number' ? rawPos.z : -1);
+                        if (!isNaN(px) && !isNaN(pz)) {
+                            const yawOffset = window.innerWidth > 900 ? 0.34 : 0;
+                            targetYaw = Math.atan2(-px, -pz) - yawOffset;
+                            targetPitch = Math.asin(Math.max(-0.85, Math.min(0.85, py)));
+                        }
+                    }
+
+                    const order = a.order || (anchorsOfLesson().findIndex(x => x.id === a.id) + 1) || 1;
+                    const locNote = getAnchorLocationNote(space ? space.lesson : 'bai_6', a.id, order);
+
+                    _bdt360Points = (Array.isArray(a.keyPoints) && a.keyPoints.length > 0)
+                        ? a.keyPoints.slice()
+                        : [a.summary || a.title || 'Điểm neo kiến thức Loci'];
+
+                    _bdt360Photos = (Array.isArray(a.photos) && a.photos.length > 0)
+                        ? a.photos.slice()
+                        : (a.img || a.localImage ? [{ localImage: a.img || a.localImage, title: a.title }] : []);
+
+                    const titleEl = document.getElementById('bdt-title-text');
+                    const iconEl = document.getElementById('bdt-title-icon');
+                    const pickerLbl = document.getElementById('bdt-picker-label');
+                    if (titleEl) titleEl.textContent = `${a.title || ('Trạm ' + order)} · 📍 ${locNote}`;
+                    if (iconEl) iconEl.textContent = a.icon || '🏛️';
+                    if (pickerLbl) pickerLbl.textContent = `Trạm ${order}`;
+
+                    populate360StationPicker();
+                    const container = document.getElementById('brown-dual-tabs-container');
+                    if (container) container.classList.add('open');
+                    render360DualTabStep(0);
+                };
+
+                (function bind360DualTabsEvents() {
+                    const closeBtn = document.getElementById('bdt-close-btn');
+                    if (closeBtn) closeBtn.onclick = (e) => { e.stopPropagation(); window.close360SpatialDualTabs(); };
+
+                    const stepCard = document.getElementById('bdt-step-card');
+                    if (stepCard) stepCard.onclick = (e) => {
+                        e.stopPropagation();
+                        advance360DualTabStepOrStation();
+                    };
+
+                    const prevBtn = document.getElementById('bdt-nav-prev-btn');
+                    if (prevBtn) prevBtn.onclick = (e) => { e.stopPropagation(); navigate360AdjacentStation(-1); };
+
+                    const nextBtn = document.getElementById('bdt-nav-next-btn');
+                    if (nextBtn) nextBtn.onclick = (e) => { e.stopPropagation(); navigate360AdjacentStation(1); };
+
+                    const pickerBtn = document.getElementById('bdt-picker-btn');
+                    const pickerWrap = document.getElementById('bdt-picker-wrap');
+                    const pickerClose = document.getElementById('bdt-picker-close');
+                    if (pickerBtn && pickerWrap) {
+                        pickerBtn.onclick = (e) => { e.stopPropagation(); pickerWrap.classList.toggle('open'); };
+                    }
+                    if (pickerClose && pickerWrap) {
+                        pickerClose.onclick = (e) => { e.stopPropagation(); pickerWrap.classList.remove('open'); };
+                    }
+
+                    const notesBtn = document.getElementById('bdt-open-notes-btn');
+                    if (notesBtn) {
+                        notesBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            const info = document.getElementById('info');
+                            if (info) info.classList.toggle('on');
+                        };
+                    }
+
+                    const kwHintBtn = document.getElementById('bdt-kw-hint-btn');
+                    const kwSubmitBtn = document.getElementById('bdt-kw-submit-btn');
+                    const kwInput = document.getElementById('bdt-kw-input');
+                    const kwMsg = document.getElementById('bdt-kw-msg');
+
+                    if (kwHintBtn && kwMsg) {
+                        kwHintBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            const sampleKw = _bdt360Keywords[0] || 'từ khóa in đậm';
+                            kwMsg.className = 'bdt-kw-msg hint';
+                            kwMsg.textContent = `💡 Gợi ý từ khóa: "${sampleKw}"`;
+                            if (kwInput) { kwInput.value = sampleKw; kwInput.focus(); }
+                        };
+                    }
+
+                    const handleKwSubmit = (e) => {
+                        if (e) e.stopPropagation();
+                        const val = stripViAccents(kwInput ? kwInput.value : '');
+                        const rawStep = stripViAccents(_bdt360Points[_bdt360Step] || '');
+                        if (!val || (val.length >= 2 && rawStep.includes(val))) {
+                            _bdt360PassedSteps.add(_bdt360Step);
+                            if (kwMsg) {
+                                kwMsg.className = 'bdt-kw-msg success';
+                                kwMsg.textContent = '✓ Chính xác! Đang chuyển sang ý tiếp theo...';
+                            }
+                            advance360DualTabStepOrStation();
+                        } else {
+                            const kwBox = document.getElementById('bdt-keyword-box');
+                            if (kwBox) {
+                                kwBox.classList.add('bdt-shake');
+                                setTimeout(() => kwBox.classList.remove('bdt-shake'), 400);
+                            }
+                            if (kwMsg) {
+                                kwMsg.className = 'bdt-kw-msg error';
+                                kwMsg.textContent = `❌ Chưa khớp! Hãy gõ từ khóa như "${_bdt360Keywords[0] || ''}" hoặc bấm Gợi ý.`;
+                            }
+                        }
+                    };
+                    if (kwSubmitBtn) kwSubmitBtn.onclick = handleKwSubmit;
+                    if (kwInput) {
+                        kwInput.addEventListener('keydown', (e) => {
+                            if (e.key === 'Enter') { e.preventDefault(); handleKwSubmit(e); }
+                        });
+                    }
+                })();
+
 
                 // Hệ thống kéo thả mốc hình tròn tự do không giới hạn trong không gian 360
                 let _drag360Id = null;
@@ -11568,11 +12375,10 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
         };
 
         window.triggerDesktopNotes = function() {
-            if (window._currentSelectedMarkerId) {
-                if (typeof window.openMarkerDetails === 'function') {
-                    window.openMarkerDetails(window._currentSelectedMarkerId);
-                    return;
-                }
+            const info = document.getElementById('info');
+            if (window._currentSelectedMarkerId && info) {
+                info.classList.toggle('on');
+                return;
             }
             const panel = document.getElementById('panel');
             if (panel) {
