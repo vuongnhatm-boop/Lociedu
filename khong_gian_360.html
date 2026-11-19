@@ -1996,6 +1996,37 @@ function _decodeGeminiKey(s) {
             z-index: 100 !important;
         }
 
+        /* --- CHẾ ĐỘ DI CHUYỂN MỐC 360: CHUYỂN THÀNH HÌNH TRÒN PHÁT SÁNG KÉO THẢ TỰ DO --- */
+        body.move-orb-360 .marker {
+            cursor: grab !important;
+            z-index: 80 !important;
+            touch-action: none !important;
+            user-select: none !important;
+        }
+        body.move-orb-360 .marker:active,
+        body.move-orb-360 .marker.dragging-orb {
+            cursor: grabbing !important;
+            z-index: 120 !important;
+        }
+        body.move-orb-360 .marker .dot {
+            width: 50px !important;
+            height: 50px !important;
+            font-size: 17px !important;
+            font-weight: 900 !important;
+            border: 3px solid #ffffff !important;
+            border-radius: 50% !important;
+            background: radial-gradient(circle at 32% 32%, #fde047, #f59e0b 58%, #ea580c 100%) !important;
+            color: #ffffff !important;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7) !important;
+            box-shadow: 0 0 22px rgba(245, 158, 11, 0.95), 0 0 42px rgba(245, 158, 11, 0.55), inset 0 2px 6px rgba(255, 255, 255, 0.65) !important;
+            transition: transform 0.14s ease, box-shadow 0.14s ease !important;
+        }
+        body.move-orb-360 .marker.dragging-orb .dot {
+            transform: scale(1.18) !important;
+            background: radial-gradient(circle at 32% 32%, #67e8f9, #0ea5e9 58%, #0284c7 100%) !important;
+            box-shadow: 0 0 28px rgba(14, 165, 233, 1), 0 0 54px rgba(56, 189, 248, 0.8) !important;
+        }
+
         /* --- CHẾ ĐỘ MÁY TÍNH (DESKTOP): CHỈ HIỆN ĐẶT MỐC, DI CHUYỂN & PHÓNG TO MỐC --- */
         @media (min-width: 900px) {
             #go-capture, #go-ar-live {
@@ -3127,25 +3158,55 @@ function _decodeGeminiKey(s) {
         const raycaster3D = new THREE.Raycaster();
         const mouse3DVec = new THREE.Vector2();
 
-        function check3DMarkerClick(clientX, clientY) {
-            if (!renderer || !markers3DGroup || markers3DGroup.children.length === 0) return false;
+        function pick3DMarkerAnchorAt(clientX, clientY) {
+            if (!renderer || !markers3DGroup || markers3DGroup.children.length === 0) return null;
             const rect = renderer.domElement.getBoundingClientRect();
             mouse3DVec.x = ((clientX - rect.left) / rect.width) * 2 - 1;
             mouse3DVec.y = -((clientY - rect.top) / rect.height) * 2 + 1;
             raycaster3D.setFromCamera(mouse3DVec, camera);
             const hits = raycaster3D.intersectObjects(markers3DGroup.children, true);
             for (const h of hits) {
+                if (!h.object.visible) continue;
                 let obj = h.object;
                 while (obj && !obj.userData?.anchor && obj.parent !== markers3DGroup && obj.parent !== scene) {
                     obj = obj.parent;
                 }
                 if (obj && obj.userData?.anchor) {
-                    showLocusDetail(obj.userData.anchor);
-                    return true;
+                    return obj.userData.anchor;
                 }
+            }
+            return null;
+        }
+
+        function check3DMarkerClick(clientX, clientY) {
+            const anchor = pick3DMarkerAnchorAt(clientX, clientY);
+            if (anchor) {
+                showLocusDetail(anchor);
+                return true;
             }
             return false;
         }
+
+        function sync3DStationOrbVisibility() {
+            const isOrb = !!window._isMoveMarkerMode;
+            for (const id in marker3DObjects) {
+                const entry = marker3DObjects[id];
+                if (!entry) continue;
+                if (entry.orbMesh) entry.orbMesh.visible = isOrb;
+                if (entry.baseMesh) entry.baseMesh.visible = !isOrb;
+                const hasModels = Array.isArray(entry.models) && entry.models.length > 0;
+                if (hasModels) {
+                    entry.models.forEach(m => { if (m) m.visible = !isOrb; });
+                }
+                if (entry.placeholder) {
+                    entry.placeholder.visible = (!isOrb && !hasModels);
+                }
+                if (entry.ringMesh && entry.ringMesh.material) {
+                    entry.ringMesh.material.color.setHex(isOrb ? 0xf59e0b : (id === window._currentSelectedMarkerId ? 0xf59e0b : 0x38bdf8));
+                }
+            }
+        }
+        window.sync3DStationOrbVisibility = sync3DStationOrbVisibility;
 
         function clear3DStationMarkers() {
             if (!markers3DGroup) return;
@@ -3209,14 +3270,36 @@ function _decodeGeminiKey(s) {
             });
             const placeholder = new THREE.Mesh(holoGeom, holoMat);
             placeholder.position.y = 0.75;
+            placeholder.visible = !window._isMoveMarkerMode;
             placeholder.userData = { anchorId: a.id, anchor: a };
             stationGroup.add(placeholder);
+
+            // Quả cầu tròn phát sáng khi bật Chế độ Di chuyển mốc (nhẹ 60 FPS, kéo thả trực tiếp)
+            const orbOrder = Number(a.order) || (i + 1);
+            const orbColor = orbOrder === 1 ? 0xf59e0b : (orbOrder === 5 ? 0xef4444 : (orbOrder >= 8 ? 0x10b981 : 0x38bdf8));
+            const orbGeom = new THREE.SphereGeometry(0.95, 24, 24);
+            const orbMat = new THREE.MeshStandardMaterial({
+                color: 0xffffff,
+                emissive: orbColor,
+                emissiveIntensity: 2.1,
+                roughness: 0.12,
+                metalness: 0.1
+            });
+            const orbMesh = new THREE.Mesh(orbGeom, orbMat);
+            orbMesh.position.y = 0.85;
+            orbMesh.visible = !!window._isMoveMarkerMode;
+            orbMesh.userData = { anchorId: a.id, anchor: a };
+            stationGroup.add(orbMesh);
+            baseMesh.visible = !window._isMoveMarkerMode;
 
             markers3DGroup.add(stationGroup);
             marker3DObjects[a.id] = {
                 stationGroup,
+                baseMesh,
                 placeholder,
                 ringMesh,
+                orbMesh,
+                models: [],
                 anchor: a
             };
 
@@ -3272,6 +3355,7 @@ function _decodeGeminiKey(s) {
                         });
 
                         placeholder.visible = false;
+                        model.visible = !window._isMoveMarkerMode;
                         stationGroup.add(model);
 
                         if (marker3DObjects[a.id]) {
@@ -7333,6 +7417,13 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     let moveDist = 0, initialPinch = 0;
 
                     el.addEventListener('pointerdown', e => {
+                        if (window._isMoveMarkerMode && !window._isMarkersLocked) {
+                            const hitAnchor = pick3DMarkerAnchorAt(e.clientX, e.clientY);
+                            if (hitAnchor && typeof window._start360MarkerDrag === 'function') {
+                                window._start360MarkerDrag(hitAnchor.id, e);
+                                return;
+                            }
+                        }
                         el.setPointerCapture(e.pointerId);
                         touches.set(e.pointerId, [e.clientX, e.clientY]);
                         moveDist = 0;
@@ -8646,12 +8737,25 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 <span class="marker-title-text">${esc(cleanTitle)}</span>
             </div>
         `;
-                        el.onclick = () => showLocusDetail(a);
+                        el.dataset.anchorId = a.id;
+                        el.addEventListener('pointerdown', (ev) => {
+                            if (!window._isMarkersLocked && typeof window._start360MarkerDrag === 'function') {
+                                window._start360MarkerDrag(a.id, ev, a);
+                            }
+                        });
+                        el.onclick = (ev) => {
+                            if (window._justDragged360Marker && (Date.now() - window._justDragged360Marker < 350)) {
+                                ev.stopPropagation();
+                                return;
+                            }
+                            showLocusDetail(a);
+                        };
                         box.appendChild(el);
 
+                        const yOff = window._isMoveMarkerMode ? 0.04 : 0.28;
                         markerEls[a.id] = {
                             el,
-                            vec: new THREE.Vector3(px * 480, (py + 0.28) * 480, pz * 480) // Nâng lên cao trên đầu mô hình
+                            vec: new THREE.Vector3(px * 480, (py + yOff) * 480, pz * 480)
                         };
 
                         // Khởi tạo mô hình 3D thực tế cho mốc trong không gian 360
@@ -9550,6 +9654,139 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                 window.renderSaved = renderSaved;
                 window.renderMarkersOnPano = renderMarkersOnPano;
                 window.showLocusDetail = showLocusDetail;
+
+                // Hệ thống kéo thả mốc hình tròn tự do không giới hạn trong không gian 360
+                let _drag360Id = null;
+                let _drag360Anchor = null;
+                let _drag360StartX = 0;
+                let _drag360StartY = 0;
+                let _drag360Moved = false;
+                let _drag360AutoActivated = false;
+
+                function get360RayDirection(cx, cy) {
+                    if (!renderer || !camera) return null;
+                    const r = renderer.domElement.getBoundingClientRect();
+                    const ndc = new THREE.Vector2(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
+                    raycaster3D.setFromCamera(ndc, camera);
+                    const targetObj = (isWalkMode && roomMesh && roomMesh.visible) ? roomMesh : sphere;
+                    if (targetObj) {
+                        const hits = raycaster3D.intersectObject(targetObj, true);
+                        if (hits && hits.length > 0) {
+                            return hits[0].point.clone().normalize();
+                        }
+                    }
+                    return raycaster3D.ray.direction.clone().normalize();
+                }
+
+                function apply360MarkerPositionLive(id, cx, cy) {
+                    if (!space) return;
+                    if (!space.markers) space.markers = {};
+                    const dir = get360RayDirection(cx, cy);
+                    if (!dir) return;
+                    const nx = parseFloat(dir.x.toFixed(4));
+                    const ny = parseFloat(dir.y.toFixed(4));
+                    const nz = parseFloat(dir.z.toFixed(4));
+                    space.markers[id] = [nx, ny, nz];
+
+                    if (markerEls[id]) {
+                        const yOff = window._isMoveMarkerMode ? 0.04 : 0.28;
+                        markerEls[id].vec.set(nx * 480, (ny + yOff) * 480, nz * 480);
+                    }
+                    if (marker3DObjects[id] && marker3DObjects[id].stationGroup) {
+                        const stPos = dir.clone().multiplyScalar(10.5);
+                        marker3DObjects[id].stationGroup.position.copy(stPos);
+                        marker3DObjects[id].stationGroup.lookAt(0, stPos.y, 0);
+                    }
+                }
+
+                window.set360MoveOrbMode = function(active) {
+                    window._isMoveMarkerMode = !!active;
+                    document.body.classList.toggle('move-orb-360', window._isMoveMarkerMode);
+                    const btnMove = document.getElementById('dt-btn-move');
+                    if (btnMove) btnMove.classList.toggle('active', window._isMoveMarkerMode);
+                    if (typeof sync3DStationOrbVisibility === 'function') sync3DStationOrbVisibility();
+                    if (space && space.markers) {
+                        for (const id in markerEls) {
+                            const rawPos = space.markers[id];
+                            if (!rawPos || !markerEls[id]) continue;
+                            const px = Array.isArray(rawPos) ? rawPos[0] : (rawPos.x || 0);
+                            const py = Array.isArray(rawPos) ? rawPos[1] : (rawPos.y || 0);
+                            const pz = Array.isArray(rawPos) ? rawPos[2] : (rawPos.z || -1);
+                            const yOff = window._isMoveMarkerMode ? 0.04 : 0.28;
+                            markerEls[id].vec.set(px * 480, (py + yOff) * 480, pz * 480);
+                        }
+                    }
+                };
+
+                window._start360MarkerDrag = function(id, ev, anchorObj) {
+                    if (window._isMarkersLocked) return;
+                    if (ev && ev.button !== undefined && ev.button !== 0) return;
+                    if (ev) { ev.stopPropagation(); }
+                    _drag360Id = id;
+                    _drag360Anchor = anchorObj || findAnchorById(id);
+                    _drag360StartX = ev ? ev.clientX : 0;
+                    _drag360StartY = ev ? ev.clientY : 0;
+                    _drag360Moved = false;
+                    _drag360AutoActivated = false;
+                    selId = id;
+                    window._currentSelectedMarkerId = id;
+                    if (markerEls[id] && markerEls[id].el) {
+                        markerEls[id].el.classList.add('dragging-orb');
+                    }
+                };
+
+                window.addEventListener('pointermove', (ev) => {
+                    if (!_drag360Id) return;
+                    const dist = Math.hypot(ev.clientX - _drag360StartX, ev.clientY - _drag360StartY);
+                    if (!_drag360Moved && dist > 4) {
+                        _drag360Moved = true;
+                        if (!window._isMoveMarkerMode) {
+                            _drag360AutoActivated = true;
+                            window.set360MoveOrbMode(true);
+                        }
+                    }
+                    if (_drag360Moved) {
+                        ev.preventDefault();
+                        apply360MarkerPositionLive(_drag360Id, ev.clientX, ev.clientY);
+                    }
+                }, { passive: false });
+
+                const finish360MarkerDrag = () => {
+                    if (!_drag360Id) return;
+                    const finishedId = _drag360Id;
+                    const finishedAnchor = _drag360Anchor;
+                    const wasMoved = _drag360Moved;
+                    const wasAuto = _drag360AutoActivated;
+                    _drag360Id = null;
+                    _drag360Anchor = null;
+                    _drag360Moved = false;
+                    _drag360AutoActivated = false;
+                    if (markerEls[finishedId] && markerEls[finishedId].el) {
+                        markerEls[finishedId].el.classList.remove('dragging-orb');
+                    }
+                    if (wasMoved) {
+                        window._justDragged360Marker = Date.now();
+                        if (wasAuto) {
+                            window.set360MoveOrbMode(false);
+                        }
+                        persistCurrentSpace();
+                        renderAnchorsList();
+                        if (typeof toast === 'function') {
+                            const label = (finishedAnchor && finishedAnchor.title) ? finishedAnchor.title : ('Mốc ' + finishedId);
+                            toast('✓ Đã di chuyển ' + label + ' đến vị trí mới!');
+                        }
+                    }
+                };
+                window.addEventListener('pointerup', finish360MarkerDrag);
+                window.addEventListener('pointercancel', finish360MarkerDrag);
+
+                window.addEventListener('keydown', (ev) => {
+                    if (document.activeElement && (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA' || document.activeElement.isContentEditable)) return;
+                    if (ev.code === 'KeyK' || ev.key === 'k' || ev.key === 'K') {
+                        ev.preventDefault();
+                        if (typeof window.triggerDesktopMoveMarker === 'function') window.triggerDesktopMoveMarker();
+                    }
+                });
                 window.focusOnMarker = focusOnMarker;
                 window.markers3DGroup = markers3DGroup;
                 window.marker3DObjects = marker3DObjects;
@@ -11311,14 +11548,14 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             const txt = document.getElementById('lock-marker-txt');
             const btn = document.getElementById('dt-btn-lock');
             if (window._isMarkersLocked) {
-                window._isMoveMarkerMode = false;
+                if (typeof window.cancelMoveMode === 'function') window.cancelMoveMode();
                 if (txt) txt.textContent = 'Đã khóa';
                 if (btn) {
                     btn.style.background = 'rgba(239, 68, 68, 0.25)';
                     btn.style.borderColor = '#ef4444';
                     btn.style.color = '#fca5a5';
                 }
-                if (typeof toast === 'function') toast('🔒 Đã khóa mốc: Cố định vị trí, không thể kéo lệch!');
+                if (typeof toast === 'function') toast('🔒 Đã khóa mốc: Các mốc hiển thị sa bàn 3D cố định, không bị kéo lệch!');
             } else {
                 if (txt) txt.textContent = 'Khóa mốc';
                 if (btn) {
@@ -11326,7 +11563,7 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     btn.style.borderColor = '';
                     btn.style.color = '';
                 }
-                if (typeof toast === 'function') toast('🔓 Đã mở khóa mốc: Có thể di chuyển và căn chỉnh vị trí.');
+                if (typeof toast === 'function') toast('🔓 Đã mở khóa mốc: Bạn có thể kéo thả hoặc bấm Di chuyển [K] để sắp xếp tự do.');
             }
         };
 
@@ -11345,7 +11582,6 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
         };
 
         window.triggerLearn3DMode = function() {
-            // Khởi động chế độ học tuần tự như 3D
             const btnWalk = document.getElementById('v-walk-mode');
             if (btnWalk) {
                 btnWalk.click();
@@ -11365,11 +11601,9 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     const nextScale = Math.min(3.5, Math.max(0.25, currentScale * factor));
                     obj3d.stationGroup.scale.setScalar(nextScale);
                     window._markerCustomScales[activeId] = nextScale;
-                    
                     try {
                         localStorage.setItem('loci_360_marker_scales', JSON.stringify(window._markerCustomScales));
                     } catch (_) {}
-
                     const pct = Math.round(nextScale * 100);
                     if (typeof toast === 'function') {
                         toast((factor > 1 ? '🔍+ Đã phóng to sa bàn mốc: ' : '🔍- Đã thu nhỏ sa bàn mốc: ') + pct + '%');
@@ -11377,7 +11611,6 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
                     return;
                 }
             }
-            // Nếu không có mốc nào đang chọn, zoom góc nhìn FOV của ảnh toàn cảnh
             if (window.viewer && typeof window.viewer.getFov === 'function') {
                 const currFov = window.viewer.getFov();
                 const newFov = factor > 1 ? Math.max(25, currFov - 10) : Math.min(100, currFov + 10);
@@ -11388,42 +11621,52 @@ Trả về kết quả dưới dạng JSON thuần túy có định dạng sau:
             }
         };
 
-        // Kích hoạt chế độ di chuyển mốc sa bàn trong phòng
+        // Kích hoạt chế độ di chuyển mốc: chuyển toàn bộ mốc thành hình tròn phát sáng và kéo thả tự do
         window.triggerDesktopMoveMarker = function() {
+            if (window._isMoveMarkerMode) {
+                window.cancelMoveMode();
+                if (typeof toast === 'function') toast('✓ Đã lưu vị trí mới và hiển thị lại sa bàn 3D!');
+                return;
+            }
             if (window._isMarkersLocked) {
-                if (typeof toast === 'function') toast('🔒 Mốc đang bị khóa! Hãy bấm "Khóa mốc" để mở khóa trước.');
-                return;
+                window._isMarkersLocked = false;
+                const txt = document.getElementById('lock-marker-txt');
+                const btnLock = document.getElementById('dt-btn-lock');
+                if (txt) txt.textContent = 'Khóa mốc';
+                if (btnLock) { btnLock.style.background = ''; btnLock.style.borderColor = ''; btnLock.style.color = ''; }
             }
-            let activeId = window._currentSelectedMarkerId || (typeof selId !== 'undefined' ? selId : null);
-            if (!activeId && window.currentSpace && window.currentSpace.markers) {
-                const keys = Object.keys(window.currentSpace.markers);
-                if (keys.length > 0) activeId = keys[0];
+            if (typeof window.set360MoveOrbMode === 'function') {
+                window.set360MoveOrbMode(true);
+            } else {
+                window._isMoveMarkerMode = true;
+                document.body.classList.add('move-orb-360');
             }
-            if (!activeId) {
-                if (typeof toast === 'function') toast('💡 Hãy bấm vào 1 mốc sa bàn trong phòng trước, sau đó bấm Di chuyển.');
-                return;
-            }
-            if (typeof selId !== 'undefined') selId = activeId;
-            window._currentSelectedMarkerId = activeId;
-            if (typeof setPlacing === 'function') setPlacing(true);
             const btnMove = document.getElementById('dt-btn-move');
             if (btnMove) btnMove.classList.add('active');
 
-            // Hiển thị banner hướng dẫn di chuyển trực quan
             let banner = document.getElementById('loci-move-guide-banner');
             if (!banner) {
                 banner = document.createElement('div');
                 banner.id = 'loci-move-guide-banner';
-                banner.style.cssText = 'position:fixed; top:75px; left:50%; transform:translateX(-50%); z-index:9999; background:linear-gradient(135deg, #0284c7, #0ea5e9); color:#fff; padding:10px 22px; border-radius:99px; box-shadow:0 8px 24px rgba(2,132,199,0.4); font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:12px; border:2px solid #fff; animation: bounceIn 0.3s;';
-                banner.innerHTML = `<span>📍 Chạm vào bất kỳ vị trí nào trên tường / sàn / bàn để dời sa bàn đến đó!</span><button type="button" onclick="window.cancelMoveMode()" style="background:rgba(255,255,255,0.25); border:none; color:#fff; border-radius:99px; padding:3px 12px; font-weight:700; cursor:pointer;">✕ Đóng</button>`;
+                banner.style.cssText = 'position:fixed; top:75px; left:50%; transform:translateX(-50%); z-index:9999; background:linear-gradient(135deg, #f59e0b, #ea580c); color:#fff; padding:10px 22px; border-radius:99px; box-shadow:0 8px 24px rgba(245,158,11,0.45); font-size:13.5px; font-weight:700; display:flex; align-items:center; gap:12px; border:2px solid #fff; animation: bounceIn 0.3s;';
+                banner.innerHTML = '<span>🟠 Chế độ Di chuyển [K]: Các mốc đã chuyển thành vòng tròn — KÉO THẢ bất kỳ mốc nào đến vị trí mới!</span><button type="button" onclick="window.cancelMoveMode()" style="background:rgba(15,23,42,0.35); border:1px solid #fff; color:#fff; border-radius:99px; padding:4px 14px; font-weight:800; cursor:pointer;">✓ Xong</button>';
                 document.body.appendChild(banner);
             } else {
                 banner.style.display = 'flex';
+            }
+            if (typeof toast === 'function') {
+                toast('🟠 Đã chuyển các mốc thành hình tròn! Hãy giữ chuột/tay kéo thả mốc đến bất kỳ vị trí nào trong phòng.');
             }
         };
 
         window.cancelMoveMode = function() {
             if (typeof setPlacing === 'function') setPlacing(false);
+            if (typeof window.set360MoveOrbMode === 'function') {
+                window.set360MoveOrbMode(false);
+            } else {
+                window._isMoveMarkerMode = false;
+                document.body.classList.remove('move-orb-360');
+            }
             const btnMove = document.getElementById('dt-btn-move');
             if (btnMove) btnMove.classList.remove('active');
             const banner = document.getElementById('loci-move-guide-banner');
