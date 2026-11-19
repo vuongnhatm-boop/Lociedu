@@ -1663,18 +1663,96 @@
             const myWins = this.getArenaWins();
             const myBadge = this.getCurrentBadge(myWins);
 
-            const mockTop = [
-                { name: 'Hoàng Huyền Trân', school: 'Lớp 12A1', wins: 28, points: 3950, avatar: 'assets/images/avatars/student_2.jpg', badgeIcon: '👑', badgeName: 'Quán Quân Top 1' },
-                { name: 'Lưu Phương Linh', school: 'Lớp 12A1', wins: 25, points: 3820, avatar: 'assets/images/avatars/student_3.jpg', badgeIcon: '👑', badgeName: 'Á Quân Top 2' },
-                { name: 'Trần Đức Toàn', school: 'Lớp 12A3', wins: 23, points: 3740, avatar: 'assets/images/avatars/student_10.jpg', badgeIcon: '💎', badgeName: 'Quý Quân Top 3' },
-                { name: 'Sùng Ngọc Duy', school: 'Lớp 12A3', wins: 20, points: 3590, avatar: 'assets/images/avatars/student_12.jpg', badgeIcon: '💎', badgeName: 'Chiến Binh Loci' },
-                { name: 'Má Thị Dua', school: 'Lớp 12A2', wins: 18, points: 3460, avatar: 'assets/images/avatars/student_4.jpg', badgeIcon: '🥇', badgeName: 'Học Thần Loci' },
-                { name: 'Lò Thị Chuyển', school: 'Lớp 12A1', wins: 16, points: 3350, avatar: 'assets/images/avatars/student_1.jpg', badgeIcon: '🥇', badgeName: 'Chuyên Cần Loci' },
-                { name: 'Chảo San Mẩy', school: 'Lớp 12A2', wins: 15, points: 3210, avatar: 'assets/images/avatars/student_5.jpg', badgeIcon: '🥇', badgeName: 'Kỷ Lục Gia 3D' }
-            ];
+            const fallbackTop = [
+                {
+                                "name": "Pon Thị Thanh Hân",
+                                "school": "Lớp 12A3",
+                                "wins": 31,
+                                "points": 4663,
+                                "avatar": "assets/images/avatars/avatar_toilavietnam.jpg",
+                                "badgeIcon": "👑",
+                                "badgeName": "Quán Quân Top 1"
+                },
+                {
+                                "name": "Vi Ánh Linh",
+                                "school": "Lớp 12A1",
+                                "wins": 28,
+                                "points": 4588,
+                                "avatar": "assets/images/avatars/avatar_vietnam_doclap.jpg",
+                                "badgeIcon": "👑",
+                                "badgeName": "Á Quân Top 2"
+                },
+                {
+                                "name": "Đặng Duy Khương",
+                                "school": "Lớp 12A2",
+                                "wins": 28,
+                                "points": 4582,
+                                "avatar": "assets/images/avatars/03-tap-4-avatar-cute-khong-ten_2.webp",
+                                "badgeIcon": "💎",
+                                "badgeName": "Quý Quân Top 3"
+                },
+                {
+                                "name": "Vàng Thị Phương",
+                                "school": "Lớp 12C1",
+                                "wins": 26,
+                                "points": 4499,
+                                "avatar": "assets/images/avatars/student_5.jpg",
+                                "badgeIcon": "💎",
+                                "badgeName": "Chiến Binh Loci"
+                },
+                {
+                                "name": "Phàn Thị Khánh Ly",
+                                "school": "Lớp 12C1",
+                                "wins": 26,
+                                "points": 4306,
+                                "avatar": "assets/images/avatars/03-tap-4-avatar-cute-khong-ten_4.webp",
+                                "badgeIcon": "🥇",
+                                "badgeName": "Học Thần Loci"
+                },
+                {
+                                "name": "Lùng Thị Khuyên",
+                                "school": "Lớp 12A2",
+                                "wins": 25,
+                                "points": 4410,
+                                "avatar": "assets/images/avatars/08-le-loi-ho-guom.webp",
+                                "badgeIcon": "🥇",
+                                "badgeName": "Chuyên Cần Loci"
+                },
+                {
+                                "name": "Vương Trường Lâm",
+                                "school": "Lớp 12C2",
+                                "wins": 25,
+                                "points": 4375,
+                                "avatar": "assets/images/avatars/03-tap-4-avatar-cute-khong-ten_3.webp",
+                                "badgeIcon": "🥇",
+                                "badgeName": "Kỷ Lục Gia 3D"
+                }
+];
+
+            const pool = (typeof window !== 'undefined' && Array.isArray(window.LOCI_STUDENTS_POOL) && window.LOCI_STUDENTS_POOL.length > 0)
+                ? window.LOCI_STUDENTS_POOL
+                : null;
+
+            const board = pool
+                ? [...pool]
+                    .sort((a, b) => (b.wins - a.wins) || ((b.score || b.elo || 0) - (a.score || a.elo || 0)))
+                    .slice(0, 20)
+                    .map((s, idx) => {
+                        const badge = this.getCurrentBadge(s.wins || 0);
+                        return {
+                            name: s.name,
+                            school: s.school || ('Lớp ' + (s.classRoom || '12')),
+                            wins: s.wins || 0,
+                            points: s.score || s.elo || 1200,
+                            avatar: s.avatar || 'assets/images/avatars/student_1.jpg',
+                            badgeIcon: idx === 0 ? '👑' : (idx === 1 ? '👑' : (idx === 2 ? '💎' : badge.icon)),
+                            badgeName: idx === 0 ? 'Quán Quân Top 1' : (idx === 1 ? 'Á Quân Top 2' : (idx === 2 ? 'Quý Quân Top 3' : badge.name))
+                        };
+                    })
+                : fallbackTop;
 
             // Sắp xếp theo số trận thắng giảm dần
-            return mockTop.sort((a, b) => b.wins - a.wins);
+            return board.sort((a, b) => b.wins - a.wins);
         },
 
         recordLeaderboardEntry(name, points, wins) {
